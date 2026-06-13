@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HonestWaves — Master Design Hub</title>
+<style>
+:root {
+  --bg: #F4F6FA;
+  --surface: #FFFFFF;
+  --surface-2: #F7FAFD;
+  --surface-3: #EEF2F7;
+  --border: #E3E8EE;
+  --border-strong: #C9D2DC;
+  --text: #1A2332;
+  --text-2: #506072;
+  --text-3: #8190A3;
+  --primary: #1F3A5F;
+  --primary-2: #2E5587;
+  --primary-soft: #E8EEF6;
+  --accent: #2C7BF2;
+  --accent-soft: #DBE9FE;
+  --loss: #DC2626;
+  --damage: #EA580C;
+  --recovery: #16A34A;
+  --asset: #2563EB;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow-sm: 0 1px 2px rgba(20,30,50,.06);
+  --shadow: 0 4px 12px rgba(20,30,50,.08);
+  --shadow-lg: 0 10px 30px rgba(20,30,50,.12);
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg); font-family: var(--font); color: var(--text); -webkit-font-smoothing: antialiased; }
+body { display: flex; flex-direction: column; align-items: center; padding: 0 16px 80px; }
+
+/* sticky top nav */
+.topnav {
+  position: sticky; top: 0; z-index: 200;
+  width: 100%; max-width: 100vw;
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+  display: flex; justify-content: center;
+  margin-bottom: 24px;
+}
+.topnav-inner { display: flex; align-items: center; gap: 18px; max-width: 1400px; width: 100%; padding: 0 16px; }
+.topnav .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--primary); font-size: 14px; flex-shrink: 0; }
+.topnav .brand svg { width: 18px; height: 18px; }
+.topnav .tabs { display: flex; gap: 4px; flex: 1; flex-wrap: wrap; }
+.topnav .tabs button {
+  appearance: none; border: 1px solid transparent; background: transparent;
+  cursor: pointer; font-family: inherit;
+  padding: 7px 13px; font-size: 12.5px; font-weight: 600; color: var(--text-2);
+  border-radius: 999px;
+}
+.topnav .tabs button:hover { background: var(--surface-2); color: var(--text); }
+.topnav .tabs button.active { background: var(--primary); color: white; }
+
+.section { display: none; width: 100%; max-width: 1400px; }
+.section.active { display: block; }
+
+/* Hero / intro for hub */
+.hero {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 26px 30px; box-shadow: var(--shadow-sm); margin-bottom: 18px;
+}
+.hero h1 { margin: 0 0 6px; font-size: 24px; color: var(--primary); }
+.hero p { margin: 6px 0; font-size: 13.5px; color: var(--text-2); line-height: 1.55; }
+.hero .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
+.hero .item {
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px;
+  padding: 14px; cursor: pointer; transition: transform .12s, box-shadow .12s;
+}
+.hero .item:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); border-color: var(--border-strong); }
+.hero .item h3 { margin: 0 0 4px; font-size: 13.5px; color: var(--primary); }
+.hero .item p { margin: 0; font-size: 11.5px; color: var(--text-3); }
+.hero .item .meta { font-size: 11px; color: var(--text-3); margin-top: 6px; }
+
+/* iframe viewer */
+.viewer {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: var(--shadow-sm); overflow: hidden; margin-bottom: 18px;
+}
+.viewer-header {
+  padding: 14px 18px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.viewer-header .title { font-size: 14px; font-weight: 700; color: var(--primary); }
+.viewer-header .meta { font-size: 11.5px; color: var(--text-3); }
+.viewer-header .actions { display: flex; gap: 6px; }
+.viewer-header .actions a {
+  appearance: none; border: 1px solid var(--border); background: var(--surface);
+  font-family: inherit; font-size: 12px; font-weight: 600; color: var(--text-2);
+  padding: 5px 11px; border-radius: var(--radius-sm); cursor: pointer; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.viewer-header .actions a:hover { background: var(--surface-2); }
+.viewer-frame { width: 100%; height: 1200px; border: 0; background: var(--bg); }
+.viewer-frame.short { height: 900px; }
+.viewer-frame.tall { height: 1300px; }
+
+/* architecture page */
+.arch-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 24px 28px; box-shadow: var(--shadow-sm); margin-bottom: 18px;
+}
+.arch-card h2 {
+  margin: 0 0 6px; font-size: 19px; color: var(--primary);
+  display: flex; align-items: center; gap: 8px;
+}
+.arch-card h2 .tag {
+  font-size: 10px; font-weight: 700; padding: 2.5px 9px; border-radius: 999px;
+  background: var(--accent-soft); color: var(--accent); text-transform: uppercase; letter-spacing: .04em;
+}
+.arch-card p { margin: 6px 0 0; font-size: 13.5px; color: var(--text-2); line-height: 1.55; }
+.arch-card .mermaid {
+  margin: 18px 0;
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  padding: 18px;
+  border: 1px solid var(--border);
+  overflow-x: auto;
+}
+.arch-card h3 { font-size: 13px; color: var(--text); margin: 18px 0 6px; text-transform: uppercase; letter-spacing: .04em; }
+.arch-card ul { font-size: 13px; color: var(--text-2); line-height: 1.55; margin: 6px 0 6px 18px; padding: 0; }
+.arch-card li { margin: 5px 0; }
+.arch-card code {
+  font-family: var(--mono); font-size: 12px;
+  background: var(--surface-3); padding: 1.5px 6px; border-radius: 4px;
+}
+.arch-card .callout {
+  background: var(--primary-soft); border-left: 3px solid var(--primary);
+  border-radius: var(--radius-sm); padding: 11px 14px; font-size: 12.5px; color: var(--primary);
+  margin: 14px 0; line-height: 1.5;
+}
+.arch-card table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 12px 0; }
+.arch-card table th { text-align: left; padding: 9px 10px; font-weight: 600; color: var(--text-2); border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; background: var(--surface-2); }
+.arch-card table td { padding: 10px; border-bottom: 1px solid var(--surface-3); vertical-align: top; }
+.arch-card table td code { font-size: 11.5px; }
+
+.toc-pills { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 4px; }
+.toc-pills a {
+  font-size: 12px; padding: 5px 11px; border-radius: 999px;
+  background: var(--surface-3); color: var(--text-2); text-decoration: none; font-weight: 500;
+}
+.toc-pills a:hover { background: var(--primary-soft); color: var(--primary); }
+
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="topnav-inner">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c3-6 6 6 9 0s6 6 9 0"/></svg>
+      HonestWaves · Master Hub
+    </div>
+    <div class="tabs">
+      <button class="active" onclick="showSection('hub')">Index</button>
+      <button onclick="showSection('arch')">Architecture &amp; flows</button>
+      <button onclick="showSection('asset')">Asset Accounting (full)</button>
+      <button onclick="showSection('drill')">Drill-down pattern</button>
+      <button onclick="showSection('tablet')">Tablet admin redesign</button>
+      <button onclick="showSection('inline')">Inline placements</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ HUB INDEX ============ -->
+<div class="section active" data-section="hub">
+  <div class="hero">
+    <h1>HonestWaves master design hub</h1>
+    <p>Everything I've built for the dashboard, all in one place. Use the tabs above to switch between the architecture diagrams and each clickable prototype. The prototypes load in iframes — they're real, working HTML files; the Open-in-new-tab button at the top of each iframe lets you pop them full-window or share the link directly.</p>
+
+    <div class="grid">
+      <div class="item" onclick="showSection('arch')">
+        <h3>Architecture &amp; flows</h3>
+        <p>System diagram, data model, event sequences, Asset Accounting subsystem flow.</p>
+        <div class="meta">4 Mermaid diagrams + tables</div>
+      </div>
+      <div class="item" onclick="showSection('asset')">
+        <h3>Asset Accounting (full)</h3>
+        <p>5 main pages, 20 sub-views, 16 modals. The new section in the dashboard.</p>
+        <div class="meta">~1,700 lines · 125 KB</div>
+      </div>
+      <div class="item" onclick="showSection('drill')">
+        <h3>Drill-down pattern</h3>
+        <p>Macro → micro navigation: location → department → locker → user → incident.</p>
+        <div class="meta">Live drill-down with breadcrumbs</div>
+      </div>
+      <div class="item" onclick="showSection('tablet')">
+        <h3>Tablet admin redesign</h3>
+        <p>The on-locker operator pane redesign with unified state palette and confirm gates.</p>
+        <div class="meta">13 admin sections</div>
+      </div>
+    </div>
+
+    <p style="font-size:12.5px; color:var(--text-3); margin-top:18px">
+      <strong>Sharing with your designer:</strong> all five files (this hub + the four prototypes) live together in your outputs folder. Send the whole folder or just this Master Hub file — the iframes inside reference the other files by name, so they need to stay together. If you want a live URL, drag the folder onto netlify.com/drop and you get a shareable link in 10 seconds.
+    </p>
+  </div>
+</div>
+
+<!-- ============ ARCHITECTURE ============ -->
+<div class="section" data-section="arch">
+
+  <div class="arch-card">
+    <h2>Architecture &amp; data flow <span class="tag">Dev reference</span></h2>
+    <p>Four diagrams plus a short narrative for each. Built with Mermaid so your devs can drop the source straight into a README, a Confluence page, or an architecture decision record. The Mermaid source for each diagram is just above the rendered version — copy it as-is.</p>
+    <div class="toc-pills">
+      <a href="#arch-system">1. System architecture</a>
+      <a href="#arch-data">2. Data model</a>
+      <a href="#arch-sequence">3. Return / damage sequence</a>
+      <a href="#arch-flow">4. Asset Accounting subsystem</a>
+      <a href="#arch-glossary">5. New entities introduced</a>
+    </div>
+  </div>
+
+  <div class="arch-card" id="arch-system">
+    <h2>1. System architecture</h2>
+    <p>The three-tier view. Frontends on the left, backend services in the middle, integrations on the right. The new Asset Accounting work introduces new services (Rules Engine, Repair Tracker) and new outbound integrations (ERP chargeback) but doesn't change the fundamental shape of the system.</p>
+
+    <div class="mermaid">
+flowchart LR
+  subgraph FE["Frontends"]
+    KK["Kiosk tablet UI<br/>Customer-facing"]
+    TO["Tablet operator pane<br/>On-locker admin"]
+    DA["Web dashboard<br/>Admin · Ops · Finance"]
+  end
+
+  subgraph BE["Backend services"]
+    API["HonestWaves API<br/>REST + WebSocket"]
+    AUTH["Auth service<br/>SSO / SAML / Badge"]
+    RULE["Rules engine<br/>(NEW) Threshold evaluator"]
+    NOTIF["Notification service<br/>Email · Slack · SMS"]
+    RPT["Reports service<br/>Aggregation + export"]
+    REPAIR["Repair tracker<br/>(NEW) Queue + pipeline"]
+  end
+
+  subgraph DB["Storage"]
+    PG[("PostgreSQL<br/>Source of truth")]
+    REDIS[("Redis<br/>Cache + job queues")]
+    S3[("Object storage<br/>Photos · exports")]
+  end
+
+  subgraph INT["Integrations"]
+    MDM["MDM<br/>Intune · Jamf"]
+    HRIS["HRIS<br/>Workday · SuccessFactors"]
+    ERP["ERP<br/>(NEW) SAP · NetSuite"]
+    ITSM["ITSM<br/>ServiceNow"]
+    CHAT["Chat<br/>Slack · Teams"]
+  end
+
+  subgraph HW["Hardware"]
+    LOCKER["Locker hardware<br/>Doors · RFID · NFC · UVC · USB"]
+  end
+
+  KK <--> LOCKER
+  KK --> API
+  TO --> API
+  DA --> API
+
+  API --> AUTH
+  API --> PG
+  API --> REDIS
+  API --> S3
+
+  PG --> RULE
+  PG --> RPT
+  PG --> REPAIR
+
+  RULE --> NOTIF
+  RULE --> ERP
+
+  NOTIF --> CHAT
+  AUTH <--> HRIS
+  API <--> MDM
+  REPAIR <--> ITSM
+    </div>
+
+    <h3>What's new in this picture</h3>
+    <ul>
+      <li><strong>Rules engine</strong> — a new service that watches LossEvent inserts in Postgres, evaluates the active ThresholdRules, and emits actions (block flag, email, webhook). Stateless; can be deployed as a background worker.</li>
+      <li><strong>Repair tracker</strong> — a new service that owns the repair queue, vendor assignments, and ETAs. Talks to ITSM if integration is on.</li>
+      <li><strong>ERP integration</strong> — new outbound webhook for chargeback ledger entries. Batched daily by default.</li>
+      <li><strong>Photo storage</strong> — S3 for the optional photo-at-return feature.</li>
+    </ul>
+
+    <div class="callout">
+      <strong>Design choice to flag for engineering:</strong> the Rules Engine should re-evaluate on LossEvent insert <em>only</em>, not on every event type. Otherwise it becomes a hot path on every checkout. A Postgres LISTEN/NOTIFY on the loss_events table is the cleanest trigger.
+    </div>
+  </div>
+
+  <div class="arch-card" id="arch-data">
+    <h2>2. Data model (ER diagram)</h2>
+    <p>The new tables marked NEW are the meat of Asset Accounting. Existing tables (User, Device, Order) get a few new columns but their schema stays mostly the same.</p>
+
+    <div class="mermaid">
+erDiagram
+  LOCATION ||--o{ DEPARTMENT : "has"
+  LOCATION ||--o{ LOCKER : "has"
+  DEPARTMENT ||--o{ USER : "has"
+  USER ||--o{ ORDER : "checks out"
+  USER ||--o{ LOSS_EVENT : "responsible"
+
+  LOCKER ||--o{ BAY : "has"
+  BAY ||--o{ ORDER : "fulfills"
+
+  DEVICE_MODEL ||--o{ DEVICE : "instance of"
+  DEVICE_MODEL ||--o{ REPAIR_COMPONENT : "has parts"
+
+  DEVICE ||--o{ ORDER : "checked out"
+  DEVICE ||--o{ LOSS_EVENT : "subject"
+
+  ORDER ||--o| LOSS_EVENT : "may produce"
+
+  LOSS_EVENT ||--o{ DAMAGE_COMPONENT : "if partial"
+  DAMAGE_COMPONENT }o--|| REPAIR_COMPONENT : "references"
+
+  LOSS_EVENT ||--o| REPAIR_TICKET : "may create"
+  REPAIR_TICKET }o--|| VENDOR : "assigned to"
+
+  LOSS_EVENT ||--|| CHARGEBACK_LEDGER : "creates"
+  CHARGEBACK_LEDGER }o--|| DEPARTMENT : "charged to"
+
+  THRESHOLD_RULE ||--o{ RULE_FIRE_LOG : "logs"
+  RULE_FIRE_LOG }o--|| USER : "affected"
+    </div>
+
+    <h3>The new tables (Asset Accounting)</h3>
+    <table>
+      <thead><tr><th>Table</th><th>Purpose</th><th>Key columns</th></tr></thead>
+      <tbody>
+        <tr><td><code>repair_components</code></td><td>Per-model price list (screen, port, battery, etc.)</td><td><code>id</code>, <code>model_id</code>, <code>name</code>, <code>cost_cents</code>, <code>active</code></td></tr>
+        <tr><td><code>loss_events</code></td><td>One row per damage / loss / theft incident</td><td><code>id</code>, <code>user_id</code>, <code>device_id</code>, <code>order_id</code>, <code>event_type</code>, <code>total_cost_cents</code>, <code>cost_basis_snapshot</code> (JSONB), <code>disposition</code>, <code>occurred_at</code></td></tr>
+        <tr><td><code>damage_components</code></td><td>Link table — which components were damaged in a loss event</td><td><code>loss_event_id</code>, <code>repair_component_id</code>, <code>cost_at_event_cents</code></td></tr>
+        <tr><td><code>repair_tickets</code></td><td>One row per device in repair</td><td><code>id</code>, <code>loss_event_id</code>, <code>vendor_id</code>, <code>stage</code>, <code>est_cost_cents</code>, <code>actual_cost_cents</code>, <code>sent_at</code>, <code>completed_at</code></td></tr>
+        <tr><td><code>vendors</code></td><td>Repair vendor directory</td><td><code>id</code>, <code>name</code>, <code>supported_models</code>, <code>avg_turnaround_days</code>, <code>rating</code></td></tr>
+        <tr><td><code>chargeback_ledger</code></td><td>Per-department ledger entries; outbound to ERP</td><td><code>id</code>, <code>loss_event_id</code>, <code>department_id</code>, <code>amount_cents</code>, <code>posted_at</code>, <code>erp_ref</code></td></tr>
+        <tr><td><code>threshold_rules</code></td><td>User-configured rules: "when X, do Y"</td><td><code>id</code>, <code>scope</code> (user/dept/device), <code>trigger</code> (JSONB), <code>action</code> (JSONB), <code>active</code>, <code>created_by</code></td></tr>
+        <tr><td><code>rule_fire_log</code></td><td>Audit log of rule evaluations</td><td><code>id</code>, <code>rule_id</code>, <code>fired_at</code>, <code>subject_user_id</code>, <code>subject_dept_id</code>, <code>actions_taken</code> (JSONB)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Existing tables that get new columns</h3>
+    <ul>
+      <li><code>device_models</code> — add <code>replacement_cost_cents</code>, <code>salvage_cents</code>, <code>expected_lifespan_months</code>.</li>
+      <li><code>users</code> — derived column or materialized view <code>lifetime_loss_cents</code> for fast lookup; updated by trigger on <code>loss_events</code>.</li>
+      <li><code>departments</code> — derived <code>quarter_loss_cents</code> by trigger.</li>
+    </ul>
+
+    <div class="callout">
+      <strong>Pricing snapshot is critical.</strong> Store <code>cost_basis_snapshot</code> as JSONB on the LossEvent row itself. That snapshot is what gets reported on, not the current model price. If the iPhone 16e price changes from $599 → $649 next year, old loss reports still show the historical $599 because the snapshot is frozen at event time.
+    </div>
+  </div>
+
+  <div class="arch-card" id="arch-sequence">
+    <h2>3. Return / damage event sequence</h2>
+    <p>The path a damaged-return event takes through the system. This is the flow your devs will reference most when building.</p>
+
+    <div class="mermaid">
+sequenceDiagram
+  autonumber
+  participant U as User
+  participant K as Kiosk
+  participant API as API
+  participant DB as Postgres
+  participant RE as Rules Engine
+  participant N as Notifications
+  participant E as ERP
+  participant R as Repair Tracker
+
+  U->>K: Tap badge to return device
+  K->>API: GET /orders/active?user_id=X
+  API->>DB: SELECT open order
+  DB-->>API: Order #N
+  API-->>K: Order details
+
+  K->>U: "Is the device damaged?"
+  U->>K: Yes
+  K->>API: GET /device_models/{id}/components
+  API-->>K: [screen $179, port $89, battery $65, ...]
+  K->>U: Show component picker
+  U->>K: Select screen + port
+
+  K->>API: POST /loss_events {order_id, components:[s,p], type:"damaged_repairable"}
+  API->>DB: INSERT loss_events (snapshot cost basis)
+  API->>DB: INSERT damage_components (2 rows)
+  API->>DB: INSERT chargeback_ledger entry
+  API->>DB: INSERT repair_tickets (stage: queued)
+  API->>DB: NOTIFY loss_event_inserted
+
+  Note over DB,RE: Rules engine wakes on NOTIFY
+  RE->>DB: SELECT user lifetime, dept quarter
+  RE->>DB: SELECT active threshold_rules
+  RE->>RE: Evaluate triggers
+
+  alt Threshold crossed
+    RE->>DB: INSERT rule_fire_log
+    par
+      RE->>N: Send email + Slack
+      N-->>U: Notification
+    and
+      RE->>API: Set user.checkout_blocked = true
+    end
+  end
+
+  par Repair flow
+    R->>R: Pick up new queue row
+    R-->>API: Ticket created
+  and Chargeback flow
+    E->>E: Daily batch
+    E->>API: Confirm posting
+  end
+
+  API-->>K: 200 OK
+  K->>U: "Total $268 charged to Troy ER · Device sent to repair"
+    </div>
+
+    <h3>Where things can go wrong</h3>
+    <ul>
+      <li><strong>Step 4 (component lookup)</strong> — if the component catalog is missing for a device model, default to the "full loss" choice instead of an empty picker. Don't let the operator get stuck.</li>
+      <li><strong>Step 11 (NOTIFY → Rules Engine)</strong> — handle the case where the engine is down. Use a poll-fallback every 30s on a "pending" flag so events aren't lost.</li>
+      <li><strong>Step 18 (ERP webhook)</strong> — webhook delivery should be retried with exponential backoff. Failed webhooks visible in an admin error queue, not silently dropped.</li>
+      <li><strong>Steps 13-17 (parallel fan-out)</strong> — each side effect is independent; a failure in Slack delivery must not block the chargeback ledger insert or repair queue creation. Use a transactional outbox pattern.</li>
+    </ul>
+  </div>
+
+  <div class="arch-card" id="arch-flow">
+    <h2>4. Asset Accounting subsystem flow</h2>
+    <p>The same picture from the previous diagram, but zoomed out and focused on Asset Accounting alone — how inputs become a LossEvent and how that LossEvent fans out into every downstream surface.</p>
+
+    <div class="mermaid">
+flowchart LR
+  subgraph IN["Inputs"]
+    DM["Device Model<br/>+ Repair Components"]
+    EV["Order events<br/>checkout · return"]
+    DG["Damage selection<br/>component multi-select"]
+    LE["Lost / stolen<br/>watchdog auto-trigger"]
+  end
+
+  CALC{"Cost calculation<br/>(snapshot at event time)"}
+
+  DM --> CALC
+  EV --> CALC
+  DG --> CALC
+  LE --> CALC
+
+  CALC --> RECORD["LossEvent record<br/>with cost_basis snapshot"]
+
+  RECORD --> RPT["Loss & damage<br/>reports"]
+  RECORD --> CB["Chargeback<br/>ledger"]
+  RECORD --> RQ["Repair queue<br/>(if repairable)"]
+  RECORD --> UL["User lifetime<br/>$ total"]
+  RECORD --> DL["Department<br/>quarter $ total"]
+  RECORD --> RUL["Rules engine<br/>re-evaluate"]
+
+  RUL -->|"threshold crossed"| ACT["Actions:<br/>block · warn · notify"]
+  CB --> ERP["ERP webhook<br/>SAP · NetSuite"]
+  RQ --> VEN["Vendor<br/>assignment"]
+  VEN --> RPR["Repair complete<br/>actual cost recorded"]
+  RPR --> REDEPLOY["Device back<br/>to inventory"]
+
+  REC["Recovery event"] --> RECORD
+  REC --> REVERSE["Reverse charge<br/>partial / full"]
+  REVERSE --> CB
+    </div>
+
+    <h3>The five exits from a LossEvent (in order of priority)</h3>
+    <ol style="font-size:13px; color:var(--text-2); line-height:1.6; padding-left:18px">
+      <li><strong>Loss &amp; damage reports.</strong> Every report query reads loss_events directly. No projection layer in MVP — keep it simple.</li>
+      <li><strong>Chargeback ledger.</strong> Insert happens in the same transaction as the LossEvent insert. Outbound webhook is async (transactional outbox).</li>
+      <li><strong>Repair queue.</strong> Only fires if <code>disposition</code> = repairable. Creates a ticket row with stage = queued.</li>
+      <li><strong>User &amp; department running totals.</strong> Trigger-maintained columns. Fast read on every checkout to check thresholds.</li>
+      <li><strong>Rules engine re-evaluation.</strong> Async — triggered by NOTIFY, runs in milliseconds. Can fan out to blocks, warnings, notifications.</li>
+    </ol>
+
+    <h3>Recovery (the reverse path)</h3>
+    <p>When a lost device is recovered, the recovery_event creates a reverse-direction LossEvent record with a negative amount. Chargeback ledger gets a credit entry. User's lifetime total goes down. Same data model, just signed amounts.</p>
+  </div>
+
+  <div class="arch-card" id="arch-glossary">
+    <h2>5. Glossary — new entities and concepts</h2>
+    <table>
+      <thead><tr><th>Term</th><th>Means</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Device Model</strong></td><td>The make/type record. iPhone 16e, AiRista badge, Pixel 8 Pro. Carries replacement cost, salvage, lifespan, and the repair component catalog.</td></tr>
+        <tr><td><strong>Repair Component</strong></td><td>A subordinate row on a Device Model. Has a name and a cost. Example: <code>{model: iPhone 16e, name: "Screen replacement", cost: $179}</code>.</td></tr>
+        <tr><td><strong>Damage Component</strong></td><td>The link table between a LossEvent and Repair Component(s). Tells you which specific components were damaged in this incident.</td></tr>
+        <tr><td><strong>LossEvent</strong></td><td>The accounting fact. Created when something happens that costs the customer money: damage at return, lost device, stolen device. Carries the cost-at-time-of-event snapshot.</td></tr>
+        <tr><td><strong>Cost basis snapshot</strong></td><td>A frozen copy of the Device Model and Repair Component prices as they existed when the LossEvent was created. Reports always read from the snapshot, never from current prices. Prevents reports from changing retroactively.</td></tr>
+        <tr><td><strong>Chargeback Ledger</strong></td><td>A separate accounting ledger that mirrors LossEvent. Outbound to ERP. Decoupled so finance can hold/reverse entries without modifying the source LossEvent.</td></tr>
+        <tr><td><strong>Repair Ticket</strong></td><td>Workflow row that exists only when the LossEvent's disposition is repairable. Tracks vendor, stage, ETA.</td></tr>
+        <tr><td><strong>Threshold Rule</strong></td><td>User-configured "when X, do Y" rule. Scope is user / department / device. Trigger and action are JSON blobs for flexibility.</td></tr>
+        <tr><td><strong>Rule Fire Log</strong></td><td>Audit row. Whenever a rule fires, log who/what was affected and what actions were taken. Enables the "rule audit log" view.</td></tr>
+        <tr><td><strong>Recovery</strong></td><td>A signed-negative LossEvent. The reverse motion. When a previously-lost device is recovered, the system creates a recovery_event that nets out the prior LossEvent's charges.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <strong>Naming convention to lock in early:</strong> the term "Loss" covers <em>both</em> outright loss and partial damage. The damage_components rows distinguish partial-damage incidents from total-loss incidents at the row level. Don't split into LossEvent vs. DamageEvent — same table, just different <code>event_type</code> values.
+    </div>
+  </div>
+</div>
+
+<!-- ============ ASSET ACCOUNTING (full) ============ -->
+<div class="section" data-section="asset">
+  <div class="viewer">
+    <div class="viewer-header">
+      <div>
+        <div class="title">Asset Accounting (full) · 5 pages · 20 sub-views · 16 modals</div>
+        <div class="meta">Click left nav inside the prototype to switch between Overview / Loss &amp; damage / Inventory / Repair / Rules. Scroll past the dashboard for the modal gallery.</div>
+      </div>
+      <div class="actions">
+        <a href="HonestWaves_Asset_Accounting_Full.html" target="_blank">⤴ Open full-window</a>
+      </div>
+    </div>
+    <iframe class="viewer-frame tall" src="HonestWaves_Asset_Accounting_Full.html"></iframe>
+  </div>
+</div>
+
+<!-- ============ DRILL DOWN ============ -->
+<div class="section" data-section="drill">
+  <div class="viewer">
+    <div class="viewer-header">
+      <div>
+        <div class="title">Drill-down pattern · Macro → Micro navigation</div>
+        <div class="meta">Click any row inside the prototype to drill one level deeper. Click breadcrumb segments to jump back up.</div>
+      </div>
+      <div class="actions">
+        <a href="HonestWaves_Drill_Down_Pattern.html" target="_blank">⤴ Open full-window</a>
+      </div>
+    </div>
+    <iframe class="viewer-frame" src="HonestWaves_Drill_Down_Pattern.html"></iframe>
+  </div>
+</div>
+
+<!-- ============ TABLET ADMIN ============ -->
+<div class="section" data-section="tablet">
+  <div class="viewer">
+    <div class="viewer-header">
+      <div>
+        <div class="title">Tablet admin redesign · On-locker operator pane</div>
+        <div class="meta">All 13 admin sections in a tablet-portrait frame. Includes unified state palette, save semantics, and hardware-test confirm gates.</div>
+      </div>
+      <div class="actions">
+        <a href="HonestWaves_Tablet_Admin_Redesign.html" target="_blank">⤴ Open full-window</a>
+      </div>
+    </div>
+    <iframe class="viewer-frame tall" src="HonestWaves_Tablet_Admin_Redesign.html"></iframe>
+  </div>
+</div>
+
+<!-- ============ INLINE PLACEMENTS ============ -->
+<div class="section" data-section="inline">
+  <div class="viewer">
+    <div class="viewer-header">
+      <div>
+        <div class="title">Inline placements · Where Asset Accounting shows up across the rest of the dashboard</div>
+        <div class="meta">Device Model, AiRista, User profile Activity tab, Kiosk header, and the tablet damage return flow — all of the small surfaces where the financial data is exposed inside existing screens. Scroll inside the iframe.</div>
+      </div>
+      <div class="actions">
+        <a href="HonestWaves_Asset_Accounting_Design.html" target="_blank">⤴ Open full-window</a>
+      </div>
+    </div>
+    <iframe class="viewer-frame tall" src="HonestWaves_Asset_Accounting_Design.html"></iframe>
+  </div>
+</div>
+
+<script>
+function showSection(s) {
+  document.querySelectorAll('.section').forEach(el => el.classList.toggle('active', el.dataset.section === s));
+  document.querySelectorAll('.topnav .tabs button').forEach(b => b.classList.remove('active'));
+  // mark the right tab active
+  const tabs = document.querySelectorAll('.topnav .tabs button');
+  const map = { hub: 0, arch: 1, asset: 2, drill: 3, tablet: 4, inline: 5 };
+  if (tabs[map[s]]) tabs[map[s]].classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+mermaid.initialize({
+  startOnLoad: true,
+  theme: 'base',
+  themeVariables: {
+    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Arial, sans-serif',
+    fontSize: '13px',
+    primaryColor: '#E8EEF6',
+    primaryTextColor: '#1A2332',
+    primaryBorderColor: '#1F3A5F',
+    lineColor: '#506072',
+    secondaryColor: '#DBE9FE',
+    tertiaryColor: '#F7FAFD',
+  }
+});
+</script>
+
+</body>
+</html>

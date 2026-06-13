@@ -1,0 +1,1676 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HonestWaves — Asset Accounting · Complete Design System</title>
+<style>
+:root {
+  --bg: #F4F6FA; --surface: #FFFFFF; --surface-2: #F7FAFD; --surface-3: #EEF2F7;
+  --border: #E3E8EE; --border-strong: #C9D2DC;
+  --text: #1A2332; --text-2: #506072; --text-3: #8190A3;
+  --primary: #1F3A5F; --primary-2: #2E5587; --primary-soft: #E8EEF6;
+  --accent: #2C7BF2; --accent-soft: #DBE9FE;
+  --loss: #DC2626; --loss-soft: #FEE2E2;
+  --damage: #EA580C; --damage-soft: #FFEDD5;
+  --recovery: #16A34A; --recovery-soft: #DCFCE7;
+  --asset: #2563EB; --asset-soft: #DBEAFE;
+  --neutral: #6B7280; --neutral-soft: #F1F5F9;
+  --warn: #B45309; --warn-soft: #FED7AA;
+  --radius-sm: 6px; --radius: 10px; --radius-lg: 16px;
+  --shadow-sm: 0 1px 2px rgba(20,30,50,.06);
+  --shadow: 0 4px 12px rgba(20,30,50,.08);
+  --shadow-lg: 0 10px 30px rgba(20,30,50,.12);
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg); font-family: var(--font); color: var(--text); -webkit-font-smoothing: antialiased; }
+body { display: flex; flex-direction: column; align-items: center; gap: 24px; padding: 24px 16px 80px; }
+
+/* TOC strip */
+.toc {
+  position: sticky; top: 8px; z-index: 200;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 999px;
+  padding: 8px 18px; box-shadow: var(--shadow);
+  display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
+  max-width: 1400px;
+}
+.toc strong { font-size: 12px; color: var(--text-3); margin-right: 8px; text-transform: uppercase; letter-spacing: .05em; }
+.toc a { font-size: 12px; color: var(--text-2); text-decoration: none; padding: 4px 11px; border-radius: 999px; }
+.toc a:hover { background: var(--primary-soft); color: var(--primary); }
+
+.intro {
+  max-width: 1200px; width: 100%;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 22px 28px; box-shadow: var(--shadow-sm);
+}
+.intro h1 { margin: 0 0 6px; font-size: 22px; color: var(--primary); }
+.intro h2 { font-size: 13px; color: var(--text-3); text-transform: uppercase; letter-spacing: .05em; margin: 14px 0 4px; }
+.intro p, .intro li { font-size: 13.5px; color: var(--text-2); line-height: 1.55; margin: 6px 0; }
+.intro ul { margin: 4px 0 4px 18px; padding: 0; }
+.intro .grid-info { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 10px 0; }
+.intro .info-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 11px; font-size: 12px; color: var(--text-2); }
+.intro .info-card strong { color: var(--primary); display: block; margin-bottom: 2px; font-size: 12.5px; }
+
+/* dashboard frame */
+.app {
+  width: 1400px; max-width: 100%;
+  background: var(--surface); border-radius: 14px; overflow: hidden;
+  box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+  position: relative;
+}
+.app header.bar {
+  height: 56px; padding: 0 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--surface);
+}
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--primary); font-size: 17px; }
+.brand svg { width: 24px; height: 24px; }
+.header-right { display: flex; gap: 14px; align-items: center; font-size: 12px; color: var(--text-3); }
+.notif-bell { width: 32px; height: 32px; border-radius: 50%; background: var(--surface-2); display: flex; align-items: center; justify-content: center; position: relative; }
+.notif-bell .badge { position: absolute; top: -2px; right: -2px; background: var(--accent); color: white; font-size: 10px; font-weight: 700; padding: 2px 5px; border-radius: 999px; }
+.avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+
+.app .layout { display: grid; grid-template-columns: 220px 1fr; }
+nav.rail {
+  background: var(--surface); border-right: 1px solid var(--border);
+  padding: 16px 10px; display: flex; flex-direction: column; gap: 1px;
+  min-height: 1080px;
+}
+nav.rail .group { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-3); padding: 12px 10px 4px; }
+nav.rail .group.feature { color: var(--accent); }
+nav.rail button {
+  appearance: none; border: 0; background: transparent; cursor: pointer; text-align: left;
+  padding: 9px 12px; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 10px;
+  color: var(--text-2); font-size: 13px; font-weight: 500; font-family: inherit;
+}
+nav.rail button:hover { background: var(--surface-2); color: var(--text); }
+nav.rail button.active { background: var(--primary-soft); color: var(--primary); font-weight: 600; }
+nav.rail button svg { width: 17px; height: 17px; flex-shrink: 0; }
+
+main.content { padding: 22px 28px; background: var(--bg); min-height: 1080px; }
+.view { display: none; }
+.view.active { display: block; }
+
+/* common headers */
+.page-head { margin-bottom: 18px; }
+.page-head h1 { margin: 0 0 4px; font-size: 24px; letter-spacing: -.015em; color: var(--text); }
+.page-head p { margin: 0; font-size: 13px; color: var(--text-3); line-height: 1.5; }
+.page-head .badge-new { background: var(--accent-soft); color: var(--accent); padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 11px; margin-left: 6px; }
+
+/* sub-tabs */
+.subtabs {
+  display: flex; gap: 4px; border-bottom: 1px solid var(--border);
+  margin-bottom: 18px;
+}
+.subtabs button {
+  appearance: none; border: 0; background: transparent; cursor: pointer; font-family: inherit;
+  padding: 10px 14px; font-size: 13px; font-weight: 600; color: var(--text-2);
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+}
+.subtabs button:hover { color: var(--primary); }
+.subtabs button.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+.subview { display: none; }
+.subview.active { display: block; }
+
+/* cards & kpis */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 16px; box-shadow: var(--shadow-sm); }
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; gap: 10px; }
+.card-title { font-size: 15px; font-weight: 600; margin: 0; }
+.card-sub { font-size: 12px; color: var(--text-3); margin: 2px 0 0; }
+.card-link { font-size: 12.5px; color: var(--accent); cursor: pointer; background: none; border: 0; padding: 0; font-family: inherit; }
+.card-link:hover { text-decoration: underline; }
+
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 16px; }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow-sm); }
+.kpi .label { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-3); }
+.kpi .value { font-size: 28px; font-weight: 700; letter-spacing: -.025em; color: var(--text); margin: 5px 0 3px; line-height: 1.05; }
+.kpi .value.loss { color: var(--loss); }
+.kpi .value.asset { color: var(--asset); }
+.kpi .value.recovery { color: var(--recovery); }
+.kpi .meta { font-size: 11.5px; color: var(--text-2); }
+.kpi .delta { font-weight: 600; }
+.kpi .delta.up { color: var(--recovery); }
+.kpi .delta.down { color: var(--loss); }
+.spark { display: flex; align-items: flex-end; gap: 2px; height: 28px; margin-top: 8px; }
+.spark div { flex: 1; opacity: .85; border-radius: 1px 1px 0 0; }
+.spark.loss div { background: var(--loss); }
+.spark.asset div { background: var(--asset); }
+.spark.recovery div { background: var(--recovery); }
+
+/* tables */
+table.data { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.data thead th { text-align: left; padding: 9px 10px; font-weight: 600; color: var(--text-2); border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+table.data tbody td { padding: 11px 10px; border-bottom: 1px solid var(--surface-3); }
+table.data tbody tr:hover { background: var(--surface-2); cursor: pointer; }
+table.data tbody tr:last-child td { border-bottom: 0; }
+table.data .num { text-align: right; font-variant-numeric: tabular-nums; }
+table.data .money { font-weight: 600; font-variant-numeric: tabular-nums; }
+table.data .money.loss { color: var(--loss); }
+table.data .money.asset { color: var(--asset); }
+table.data .money.recovery { color: var(--recovery); }
+
+/* pills */
+.pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 2.5px 8px; border-radius: 999px; white-space: nowrap; }
+.pill.loss { background: var(--loss-soft); color: var(--loss); }
+.pill.damage { background: var(--damage-soft); color: var(--damage); }
+.pill.recovery { background: var(--recovery-soft); color: var(--recovery); }
+.pill.asset { background: var(--asset-soft); color: var(--asset); }
+.pill.neutral { background: var(--neutral-soft); color: var(--neutral); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.danger { background: var(--loss-soft); color: var(--loss); }
+
+.loc-tag { font-size: 11px; padding: 2px 7px; border-radius: 4px; background: var(--primary-soft); color: var(--primary); font-weight: 500; }
+.dept-tag { font-size: 11px; padding: 2px 7px; border-radius: 4px; background: var(--surface-3); color: var(--text-2); font-weight: 500; }
+
+.user-row { display: flex; align-items: center; gap: 9px; }
+.ava { width: 28px; height: 28px; border-radius: 50%; background: var(--primary-soft); color: var(--primary); display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+
+/* row layouts */
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+/* filter bar */
+.controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+.chip { appearance: none; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); font-size: 12.5px; padding: 6px 11px; border-radius: 999px; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 5px; }
+.chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+.chip:hover:not(.active) { border-color: var(--border-strong); }
+.pivot { display: inline-flex; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 3px; gap: 2px; }
+.pivot button { appearance: none; border: 0; background: transparent; cursor: pointer; padding: 6px 13px; font-size: 12.5px; font-weight: 600; color: var(--text-2); border-radius: 4px; font-family: inherit; }
+.pivot button.active { background: var(--surface); color: var(--primary); box-shadow: var(--shadow-sm); }
+
+.btn { appearance: none; border: 0; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600; padding: 8px 14px; border-radius: var(--radius-sm); display: inline-flex; align-items: center; gap: 6px; }
+.btn.primary { background: var(--primary); color: white; }
+.btn.primary:hover { background: var(--primary-2); }
+.btn.ghost { background: transparent; color: var(--text-2); border: 1px solid var(--border); }
+.btn.accent { background: var(--accent); color: white; }
+.btn.danger { background: var(--loss); color: white; }
+.btn.small { padding: 5px 10px; font-size: 12px; }
+
+/* breadcrumb */
+.crumb { display: flex; gap: 6px; flex-wrap: wrap; font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.crumb a { color: var(--text-3); font-weight: 600; font-size: 16px; cursor: pointer; padding: 2px 6px; border-radius: 4px; }
+.crumb a:hover { background: var(--primary-soft); color: var(--primary); }
+.crumb .sep { color: var(--text-3); font-weight: 400; }
+
+/* progress bar */
+.bar { height: 6px; background: var(--surface-3); border-radius: 3px; overflow: hidden; min-width: 80px; }
+.bar .fill { height: 100%; border-radius: 3px; }
+
+/* switch */
+.switch { width: 38px; height: 22px; border-radius: 999px; background: #CBD5E1; position: relative; cursor: pointer; flex-shrink: 0; transition: background .15s; }
+.switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: white; box-shadow: 0 1px 2px rgba(0,0,0,.2); transition: left .15s; }
+.switch.on { background: var(--primary); }
+.switch.on::after { left: 18px; }
+
+/* kanban */
+.kanban { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.kan-col { background: var(--surface-2); border-radius: var(--radius); padding: 14px; }
+.kan-col h3 { margin: 0 0 4px; font-size: 12.5px; color: var(--text-2); display: flex; justify-content: space-between; }
+.kan-col .count { background: var(--surface); color: var(--text-3); font-size: 11px; padding: 1px 7px; border-radius: 10px; font-weight: 700; }
+.kan-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 11px; margin-top: 10px; box-shadow: var(--shadow-sm); }
+.kan-card .title { font-size: 12.5px; font-weight: 600; margin-bottom: 4px; }
+.kan-card .sub { font-size: 11px; color: var(--text-3); margin-bottom: 6px; }
+.kan-card .foot { display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+
+/* rule cards */
+.rule { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; display: flex; gap: 14px; align-items: flex-start; }
+.rule .icon { width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.rule .body { flex: 1; }
+.rule .title { font-size: 13.5px; font-weight: 600; }
+.rule .desc { font-size: 12.5px; color: var(--text-2); line-height: 1.45; }
+.rule .meta { font-size: 11.5px; color: var(--text-3); margin-top: 5px; }
+
+/* bay tiles */
+.bays { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; margin-top: 10px; }
+.bay { aspect-ratio: 1; border-radius: 6px; border: 1.5px solid; padding: 4px 6px; font-size: 10px; }
+.bay .n { font-weight: 700; }
+.bay .v { font-size: 9px; opacity: .8; }
+.bay.charged { border-color: var(--recovery); color: var(--recovery); background: white; }
+.bay.in-use { border-color: var(--asset); color: var(--asset); background: white; }
+.bay.empty { border-color: var(--neutral); color: var(--neutral); background: var(--neutral-soft); }
+.bay.damaged { border-color: var(--loss); color: var(--loss); background: var(--loss-soft); }
+
+/* timeline activity */
+.tl-item { display: flex; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--surface-3); }
+.tl-item:last-child { border-bottom: 0; }
+.tl-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.tl-item .body { flex: 1; }
+.tl-item .title { font-size: 13px; font-weight: 600; }
+.tl-item .desc { font-size: 12px; color: var(--text-2); }
+.tl-item .when { font-size: 11px; color: var(--text-3); }
+
+/* form */
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 12px; font-weight: 600; color: var(--text-2); margin-bottom: 5px; }
+.field input, .field select, .field textarea { width: 100%; box-sizing: border-box; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 9px 12px; font-size: 13px; font-family: inherit; color: var(--text); background: var(--surface); }
+.field .help { font-size: 11.5px; color: var(--text-3); margin-top: 4px; line-height: 1.4; }
+.field-row { display: flex; gap: 8px; }
+.field-row .field { flex: 1; }
+
+/* MODAL gallery */
+.gallery-head { max-width: 1400px; width: 100%; }
+.gallery-head h2 { margin: 0 0 8px; font-size: 22px; color: var(--primary); }
+.gallery-head p { font-size: 13.5px; color: var(--text-2); margin: 0 0 16px; line-height: 1.5; }
+.modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 1400px; width: 100%; }
+.modal-grid.solo { grid-template-columns: 1fr; }
+.modal-frame {
+  background: linear-gradient(135deg, #1A2332 0%, #2E3D55 100%);
+  border-radius: var(--radius);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.modal-frame .label-tag {
+  position: absolute; top: 14px; left: 14px;
+  background: rgba(255,255,255,.15); color: white; font-size: 11px; font-weight: 600;
+  padding: 4px 10px; border-radius: 999px;
+}
+.modal {
+  background: var(--surface); border-radius: var(--radius); padding: 22px;
+  box-shadow: var(--shadow-lg);
+  max-width: 460px; margin: 30px auto 0; position: relative;
+}
+.modal.wide { max-width: 560px; }
+.modal h3 { margin: 0 0 6px; font-size: 17px; }
+.modal .sub { font-size: 12.5px; color: var(--text-3); margin: 0 0 16px; line-height: 1.5; }
+.modal .actions { display: flex; gap: 8px; margin-top: 18px; }
+.modal .actions .btn { flex: 1; justify-content: center; }
+.modal .close { position: absolute; top: 14px; right: 14px; background: transparent; border: 0; color: var(--text-3); cursor: pointer; font-size: 18px; }
+
+/* damage selector grid */
+.dmg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.dmg-choice { display: flex; align-items: center; gap: 10px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; }
+.dmg-choice input { width: 17px; height: 17px; }
+.dmg-choice .nm { font-size: 13px; font-weight: 600; }
+.dmg-choice .pr { font-size: 11.5px; color: var(--text-3); }
+.dmg-choice.selected { border-color: var(--damage); background: var(--damage-soft); }
+.dmg-choice.selected .pr { color: var(--text-2); }
+
+.total-strip { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--surface-2); border-radius: 8px; margin-top: 14px; }
+.total-strip .v { font-size: 22px; font-weight: 700; color: var(--loss); }
+.total-strip .lbl { font-size: 10.5px; color: var(--text-3); text-transform: uppercase; letter-spacing: .04em; }
+
+.section-label {
+  max-width: 1400px; width: 100%;
+  font-size: 11px; color: var(--text-3);
+  text-transform: uppercase; letter-spacing: .08em;
+  padding: 20px 0 4px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: baseline; gap: 14px;
+}
+.section-label strong { font-size: 18px; color: var(--primary); font-weight: 700; letter-spacing: -.005em; text-transform: none; }
+
+.helper-banner {
+  background: var(--accent-soft); border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm); padding: 10px 13px; font-size: 12.5px; color: var(--primary);
+  margin-bottom: 14px; line-height: 1.45;
+}
+
+/* segmented control variant for inline form choices */
+.segctrl {
+  display: inline-flex; border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--surface-2); padding: 3px;
+}
+.segctrl button { appearance: none; border: 0; background: transparent; cursor: pointer; font-family: inherit; padding: 6px 12px; font-size: 12.5px; font-weight: 600; color: var(--text-2); border-radius: 4px; }
+.segctrl button.active { background: var(--surface); color: var(--primary); box-shadow: var(--shadow-sm); }
+
+/* comparison bars */
+.cmp-row { display: grid; grid-template-columns: 140px 1fr 80px; gap: 12px; align-items: center; padding: 6px 0; font-size: 12.5px; }
+.cmp-row .lbl { color: var(--text-2); font-weight: 500; }
+.cmp-row .bar2 { height: 18px; background: var(--surface-3); border-radius: 4px; overflow: hidden; display: flex; }
+.cmp-row .bar2 .a { background: var(--loss); height: 100%; }
+.cmp-row .bar2 .b { background: var(--neutral); height: 100%; }
+.cmp-row .val { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; color: var(--text); }
+
+.tag-mode {
+  background: var(--accent-soft); color: var(--accent); font-size: 10px; font-weight: 700;
+  padding: 2px 7px; border-radius: 4px; margin-left: 6px; vertical-align: middle;
+  text-transform: uppercase; letter-spacing: .04em;
+}
+
+/* Empty state */
+.empty {
+  text-align: center; padding: 40px 20px;
+  border: 2px dashed var(--border); border-radius: var(--radius);
+  background: var(--surface-2);
+}
+.empty .ic { width: 48px; height: 48px; border-radius: 50%; background: var(--surface-3); margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; }
+.empty h4 { margin: 6px 0 3px; font-size: 14px; }
+.empty p { font-size: 12.5px; color: var(--text-3); margin: 0 0 14px; }
+
+/* component price row */
+.cpr { display: grid; grid-template-columns: 1fr 100px 100px 40px; gap: 8px; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--surface-3); font-size: 12.5px; }
+.cpr:last-child { border-bottom: 0; }
+.cpr .pname { font-weight: 600; }
+.cpr .ico-btn { background: transparent; border: 0; color: var(--text-3); cursor: pointer; }
+.cpr .ico-btn:hover { color: var(--loss); }
+
+/* charts */
+.chart {
+  display: flex; align-items: flex-end; gap: 4px; height: 160px;
+  padding: 8px 0; position: relative;
+}
+.chart .bar3 { flex: 1; background: var(--loss); opacity: .85; border-radius: 3px 3px 0 0; min-width: 18px; position: relative; }
+.chart .bar3.recovery { background: var(--recovery); }
+.chart .bar3 span { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--text-3); white-space: nowrap; margin-bottom: 3px; }
+
+</style>
+</head>
+<body>
+
+<div class="toc">
+  <strong>Jump to</strong>
+  <a href="#nav-intro">Intro</a>
+  <a href="#nav-app">Live prototype</a>
+  <a href="#nav-overview">Overview</a>
+  <a href="#nav-loss">Loss &amp; damage</a>
+  <a href="#nav-inv">Inventory value</a>
+  <a href="#nav-repair">Repair tracker</a>
+  <a href="#nav-rules">Thresholds &amp; rules</a>
+  <a href="#nav-modals">Modal gallery</a>
+</div>
+
+<div class="intro" id="nav-intro">
+  <h1>Asset Accounting — complete design system</h1>
+  <p>Every screen, sub-page, and modal for the proposed Asset Accounting section, in one prototype. Click any tab in the left nav to switch main sections; tabs within each page swap sub-views. The bottom of this file is a gallery showing every modal/popup state side by side so your designer can see them all without triggering each one.</p>
+
+  <div class="grid-info">
+    <div class="info-card"><strong>5 main pages</strong>Overview · Loss &amp; damage · Inventory value · Repair tracker · Rules</div>
+    <div class="info-card"><strong>~20 sub-views</strong>Pivot tabs, drill states, empty states, comparison views</div>
+    <div class="info-card"><strong>16 modals</strong>Damage picker, vendor assignment, rule builder, exports, more</div>
+    <div class="info-card"><strong>Consistent skeleton</strong>Breadcrumb + KPI + pivot + drill-table reused everywhere</div>
+    <div class="info-card"><strong>Mock data</strong>iPhone 16e + AiRista, Troy + Butterworth, real-ish names</div>
+  </div>
+
+  <h2>What's clickable</h2>
+  <ul>
+    <li>Left nav buttons switch between the 5 main pages.</li>
+    <li>Sub-tabs at the top of each page swap between the page's sub-views (e.g. By User / By Department / By Location / By Model).</li>
+    <li>Pivot toggles re-aggregate the rows.</li>
+    <li>Switches/toggles flip state.</li>
+    <li>Modals at the bottom of the file are static screenshots — they're shown stacked so you can review every popup in one scroll.</li>
+  </ul>
+</div>
+
+<div class="app" id="nav-app">
+  <header class="bar">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c3-6 6 6 9 0s6 6 9 0"/></svg>
+      HonestWaves
+    </div>
+    <div class="header-right">
+      <span>Acme Health · Troy Hospital</span>
+      <div class="notif-bell">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--text-2)" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+        <span class="badge">12</span>
+      </div>
+      <div class="avatar">JS</div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="rail">
+      <button onclick="showView('placeholder')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Dashboard</button>
+      <button onclick="showView('placeholder')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Mission Control</button>
+      <div class="group">Inventory</div>
+      <button onclick="showView('placeholder')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"/></svg>Kiosks</button>
+      <button onclick="showView('placeholder')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/></svg>Devices</button>
+      <div class="group">People</div>
+      <button onclick="showView('placeholder')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/></svg>Users</button>
+      <button onclick="showView('placeholder')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>Access Matrix</button>
+      <div class="group">Activity</div>
+      <button onclick="showView('placeholder')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/></svg>Notifications</button>
+      <button onclick="showView('placeholder')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9"/></svg>Tracker</button>
+      <button onclick="showView('placeholder')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/></svg>Reports</button>
+      <div class="group feature">★ Asset Accounting</div>
+      <button class="active" data-nav="overview" onclick="showView('overview')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Overview</button>
+      <button data-nav="loss" onclick="showView('loss')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/></svg>Loss &amp; damage</button>
+      <button data-nav="inventory" onclick="showView('inventory')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Inventory value</button>
+      <button data-nav="repair" onclick="showView('repair')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Repair tracker</button>
+      <button data-nav="rules" onclick="showView('rules')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Thresholds &amp; rules</button>
+      <div class="group">Setup</div>
+      <button onclick="showView('placeholder')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>Settings</button>
+    </nav>
+
+    <main class="content">
+
+      <!-- ============ OVERVIEW ============ -->
+      <section class="view active" data-view="overview" id="nav-overview-anchor">
+        <div class="page-head">
+          <h1>Asset Accounting <span class="badge-new">NEW SECTION</span></h1>
+          <p>Financial picture of devices in the field. Filter, drill, export.</p>
+        </div>
+
+        <div class="subtabs">
+          <button class="active" onclick="showSub(this, 'ov-dashboard')">Dashboard</button>
+          <button onclick="showSub(this, 'ov-compare')">Quarter comparison</button>
+          <button onclick="showSub(this, 'ov-activity')">Activity feed</button>
+        </div>
+
+        <!-- ov-dashboard -->
+        <div class="subview active" data-sub="ov-dashboard">
+          <div class="controls" style="margin-bottom:18px">
+            <span style="font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:.05em">Time range</span>
+            <button class="chip">Last 7d</button>
+            <button class="chip">Last 30d</button>
+            <button class="chip active">This quarter</button>
+            <button class="chip">YTD</button>
+            <button class="chip">Custom…</button>
+            <div style="margin-left:auto; display:flex; gap:8px">
+              <button class="btn ghost btn small">⤓ Export</button>
+              <button class="btn ghost btn small">⤓ Schedule</button>
+            </div>
+          </div>
+
+          <div class="kpi-grid">
+            <div class="kpi"><div class="label">Assets in lockers</div><div class="value asset">$56,685</div><div class="meta">113 devices · 4 kiosks</div><div class="spark asset"><div style="height:60%"></div><div style="height:65%"></div><div style="height:70%"></div><div style="height:75%"></div><div style="height:78%"></div><div style="height:80%"></div><div style="height:85%"></div><div style="height:88%"></div><div style="height:90%"></div><div style="height:92%"></div><div style="height:94%"></div><div style="height:96%"></div></div></div>
+            <div class="kpi"><div class="label">Losses this quarter</div><div class="value loss">$14,247</div><div class="meta"><span class="delta down">▲ 18% vs last Q</span></div><div class="spark loss"><div style="height:30%"></div><div style="height:45%"></div><div style="height:35%"></div><div style="height:55%"></div><div style="height:50%"></div><div style="height:70%"></div><div style="height:65%"></div><div style="height:80%"></div><div style="height:75%"></div><div style="height:90%"></div><div style="height:85%"></div><div style="height:95%"></div></div></div>
+            <div class="kpi"><div class="label">Recovered this quarter</div><div class="value recovery">$3,124</div><div class="meta"><span class="delta up">22% recovery rate</span></div><div class="spark recovery"><div style="height:20%"></div><div style="height:30%"></div><div style="height:25%"></div><div style="height:40%"></div><div style="height:35%"></div><div style="height:55%"></div><div style="height:50%"></div><div style="height:65%"></div><div style="height:60%"></div><div style="height:75%"></div><div style="height:70%"></div><div style="height:80%"></div></div></div>
+            <div class="kpi"><div class="label">Net loss YTD</div><div class="value">$36,840</div><div class="meta">vs $42K budget · <span style="color:var(--recovery); font-weight:600">$5,160 under</span></div><div class="spark loss"><div style="height:25%"></div><div style="height:32%"></div><div style="height:35%"></div><div style="height:42%"></div><div style="height:48%"></div><div style="height:55%"></div><div style="height:58%"></div><div style="height:62%"></div><div style="height:68%"></div><div style="height:72%"></div><div style="height:78%"></div><div style="height:82%"></div></div></div>
+          </div>
+
+          <div class="row-2">
+            <div class="card">
+              <div class="card-header">
+                <div><p class="card-title">Top departments by loss</p><p class="card-sub">This quarter — click row to drill</p></div>
+              </div>
+              <table class="data">
+                <tbody>
+                  <tr><td><span class="loc-tag">Troy</span> ER <span class="dept-tag">23 users</span></td><td class="num">9 lost</td><td class="num"><span class="money loss">$4,829</span></td><td><div class="bar"><div class="fill" style="width:80%; background:var(--loss)"></div></div></td></tr>
+                  <tr><td><span class="loc-tag">Troy</span> ICU <span class="dept-tag">14 users</span></td><td class="num">6 lost</td><td class="num"><span class="money loss">$3,124</span></td><td><div class="bar"><div class="fill" style="width:55%; background:var(--loss)"></div></div></td></tr>
+                  <tr><td><span class="loc-tag">Troy</span> Cardiology <span class="dept-tag">8 users</span></td><td class="num">4 lost</td><td class="num"><span class="money loss">$1,847</span></td><td><div class="bar"><div class="fill" style="width:35%; background:var(--loss)"></div></div></td></tr>
+                  <tr><td><span class="loc-tag">Troy</span> Security <span class="dept-tag">6 users</span></td><td class="num">14 lost</td><td class="num"><span class="money loss">$1,190</span></td><td><div class="bar"><div class="fill" style="width:22%; background:var(--loss)"></div></div></td></tr>
+                  <tr><td><span class="loc-tag">Butterworth</span> Main <span class="dept-tag">32 users</span></td><td class="num">6 lost</td><td class="num"><span class="money loss">$2,814</span></td><td><div class="bar"><div class="fill" style="width:48%; background:var(--loss)"></div></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div><p class="card-title">High-risk users</p><p class="card-sub">Approaching or past loss thresholds</p></div>
+                <button class="card-link">View all 8 ↗</button>
+              </div>
+              <table class="data">
+                <tbody>
+                  <tr><td><div class="user-row"><div class="ava">MR</div><div><div style="font-weight:600">Mark Rivera</div><div style="font-size:11px; color:var(--text-3)">Troy · ER · Nurse</div></div></div></td><td><span class="pill danger">Blocked</span></td><td class="num"><span class="money loss">$1,247</span></td></tr>
+                  <tr><td><div class="user-row"><div class="ava">LC</div><div><div style="font-weight:600">Lauryne Costa</div><div style="font-size:11px; color:var(--text-3)">Troy · ER · Tech</div></div></div></td><td><span class="pill warn">Approval req</span></td><td class="num"><span class="money loss">$782</span></td></tr>
+                  <tr><td><div class="user-row"><div class="ava">CS</div><div><div style="font-weight:600">Crosby Smith</div><div style="font-size:11px; color:var(--text-3)">Troy · ICU · MD</div></div></div></td><td><span class="pill warn">Approval req</span></td><td class="num"><span class="money loss">$599</span></td></tr>
+                  <tr><td><div class="user-row"><div class="ava">BM</div><div><div style="font-weight:600">Bryan Mitchell</div><div style="font-size:11px; color:var(--text-3)">Troy · Cardiology · Tech</div></div></div></td><td><span class="pill neutral">Watching</span></td><td class="num"><span class="money loss">$268</span></td></tr>
+                  <tr><td><div class="user-row"><div class="ava">CW</div><div><div style="font-weight:600">Casandra Wisoky</div><div style="font-size:11px; color:var(--text-3)">Troy · ICU · Nurse</div></div></div></td><td><span class="pill neutral">—</span></td><td class="num"><span class="money loss">$179</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div><p class="card-title">Loss trend</p><p class="card-sub">Last 12 weeks — losses in red, recoveries in green</p></div>
+            </div>
+            <div class="chart">
+              <div class="bar3" style="height:30%"></div>
+              <div class="bar3" style="height:48%"></div>
+              <div class="bar3" style="height:35%"></div>
+              <div class="bar3" style="height:62%"></div>
+              <div class="bar3" style="height:42%"></div>
+              <div class="bar3" style="height:75%"></div>
+              <div class="bar3" style="height:58%"></div>
+              <div class="bar3" style="height:85%"></div>
+              <div class="bar3 recovery" style="height:25%"></div>
+              <div class="bar3" style="height:68%"></div>
+              <div class="bar3 recovery" style="height:30%"></div>
+              <div class="bar3" style="height:92%"><span>$1,847</span></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-3); margin-top:6px">
+              <span>Wk -12</span><span>Wk -9</span><span>Wk -6</span><span>Wk -3</span><span>This week</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ov-compare -->
+        <div class="subview" data-sub="ov-compare">
+          <div class="card">
+            <div class="card-header">
+              <div><p class="card-title">Quarter comparison</p><p class="card-sub">Current quarter vs prior quarter · By category</p></div>
+              <div class="controls" style="margin:0">
+                <select style="border:1px solid var(--border); border-radius:6px; padding:5px 10px; font-size:12.5px"><option>Q2 2026 vs Q1 2026</option></select>
+              </div>
+            </div>
+            <div class="cmp-row"><span class="lbl">Lost — total $</span><div class="bar2"><div class="a" style="width:62%"></div><div class="b" style="width:38%; background:var(--neutral)"></div></div><span class="val"><span class="loss">$8,729</span> · <span style="color:var(--text-3)">$5,318</span></span></div>
+            <div class="cmp-row"><span class="lbl">Damaged — screens</span><div class="bar2"><div class="a" style="width:55%"></div><div class="b" style="width:45%"></div></div><span class="val"><span class="loss">$2,685</span> · <span style="color:var(--text-3)">$2,148</span></span></div>
+            <div class="cmp-row"><span class="lbl">Damaged — ports</span><div class="bar2"><div class="a" style="width:48%"></div><div class="b" style="width:52%"></div></div><span class="val"><span class="loss">$801</span> · <span style="color:var(--text-3)">$889</span></span></div>
+            <div class="cmp-row"><span class="lbl">Damaged — batteries</span><div class="bar2"><div class="a" style="width:65%"></div><div class="b" style="width:35%"></div></div><span class="val"><span class="loss">$520</span> · <span style="color:var(--text-3)">$260</span></span></div>
+            <div class="cmp-row"><span class="lbl">Stolen</span><div class="bar2"><div class="a" style="width:80%"></div><div class="b" style="width:20%"></div></div><span class="val"><span class="loss">$1,512</span> · <span style="color:var(--text-3)">$378</span></span></div>
+            <div class="cmp-row"><span class="lbl">Recovered (offset)</span><div class="bar2"><div class="a" style="width:30%; background:var(--recovery)"></div><div class="b" style="width:70%"></div></div><span class="val"><span style="color:var(--recovery)">−$3,124</span> · <span style="color:var(--text-3)">−$7,318</span></span></div>
+
+            <div style="margin-top:14px; padding:12px; background:var(--surface-2); border-radius:8px; font-size:12.5px; display:grid; grid-template-columns:repeat(3,1fr); gap:14px">
+              <div><div style="font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:.04em">Net this Q</div><div style="font-size:18px; font-weight:700; color:var(--loss); margin-top:3px">$14,247</div></div>
+              <div><div style="font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:.04em">Net last Q</div><div style="font-size:18px; font-weight:700; color:var(--text); margin-top:3px">$12,082</div></div>
+              <div><div style="font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:.04em">Delta</div><div style="font-size:18px; font-weight:700; color:var(--loss); margin-top:3px">▲ $2,165 (18%)</div></div>
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div class="card">
+              <p class="card-title" style="margin-bottom:12px">Departments getting worse</p>
+              <table class="data">
+                <tbody>
+                  <tr><td><span class="loc-tag">Troy</span> ER</td><td class="num"><span class="money loss">+$1,447</span></td><td><span class="pill danger">▲ 43%</span></td></tr>
+                  <tr><td><span class="loc-tag">Troy</span> Security</td><td class="num"><span class="money loss">+$612</span></td><td><span class="pill damage">▲ 106%</span></td></tr>
+                  <tr><td><span class="loc-tag">Butterworth</span> OR</td><td class="num"><span class="money loss">+$483</span></td><td><span class="pill damage">▲ 50%</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card">
+              <p class="card-title" style="margin-bottom:12px">Departments improving</p>
+              <table class="data">
+                <tbody>
+                  <tr><td><span class="loc-tag">Troy</span> Maintenance</td><td class="num"><span class="money recovery">−$220</span></td><td><span class="pill recovery">▼ 39%</span></td></tr>
+                  <tr><td><span class="loc-tag">Troy</span> ICU</td><td class="num"><span class="money recovery">−$157</span></td><td><span class="pill recovery">▼ 5%</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ov-activity -->
+        <div class="subview" data-sub="ov-activity">
+          <div class="card">
+            <div class="card-header">
+              <div><p class="card-title">Recent loss / damage activity</p><p class="card-sub">Live feed across all locations</p></div>
+              <div class="controls" style="margin:0">
+                <button class="chip active">All events</button>
+                <button class="chip">Losses</button>
+                <button class="chip">Damage</button>
+                <button class="chip">Recoveries</button>
+              </div>
+            </div>
+
+            <div class="tl-item"><div class="tl-dot" style="background:var(--loss-soft); color:var(--loss)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M9 15l6-6"/></svg></div><div class="body"><div class="title">Mark Rivera blocked from checkout</div><div class="desc">Lost 3rd device in 90 days · Threshold rule fired</div></div><div class="when">2 min ago</div></div>
+            <div class="tl-item"><div class="tl-dot" style="background:var(--damage-soft); color:var(--damage)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 9v4M12 17v.01"/><circle cx="12" cy="12" r="9"/></svg></div><div class="body"><div class="title">Lauryne Costa returned iPhone 16e #15 damaged</div><div class="desc">Screen + charging port · $268 charged to Troy ER · Sent to repair queue</div></div><div class="when">14 min ago</div></div>
+            <div class="tl-item"><div class="tl-dot" style="background:var(--recovery-soft); color:var(--recovery)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg></div><div class="body"><div class="title">iPhone 16e #22 recovered</div><div class="desc">Reported lost on May 28 · Recovered by John Smith · $599 reversal</div></div><div class="when">25 min ago</div></div>
+            <div class="tl-item"><div class="tl-dot" style="background:var(--loss-soft); color:var(--loss)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M9 15l6-6"/></svg></div><div class="body"><div class="title">AiRista badge #28 marked lost</div><div class="desc">John Smith · Bay 4 · Green8 · Not returned 7d past expected</div></div><div class="when">52 min ago</div></div>
+            <div class="tl-item"><div class="tl-dot" style="background:var(--warn-soft); color:var(--warn)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2 2 22h20L12 2z"/><circle cx="12" cy="17" r="1"/><path d="M12 10v4"/></svg></div><div class="body"><div class="title">Troy ER crossed $4,500 quarterly threshold</div><div class="desc">Email sent to Dr. Allen (Dept Head)</div></div><div class="when">1h 12m ago</div></div>
+            <div class="tl-item"><div class="tl-dot" style="background:var(--recovery-soft); color:var(--recovery)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg></div><div class="body"><div class="title">iPhone 16e #11 repair complete</div><div class="desc">Port + battery replaced · $154 cost · Ready to redeploy</div></div><div class="when">2h 04m ago</div></div>
+            <div class="tl-item"><div class="tl-dot" style="background:var(--damage-soft); color:var(--damage)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 9v4M12 17v.01"/><circle cx="12" cy="12" r="9"/></svg></div><div class="body"><div class="title">AiRista badge #07 returned damaged</div><div class="desc">Strap replacement · $12 charged to Troy Security</div></div><div class="when">3h 18m ago</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ LOSS & DAMAGE ============ -->
+      <section class="view" data-view="loss">
+        <div class="page-head">
+          <h1>Loss &amp; damage reports</h1>
+          <p>Pivot, drill, and export. Same skeleton as Inventory, Repair, and other aggregate views.</p>
+        </div>
+
+        <div class="subtabs">
+          <button class="active" onclick="showSub(this, 'loss-user')">By user</button>
+          <button onclick="showSub(this, 'loss-dept')">By department</button>
+          <button onclick="showSub(this, 'loss-loc')">By location</button>
+          <button onclick="showSub(this, 'loss-model')">By model</button>
+          <button onclick="showSub(this, 'loss-drill')">Drill view <span class="tag-mode">pattern</span></button>
+        </div>
+
+        <!-- by user -->
+        <div class="subview active" data-sub="loss-user">
+          <div class="controls">
+            <span style="font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:.05em">Range</span>
+            <button class="chip">Last 7d</button>
+            <button class="chip">Last 30d</button>
+            <button class="chip active">This quarter</button>
+            <button class="chip">YTD</button>
+            <span style="font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:.05em; margin-left:10px">Show</span>
+            <button class="chip active">All users</button>
+            <button class="chip">High-risk only</button>
+            <button class="chip">Blocked</button>
+            <div style="margin-left:auto; display:flex; gap:8px">
+              <button class="btn ghost btn small">⤓ Export</button>
+              <button class="btn primary btn small">+ Save view</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <table class="data">
+              <thead><tr><th>User</th><th>Department</th><th class="num">Lost</th><th class="num">Damaged</th><th class="num">Recovered</th><th class="num">$ This Q</th><th class="num">$ Lifetime</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><div class="user-row"><div class="ava">MR</div><strong>Mark Rivera</strong></div></td><td><span class="loc-tag">Troy</span> ER</td><td class="num">2 ($1,198)</td><td class="num">1 ($89)</td><td class="num">0</td><td class="num"><span class="money loss">$1,247</span></td><td class="num"><strong class="money loss">$1,247</strong></td><td><span class="pill danger">Blocked</span></td></tr>
+                <tr><td><div class="user-row"><div class="ava">LC</div><strong>Lauryne Costa</strong></div></td><td><span class="loc-tag">Troy</span> ER</td><td class="num">0</td><td class="num">4 ($782)</td><td class="num">0</td><td class="num"><span class="money loss">$782</span></td><td class="num"><strong class="money loss">$1,089</strong></td><td><span class="pill warn">Approval req</span></td></tr>
+                <tr><td><div class="user-row"><div class="ava">CS</div><strong>Crosby Smith</strong></div></td><td><span class="loc-tag">Troy</span> ICU</td><td class="num">1 ($599)</td><td class="num">0</td><td class="num">0</td><td class="num"><span class="money loss">$599</span></td><td class="num"><strong class="money loss">$599</strong></td><td><span class="pill warn">Approval req</span></td></tr>
+                <tr><td><div class="user-row"><div class="ava">BM</div><strong>Bryan Mitchell</strong></div></td><td><span class="loc-tag">Troy</span> Cardiology</td><td class="num">0</td><td class="num">2 ($268)</td><td class="num">0</td><td class="num"><span class="money loss">$268</span></td><td class="num"><strong class="money loss">$268</strong></td><td><span class="pill neutral">Warned</span></td></tr>
+                <tr><td><div class="user-row"><div class="ava">CW</div><strong>Casandra Wisoky</strong></div></td><td><span class="loc-tag">Troy</span> ICU</td><td class="num">0</td><td class="num">1 ($179)</td><td class="num">0</td><td class="num"><span class="money loss">$179</span></td><td class="num"><strong class="money loss">$179</strong></td><td><span class="pill neutral">—</span></td></tr>
+                <tr><td><div class="user-row"><div class="ava">JS</div><strong>John Smith</strong></div></td><td><span class="loc-tag">Troy</span> Security</td><td class="num">3 ($255)</td><td class="num">2 ($66)</td><td class="num">1 ($85)</td><td class="num"><span class="money loss">$236</span></td><td class="num"><strong class="money loss">$340</strong></td><td><span class="pill neutral">Watching</span></td></tr>
+                <tr><td><div class="user-row"><div class="ava">AD</div><strong>Austin Dragt</strong></div></td><td><span class="loc-tag">Troy</span> Maintenance</td><td class="num">2 ($170)</td><td class="num">0</td><td class="num">0</td><td class="num"><span class="money loss">$170</span></td><td class="num"><strong class="money loss">$170</strong></td><td><span class="pill neutral">—</span></td></tr>
+                <tr><td><div class="user-row"><div class="ava">IY</div><strong>Isaac Yi</strong></div></td><td><span class="loc-tag">Troy</span> Security</td><td class="num">1 ($85)</td><td class="num">0</td><td class="num">0</td><td class="num"><span class="money loss">$85</span></td><td class="num"><strong class="money loss">$85</strong></td><td><span class="pill neutral">—</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- by department -->
+        <div class="subview" data-sub="loss-dept">
+          <div class="kpi-grid">
+            <div class="kpi"><div class="label">Departments tracked</div><div class="value">7</div><div class="meta">Across 2 locations</div></div>
+            <div class="kpi"><div class="label">Top loss department</div><div class="value" style="font-size:18px; color:var(--text)">Troy · ER</div><div class="meta money loss" style="font-weight:600">$4,829 · 34% of total</div></div>
+            <div class="kpi"><div class="label">Above threshold</div><div class="value loss">2</div><div class="meta">Troy ER + Troy ICU</div></div>
+            <div class="kpi"><div class="label">Below threshold</div><div class="value recovery">5</div><div class="meta">On track this quarter</div></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div><p class="card-title">Department breakdown · This quarter</p></div>
+              <button class="btn ghost btn small">⤓ Export</button>
+            </div>
+            <table class="data">
+              <thead><tr><th>Department</th><th class="num">Users</th><th class="num">Lockers</th><th class="num">Devices lost</th><th class="num">Damage events</th><th class="num">$ Quarter</th><th>vs Threshold</th><th>Chargeback</th></tr></thead>
+              <tbody>
+                <tr><td><span class="loc-tag">Troy</span> ER</td><td class="num">23</td><td class="num">2</td><td class="num">9</td><td class="num">22</td><td class="num"><span class="money loss">$4,829</span></td><td><div class="bar" style="display:inline-block; width:140px"><div class="fill" style="width:120%; background:var(--loss); max-width:100%"></div></div> <span class="pill danger" style="margin-left:6px">Over $3K</span></td><td><span class="pill recovery">✓ Auto-charged</span></td></tr>
+                <tr><td><span class="loc-tag">Troy</span> ICU</td><td class="num">14</td><td class="num">2</td><td class="num">6</td><td class="num">14</td><td class="num"><span class="money loss">$3,124</span></td><td><div class="bar" style="display:inline-block; width:140px"><div class="fill" style="width:100%; background:var(--loss)"></div></div> <span class="pill danger" style="margin-left:6px">Over $3K</span></td><td><span class="pill recovery">✓ Auto-charged</span></td></tr>
+                <tr><td><span class="loc-tag">Butterworth</span> Main</td><td class="num">32</td><td class="num">1</td><td class="num">6</td><td class="num">12</td><td class="num"><span class="money loss">$2,814</span></td><td><div class="bar" style="display:inline-block; width:140px"><div class="fill" style="width:90%; background:var(--warn)"></div></div></td><td><span class="pill recovery">✓ Auto-charged</span></td></tr>
+                <tr><td><span class="loc-tag">Troy</span> Cardiology</td><td class="num">8</td><td class="num">1</td><td class="num">4</td><td class="num">8</td><td class="num"><span class="money loss">$1,847</span></td><td><div class="bar" style="display:inline-block; width:140px"><div class="fill" style="width:58%; background:var(--warn)"></div></div></td><td><span class="pill recovery">✓ Auto-charged</span></td></tr>
+                <tr><td><span class="loc-tag">Butterworth</span> OR</td><td class="num">29</td><td class="num">1</td><td class="num">4</td><td class="num">6</td><td class="num"><span class="money loss">$1,443</span></td><td><div class="bar" style="display:inline-block; width:140px"><div class="fill" style="width:45%; background:var(--neutral)"></div></div></td><td><span class="pill recovery">✓ Auto-charged</span></td></tr>
+                <tr><td><span class="loc-tag">Troy</span> Security</td><td class="num">6</td><td class="num">1</td><td class="num">14</td><td class="num">2</td><td class="num"><span class="money loss">$1,190</span></td><td><div class="bar" style="display:inline-block; width:140px"><div class="fill" style="width:38%; background:var(--neutral)"></div></div></td><td><span class="pill recovery">✓ Auto-charged</span></td></tr>
+                <tr><td><span class="loc-tag">Troy</span> Maintenance</td><td class="num">3</td><td class="num">1</td><td class="num">2</td><td class="num">1</td><td class="num"><span class="money loss">$340</span></td><td><div class="bar" style="display:inline-block; width:140px"><div class="fill" style="width:10%; background:var(--neutral)"></div></div></td><td><span class="pill recovery">✓ Auto-charged</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- by location -->
+        <div class="subview" data-sub="loss-loc">
+          <div class="row-2">
+            <div class="card">
+              <p class="card-title" style="margin-bottom:6px">Troy Hospital</p>
+              <div style="font-size:11px; color:var(--text-3); margin-bottom:14px">3 kiosks · 47 users · 5 departments</div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px">
+                <div style="padding:10px; background:var(--surface-2); border-radius:6px"><div style="font-size:11px; color:var(--text-3)">Lost this Q</div><div style="font-size:20px; font-weight:700; color:var(--loss); margin-top:3px">$9,990</div></div>
+                <div style="padding:10px; background:var(--surface-2); border-radius:6px"><div style="font-size:11px; color:var(--text-3)">Recovered</div><div style="font-size:20px; font-weight:700; color:var(--recovery); margin-top:3px">$2,124</div></div>
+              </div>
+              <table class="data">
+                <tbody>
+                  <tr><td>ER</td><td class="num"><span class="money loss">$4,829</span></td></tr>
+                  <tr><td>ICU</td><td class="num"><span class="money loss">$3,124</span></td></tr>
+                  <tr><td>Cardiology</td><td class="num"><span class="money loss">$1,847</span></td></tr>
+                  <tr><td>Security</td><td class="num"><span class="money loss">$1,190</span></td></tr>
+                  <tr><td>Maintenance</td><td class="num"><span class="money loss">$340</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card">
+              <p class="card-title" style="margin-bottom:6px">Butterworth Hospital</p>
+              <div style="font-size:11px; color:var(--text-3); margin-bottom:14px">1 kiosk · 61 users · 2 departments</div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px">
+                <div style="padding:10px; background:var(--surface-2); border-radius:6px"><div style="font-size:11px; color:var(--text-3)">Lost this Q</div><div style="font-size:20px; font-weight:700; color:var(--loss); margin-top:3px">$4,257</div></div>
+                <div style="padding:10px; background:var(--surface-2); border-radius:6px"><div style="font-size:11px; color:var(--text-3)">Recovered</div><div style="font-size:20px; font-weight:700; color:var(--recovery); margin-top:3px">$1,000</div></div>
+              </div>
+              <table class="data">
+                <tbody>
+                  <tr><td>Main floor</td><td class="num"><span class="money loss">$2,814</span></td></tr>
+                  <tr><td>OR</td><td class="num"><span class="money loss">$1,443</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- by model -->
+        <div class="subview" data-sub="loss-model">
+          <div class="card">
+            <div class="card-header">
+              <div><p class="card-title">Loss by device model</p><p class="card-sub">Lifetime $ per model — informs procurement decisions</p></div>
+            </div>
+            <table class="data">
+              <thead><tr><th>Model</th><th class="num">Units in service</th><th class="num">Lost this Q</th><th class="num">Loss rate</th><th class="num">Avg cost / loss</th><th class="num">$ This Q</th></tr></thead>
+              <tbody>
+                <tr><td><strong>iPhone 16e</strong> <span style="color:var(--text-3); font-size:11px">Apple</span></td><td class="num">71</td><td class="num">15</td><td class="num"><span class="pill danger">21%</span></td><td class="num">$599</td><td class="num"><span class="money loss">$8,985</span></td></tr>
+                <tr><td><strong>AiRista badge</strong> <span style="color:var(--text-3); font-size:11px">AiRista</span></td><td class="num">50</td><td class="num">14</td><td class="num"><span class="pill warn">28%</span></td><td class="num">$85</td><td class="num"><span class="money loss">$1,190</span></td></tr>
+                <tr><td><strong>Pixel 8 Pro</strong> <span style="color:var(--text-3); font-size:11px">Google</span></td><td class="num">4</td><td class="num">1</td><td class="num"><span class="pill warn">25%</span></td><td class="num">$999</td><td class="num"><span class="money loss">$999</span></td></tr>
+                <tr><td><strong>ChromeBook X360</strong> <span style="color:var(--text-3); font-size:11px">HP</span></td><td class="num">2</td><td class="num">0</td><td class="num"><span class="pill recovery">0%</span></td><td class="num">$549</td><td class="num"><span class="money loss">$0</span></td></tr>
+                <tr><td><strong>Generic</strong> <span style="color:var(--text-3); font-size:11px">—</span></td><td class="num">6</td><td class="num">0</td><td class="num"><span class="pill recovery">0%</span></td><td class="num">—</td><td class="num"><span class="money loss">$0</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="helper-banner">
+            <strong>Insight from this view:</strong> iPhone 16e loss rate (21%) drives most of the total dollars; AiRista loss rate (28%) is higher but each loss is small ($85). Procurement decision: investing in better attachment for AiRista badges is cheaper than reducing iPhone 16e losses.
+          </div>
+        </div>
+
+        <!-- drill view -->
+        <div class="subview" data-sub="loss-drill">
+          <div class="helper-banner">This is the macro→micro drill-down pattern in a separate prototype — open <strong>HonestWaves_Drill_Down_Pattern.html</strong> for the live walkthrough. It uses the same four-part skeleton (breadcrumb + KPI + pivot + drill-table) reused on every aggregate view.</div>
+
+          <div class="card">
+            <div class="crumb">
+              <a>All locations</a><span class="sep">›</span><a>Troy Hospital</a><span class="sep">›</span><a>ER</a><span class="sep">›</span><a>Pink8</a><span class="sep">›</span><span>Mark Rivera</span>
+            </div>
+            <div style="font-size:13px; color:var(--text-3); margin-bottom:14px">Drilled to level 4 — user incident detail</div>
+            <table class="data">
+              <thead><tr><th>Date</th><th>Device</th><th>Bay</th><th>Type</th><th>Component</th><th class="num">$ Charge</th></tr></thead>
+              <tbody>
+                <tr><td>Jun 6, 5:04 PM</td><td>iPhone 16e #15</td><td>Bay 6 · Green8</td><td><span class="pill loss">Lost</span></td><td>—</td><td class="num"><span class="money loss">$599</span></td></tr>
+                <tr><td>May 22, 11:18 AM</td><td>iPhone 16e #03</td><td>Bay 2 · Pink8</td><td><span class="pill loss">Lost</span></td><td>—</td><td class="num"><span class="money loss">$599</span></td></tr>
+                <tr><td>May 4, 7:42 AM</td><td>iPhone 16e #11</td><td>Bay 4 · Pink8</td><td><span class="pill damage">Damaged</span></td><td>Charging port</td><td class="num"><span class="money loss">$89</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ INVENTORY VALUE ============ -->
+      <section class="view" data-view="inventory">
+        <div class="page-head">
+          <h1>Asset inventory value</h1>
+          <p>Real-time replacement-cost value of every device currently inside a locker.</p>
+        </div>
+
+        <div class="subtabs">
+          <button class="active" onclick="showSub(this, 'inv-kiosk')">By kiosk</button>
+          <button onclick="showSub(this, 'inv-loc')">By location</button>
+          <button onclick="showSub(this, 'inv-model')">By model</button>
+          <button onclick="showSub(this, 'inv-forecast')">Forecast &amp; EOL</button>
+        </div>
+
+        <div class="subview active" data-sub="inv-kiosk">
+          <div class="kpi-grid">
+            <div class="kpi"><div class="label">Total in lockers</div><div class="value asset">$56,685</div><div class="meta">113 devices</div></div>
+            <div class="kpi"><div class="label">iPhone 16e</div><div class="value" style="color:var(--accent)">$42,529</div><div class="meta">71 devices × $599</div></div>
+            <div class="kpi"><div class="label">AiRista badges</div><div class="value" style="color:var(--accent)">$4,250</div><div class="meta">50 devices × $85</div></div>
+            <div class="kpi"><div class="label">Other models</div><div class="value" style="color:var(--accent)">$9,906</div><div class="meta">12 devices · 3 models</div></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div><p class="card-title">Value by kiosk</p><p class="card-sub">Click a kiosk for per-bay detail</p></div></div>
+            <table class="data">
+              <thead><tr><th>Kiosk</th><th>Location</th><th class="num">Bays</th><th class="num">iPhone</th><th class="num">AiRista</th><th class="num">Other</th><th class="num">Total value</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Pink8</strong></td><td><span class="loc-tag">Troy</span> ER</td><td class="num">8</td><td class="num">5 ($2,995)</td><td class="num">2 ($170)</td><td class="num">1 ($549)</td><td class="num"><strong class="money asset">$3,714</strong></td></tr>
+                <tr><td><strong>Green8</strong></td><td><span class="loc-tag">Troy</span> ICU</td><td class="num">8</td><td class="num">6 ($3,594)</td><td class="num">2 ($170)</td><td class="num">0</td><td class="num"><strong class="money asset">$3,764</strong></td></tr>
+                <tr><td><strong>Blue34</strong></td><td><span class="loc-tag">Troy</span> Cardiology</td><td class="num">32</td><td class="num">22 ($13,178)</td><td class="num">8 ($680)</td><td class="num">2 ($1,098)</td><td class="num"><strong class="money asset">$14,956</strong></td></tr>
+                <tr><td><strong>Butterworth1</strong></td><td><span class="loc-tag">Butterworth</span> Main</td><td class="num">32</td><td class="num">25 ($14,975)</td><td class="num">20 ($1,700)</td><td class="num">9 ($7,862)</td><td class="num"><strong class="money asset">$24,537</strong></td></tr>
+                <tr><td><strong>Adrian Test</strong></td><td><span class="loc-tag">HQ</span> Lab</td><td class="num">8</td><td class="num">13 ($7,787)</td><td class="num">18 ($1,530)</td><td class="num">0</td><td class="num"><strong class="money asset">$9,317</strong></td></tr>
+                <tr style="background:var(--surface-2); font-weight:700"><td>Fleet total</td><td></td><td class="num">88</td><td class="num">71</td><td class="num">50</td><td class="num">12</td><td class="num"><span class="money asset">$56,685</span></td></tr>
+              </tbody>
+            </table>
+
+            <div style="margin-top:18px; padding:14px; background:var(--surface-2); border-radius:8px">
+              <p style="margin:0 0 8px; font-size:13px; font-weight:600">Pink8 — per-bay value · $3,714 currently in this cabinet</p>
+              <div class="bays">
+                <div class="bay charged"><div class="n">B1</div><div class="v">iPhone $599</div></div>
+                <div class="bay charged"><div class="n">B2</div><div class="v">iPhone $599</div></div>
+                <div class="bay in-use"><div class="n">B3</div><div class="v">checked out</div></div>
+                <div class="bay charged"><div class="n">B4</div><div class="v">iPhone $599</div></div>
+                <div class="bay empty"><div class="n">B5</div><div class="v">empty</div></div>
+                <div class="bay charged"><div class="n">B6</div><div class="v">iPhone $599</div></div>
+                <div class="bay charged"><div class="n">B7</div><div class="v">AiRista $85</div></div>
+                <div class="bay damaged"><div class="n">B8</div><div class="v">ChromeBook $549</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subview" data-sub="inv-loc">
+          <div class="card">
+            <div class="card-header"><p class="card-title">Inventory value by location</p></div>
+            <table class="data">
+              <thead><tr><th>Location</th><th class="num">Kiosks</th><th class="num">Devices</th><th class="num">Currently charged</th><th class="num">Currently in use</th><th class="num">Total value</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Troy Hospital</strong></td><td class="num">3</td><td class="num">52</td><td class="num">38</td><td class="num">12</td><td class="num"><strong class="money asset">$32,148</strong></td></tr>
+                <tr><td><strong>Butterworth Hospital</strong></td><td class="num">1</td><td class="num">61</td><td class="num">42</td><td class="num">18</td><td class="num"><strong class="money asset">$24,537</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="subview" data-sub="inv-model">
+          <div class="card">
+            <div class="card-header"><p class="card-title">Inventory by device model</p></div>
+            <table class="data">
+              <thead><tr><th>Model</th><th class="num">In service</th><th class="num">In lockers now</th><th class="num">In use</th><th class="num">In repair</th><th class="num">Replacement cost</th><th class="num">Total value</th></tr></thead>
+              <tbody>
+                <tr><td><strong>iPhone 16e</strong></td><td class="num">71</td><td class="num">63</td><td class="num">6</td><td class="num">2</td><td class="num">$599</td><td class="num"><strong class="money asset">$42,529</strong></td></tr>
+                <tr><td><strong>AiRista badge</strong></td><td class="num">50</td><td class="num">42</td><td class="num">7</td><td class="num">1</td><td class="num">$85</td><td class="num"><strong class="money asset">$4,250</strong></td></tr>
+                <tr><td><strong>Pixel 8 Pro</strong></td><td class="num">4</td><td class="num">3</td><td class="num">1</td><td class="num">0</td><td class="num">$999</td><td class="num"><strong class="money asset">$3,996</strong></td></tr>
+                <tr><td><strong>ChromeBook X360</strong></td><td class="num">2</td><td class="num">2</td><td class="num">0</td><td class="num">0</td><td class="num">$549</td><td class="num"><strong class="money asset">$1,098</strong></td></tr>
+                <tr><td><strong>Generic</strong></td><td class="num">6</td><td class="num">6</td><td class="num">0</td><td class="num">0</td><td class="num">—</td><td class="num"><span class="money asset">$0</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="subview" data-sub="inv-forecast">
+          <div class="kpi-grid">
+            <div class="kpi"><div class="label">Devices due for refresh</div><div class="value">12</div><div class="meta">Past 30-month expected lifespan</div></div>
+            <div class="kpi"><div class="label">Refresh value (1yr)</div><div class="value loss">$7,188</div><div class="meta">12 × iPhone 16e refresh</div></div>
+            <div class="kpi"><div class="label">Refresh value (3yr)</div><div class="value loss">$18,890</div><div class="meta">Projected fleet turnover</div></div>
+            <div class="kpi"><div class="label">Loss budget next Q</div><div class="value">$10,500</div><div class="meta">Based on 8-week trend</div></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div><p class="card-title">EOL forecast — iPhone 16e</p><p class="card-sub">Projected end-of-life dates for the iPhone 16e fleet (36-month lifespan)</p></div></div>
+            <table class="data">
+              <thead><tr><th>Quarter</th><th class="num">Devices EOL</th><th class="num">Refresh cost</th><th>Cumulative</th></tr></thead>
+              <tbody>
+                <tr><td>Q3 2026</td><td class="num">3</td><td class="num"><span class="money loss">$1,797</span></td><td><div class="bar"><div class="fill" style="width:8%; background:var(--accent)"></div></div></td></tr>
+                <tr><td>Q4 2026</td><td class="num">5</td><td class="num"><span class="money loss">$2,995</span></td><td><div class="bar"><div class="fill" style="width:21%; background:var(--accent)"></div></div></td></tr>
+                <tr><td>Q1 2027</td><td class="num">8</td><td class="num"><span class="money loss">$4,792</span></td><td><div class="bar"><div class="fill" style="width:41%; background:var(--accent)"></div></div></td></tr>
+                <tr><td>Q2 2027</td><td class="num">12</td><td class="num"><span class="money loss">$7,188</span></td><td><div class="bar"><div class="fill" style="width:72%; background:var(--accent)"></div></div></td></tr>
+                <tr><td>Q3 2027</td><td class="num">7</td><td class="num"><span class="money loss">$4,193</span></td><td><div class="bar"><div class="fill" style="width:90%; background:var(--accent)"></div></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ REPAIR TRACKER ============ -->
+      <section class="view" data-view="repair">
+        <div class="page-head">
+          <h1>Repair &amp; replacement tracker</h1>
+          <p>Components, queue, pipeline. Charge the right amount, not $599 every time.</p>
+        </div>
+
+        <div class="subtabs">
+          <button class="active" onclick="showSub(this, 'rep-queue')">Queue</button>
+          <button onclick="showSub(this, 'rep-pipeline')">Pipeline</button>
+          <button onclick="showSub(this, 'rep-vendors')">Vendors</button>
+          <button onclick="showSub(this, 'rep-analytics')">Cost analytics</button>
+          <button onclick="showSub(this, 'rep-catalog')">Component catalog</button>
+        </div>
+
+        <div class="subview active" data-sub="rep-queue">
+          <div class="kpi-grid">
+            <div class="kpi"><div class="label">In pipeline</div><div class="value">7</div><div class="meta">3 queued · 3 in repair · 1 ready</div></div>
+            <div class="kpi"><div class="label">Avg repair cost</div><div class="value">$142</div><div class="meta">vs $599 replace · 76% savings</div></div>
+            <div class="kpi recovery"><div class="label">Repaired this Q</div><div class="value">68%</div><div class="meta">vs 32% replaced</div></div>
+            <div class="kpi"><div class="label">Forecast next month</div><div class="value">$1,820</div><div class="meta">Based on 8-week trend</div></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div><p class="card-title">Repair queue</p><p class="card-sub">Sorted by intake date</p></div><button class="btn primary btn small">+ Add device</button></div>
+            <table class="data">
+              <thead><tr><th>Device</th><th>Components</th><th>Returned by</th><th>Intake</th><th class="num">Cost est.</th><th>Stage</th><th>Vendor</th></tr></thead>
+              <tbody>
+                <tr><td><strong>iPhone 16e #15</strong></td><td>Screen + port</td><td>Lauryne Costa</td><td>Jun 6</td><td class="num"><strong>$268</strong></td><td><span class="pill neutral">Queued</span></td><td>—</td></tr>
+                <tr><td><strong>iPhone 16e #03</strong></td><td>Charging port</td><td>Mark Rivera</td><td>Jun 5</td><td class="num"><strong>$89</strong></td><td><span class="pill neutral">Queued</span></td><td>—</td></tr>
+                <tr><td><strong>AiRista badge #07</strong></td><td>Strap</td><td>John Smith</td><td>Jun 5</td><td class="num"><strong>$12</strong></td><td><span class="pill neutral">Queued</span></td><td>—</td></tr>
+                <tr><td><strong>iPhone 16e #11</strong></td><td>Port + battery</td><td>Lauryne Costa</td><td>May 28</td><td class="num"><strong>$154</strong></td><td><span class="pill warn">In repair</span></td><td>TechFix Co.</td></tr>
+                <tr><td><strong>iPhone 16e #07</strong></td><td>Screen</td><td>Mark Rivera</td><td>May 28</td><td class="num"><strong>$179</strong></td><td><span class="pill warn">In repair</span></td><td>TechFix Co.</td></tr>
+                <tr><td><strong>AiRista badge #14</strong></td><td>Battery</td><td>Isaac Yi</td><td>May 22</td><td class="num"><strong>$25</strong></td><td><span class="pill warn">In repair</span></td><td>AiRista Direct</td></tr>
+                <tr><td><strong>iPhone 16e #22</strong></td><td>Screen</td><td>Casandra Wisoky</td><td>May 12</td><td class="num"><strong>$179</strong></td><td><span class="pill recovery">Ready</span></td><td>TechFix Co.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="subview" data-sub="rep-pipeline">
+          <div class="kanban">
+            <div class="kan-col">
+              <h3>Queued <span class="count">3</span></h3>
+              <div class="kan-card"><div class="title">iPhone 16e #15</div><div class="sub">Screen + port · $268</div><div class="foot"><span class="pill damage">Lauryne C.</span><span style="color:var(--text-3)">Jun 6</span></div></div>
+              <div class="kan-card"><div class="title">iPhone 16e #03</div><div class="sub">Port · $89</div><div class="foot"><span class="pill damage">Mark R.</span><span style="color:var(--text-3)">Jun 5</span></div></div>
+              <div class="kan-card"><div class="title">AiRista #07</div><div class="sub">Strap · $12</div><div class="foot"><span class="pill damage">John S.</span><span style="color:var(--text-3)">Jun 5</span></div></div>
+            </div>
+            <div class="kan-col">
+              <h3>Assigned <span class="count">0</span></h3>
+              <div class="empty" style="padding:20px 10px"><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--text-3)" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div><p style="font-size:11.5px">None assigned</p></div>
+            </div>
+            <div class="kan-col">
+              <h3>In repair <span class="count">3</span></h3>
+              <div class="kan-card"><div class="title">iPhone 16e #11</div><div class="sub">Port + battery · $154</div><div class="foot"><span class="pill warn">TechFix Co.</span><span style="color:var(--text-3)">ETA Jun 12</span></div></div>
+              <div class="kan-card"><div class="title">iPhone 16e #07</div><div class="sub">Screen · $179</div><div class="foot"><span class="pill warn">TechFix Co.</span><span style="color:var(--text-3)">ETA Jun 12</span></div></div>
+              <div class="kan-card"><div class="title">AiRista #14</div><div class="sub">Battery · $25</div><div class="foot"><span class="pill warn">AiRista Direct</span><span style="color:var(--text-3)">ETA Jun 10</span></div></div>
+            </div>
+            <div class="kan-col">
+              <h3>Ready to redeploy <span class="count">1</span></h3>
+              <div class="kan-card"><div class="title">iPhone 16e #22</div><div class="sub">Screen · $179 · Returned</div><div class="foot"><span class="pill recovery">Ready</span><button class="btn primary btn small">Redeploy</button></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subview" data-sub="rep-vendors">
+          <div class="card">
+            <div class="card-header"><div><p class="card-title">Repair vendors</p></div><button class="btn primary btn small">+ Add vendor</button></div>
+            <table class="data">
+              <thead><tr><th>Vendor</th><th>Models supported</th><th>Avg turnaround</th><th class="num">Repairs this Q</th><th class="num">Spend this Q</th><th>Rating</th></tr></thead>
+              <tbody>
+                <tr><td><strong>TechFix Co.</strong></td><td>iPhone 16e · Pixel 8 Pro</td><td>5–7 days</td><td class="num">18</td><td class="num"><span class="money loss">$3,481</span></td><td>★★★★ 4.2</td></tr>
+                <tr><td><strong>AiRista Direct</strong></td><td>AiRista badges</td><td>3–5 days</td><td class="num">9</td><td class="num"><span class="money loss">$285</span></td><td>★★★★★ 4.8</td></tr>
+                <tr><td><strong>Apple Authorized</strong></td><td>iPhone 16e</td><td>10–14 days</td><td class="num">2</td><td class="num"><span class="money loss">$540</span></td><td>★★★★★ 5.0</td></tr>
+                <tr><td><strong>In-house IT</strong></td><td>All</td><td>1–2 days</td><td class="num">4</td><td class="num"><span class="money loss">$0</span></td><td>—</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="subview" data-sub="rep-analytics">
+          <div class="row-2">
+            <div class="card">
+              <p class="card-title" style="margin-bottom:14px">iPhone 16e — $7,449 in repairs this Q</p>
+              <div style="font-size:12px; color:var(--text-2); margin-bottom:10px">Avoided $12,319 in full replacements</div>
+              <table class="data">
+                <thead><tr><th>Component</th><th class="num">Incidents</th><th class="num">Each</th><th class="num">Total</th></tr></thead>
+                <tbody>
+                  <tr><td>Screen replacement</td><td class="num">21</td><td class="num">$179</td><td class="num"><strong>$3,759</strong></td></tr>
+                  <tr><td>Charging port</td><td class="num">19</td><td class="num">$89</td><td class="num"><strong>$1,691</strong></td></tr>
+                  <tr><td>Battery</td><td class="num">12</td><td class="num">$65</td><td class="num"><strong>$780</strong></td></tr>
+                  <tr><td>Speaker</td><td class="num">8</td><td class="num">$40</td><td class="num"><strong>$320</strong></td></tr>
+                  <tr><td>Camera</td><td class="num">3</td><td class="num">$110</td><td class="num"><strong>$330</strong></td></tr>
+                  <tr><td>Multi-component</td><td class="num">7</td><td class="num">—</td><td class="num"><strong>$569</strong></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card">
+              <p class="card-title" style="margin-bottom:14px">AiRista badge — $328 in repairs</p>
+              <div style="font-size:12px; color:var(--text-2); margin-bottom:10px">Avoided $1,360 in full replacements (16 × $85)</div>
+              <table class="data">
+                <thead><tr><th>Component</th><th class="num">Incidents</th><th class="num">Each</th><th class="num">Total</th></tr></thead>
+                <tbody>
+                  <tr><td>Strap replacement</td><td class="num">14</td><td class="num">$12</td><td class="num"><strong>$168</strong></td></tr>
+                  <tr><td>Battery</td><td class="num">4</td><td class="num">$25</td><td class="num"><strong>$100</strong></td></tr>
+                  <tr><td>Faceplate</td><td class="num">2</td><td class="num">$30</td><td class="num"><strong>$60</strong></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <p class="card-title" style="margin-bottom:14px">Repair vs replace — last 12 weeks</p>
+            <div class="chart">
+              <div class="bar3 recovery" style="height:60%"></div>
+              <div class="bar3 recovery" style="height:70%"></div>
+              <div class="bar3 recovery" style="height:65%"></div>
+              <div class="bar3 recovery" style="height:80%"></div>
+              <div class="bar3 recovery" style="height:75%"></div>
+              <div class="bar3 recovery" style="height:85%"></div>
+              <div class="bar3 recovery" style="height:90%"></div>
+              <div class="bar3 recovery" style="height:88%"></div>
+              <div class="bar3 recovery" style="height:92%"></div>
+              <div class="bar3 recovery" style="height:85%"></div>
+              <div class="bar3 recovery" style="height:80%"></div>
+              <div class="bar3 recovery" style="height:78%"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-3); margin-top:6px"><span>Wk -12</span><span>Wk -6</span><span>This week</span></div>
+            <div style="margin-top:10px; font-size:12px; color:var(--text-2)">Repair rate trending up — averaging 68% repair / 32% replace this quarter vs 51% / 49% last quarter</div>
+          </div>
+        </div>
+
+        <div class="subview" data-sub="rep-catalog">
+          <div class="card">
+            <div class="card-header"><div><p class="card-title">iPhone 16e components</p><p class="card-sub">$599 replacement · $45 salvage · 36-month lifespan</p></div><button class="btn ghost btn small">Edit prices</button></div>
+            <div class="cpr"><span class="pname">Screen replacement</span><span style="text-align:right">$179</span><span style="color:var(--text-3); font-size:11px">21 used / 90d</span><button class="ico-btn">✏</button></div>
+            <div class="cpr"><span class="pname">Charging port</span><span style="text-align:right">$89</span><span style="color:var(--text-3); font-size:11px">19 used / 90d</span><button class="ico-btn">✏</button></div>
+            <div class="cpr"><span class="pname">Battery</span><span style="text-align:right">$65</span><span style="color:var(--text-3); font-size:11px">12 used / 90d</span><button class="ico-btn">✏</button></div>
+            <div class="cpr"><span class="pname">Speaker</span><span style="text-align:right">$40</span><span style="color:var(--text-3); font-size:11px">8 used / 90d</span><button class="ico-btn">✏</button></div>
+            <div class="cpr"><span class="pname">Camera module</span><span style="text-align:right">$110</span><span style="color:var(--text-3); font-size:11px">3 used / 90d</span><button class="ico-btn">✏</button></div>
+            <div style="text-align:center; padding:12px 0 0; color:var(--accent); font-weight:600; cursor:pointer; font-size:13px">+ Add component</div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div><p class="card-title">AiRista badge components</p><p class="card-sub">$85 replacement · $5 salvage · 24-month lifespan</p></div><button class="btn ghost btn small">Edit prices</button></div>
+            <div class="cpr"><span class="pname">Strap replacement</span><span style="text-align:right">$12</span><span style="color:var(--text-3); font-size:11px">14 used / 90d</span><button class="ico-btn">✏</button></div>
+            <div class="cpr"><span class="pname">Battery</span><span style="text-align:right">$25</span><span style="color:var(--text-3); font-size:11px">4 used / 90d</span><button class="ico-btn">✏</button></div>
+            <div class="cpr"><span class="pname">Faceplate</span><span style="text-align:right">$30</span><span style="color:var(--text-3); font-size:11px">2 used / 90d</span><button class="ico-btn">✏</button></div>
+            <div style="text-align:center; padding:12px 0 0; color:var(--accent); font-weight:600; cursor:pointer; font-size:13px">+ Add component</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ RULES ============ -->
+      <section class="view" data-view="rules">
+        <div class="page-head">
+          <h1>Thresholds &amp; rules</h1>
+          <p>Automated actions when a user, department, or device class crosses a defined limit.</p>
+        </div>
+
+        <div class="subtabs">
+          <button class="active" onclick="showSub(this, 'rules-user')">User-level</button>
+          <button onclick="showSub(this, 'rules-dept')">Department-level</button>
+          <button onclick="showSub(this, 'rules-device')">Device-level</button>
+          <button onclick="showSub(this, 'rules-audit')">Rule audit log</button>
+          <button onclick="showSub(this, 'rules-routing')">Notification routing</button>
+        </div>
+
+        <div class="subview active" data-sub="rules-user">
+          <div class="card">
+            <div class="card-header"><div><p class="card-title">User-level rules</p></div><button class="btn primary btn small">+ Add rule</button></div>
+
+            <div class="rule">
+              <div class="icon" style="background:var(--loss-soft); color:var(--loss)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M9 15l6-6"/></svg></div>
+              <div class="body"><div class="title">Block checkout after 3 lost devices</div><div class="desc">User cannot check out new devices until a supervisor signs in. Currently affects <strong>Mark Rivera</strong>.</div><div class="meta">1 blocked · 4 at warning · Threshold 3 · Window 90 days</div></div>
+              <div class="switch on"></div>
+            </div>
+
+            <div class="rule">
+              <div class="icon" style="background:var(--damage-soft); color:var(--damage)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2 2 22h20L12 2z"/><circle cx="12" cy="17" r="1"/></svg></div>
+              <div class="body"><div class="title">Require supervisor approval if loss > $500</div><div class="desc">Lifetime $ loss threshold. Approval required at next checkout.</div><div class="meta">2 users in this state · Threshold $500 · All time</div></div>
+              <div class="switch on"></div>
+            </div>
+
+            <div class="rule">
+              <div class="icon" style="background:var(--asset-soft); color:var(--asset)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/></svg></div>
+              <div class="body"><div class="title">Email warning to user at 2 incidents</div><div class="desc">Sends "next incident blocks your checkout privileges" with policy link.</div><div class="meta">4 users warned this quarter · Threshold 2 · Window 90 days</div></div>
+              <div class="switch on"></div>
+            </div>
+
+            <div class="rule">
+              <div class="icon" style="background:var(--recovery-soft); color:var(--recovery)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="2"/></svg></div>
+              <div class="body"><div class="title">Photo at return for high-value devices (&gt; $500)</div><div class="desc">Kiosk camera captures device photo at return. Stored for damage disputes.</div><div class="meta">Applies to iPhone 16e, Pixel 8 Pro, ChromeBook X360</div></div>
+              <div class="switch"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subview" data-sub="rules-dept">
+          <div class="card">
+            <div class="card-header"><div><p class="card-title">Department-level rules</p></div><button class="btn primary btn small">+ Add rule</button></div>
+
+            <div class="rule">
+              <div class="icon" style="background:var(--damage-soft); color:var(--damage)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="9" cy="7" r="4"/></svg></div>
+              <div class="body"><div class="title">Email department head when quarterly loss > $3,000</div><div class="desc">Digest email with top loss-prone users and recent incidents. <strong>Troy ER</strong> and <strong>Troy ICU</strong> currently exceeding.</div><div class="meta">2 departments triggered · Threshold $3,000 · Quarterly</div></div>
+              <div class="switch on"></div>
+            </div>
+
+            <div class="rule">
+              <div class="icon" style="background:var(--asset-soft); color:var(--asset)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v20M2 12h20"/></svg></div>
+              <div class="body"><div class="title">Chargeback to department on loss</div><div class="desc">Each loss event creates a ledger entry against the user's department. Exported to finance monthly.</div><div class="meta">23 chargebacks this Q · Integration: SAP via webhook</div></div>
+              <div class="switch on"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subview" data-sub="rules-device">
+          <div class="card">
+            <div class="card-header"><div><p class="card-title">Device-level rules</p></div><button class="btn primary btn small">+ Add rule</button></div>
+            <div class="rule">
+              <div class="icon" style="background:var(--neutral-soft); color:var(--neutral)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg></div>
+              <div class="body"><div class="title">Auto-overdue threshold</div><div class="desc">Mark checkout overdue 1 hour past expected return.</div><div class="meta">Default value · 1 hour</div></div>
+              <div class="switch on"></div>
+            </div>
+            <div class="rule">
+              <div class="icon" style="background:var(--loss-soft); color:var(--loss)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M9 15l6-6"/></svg></div>
+              <div class="body"><div class="title">Auto-mark lost after 7 days overdue</div><div class="desc">Charge full replacement cost; fires notification to user + department.</div><div class="meta">Triggered 8 times this Q · 7 days</div></div>
+              <div class="switch on"></div>
+            </div>
+            <div class="rule">
+              <div class="icon" style="background:var(--damage-soft); color:var(--damage)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/></svg></div>
+              <div class="body"><div class="title">Block checkout of damaged-but-undocked devices</div><div class="desc">If device returned damaged but charging not engaged, hold from rotation.</div><div class="meta">12 holds this Q</div></div>
+              <div class="switch on"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subview" data-sub="rules-audit">
+          <div class="card">
+            <p class="card-title" style="margin-bottom:14px">Rule fire log</p>
+            <div class="tl-item"><div class="tl-dot" style="background:var(--loss-soft); color:var(--loss)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/></svg></div><div class="body"><div class="title">Rule "Block at 3 lost" fired</div><div class="desc">Mark Rivera · 3rd lost device this 90-day window · Checkout blocked</div></div><div class="when">2 min ago</div></div>
+            <div class="tl-item"><div class="tl-dot" style="background:var(--warn-soft); color:var(--warn)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2 2 22h20L12 2z"/></svg></div><div class="body"><div class="title">Rule "Dept loss > $3K" fired</div><div class="desc">Troy ER · Crossed $4,500 this Q · Email to Dr. Allen</div></div><div class="when">1h 12m ago</div></div>
+            <div class="tl-item"><div class="tl-dot" style="background:var(--asset-soft); color:var(--asset)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/></svg></div><div class="body"><div class="title">Rule "Approval req > $500" fired</div><div class="desc">Lauryne Costa · Crossed $500 lifetime · Will need supervisor on next checkout</div></div><div class="when">3h ago</div></div>
+            <div class="tl-item"><div class="tl-dot" style="background:var(--loss-soft); color:var(--loss)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/></svg></div><div class="body"><div class="title">Rule "Auto-mark lost at 7d" fired</div><div class="desc">AiRista badge #28 · 7d past expected return · Auto-charged $85</div></div><div class="when">52m ago</div></div>
+          </div>
+        </div>
+
+        <div class="subview" data-sub="rules-routing">
+          <div class="card">
+            <div class="card-header"><div><p class="card-title">Notification routing</p><p class="card-sub">Where rule triggers send their alerts</p></div></div>
+            <table class="data">
+              <thead><tr><th>Rule</th><th>Email</th><th>Slack</th><th>SMS</th><th>Webhook</th></tr></thead>
+              <tbody>
+                <tr><td>Block at 3 lost</td><td>User + Supervisor</td><td>#ops-locker-alarms</td><td>—</td><td>—</td></tr>
+                <tr><td>Approval req &gt; $500</td><td>User + Supervisor</td><td>#ops-locker-alarms</td><td>—</td><td>SAP</td></tr>
+                <tr><td>Email warning at 2</td><td>User</td><td>—</td><td>—</td><td>—</td></tr>
+                <tr><td>Dept loss &gt; $3K</td><td>Department head</td><td>#finance-alerts</td><td>—</td><td>SAP</td></tr>
+                <tr><td>Chargeback on loss</td><td>—</td><td>—</td><td>—</td><td>SAP</td></tr>
+                <tr><td>Auto-mark lost at 7d</td><td>User + Dept head</td><td>#ops-locker-alarms</td><td>—</td><td>SAP</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" data-view="placeholder">
+        <div class="page-head"><h1>(Other dashboard section)</h1><p>This prototype focuses on Asset Accounting. Use the Asset Accounting nav items to explore the new pages.</p></div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- ===================== SECTION DIVIDER ===================== -->
+<div class="section-label" id="nav-modals">
+  <strong>Modal &amp; popup gallery</strong>
+  <span>16 dialogs · static screenshots arranged by where they fire in the product</span>
+</div>
+
+<div class="gallery-head">
+  <h2 style="margin-top:20px">Modals fired from Asset Accounting</h2>
+  <p>Each card is one modal. Cards are paired by where they fire in the product so your designer can compare them in context.</p>
+</div>
+
+<!-- =============== MODALS — Loss & damage =============== -->
+<div class="modal-grid">
+
+  <!-- M1: Incident detail panel -->
+  <div class="modal-frame">
+    <div class="label-tag">M1 · Loss &amp; damage › incident detail</div>
+    <div class="modal wide">
+      <button class="close">✕</button>
+      <h3>Incident — iPhone 16e #15 damaged</h3>
+      <p class="sub">Jun 6, 5:04 PM · Bay 6 / Green8 · Returned by Lauryne Costa</p>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:14px">
+        <div style="background:var(--surface-2); padding:11px; border-radius:6px"><div style="font-size:10.5px; color:var(--text-3); text-transform:uppercase; letter-spacing:.04em">Total charge</div><div style="font-size:22px; font-weight:700; color:var(--loss); margin-top:3px">$268</div></div>
+        <div style="background:var(--surface-2); padding:11px; border-radius:6px"><div style="font-size:10.5px; color:var(--text-3); text-transform:uppercase; letter-spacing:.04em">Charged to</div><div style="font-size:13px; font-weight:600; margin-top:7px">Troy ER department</div></div>
+      </div>
+
+      <div style="font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--text-3); margin-bottom:6px">Components damaged</div>
+      <table class="data">
+        <tbody>
+          <tr><td>Screen replacement</td><td class="num"><span class="money loss">$179</span></td></tr>
+          <tr><td>Charging port</td><td class="num"><span class="money loss">$89</span></td></tr>
+        </tbody>
+      </table>
+
+      <div style="font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--text-3); margin:14px 0 6px">Disposition</div>
+      <div style="font-size:13px"><span class="pill warn">Sent to repair queue</span> · TechFix Co. · ETA Jun 12</div>
+
+      <div class="actions">
+        <button class="btn ghost">View user profile</button>
+        <button class="btn primary">Open repair record</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- M2: Damage at return -->
+  <div class="modal-frame">
+    <div class="label-tag">M2 · Tablet kiosk › return flow</div>
+    <div class="modal wide">
+      <div style="font-size:11.5px; color:var(--text-3); margin-bottom:6px">iPhone 16e #15 · Lauryne Costa · Bay 6 / Green8</div>
+      <h3>What's damaged?</h3>
+      <p class="sub">Multi-select. The system sums the repair costs.</p>
+
+      <div class="dmg-grid">
+        <label class="dmg-choice selected"><input type="checkbox" checked><div style="flex:1"><div class="nm">Screen replacement</div><div class="pr">$179</div></div></label>
+        <label class="dmg-choice selected"><input type="checkbox" checked><div style="flex:1"><div class="nm">Charging port</div><div class="pr">$89</div></div></label>
+        <label class="dmg-choice"><input type="checkbox"><div style="flex:1"><div class="nm">Battery</div><div class="pr">$65</div></div></label>
+        <label class="dmg-choice"><input type="checkbox"><div style="flex:1"><div class="nm">Speaker</div><div class="pr">$40</div></div></label>
+        <label class="dmg-choice"><input type="checkbox"><div style="flex:1"><div class="nm">Camera</div><div class="pr">$110</div></div></label>
+        <label class="dmg-choice" style="border-color:var(--loss); background:var(--loss-soft)"><input type="checkbox"><div style="flex:1"><div class="nm" style="color:var(--loss)">Beyond repair — full loss</div><div class="pr">$554 (after $45 salvage)</div></div></label>
+      </div>
+
+      <div class="total-strip">
+        <div><div class="lbl">Total charge</div><div class="v">$268</div></div>
+        <div style="font-size:11.5px; color:var(--text-3); text-align:right; max-width:200px">Charged to <strong style="color:var(--text)">Troy ER</strong> ledger</div>
+      </div>
+
+      <div class="actions">
+        <button class="btn ghost">Cancel</button>
+        <button class="btn primary">Confirm &amp; send to repair</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- M3: Mark as lost -->
+  <div class="modal-frame">
+    <div class="label-tag">M3 · Devices › mark as lost</div>
+    <div class="modal">
+      <button class="close">✕</button>
+      <h3>Mark iPhone 16e #15 as Lost?</h3>
+      <p class="sub">This charges the full replacement cost to the user's department and removes the device from rotation. Reversible if recovered.</p>
+
+      <div style="background:var(--surface-2); padding:12px; border-radius:8px; margin-bottom:14px; font-size:13px">
+        <div style="display:flex; justify-content:space-between; padding:4px 0"><span>Replacement cost</span><span class="money loss">$599</span></div>
+        <div style="display:flex; justify-content:space-between; padding:4px 0"><span>Salvage offset</span><span style="color:var(--recovery)">−$45</span></div>
+        <div style="display:flex; justify-content:space-between; padding:8px 0 0; border-top:1px solid var(--border); font-weight:700"><span>Net charge</span><span class="money loss">$554</span></div>
+      </div>
+
+      <div class="field">
+        <label>Charge to</label>
+        <select><option>Troy ER department (default)</option><option>User personal liability</option><option>Insurance claim</option></select>
+      </div>
+
+      <div class="field">
+        <label>Reason</label>
+        <select><option>Not returned past 7 days overdue</option><option>Reported stolen</option><option>User confirmed lost</option><option>Other…</option></select>
+      </div>
+
+      <div class="actions">
+        <button class="btn ghost">Cancel</button>
+        <button class="btn danger">Mark Lost &amp; charge</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- M4: Mark as recovered -->
+  <div class="modal-frame">
+    <div class="label-tag">M4 · Devices › mark as recovered</div>
+    <div class="modal">
+      <button class="close">✕</button>
+      <h3>Recover iPhone 16e #22?</h3>
+      <p class="sub">Previously marked Lost on May 12. Reversing the charge and returning the device to service.</p>
+
+      <div style="background:var(--surface-2); padding:12px; border-radius:8px; margin-bottom:14px; font-size:13px">
+        <div style="display:flex; justify-content:space-between; padding:4px 0"><span>Original charge</span><span class="money loss">$599</span></div>
+        <div style="display:flex; justify-content:space-between; padding:4px 0"><span>Reversal</span><span style="color:var(--recovery)">−$599</span></div>
+        <div style="display:flex; justify-content:space-between; padding:8px 0 0; border-top:1px solid var(--border); font-weight:700"><span>Net</span><span style="color:var(--recovery)">−$599</span></div>
+      </div>
+
+      <div class="field">
+        <label>Condition on return</label>
+        <select><option>Good — return to service</option><option>Needs minor repair — send to queue</option><option>Beyond repair — keep written off</option></select>
+      </div>
+
+      <div class="actions">
+        <button class="btn ghost">Cancel</button>
+        <button class="btn primary">Confirm recovery</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- M5: Edit Device Model -->
+  <div class="modal-frame">
+    <div class="label-tag">M5 · Devices › edit Device Model cost basis</div>
+    <div class="modal wide">
+      <button class="close">✕</button>
+      <h3>Edit cost basis — iPhone 16e</h3>
+      <p class="sub">Changes apply to future events. Past loss reports retain the cost-at-time-of-loss.</p>
+
+      <div class="field-row">
+        <div class="field"><label>Replacement cost</label><input value="$599"></div>
+        <div class="field"><label>Salvage value</label><input value="$45"></div>
+        <div class="field"><label>Lifespan (months)</label><input value="36"></div>
+      </div>
+
+      <div style="font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--text-3); margin: 8px 0 8px">Repair components</div>
+      <div class="cpr"><span class="pname">Screen replacement</span><input value="$179" style="width:80px; padding:5px 8px; font-size:12px; border:1px solid var(--border); border-radius:4px"><span></span><button class="ico-btn">×</button></div>
+      <div class="cpr"><span class="pname">Charging port</span><input value="$89" style="width:80px; padding:5px 8px; font-size:12px; border:1px solid var(--border); border-radius:4px"><span></span><button class="ico-btn">×</button></div>
+      <div class="cpr"><span class="pname">Battery</span><input value="$65" style="width:80px; padding:5px 8px; font-size:12px; border:1px solid var(--border); border-radius:4px"><span></span><button class="ico-btn">×</button></div>
+      <div style="text-align:center; padding:10px 0 0; color:var(--accent); font-weight:600; cursor:pointer; font-size:12.5px">+ Add component</div>
+
+      <div class="actions">
+        <button class="btn ghost">Cancel</button>
+        <button class="btn primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- M6: Bulk price update -->
+  <div class="modal-frame">
+    <div class="label-tag">M6 · Devices › bulk price update</div>
+    <div class="modal">
+      <button class="close">✕</button>
+      <h3>Bulk update prices</h3>
+      <p class="sub">Apply a single price change across selected models. Useful for annual refresh.</p>
+
+      <div class="field">
+        <label>Apply to</label>
+        <div class="segctrl" style="display:flex"><button class="active">Selected models</button><button>All models</button></div>
+      </div>
+
+      <div class="field">
+        <label>Adjustment</label>
+        <div class="segctrl" style="display:flex"><button class="active">% change</button><button>$ amount</button></div>
+        <input value="+5%" style="margin-top:6px">
+        <div class="help">Will increase iPhone 16e from $599 → $629, AiRista from $85 → $89</div>
+      </div>
+
+      <div class="field">
+        <label>Effective date</label>
+        <input value="Jul 1, 2026">
+      </div>
+
+      <div class="actions">
+        <button class="btn ghost">Cancel</button>
+        <button class="btn primary">Apply to 4 models</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- M7: Add to repair queue -->
+  <div class="modal-frame">
+    <div class="label-tag">M7 · Repair tracker › add to queue</div>
+    <div class="modal wide">
+      <button class="close">✕</button>
+      <h3>Add device to repair queue</h3>
+      <p class="sub">Use when a damage event was missed at return (e.g., found during inspection).</p>
+
+      <div class="field-row">
+        <div class="field"><label>Device</label><input value="iPhone 16e #19"></div>
+        <div class="field"><label>Found by</label><input value="Admin Rowe"></div>
+      </div>
+
+      <div class="field"><label>Damage components</label></div>
+      <div class="dmg-grid">
+        <label class="dmg-choice"><input type="checkbox"><div><div class="nm">Screen</div><div class="pr">$179</div></div></label>
+        <label class="dmg-choice selected"><input type="checkbox" checked><div><div class="nm">Port</div><div class="pr">$89</div></div></label>
+        <label class="dmg-choice"><input type="checkbox"><div><div class="nm">Battery</div><div class="pr">$65</div></div></label>
+        <label class="dmg-choice"><input type="checkbox"><div><div class="nm">Speaker</div><div class="pr">$40</div></div></label>
+      </div>
+
+      <div class="field" style="margin-top:14px"><label>Notes</label><textarea rows="3" placeholder="Optional context…"></textarea></div>
+
+      <div class="total-strip">
+        <div><div class="lbl">Repair cost estimate</div><div class="v" style="color:var(--damage)">$89</div></div>
+        <button class="btn ghost btn small">Charge to dept?</button>
+      </div>
+
+      <div class="actions">
+        <button class="btn ghost">Cancel</button>
+        <button class="btn primary">Add to queue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- M8: Assign to vendor -->
+  <div class="modal-frame">
+    <div class="label-tag">M8 · Repair tracker › assign to vendor</div>
+    <div class="modal">
+      <button class="close">✕</button>
+      <h3>Send to repair vendor</h3>
+      <p class="sub">iPhone 16e #15 · Screen + port · Est. $268</p>
+
+      <div class="field"><label>Choose vendor</label>
+        <div style="display:flex; flex-direction:column; gap:6px">
+          <label style="display:flex; align-items:center; gap:10px; padding:11px; border:2px solid var(--primary); background:var(--primary-soft); border-radius:6px; cursor:pointer"><input type="radio" name="v" checked><div style="flex:1"><div style="font-weight:600">TechFix Co.</div><div style="font-size:11.5px; color:var(--text-2)">5–7 day turnaround · 18 repairs this Q · ★★★★</div></div></label>
+          <label style="display:flex; align-items:center; gap:10px; padding:11px; border:1px solid var(--border); border-radius:6px; cursor:pointer"><input type="radio" name="v"><div style="flex:1"><div style="font-weight:600">Apple Authorized</div><div style="font-size:11.5px; color:var(--text-3)">10–14 day turnaround · ★★★★★</div></div></label>
+          <label style="display:flex; align-items:center; gap:10px; padding:11px; border:1px solid var(--border); border-radius:6px; cursor:pointer"><input type="radio" name="v"><div style="flex:1"><div style="font-weight:600">In-house IT</div><div style="font-size:11.5px; color:var(--text-3)">1–2 day turnaround · No vendor cost</div></div></label>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn ghost">Cancel</button>
+        <button class="btn primary">Send to TechFix</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- M9: Mark repair complete -->
+  <div class="modal-frame">
+    <div class="label-tag">M9 · Repair tracker › mark complete</div>
+    <div class="modal">
+      <button class="close">✕</button>
+      <h3>Mark repair complete</h3>
+      <p class="sub">iPhone 16e #11 · Port + battery · TechFix Co.</p>
+
+      <div class="field-row">
+        <div class="field"><label>Actual cost</label><input value="$154"></div>
+        <div class="field"><label>Returned date</label><input value="Jun 9, 2026"></div>
+      </div>
+
+      <div class="field"><label>QA result</label>
+        <div class="segctrl" style="display:flex"><button>Failed</button><button class="active">Passed — ready to redeploy</button></div>
+      </div>
+
+      <div class="field"><label>Notes</label><textarea rows="2" placeholder="Optional…"></textarea></div>
+
+      <div class="actions">
+        <button class="btn ghost">Cancel</button>
+        <button class="btn primary">Mark complete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- M10: Add new rule -->
+  <div class="modal-frame">
+    <div class="label-tag">M10 · Thresholds › add new rule</div>
+    <div class="modal wide">
+      <button class="close">✕</button>
+      <h3>New rule</h3>
+      <p class="sub">When something crosses a threshold, do something.</p>
+
+      <div class="field">
+        <label>Rule type</label>
+        <div class="segctrl" style="display:flex"><button class="active">User</button><button>Department</button><button>Device</button></div>
+      </div>
+
+      <div class="field">
+        <label>When this happens…</label>
+        <div style="display:flex; gap:8px">
+          <select style="flex:1"><option>User accumulates</option></select>
+          <input value="3" style="width:60px">
+          <select style="flex:1"><option>lost devices</option><option>damage incidents</option><option>$ in losses</option></select>
+          <span style="align-self:center; color:var(--text-2)">within</span>
+          <input value="90" style="width:60px">
+          <select style="flex:1"><option>days</option></select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>…then do this</label>
+        <div style="display:flex; flex-direction:column; gap:6px">
+          <label style="display:flex; align-items:center; gap:9px; padding:9px 11px; border:1px solid var(--border); border-radius:6px"><input type="checkbox" checked><span>Block checkout until supervisor approves</span></label>
+          <label style="display:flex; align-items:center; gap:9px; padding:9px 11px; border:1px solid var(--border); border-radius:6px"><input type="checkbox" checked><span>Email user with policy link</span></label>
+          <label style="display:flex; align-items:center; gap:9px; padding:9px 11px; border:1px solid var(--border); border-radius:6px"><input type="checkbox" checked><span>Notify department head</span></label>
+          <label style="display:flex; align-items:center; gap:9px; padding:9px 11px; border:1px solid var(--border); border-radius:6px"><input type="checkbox"><span>Send Slack alert to #ops-locker-alarms</span></label>
+        </div>
+      </div>
+
+      <div class="helper-banner">
+        <strong>Dry-run preview:</strong> This rule would currently block <strong>1 user (Mark Rivera)</strong> and warn 4 others.
+      </div>
+
+      <div class="actions">
+        <button class="btn ghost">Save as draft</button>
+        <button class="btn ghost">Test rule</button>
+        <button class="btn primary">Activate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- M11: Test rule (dry run) -->
+  <div class="modal-frame">
+    <div class="label-tag">M11 · Thresholds › dry-run test</div>
+    <div class="modal wide">
+      <button class="close">✕</button>
+      <h3>Dry-run test</h3>
+      <p class="sub">"Block checkout after 3 lost devices" · 90-day window · No actions executed.</p>
+
+      <div style="background:var(--surface-2); padding:12px; border-radius:8px; margin-bottom:14px; display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px">
+        <div><div style="font-size:10.5px; color:var(--text-3); text-transform:uppercase; letter-spacing:.04em">Would block</div><div style="font-size:22px; font-weight:700; color:var(--loss); margin-top:3px">1</div></div>
+        <div><div style="font-size:10.5px; color:var(--text-3); text-transform:uppercase; letter-spacing:.04em">Would warn</div><div style="font-size:22px; font-weight:700; color:var(--warn); margin-top:3px">4</div></div>
+        <div><div style="font-size:10.5px; color:var(--text-3); text-transform:uppercase; letter-spacing:.04em">Would email</div><div style="font-size:22px; font-weight:700; color:var(--asset); margin-top:3px">5</div></div>
+      </div>
+
+      <p style="font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--text-3); margin-bottom:6px">Affected users</p>
+      <table class="data">
+        <tbody>
+          <tr><td><strong>Mark Rivera</strong> · Troy ER</td><td><span class="pill danger">Would block</span></td></tr>
+          <tr><td><strong>Lauryne Costa</strong> · Troy ER</td><td><span class="pill warn">Would warn (3rd lost in 92d)</span></td></tr>
+          <tr><td><strong>John Smith</strong> · Troy Security</td><td><span class="pill warn">Would warn (3 lost in 75d)</span></td></tr>
+          <tr><td><strong>Austin Dragt</strong> · Troy Maint</td><td><span class="pill warn">Would warn (2 lost in 89d)</span></td></tr>
+          <tr><td><strong>Crosby Smith</strong> · Troy ICU</td><td><span class="pill warn">Would warn (2 lost)</span></td></tr>
+        </tbody>
+      </table>
+
+      <div class="actions">
+        <button class="btn ghost">Adjust rule</button>
+        <button class="btn primary">Activate as-is</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- M12: Supervisor approval -->
+  <div class="modal-frame">
+    <div class="label-tag">M12 · Tablet kiosk › supervisor approval</div>
+    <div class="modal">
+      <h3>Supervisor approval required</h3>
+      <p class="sub">Lauryne Costa has lost $782 in devices this quarter. Approval needed before checkout.</p>
+
+      <div style="background:var(--surface-2); padding:14px; border-radius:8px; margin-bottom:14px">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px"><div class="ava" style="width:40px; height:40px; font-size:13px">LC</div><div><div style="font-weight:700">Lauryne Costa</div><div style="font-size:11.5px; color:var(--text-3)">Troy · ER · Tech</div></div></div>
+        <div style="display:flex; justify-content:space-between; padding:5px 0; font-size:12.5px"><span>Devices lost this Q</span><strong>0</strong></div>
+        <div style="display:flex; justify-content:space-between; padding:5px 0; font-size:12.5px"><span>Damage incidents this Q</span><strong>4</strong></div>
+        <div style="display:flex; justify-content:space-between; padding:5px 0; font-size:12.5px; font-weight:700; color:var(--loss)"><span>Lifetime $ loss</span><span>$1,089</span></div>
+      </div>
+
+      <div class="field"><label>Supervisor: tap badge to approve</label><input placeholder="Awaiting badge…" disabled></div>
+
+      <div class="actions">
+        <button class="btn ghost">Deny checkout</button>
+        <button class="btn primary">Approve once</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- M13: Export options -->
+  <div class="modal-frame">
+    <div class="label-tag">M13 · Loss reports › export options</div>
+    <div class="modal">
+      <button class="close">✕</button>
+      <h3>Export this report</h3>
+      <p class="sub">Loss by user · This quarter · 8 rows</p>
+
+      <div class="field">
+        <label>Format</label>
+        <div class="segctrl" style="display:flex"><button class="active">Excel (.xlsx)</button><button>CSV</button><button>PDF</button></div>
+      </div>
+
+      <div class="field">
+        <label>Include</label>
+        <label style="display:flex; align-items:center; gap:8px; padding:7px 0"><input type="checkbox" checked><span>Charts &amp; totals</span></label>
+        <label style="display:flex; align-items:center; gap:8px; padding:7px 0"><input type="checkbox" checked><span>Per-incident detail</span></label>
+        <label style="display:flex; align-items:center; gap:8px; padding:7px 0"><input type="checkbox"><span>Engineering metadata (user IDs, event IDs)</span></label>
+      </div>
+
+      <div class="actions">
+        <button class="btn ghost">Cancel</button>
+        <button class="btn primary">⤓ Download</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- M14: Schedule report -->
+  <div class="modal-frame">
+    <div class="label-tag">M14 · Loss reports › schedule</div>
+    <div class="modal">
+      <button class="close">✕</button>
+      <h3>Schedule recurring report</h3>
+      <p class="sub">Email this report on a cadence to chosen recipients.</p>
+
+      <div class="field">
+        <label>Cadence</label>
+        <div class="segctrl" style="display:flex"><button>Daily</button><button>Weekly</button><button class="active">Monthly</button><button>Quarterly</button></div>
+      </div>
+
+      <div class="field-row">
+        <div class="field"><label>Run on</label><select><option>1st of month</option><option>Last day of month</option></select></div>
+        <div class="field"><label>Time</label><input value="7:00 AM PT"></div>
+      </div>
+
+      <div class="field">
+        <label>Recipients</label>
+        <input value="finance@acme-health.com, dr-allen@acme-health.com">
+      </div>
+
+      <div class="field">
+        <label>Format</label>
+        <div class="segctrl" style="display:flex"><button class="active">PDF + Excel</button><button>PDF only</button></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn ghost">Cancel</button>
+        <button class="btn primary">Save schedule</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- M15: Chargeback config -->
+  <div class="modal-frame">
+    <div class="label-tag">M15 · Rules › configure chargeback</div>
+    <div class="modal wide">
+      <button class="close">✕</button>
+      <h3>Department chargeback integration</h3>
+      <p class="sub">Where loss-event ledger entries get sent</p>
+
+      <div class="field">
+        <label>System</label>
+        <div class="segctrl" style="display:flex"><button class="active">SAP</button><button>NetSuite</button><button>QuickBooks</button><button>CSV export only</button></div>
+      </div>
+
+      <div class="field-row">
+        <div class="field"><label>Webhook URL</label><input value="https://erp.acme-health.com/webhooks/locker-charges"></div>
+      </div>
+
+      <div class="field">
+        <label>Authentication</label>
+        <div class="segctrl" style="display:flex"><button class="active">Bearer token</button><button>HMAC</button><button>OAuth 2.0</button></div>
+      </div>
+
+      <div class="field"><label>Token</label><input value="••••••••••••••••" type="password"></div>
+
+      <div class="field">
+        <label>Send</label>
+        <div class="segctrl" style="display:flex"><button>Per event</button><button class="active">Daily batch</button><button>Monthly batch</button></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn ghost">Test connection</button>
+        <button class="btn primary">Save integration</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- M16: Insurance claim -->
+  <div class="modal-frame">
+    <div class="label-tag">M16 · Devices › file insurance claim</div>
+    <div class="modal wide">
+      <button class="close">✕</button>
+      <h3>File insurance claim</h3>
+      <p class="sub">iPhone 16e #15 · Reported lost Jun 6 · Charged to Troy ER</p>
+
+      <div class="field-row">
+        <div class="field"><label>Claim type</label><select><option>Lost — covered</option><option>Stolen — police report req</option><option>Damaged beyond repair</option></select></div>
+        <div class="field"><label>Policy</label><select><option>Acme Health Asset Protection · POL-441</option></select></div>
+      </div>
+
+      <div class="field-row">
+        <div class="field"><label>Replacement cost claim</label><input value="$599"></div>
+        <div class="field"><label>Deductible</label><input value="$100"></div>
+        <div class="field"><label>Expected recovery</label><input value="$499"></div>
+      </div>
+
+      <div class="field"><label>Police report (if stolen)</label><input placeholder="Optional · Upload PDF…"></div>
+      <div class="field"><label>Notes</label><textarea rows="3" placeholder="Circumstances of loss…"></textarea></div>
+
+      <div class="actions">
+        <button class="btn ghost">Save draft</button>
+        <button class="btn primary">Submit claim</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showView(v) {
+  document.querySelectorAll('nav.rail button').forEach(b => b.classList.toggle('active', b.dataset.nav === v));
+  document.querySelectorAll('.view').forEach(s => s.classList.toggle('active', s.dataset.view === v));
+  document.querySelector('main.content').scrollTop = 0;
+}
+function showSub(btn, key) {
+  const parent = btn.closest('.subtabs');
+  parent.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+  const view = btn.closest('.view');
+  view.querySelectorAll('.subview').forEach(s => s.classList.toggle('active', s.dataset.sub === key));
+}
+document.querySelectorAll('.switch').forEach(sw => sw.addEventListener('click', () => sw.classList.toggle('on')));
+document.querySelectorAll('.pivot, .segctrl').forEach(seg => {
+  seg.querySelectorAll('button').forEach(b => {
+    b.addEventListener('click', () => seg.querySelectorAll('button').forEach(x => x.classList.toggle('active', x === b)));
+  });
+});
+document.querySelectorAll('.controls').forEach(bar => {
+  bar.querySelectorAll('.chip').forEach(c => {
+    c.addEventListener('click', () => {
+      bar.querySelectorAll('.chip.active').forEach(x => x.classList.remove('active'));
+      c.classList.add('active');
+    });
+  });
+});
+document.querySelectorAll('.dmg-choice').forEach(ch => {
+  ch.addEventListener('click', () => ch.classList.toggle('selected'));
+});
+</script>
+
+</body>
+</html>

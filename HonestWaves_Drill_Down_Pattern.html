@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HonestWaves — Macro → Micro Drill-Down Pattern</title>
+<style>
+:root {
+  --bg: #F4F6FA; --surface: #FFFFFF; --surface-2: #F7FAFD; --surface-3: #EEF2F7;
+  --border: #E3E8EE; --border-strong: #C9D2DC;
+  --text: #1A2332; --text-2: #506072; --text-3: #8190A3;
+  --primary: #1F3A5F; --primary-2: #2E5587; --primary-soft: #E8EEF6;
+  --accent: #2C7BF2; --accent-soft: #DBE9FE;
+  --loss: #DC2626; --loss-soft: #FEE2E2;
+  --damage: #EA580C; --damage-soft: #FFEDD5;
+  --recovery: #16A34A; --recovery-soft: #DCFCE7;
+  --asset: #2563EB; --asset-soft: #DBEAFE;
+  --neutral: #6B7280; --neutral-soft: #F1F5F9;
+  --radius-sm: 6px; --radius: 10px;
+  --shadow-sm: 0 1px 2px rgba(20,30,50,.06);
+  --shadow: 0 4px 12px rgba(20,30,50,.08);
+  --shadow-lg: 0 10px 30px rgba(20,30,50,.12);
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg); font-family: var(--font); color: var(--text); -webkit-font-smoothing: antialiased; }
+body { display: flex; flex-direction: column; align-items: center; padding: 28px 16px 80px; gap: 22px; }
+
+.intro {
+  max-width: 1180px; width: 100%;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 22px 28px; box-shadow: var(--shadow-sm);
+}
+.intro h1 { margin: 0 0 6px; font-size: 19px; color: var(--primary); }
+.intro p { font-size: 13.5px; color: var(--text-2); line-height: 1.55; margin: 8px 0; }
+.intro .levels { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 14px; }
+.intro .level { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; }
+.intro .level .lvl-num { font-size: 10.5px; color: var(--text-3); text-transform: uppercase; letter-spacing: .04em; }
+.intro .level .lvl-name { font-size: 14px; font-weight: 700; color: var(--text); margin: 3px 0 4px; }
+.intro .level .lvl-ex { font-size: 11.5px; color: var(--text-2); }
+
+/* report frame */
+.app {
+  width: 1180px; max-width: 100%;
+  background: var(--surface); border-radius: 14px; overflow: hidden;
+  box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+}
+
+/* breadcrumb header */
+.crumb-bar {
+  padding: 18px 24px 14px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.crumb-meta {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 10px; font-size: 11.5px; color: var(--text-3);
+  text-transform: uppercase; letter-spacing: .05em;
+}
+.search-box {
+  position: relative; min-width: 280px;
+}
+.search-box input {
+  width: 100%; box-sizing: border-box;
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 7px 10px 7px 30px; font-size: 12.5px; color: var(--text); font-family: inherit;
+  text-transform: none; letter-spacing: 0;
+}
+.search-box svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); }
+
+.crumb {
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: -.01em;
+}
+.crumb a {
+  display: inline-flex; align-items: center; gap: 4px;
+  color: var(--text-3); text-decoration: none; cursor: pointer;
+  padding: 2px 6px; border-radius: 4px;
+  font-weight: 600; font-size: 16px;
+}
+.crumb a:hover { background: var(--primary-soft); color: var(--primary); }
+.crumb .sep { color: var(--text-3); font-weight: 400; }
+.crumb .current { color: var(--text); padding: 2px 6px; }
+
+/* KPI strip */
+.kpi-strip {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.kpi { padding: 0; }
+.kpi .label { font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-3); }
+.kpi .value { font-size: 24px; font-weight: 700; letter-spacing: -.025em; color: var(--text); margin: 4px 0 2px; line-height: 1.05; }
+.kpi .value.loss { color: var(--loss); }
+.kpi .value.asset { color: var(--asset); }
+.kpi .meta { font-size: 11.5px; color: var(--text-2); }
+
+/* pivot + filters */
+.controls {
+  padding: 14px 24px;
+  background: var(--surface);
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+}
+.pivot-label {
+  font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-3);
+  margin-right: 2px;
+}
+.pivot {
+  display: inline-flex; background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 3px; gap: 2px;
+}
+.pivot button {
+  appearance: none; border: 0; background: transparent; cursor: pointer; font-family: inherit;
+  padding: 6px 13px; font-size: 12.5px; font-weight: 600; color: var(--text-2);
+  border-radius: 4px;
+}
+.pivot button.active { background: var(--surface); color: var(--primary); box-shadow: var(--shadow-sm); }
+
+.chip {
+  appearance: none; border: 1px solid var(--border); background: var(--surface);
+  color: var(--text-2); font-size: 12.5px; padding: 6px 11px; border-radius: 999px;
+  cursor: pointer; font-family: inherit;
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+.chip:hover:not(.active) { border-color: var(--border-strong); }
+
+/* table */
+.table-wrap { padding: 8px 24px 24px; }
+table.data { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.data thead th {
+  text-align: left; padding: 11px 12px; font-weight: 600; color: var(--text-2);
+  border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase; letter-spacing: .04em;
+  position: sticky; top: 0; background: var(--surface);
+}
+table.data .num { text-align: right; font-variant-numeric: tabular-nums; }
+table.data tbody td { padding: 13px 12px; border-bottom: 1px solid var(--surface-3); }
+table.data tbody tr { cursor: pointer; transition: background .08s; }
+table.data tbody tr:hover { background: var(--surface-2); }
+table.data tbody tr:hover td:first-child .row-name { color: var(--accent); }
+table.data tbody tr.no-drill { cursor: default; }
+table.data tbody tr.no-drill:hover { background: transparent; }
+table.data tbody tr.no-drill:hover td:first-child .row-name { color: var(--text); }
+
+.row-name { font-size: 13.5px; font-weight: 600; color: var(--text); }
+.row-sub { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.money { font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+.money.loss { color: var(--loss); }
+.money.asset { color: var(--asset); }
+
+.pct-bar { height: 6px; background: var(--surface-3); border-radius: 3px; overflow: hidden; min-width: 100px; max-width: 180px; }
+.pct-bar .fill { height: 100%; border-radius: 3px; background: var(--loss); }
+
+.drill-cue { color: var(--text-3); font-size: 14px; transition: color .08s, transform .08s; }
+tr:hover .drill-cue { color: var(--accent); transform: translateX(2px); }
+
+.pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 2.5px 8px; border-radius: 999px; }
+.pill.loss { background: var(--loss-soft); color: var(--loss); }
+.pill.damage { background: var(--damage-soft); color: var(--damage); }
+.pill.warn { background: var(--damage-soft); color: var(--damage); }
+.pill.danger { background: var(--loss-soft); color: var(--loss); }
+.pill.neutral { background: var(--neutral-soft); color: var(--neutral); }
+.pill.recovery { background: var(--recovery-soft); color: var(--recovery); }
+.pill.asset { background: var(--asset-soft); color: var(--asset); }
+
+.loc-tag { font-size: 11px; padding: 2px 7px; border-radius: 4px; background: var(--primary-soft); color: var(--primary); font-weight: 500; }
+.dept-tag { font-size: 11px; padding: 2px 7px; border-radius: 4px; background: var(--surface-3); color: var(--text-2); font-weight: 500; }
+
+.ava {
+  width: 28px; height: 28px; border-radius: 50%; background: var(--primary-soft); color: var(--primary);
+  display: inline-flex; align-items: center; justify-content: center; font-size: 10.5px; font-weight: 700;
+}
+.user-row { display: flex; align-items: center; gap: 9px; }
+
+.level-banner {
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 9px 14px; margin: 8px 24px 0;
+  font-size: 12.5px; color: var(--primary);
+  display: flex; align-items: center; gap: 8px;
+}
+.level-banner strong { font-weight: 700; }
+
+.hint {
+  font-size: 11.5px; color: var(--text-3);
+  text-align: center; padding: 10px;
+}
+
+/* second-info panel */
+.split { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; padding: 14px 24px 24px; }
+.summary-panel { background: var(--surface-2); border-radius: var(--radius); padding: 16px; }
+.summary-panel h3 { margin: 0 0 8px; font-size: 13.5px; color: var(--text); }
+.summary-panel p { font-size: 12.5px; color: var(--text-2); margin: 5px 0; line-height: 1.5; }
+
+/* take rate pattern */
+.pattern-note {
+  max-width: 1180px; width: 100%;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 22px 28px; box-shadow: var(--shadow-sm);
+}
+.pattern-note h2 { margin: 0 0 14px; font-size: 17px; color: var(--primary); }
+.pattern-note h3 { margin: 14px 0 6px; font-size: 13px; color: var(--text); text-transform: uppercase; letter-spacing: .03em; }
+.pattern-note p { font-size: 13.5px; color: var(--text-2); line-height: 1.55; margin: 6px 0; }
+.pattern-note ul { font-size: 13.5px; color: var(--text-2); line-height: 1.55; margin: 6px 0; padding-left: 22px; }
+.pattern-note li { margin: 6px 0; }
+.pattern-note code { background: var(--surface-3); padding: 1px 6px; border-radius: 4px; font-size: 12px; font-family: ui-monospace, Menlo, monospace; }
+
+</style>
+</head>
+<body>
+
+<div class="intro">
+  <h1>Macro → Micro drill-down — pattern for Asset Accounting (and every other report)</h1>
+  <p>This is the drill-down pattern I'd apply across the Asset Accounting hub. Click any row in the prototype below to drill one level deeper. Click any breadcrumb to jump back up. The KPI strip and the table both update at every level so you always see totals scoped to where you are.</p>
+  <div class="levels">
+    <div class="level"><div class="lvl-num">Level 0</div><div class="lvl-name">All locations</div><div class="lvl-ex">Company-wide totals — exec view</div></div>
+    <div class="level"><div class="lvl-num">Level 1</div><div class="lvl-name">Location</div><div class="lvl-ex">Troy Hospital, Butterworth Hospital</div></div>
+    <div class="level"><div class="lvl-num">Level 2</div><div class="lvl-name">Department</div><div class="lvl-ex">ER, ICU, Cardiology, Security</div></div>
+    <div class="level"><div class="lvl-num">Level 3</div><div class="lvl-name">Locker</div><div class="lvl-ex">Pink8, Green8, Blue34</div></div>
+    <div class="level"><div class="lvl-num">Level 4</div><div class="lvl-name">User · Incident</div><div class="lvl-ex">Mark Rivera · Jun 6 iPhone screen $179</div></div>
+  </div>
+</div>
+
+<div class="app">
+  <div class="crumb-bar">
+    <div class="crumb-meta">
+      <span>Asset Accounting › Loss &amp; damage</span>
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--text-3)" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input placeholder="Search location, dept, locker, or user…">
+      </div>
+    </div>
+    <div class="crumb" id="crumb"></div>
+  </div>
+
+  <div class="level-banner" id="banner"></div>
+
+  <div class="kpi-strip" id="kpis"></div>
+
+  <div class="controls">
+    <span class="pivot-label">Group by</span>
+    <div class="pivot" id="pivot"></div>
+
+    <span class="pivot-label" style="margin-left:10px">Range</span>
+    <button class="chip">Last 7d</button>
+    <button class="chip">Last 30d</button>
+    <button class="chip active">This quarter</button>
+    <button class="chip">YTD</button>
+
+    <div style="margin-left:auto; font-size:11.5px; color:var(--text-3)" id="rowcount"></div>
+  </div>
+
+  <div class="table-wrap">
+    <table class="data" id="datatable"></table>
+  </div>
+
+</div>
+
+<div class="pattern-note">
+  <h2>How the four pieces work together</h2>
+
+  <h3>Breadcrumb (escape hatch)</h3>
+  <p>Always present at the top of the report. Every segment is clickable. At depth 4 (a single user), clicking <code>Troy Hospital</code> jumps you straight back to depth 1 — you don't have to undo each level. This is the single most important piece for keeping users oriented during deep dives.</p>
+
+  <h3>KPI strip (scope confirmation)</h3>
+  <p>The KPIs always reflect <em>the current depth</em>, not the company total. At "All locations" they show company-wide $14,247 lost. At "Troy Hospital → ER" they show $4,829 lost. This is what lets a department head answer "are <em>my</em> losses going up?" without doing the subtraction in their head.</p>
+
+  <h3>Group-by pivot (lens swap)</h3>
+  <p>Same data, different aggregation. At "All locations" you can group by Location (default) or by Department or by Model or by User. At "Troy → ER" the pivot offers Locker / User / Model. Each grouping is a different angle on the same scope. Keep the breadcrumb intact when the pivot changes.</p>
+
+  <h3>Drill table (the main work surface)</h3>
+  <p>Every row is clickable. The trailing column shows the dollar total — the user picks the biggest number and clicks. The breadcrumb extends, KPIs update, table refreshes one level deeper. Repeat until you're at a single incident.</p>
+
+  <h3>Entry points (so users don't always start at the top)</h3>
+  <ul>
+    <li><strong>Search</strong> — top-right of every report. Type "Pink8" → land on the Pink8 detail with breadcrumb <code>All › Troy › ER › Pink8</code>.</li>
+    <li><strong>Deep links from other widgets</strong> — clicking "Mark Rivera" on the dashboard high-risk-users tile lands you directly at <code>All › Troy › ER › Pink8 › Mark Rivera</code>. Same screen, deeper start.</li>
+    <li><strong>Saved views</strong> — leadership can save "Troy ER · This quarter" as a one-click bookmark in the nav.</li>
+    <li><strong>URL state</strong> — every drill level updates the URL. Sharing a link to <code>?loc=troy&amp;dept=er</code> opens the report at the right depth.</li>
+  </ul>
+
+  <h3>Reuse</h3>
+  <p>The same four-part pattern (breadcrumb + KPI + pivot + drill-table) applies to every aggregate report in Asset Accounting — Loss &amp; damage, Inventory value, Repair tracker. Build the skeleton once as a single component, feed it different metric configs per report, and you get five drill-down reports for the price of one.</p>
+</div>
+
+<script>
+// ---------- data ----------
+const DATA = {
+  metrics: {
+    totalLoss: 14247,
+    devicesLost: 31,
+    damageIncidents: 65,
+    recovered: 3124,
+  },
+
+  // L1: locations
+  locations: [
+    { id: 'troy', name: 'Troy Hospital', loss: 9990, lost: 21, damage: 47, users: 47, kiosks: 3 },
+    { id: 'butterworth', name: 'Butterworth Hospital', loss: 4257, lost: 10, damage: 18, users: 61, kiosks: 1 },
+    { id: 'acme', name: 'Acme Care Center', loss: 0, lost: 0, damage: 0, users: 0, kiosks: 0 },
+  ],
+
+  // L2: departments per location
+  departments: {
+    troy: [
+      { id: 'er', name: 'ER', loss: 4829, lost: 9, damage: 22, users: 23, kiosks: 2 },
+      { id: 'icu', name: 'ICU', loss: 3124, lost: 6, damage: 14, users: 14, kiosks: 2 },
+      { id: 'card', name: 'Cardiology', loss: 1847, lost: 4, damage: 8, users: 8, kiosks: 1 },
+      { id: 'sec', name: 'Security', loss: 1190, lost: 14, damage: 2, users: 6, kiosks: 1 },
+      { id: 'maint', name: 'Maintenance', loss: 340, lost: 2, damage: 1, users: 3, kiosks: 1 },
+    ],
+    butterworth: [
+      { id: 'main', name: 'Main floor', loss: 2814, lost: 6, damage: 12, users: 32, kiosks: 1 },
+      { id: 'or', name: 'OR', loss: 1443, lost: 4, damage: 6, users: 29, kiosks: 1 },
+    ],
+  },
+
+  // L3: lockers per department
+  lockers: {
+    'troy-er': [
+      { id: 'pink8', name: 'Pink8', sub: '8 bays · 5 iPhone · 2 AiRista · 1 ChromeBook', loss: 2945, lost: 5, damage: 14, users: 14 },
+      { id: 'green8', name: 'Green8', sub: '8 bays · 6 iPhone · 2 AiRista', loss: 1884, lost: 4, damage: 8, users: 9 },
+    ],
+    'troy-icu': [
+      { id: 'blue34a', name: 'Blue34', sub: '32 bays · iPhones', loss: 2424, lost: 4, damage: 11, users: 11 },
+      { id: 'icubadges', name: 'ICU-Badges', sub: '8 bays · AiRista', loss: 700, lost: 2, damage: 3, users: 3 },
+    ],
+    'troy-card': [
+      { id: 'blue34c', name: 'Blue34-Card', sub: '32 bays · mixed', loss: 1847, lost: 4, damage: 8, users: 8 },
+    ],
+    'troy-sec': [
+      { id: 'secbadges', name: 'Security-Badges', sub: '8 bays · AiRista', loss: 1190, lost: 14, damage: 2, users: 6 },
+    ],
+    'troy-maint': [
+      { id: 'maintbadges', name: 'Maintenance-Badges', sub: '8 bays · AiRista', loss: 340, lost: 2, damage: 1, users: 3 },
+    ],
+    'butterworth-main': [
+      { id: 'bw1', name: 'Butterworth1', sub: '32 bays · mixed', loss: 2814, lost: 6, damage: 12, users: 32 },
+    ],
+    'butterworth-or': [
+      { id: 'bw2', name: 'Butterworth-OR', sub: '32 bays · ChromeBooks', loss: 1443, lost: 4, damage: 6, users: 29 },
+    ],
+  },
+
+  // L4: users per locker
+  users: {
+    pink8: [
+      { id: 'mr', name: 'Mark Rivera', sub: 'Troy · ER · Nurse · Badge 8273-8285', loss: 1247, lost: 2, damage: 1, status: 'Blocked', statusClass: 'danger' },
+      { id: 'lc', name: 'Lauryne Costa', sub: 'Troy · ER · Tech · Badge 8273-2105', loss: 782, lost: 0, damage: 4, status: 'Approval req', statusClass: 'warn' },
+      { id: 'js', name: 'John Smith', sub: 'Troy · ER · Aide · Badge 2434-0511', loss: 236, lost: 1, damage: 2, status: 'Watching', statusClass: 'neutral' },
+      { id: 'cw', name: 'Casandra Wisoky', sub: 'Troy · ER · Nurse · Badge 1907-3741', loss: 179, lost: 0, damage: 1, status: '—', statusClass: 'neutral' },
+      { id: 'ek', name: 'Ezequiel Kulas', sub: 'Troy · ER · Tech · Badge 3507-0606', loss: 89, lost: 0, damage: 1, status: '—', statusClass: 'neutral' },
+    ],
+    green8: [
+      { id: 'cs', name: 'Crosby Smith', sub: 'Troy · ER · MD · Badge 3446-0341', loss: 599, lost: 1, damage: 0, status: 'Approval req', statusClass: 'warn' },
+      { id: 'iy', name: 'Isaac Yi', sub: 'Troy · ER · Tech · Badge 9851-2237', loss: 85, lost: 1, damage: 0, status: '—', statusClass: 'neutral' },
+      { id: 'np', name: 'Natashalee Vargas', sub: 'Troy · ER · Nurse · Badge 4421-1100', loss: 0, lost: 0, damage: 0, status: '—', statusClass: 'neutral' },
+      { id: 'bm', name: 'Bryan Mitchell', sub: 'Troy · ER · Aide · Badge 1907-3742', loss: 268, lost: 0, damage: 2, status: '—', statusClass: 'neutral' },
+    ],
+  },
+
+  // L5: incidents per user
+  incidents: {
+    mr: [
+      { date: 'Jun 6, 5:04 PM', device: 'iPhone 16e #15', bay: 'Bay 6 · Green8', type: 'Lost', component: '—', amount: 599 },
+      { date: 'May 22, 11:18 AM', device: 'iPhone 16e #03', bay: 'Bay 2 · Pink8', type: 'Lost', component: '—', amount: 599 },
+      { date: 'May 4, 7:42 AM', device: 'iPhone 16e #11', bay: 'Bay 4 · Pink8', type: 'Damaged', component: 'Charging port', amount: 89 },
+    ],
+    lc: [
+      { date: 'Jun 6, 5:04 PM', device: 'iPhone 16e #15', bay: 'Bay 6 · Green8', type: 'Damaged', component: 'Charging port', amount: 89 },
+      { date: 'May 22, 11:18 AM', device: 'iPhone 16e #03', bay: 'Bay 2 · Pink8', type: 'Damaged', component: 'Screen', amount: 179 },
+      { date: 'May 4, 7:42 AM', device: 'iPhone 16e #11', bay: 'Bay 4 · Blue34', type: 'Damaged', component: 'Port + battery', amount: 154 },
+      { date: 'Apr 18, 3:08 PM', device: 'iPhone 16e #07', bay: 'Bay 1 · Green8', type: 'Damaged', component: 'Screen + speaker', amount: 360 },
+    ],
+  },
+};
+
+// ---------- routing ----------
+let path = []; // [{level, id, name}, ...]
+
+function getCurrentLevel() {
+  return path.length; // 0 = all, 1 = location, 2 = dept, 3 = locker, 4 = user, 5 = incident
+}
+
+function getRows() {
+  const lvl = getCurrentLevel();
+  if (lvl === 0) return DATA.locations;
+  if (lvl === 1) return DATA.departments[path[0].id] || [];
+  if (lvl === 2) return DATA.lockers[`${path[0].id}-${path[1].id}`] || [];
+  if (lvl === 3) return DATA.users[path[2].id] || [];
+  if (lvl === 4) return DATA.incidents[path[3].id] || [];
+  return [];
+}
+
+function getScopeLoss() {
+  const lvl = getCurrentLevel();
+  if (lvl === 0) return DATA.metrics.totalLoss;
+  if (lvl === 1) return DATA.locations.find(l => l.id === path[0].id).loss;
+  if (lvl === 2) return (DATA.departments[path[0].id] || []).find(d => d.id === path[1].id).loss;
+  if (lvl === 3) return (DATA.lockers[`${path[0].id}-${path[1].id}`] || []).find(k => k.id === path[2].id).loss;
+  if (lvl === 4) return (DATA.users[path[2].id] || []).find(u => u.id === path[3].id).loss;
+  return 0;
+}
+
+// ---------- render ----------
+function renderCrumb() {
+  const el = document.getElementById('crumb');
+  const root = `<a data-drill="0">All locations</a>`;
+  const segments = path.map((p, i) => {
+    if (i === path.length - 1) {
+      return `<span class="sep">›</span><span class="current">${p.name}</span>`;
+    }
+    return `<span class="sep">›</span><a data-drill="${i+1}">${p.name}</a>`;
+  }).join('');
+  el.innerHTML = root + segments;
+  el.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      const depth = parseInt(a.dataset.drill, 10);
+      path = path.slice(0, depth);
+      render();
+    });
+  });
+}
+
+function renderBanner() {
+  const el = document.getElementById('banner');
+  const lvl = getCurrentLevel();
+  const labels = {
+    0: '<strong>Level 0 — All locations.</strong> Click a location to drill in. KPIs and rows are company-wide.',
+    1: `<strong>Level 1 — Location.</strong> You're scoped to <strong>${path[0].name}</strong>. Click a department to drill.`,
+    2: `<strong>Level 2 — Department.</strong> You're scoped to <strong>${path[0].name} → ${path[1].name}</strong>. Click a locker to drill.`,
+    3: `<strong>Level 3 — Locker.</strong> You're scoped to <strong>${path[2].name}</strong> inside ${path[0].name} → ${path[1].name}. Click a user to drill.`,
+    4: `<strong>Level 4 — User.</strong> You're looking at <strong>${path[3].name}'s</strong> loss history. Each row is a single incident.`,
+  };
+  el.innerHTML = labels[lvl] || '';
+}
+
+function renderKpis() {
+  const el = document.getElementById('kpis');
+  const lvl = getCurrentLevel();
+  const scope = lvl === 0 ? 'company-wide' : path[path.length-1].name;
+  const loss = getScopeLoss();
+
+  let extras = '';
+  if (lvl === 0) {
+    extras = `
+      <div class="kpi"><div class="label">Devices lost</div><div class="value">31</div><div class="meta">22% recovery rate</div></div>
+      <div class="kpi"><div class="label">Damage incidents</div><div class="value">65</div><div class="meta">screen 21 · port 19 · other 25</div></div>
+      <div class="kpi"><div class="label">Net loss vs budget</div><div class="value asset">$5,160 under</div><div class="meta">$36,840 of $42,000 YTD</div></div>`;
+  } else if (lvl === 1) {
+    const row = DATA.locations.find(l => l.id === path[0].id);
+    extras = `
+      <div class="kpi"><div class="label">Devices lost</div><div class="value">${row.lost}</div><div class="meta">in this location</div></div>
+      <div class="kpi"><div class="label">Damage incidents</div><div class="value">${row.damage}</div><div class="meta">vs ${DATA.metrics.damageIncidents} fleet-wide</div></div>
+      <div class="kpi"><div class="label">Affected users</div><div class="value">${row.users}</div><div class="meta">across ${row.kiosks} kiosks</div></div>`;
+  } else if (lvl === 2) {
+    const row = (DATA.departments[path[0].id]).find(d => d.id === path[1].id);
+    extras = `
+      <div class="kpi"><div class="label">Devices lost</div><div class="value">${row.lost}</div><div class="meta">in this department</div></div>
+      <div class="kpi"><div class="label">Damage incidents</div><div class="value">${row.damage}</div></div>
+      <div class="kpi"><div class="label">Kiosks · Users</div><div class="value" style="font-size:20px">${row.kiosks} · ${row.users}</div></div>`;
+  } else if (lvl === 3) {
+    const row = (DATA.lockers[`${path[0].id}-${path[1].id}`]).find(k => k.id === path[2].id);
+    extras = `
+      <div class="kpi"><div class="label">Devices lost</div><div class="value">${row.lost}</div></div>
+      <div class="kpi"><div class="label">Damage incidents</div><div class="value">${row.damage}</div></div>
+      <div class="kpi"><div class="label">Users with loss</div><div class="value">${row.users}</div></div>`;
+  } else if (lvl === 4) {
+    const row = (DATA.users[path[2].id]).find(u => u.id === path[3].id);
+    extras = `
+      <div class="kpi"><div class="label">Devices lost</div><div class="value">${row.lost}</div></div>
+      <div class="kpi"><div class="label">Damage incidents</div><div class="value">${row.damage}</div></div>
+      <div class="kpi"><div class="label">Status</div><div class="value" style="font-size:16px"><span class="pill ${row.statusClass}">${row.status}</span></div></div>`;
+  }
+
+  el.innerHTML = `
+    <div class="kpi"><div class="label">Total loss · ${scope}</div><div class="value loss">$${loss.toLocaleString()}</div><div class="meta">This quarter</div></div>
+    ${extras}
+  `;
+}
+
+function renderPivot() {
+  const el = document.getElementById('pivot');
+  const lvl = getCurrentLevel();
+  const groups = {
+    0: ['Location', 'Department', 'Model', 'User'],
+    1: ['Department', 'Locker', 'Model', 'User'],
+    2: ['Locker', 'User', 'Model'],
+    3: ['User', 'Model', 'Component'],
+    4: ['Incident'],
+  };
+  const list = groups[lvl] || [];
+  el.innerHTML = list.map((g, i) => `<button${i === 0 ? ' class="active"' : ''}>${g}</button>`).join('');
+  el.querySelectorAll('button').forEach(b => {
+    b.addEventListener('click', () => {
+      el.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+    });
+  });
+}
+
+function renderTable() {
+  const el = document.getElementById('datatable');
+  const rows = getRows();
+  const lvl = getCurrentLevel();
+  document.getElementById('rowcount').textContent = `${rows.length} row${rows.length === 1 ? '' : 's'}`;
+
+  if (lvl === 0) {
+    el.innerHTML = `
+      <thead><tr><th>Location</th><th>Kiosks</th><th class="num">Devices lost</th><th class="num">Damage incidents</th><th class="num">$ Loss</th><th></th></tr></thead>
+      <tbody>${rows.map(r => `
+        <tr data-drill="${r.id}" data-name="${r.name}">
+          <td><div class="row-name">${r.name}</div></td>
+          <td>${r.kiosks}</td>
+          <td class="num">${r.lost}</td>
+          <td class="num">${r.damage}</td>
+          <td class="num"><span class="money loss">$${r.loss.toLocaleString()}</span></td>
+          <td style="text-align:right"><span class="drill-cue">›</span></td>
+        </tr>`).join('')}</tbody>`;
+  } else if (lvl === 1) {
+    el.innerHTML = `
+      <thead><tr><th>Department</th><th>Kiosks</th><th class="num">Devices lost</th><th class="num">Damage incidents</th><th class="num">$ Loss</th><th>Share</th><th></th></tr></thead>
+      <tbody>${rows.map(r => `
+        <tr data-drill="${r.id}" data-name="${r.name}">
+          <td><div class="row-name"><span class="loc-tag">${path[0].name.split(' ')[0]}</span> ${r.name}</div><div class="row-sub">${r.users} users · ${r.kiosks} kiosks</div></td>
+          <td>${r.kiosks}</td>
+          <td class="num">${r.lost}</td>
+          <td class="num">${r.damage}</td>
+          <td class="num"><span class="money loss">$${r.loss.toLocaleString()}</span></td>
+          <td><div class="pct-bar"><div class="fill" style="width:${Math.min(100, (r.loss / getScopeLoss()) * 100)}%"></div></div></td>
+          <td style="text-align:right"><span class="drill-cue">›</span></td>
+        </tr>`).join('')}</tbody>`;
+  } else if (lvl === 2) {
+    el.innerHTML = `
+      <thead><tr><th>Locker</th><th class="num">Users w/ loss</th><th class="num">Devices lost</th><th class="num">Damage</th><th class="num">$ Loss</th><th></th></tr></thead>
+      <tbody>${rows.map(r => `
+        <tr data-drill="${r.id}" data-name="${r.name}">
+          <td><div class="row-name">${r.name}</div><div class="row-sub">${r.sub}</div></td>
+          <td class="num">${r.users}</td>
+          <td class="num">${r.lost}</td>
+          <td class="num">${r.damage}</td>
+          <td class="num"><span class="money loss">$${r.loss.toLocaleString()}</span></td>
+          <td style="text-align:right"><span class="drill-cue">›</span></td>
+        </tr>`).join('')}</tbody>`;
+  } else if (lvl === 3) {
+    el.innerHTML = `
+      <thead><tr><th>User</th><th class="num">Lost</th><th class="num">Damaged</th><th>Status</th><th class="num">$ Loss</th><th></th></tr></thead>
+      <tbody>${rows.map(r => `
+        <tr data-drill="${r.id}" data-name="${r.name}">
+          <td><div class="user-row"><div class="ava">${r.name.split(' ').map(w => w[0]).join('').slice(0,2)}</div><div><div class="row-name">${r.name}</div><div class="row-sub">${r.sub}</div></div></div></td>
+          <td class="num">${r.lost}</td>
+          <td class="num">${r.damage}</td>
+          <td><span class="pill ${r.statusClass}">${r.status}</span></td>
+          <td class="num"><span class="money loss">$${r.loss.toLocaleString()}</span></td>
+          <td style="text-align:right"><span class="drill-cue">›</span></td>
+        </tr>`).join('')}</tbody>`;
+  } else if (lvl === 4) {
+    el.innerHTML = `
+      <thead><tr><th>Date</th><th>Device</th><th>Bay</th><th>Type</th><th>Component</th><th class="num">$ Charge</th></tr></thead>
+      <tbody>${rows.map(r => `
+        <tr class="no-drill">
+          <td>${r.date}</td>
+          <td><div class="row-name">${r.device}</div></td>
+          <td>${r.bay}</td>
+          <td><span class="pill ${r.type.toLowerCase()}">${r.type}</span></td>
+          <td>${r.component}</td>
+          <td class="num"><span class="money loss">$${r.amount.toLocaleString()}</span></td>
+        </tr>`).join('')}
+        <tr class="no-drill" style="background:var(--surface-2); font-weight:700">
+          <td colspan="5" style="text-align:right">${path[3].name} total</td>
+          <td class="num"><span class="money loss">$${rows.reduce((a,b) => a+b.amount, 0).toLocaleString()}</span></td>
+        </tr>
+      </tbody>`;
+  }
+
+  // wire drill clicks
+  el.querySelectorAll('tr[data-drill]').forEach(tr => {
+    tr.addEventListener('click', () => {
+      const id = tr.dataset.drill;
+      const name = tr.dataset.name;
+      const levelNames = ['location', 'department', 'locker', 'user'];
+      path.push({ level: levelNames[getCurrentLevel()], id, name });
+      render();
+    });
+  });
+}
+
+function render() {
+  renderCrumb();
+  renderBanner();
+  renderKpis();
+  renderPivot();
+  renderTable();
+  window.scrollTo({ top: document.querySelector('.app').offsetTop - 20, behavior: 'smooth' });
+}
+
+render();
+</script>
+
+</body>
+</html>

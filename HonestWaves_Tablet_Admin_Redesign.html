@@ -1,0 +1,1568 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HonestWaves Admin — Redesign Prototype</title>
+<style>
+  /* ---------- design tokens ---------- */
+  :root {
+    --bg: #EEF1F5;
+    --surface: #FFFFFF;
+    --surface-2: #F4F7FB;
+    --border: #E0E5EC;
+    --border-strong: #C9D2DC;
+    --text: #1A2332;
+    --text-2: #506072;
+    --text-3: #8190A3;
+    --primary: #1F3A5F;
+    --primary-2: #2E5587;
+    --primary-soft: #E8EEF6;
+    --accent: #2C7BF2;
+    --accent-soft: #DBE9FE;
+    --danger: #DC2626;
+    --danger-soft: #FEE2E2;
+    --success: #15803D;
+    --success-soft: #DCFCE7;
+
+    /* unified 10-state palette */
+    --state-available: #16A34A;
+    --state-available-soft: #DCFCE7;
+    --state-inuse: #2563EB;
+    --state-inuse-soft: #DBEAFE;
+    --state-overdue: #EA580C;
+    --state-overdue-soft: #FFEDD5;
+    --state-notdocked: #CA8A04;
+    --state-notdocked-soft: #FEF3C7;
+    --state-dooropen: #0891B2;
+    --state-dooropen-soft: #CFFAFE;
+    --state-cleaning: #9333EA;
+    --state-cleaning-soft: #F3E8FF;
+    --state-charging: #0D9488;
+    --state-charging-soft: #CCFBF1;
+    --state-charged: #059669;
+    --state-charged-soft: #D1FAE5;
+    --state-damaged: #DC2626;
+    --state-damaged-soft: #FEE2E2;
+    --state-maint: #92400E;
+    --state-maint-soft: #FED7AA;
+
+    /* severities */
+    --sev-info: #475569;
+    --sev-info-soft: #E2E8F0;
+    --sev-warn: #B45309;
+    --sev-warn-soft: #FED7AA;
+    --sev-error: #B91C1C;
+    --sev-error-soft: #FECACA;
+    --sev-critical: #7F1D1D;
+    --sev-critical-soft: #FCA5A5;
+
+    --radius-sm: 6px;
+    --radius: 10px;
+    --radius-lg: 16px;
+    --shadow-sm: 0 1px 2px rgba(20,30,50,.06);
+    --shadow: 0 4px 12px rgba(20,30,50,.08);
+
+    --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; background: var(--bg); font-family: var(--font-sans); color: var(--text); -webkit-font-smoothing: antialiased; }
+  body { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 32px 16px; }
+
+  .intro {
+    max-width: 740px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    box-shadow: var(--shadow-sm);
+  }
+  .intro h1 { margin: 0 0 6px; font-size: 18px; color: var(--primary); }
+  .intro p { margin: 4px 0; font-size: 13px; color: var(--text-2); line-height: 1.5; }
+  .intro .legend { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 10px; font-size: 12px; color: var(--text-3); }
+  .intro .swatch { display: inline-flex; align-items: center; gap: 6px; }
+  .intro .swatch i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+  /* ---------- tablet frame ---------- */
+  .tablet {
+    width: 520px;
+    height: 1040px;
+    background: #1f2630;
+    border-radius: 28px;
+    padding: 14px;
+    box-shadow: 0 20px 60px rgba(20,30,50,.18), 0 4px 12px rgba(20,30,50,.08);
+    flex-shrink: 0;
+  }
+  .screen {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    border-radius: 18px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    grid-template-rows: 56px 1fr 40px;
+    grid-template-areas: "header header" "nav main" "footer footer";
+  }
+
+  /* ---------- header ---------- */
+  header.bar {
+    grid-area: header;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 18px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--primary); font-size: 16px; }
+  .brand svg { width: 22px; height: 22px; }
+  .system-status { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-3); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--state-available); box-shadow: 0 0 0 3px var(--state-available-soft); }
+
+  /* ---------- left nav ---------- */
+  nav.rail {
+    grid-area: nav;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 12px 8px;
+    overflow-y: auto;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  nav.rail .group-label { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-3); padding: 10px 8px 4px; }
+  nav.rail button {
+    appearance: none; border: 0; background: transparent; cursor: pointer;
+    text-align: left; padding: 10px 10px;
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; gap: 10px;
+    color: var(--text-2); font-size: 12.5px; font-weight: 500; font-family: var(--font-sans);
+    transition: background .12s, color .12s;
+  }
+  nav.rail button:hover { background: var(--surface-2); color: var(--text); }
+  nav.rail button.active { background: var(--primary-soft); color: var(--primary); font-weight: 600; }
+  nav.rail button svg { width: 18px; height: 18px; flex: 0 0 18px; }
+  nav.rail .nav-divider { border-top: 1px solid var(--border); margin: 8px 4px; }
+
+  /* ---------- main area ---------- */
+  main.content {
+    grid-area: main;
+    overflow-y: auto;
+    padding: 18px;
+    background: var(--bg);
+  }
+  .view { display: none; }
+  .view.active { display: block; }
+
+  h1.page-title { margin: 0 0 4px; font-size: 22px; color: var(--text); letter-spacing: -.01em; }
+  .subtitle { margin: 0 0 18px; font-size: 12.5px; color: var(--text-3); line-height: 1.45; }
+
+  /* cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow-sm);
+  }
+  .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .card-title { font-size: 14px; font-weight: 600; color: var(--text); margin: 0; }
+  .card-sub { font-size: 11.5px; color: var(--text-3); margin: 2px 0 0; }
+
+  /* stat blocks */
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .stat {
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+  }
+  .stat .label { font-size: 11px; color: var(--text-3); margin-bottom: 4px; }
+  .stat .value { font-size: 26px; font-weight: 700; color: var(--text); letter-spacing: -.02em; line-height: 1.1; }
+  .stat .meta { font-size: 11px; color: var(--text-2); margin-top: 6px; }
+
+  /* pills */
+  .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 999px;
+  }
+  .pill.gray { background: #E2E8F0; color: #475569; }
+  .pill.success { background: var(--success-soft); color: var(--success); }
+  .pill.danger { background: var(--danger-soft); color: var(--danger); }
+  .pill.warn { background: var(--sev-warn-soft); color: var(--sev-warn); }
+
+  /* state pill (10-state set, distinct color + glyph) */
+  .state {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 999px;
+  }
+  .state svg { width: 11px; height: 11px; }
+  .state.available { background: var(--state-available-soft); color: var(--state-available); }
+  .state.inuse { background: var(--state-inuse-soft); color: var(--state-inuse); }
+  .state.overdue { background: var(--state-overdue-soft); color: var(--state-overdue); }
+  .state.notdocked { background: var(--state-notdocked-soft); color: var(--state-notdocked); }
+  .state.dooropen { background: var(--state-dooropen-soft); color: var(--state-dooropen); }
+  .state.cleaning { background: var(--state-cleaning-soft); color: var(--state-cleaning); }
+  .state.charging { background: var(--state-charging-soft); color: var(--state-charging); }
+  .state.charged { background: var(--state-charged-soft); color: var(--state-charged); }
+  .state.damaged { background: var(--state-damaged-soft); color: var(--state-damaged); }
+  .state.maint { background: var(--state-maint-soft); color: var(--state-maint); }
+
+  /* severity pills */
+  .sev { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 600; padding: 2px 7px; border-radius: 4px; text-transform: uppercase; letter-spacing: .04em; }
+  .sev.info { background: var(--sev-info-soft); color: var(--sev-info); }
+  .sev.warn { background: var(--sev-warn-soft); color: var(--sev-warn); }
+  .sev.error { background: var(--sev-error-soft); color: var(--sev-error); }
+  .sev.critical { background: var(--sev-critical-soft); color: var(--sev-critical); }
+
+  /* row list */
+  .row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    margin-bottom: 8px;
+  }
+  .row:hover { border-color: var(--border-strong); cursor: pointer; }
+  .row .primary { font-size: 13.5px; font-weight: 600; color: var(--text); }
+  .row .secondary { font-size: 11.5px; color: var(--text-3); margin-top: 2px; }
+  .row .meta { display: flex; gap: 6px; align-items: center; }
+
+  /* filter bar */
+  .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .chip {
+    appearance: none; border: 1px solid var(--border); background: var(--surface);
+    color: var(--text-2); font-size: 12px; padding: 5px 10px;
+    border-radius: 999px; cursor: pointer; font-family: inherit;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+  .chip:hover:not(.active) { border-color: var(--border-strong); }
+
+  .search {
+    width: 100%; box-sizing: border-box;
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 9px 12px 9px 32px; font-size: 13px; color: var(--text);
+    background: var(--surface) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238190A3' stroke-width='2'><circle cx='11' cy='11' r='7'/><path d='m20 20-3.5-3.5'/></svg>") no-repeat 10px 50%/14px 14px;
+    font-family: inherit;
+    margin-bottom: 12px;
+  }
+
+  /* buttons */
+  .btn { appearance: none; border: 0; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600; padding: 9px 14px; border-radius: var(--radius-sm); display: inline-flex; align-items: center; gap: 6px; }
+  .btn.primary { background: var(--primary); color: white; }
+  .btn.primary:hover { background: var(--primary-2); }
+  .btn.ghost { background: transparent; color: var(--text-2); border: 1px solid var(--border); }
+  .btn.ghost:hover { border-color: var(--border-strong); }
+  .btn.danger { background: var(--danger); color: white; }
+  .btn.danger.outline { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
+  .btn.warn { background: var(--sev-warn); color: white; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+  /* toggles */
+  .toggle-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .toggle-row:last-child { border-bottom: 0; }
+  .toggle-row .left { flex: 1; }
+  .toggle-row .label { font-size: 13px; font-weight: 600; color: var(--text); }
+  .toggle-row .help { font-size: 11.5px; color: var(--text-3); margin-top: 2px; line-height: 1.4; }
+  .switch { width: 38px; height: 22px; border-radius: 999px; background: #CBD5E1; position: relative; cursor: pointer; flex-shrink: 0; transition: background .15s; }
+  .switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: white; box-shadow: 0 1px 2px rgba(0,0,0,.2); transition: left .15s; }
+  .switch.on { background: var(--primary); }
+  .switch.on::after { left: 18px; }
+
+  /* form fields */
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 12px; font-weight: 600; color: var(--text-2); margin-bottom: 5px; }
+  .field input, .field select { width: 100%; box-sizing: border-box; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 9px 12px; font-size: 13px; font-family: inherit; color: var(--text); background: var(--surface); }
+  .field .help { font-size: 11.5px; color: var(--text-3); margin-top: 4px; line-height: 1.4; }
+  .field-row { display: flex; gap: 8px; }
+  .field-row .field { flex: 1; }
+  .field-row .field.unit { flex: 0 0 110px; }
+
+  /* segmented control */
+  .segmented {
+    display: inline-flex; background: var(--surface-2);
+    padding: 3px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+    gap: 2px;
+  }
+  .segmented button {
+    appearance: none; border: 0; background: transparent;
+    padding: 6px 14px; font-size: 12.5px; font-weight: 600; color: var(--text-2);
+    border-radius: 4px; cursor: pointer; font-family: inherit;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .segmented button.active { background: var(--primary); color: white; }
+  .segmented.full { display: flex; }
+  .segmented.full button { flex: 1; justify-content: center; }
+
+  /* bay grid */
+  .bay-grid-wrap { display: grid; gap: 10px; }
+  .bay-list-row {
+    display: grid; grid-template-columns: 36px 1fr auto;
+    align-items: center; gap: 10px;
+    padding: 11px 12px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+  }
+  .bay-num {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--surface-2); color: var(--text-2);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px;
+  }
+  .bay-meta { display: flex; flex-direction: column; gap: 3px; }
+  .bay-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .bay-sub { font-size: 11px; color: var(--text-3); }
+
+  /* notifications */
+  .notification {
+    display: flex; gap: 12px;
+    padding: 12px 14px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .notification.unread { border-left: 3px solid var(--accent); padding-left: 11px; }
+  .notification .icon { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .notification .body { flex: 1; min-width: 0; }
+  .notification .title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .notification .desc { font-size: 12px; color: var(--text-2); line-height: 1.4; }
+  .notification .when { font-size: 11px; color: var(--text-3); margin-top: 4px; }
+  .notification .actions { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
+  .text-link { appearance: none; border: 0; background: transparent; font-family: inherit; font-size: 12px; color: var(--accent); cursor: pointer; padding: 2px 4px; }
+  .text-link:hover { text-decoration: underline; }
+
+  /* event row */
+  .event {
+    display: flex; gap: 12px;
+    padding: 12px 14px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+  }
+  .event .when { flex: 0 0 70px; font-size: 11px; color: var(--text-3); padding-top: 2px; }
+  .event .body { flex: 1; }
+  .event .title { font-size: 13px; font-weight: 600; color: var(--text); }
+  .event .desc { font-size: 12px; color: var(--text-2); line-height: 1.4; margin-top: 3px; }
+  .event .ent-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+  .ent-tag { font-size: 10.5px; padding: 2px 7px; border-radius: 4px; background: var(--surface-2); color: var(--text-2); border: 1px solid var(--border); }
+  .ent-tag.bay { background: var(--primary-soft); color: var(--primary); border-color: var(--primary-soft); }
+  .ent-tag.user { background: var(--accent-soft); color: var(--accent); border-color: var(--accent-soft); }
+
+  /* live bay state table */
+  table.live-bays { width: 100%; border-collapse: collapse; font-size: 12px; }
+  table.live-bays thead th { text-align: left; padding: 8px 6px; font-weight: 600; color: var(--text-2); border-bottom: 1px solid var(--border); font-size: 11px; }
+  table.live-bays tbody td { padding: 8px 6px; border-bottom: 1px solid var(--surface-2); color: var(--text); }
+  table.live-bays tbody tr:last-child td { border-bottom: 0; }
+
+  /* footer */
+  footer.foot {
+    grid-area: footer;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 18px;
+    font-size: 11px; color: var(--text-3);
+  }
+
+  /* save bar */
+  .save-bar {
+    position: sticky; bottom: -18px;
+    background: rgba(255,255,255,.95);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    margin: 14px -4px -4px;
+    box-shadow: var(--shadow);
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .save-bar .changed { font-size: 12px; color: var(--text-2); display: flex; align-items: center; gap: 6px; }
+  .save-bar .changed .dot { background: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+  /* sparkline */
+  .sparkline { display: flex; align-items: flex-end; gap: 2px; height: 28px; }
+  .sparkline div { flex: 1; background: var(--accent); opacity: .8; border-radius: 1px 1px 0 0; }
+  .sparkline.warn div { background: var(--sev-warn); }
+  .sparkline.success div { background: var(--success); }
+
+  /* helper */
+  .helper-banner {
+    background: var(--primary-soft);
+    border-left: 3px solid var(--primary);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    font-size: 12px; color: var(--primary);
+    margin-bottom: 12px; line-height: 1.45;
+  }
+  .helper-banner.warn { background: var(--sev-warn-soft); border-color: var(--sev-warn); color: var(--sev-warn); }
+
+  /* engineering toggle */
+  .eng-toggle { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: var(--surface-2); border-radius: var(--radius-sm); margin-bottom: 12px; }
+  .eng-toggle .label { font-size: 12px; color: var(--text-2); }
+
+  .mono { font-family: var(--font-mono); font-size: 11.5px; }
+
+  /* small grid */
+  .mini-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
+  .mini-grid .b {
+    aspect-ratio: 1;
+    border-radius: 6px;
+    border: 1.5px solid;
+    display: flex; align-items: flex-start; justify-content: flex-start;
+    font-size: 11px; font-weight: 700;
+    padding: 3px 4px;
+    position: relative;
+  }
+  .mini-grid .b svg { position: absolute; bottom: 3px; right: 4px; width: 11px; height: 11px; }
+  .mini-grid .b.available { border-color: var(--state-available); background: white; color: var(--state-available); }
+  .mini-grid .b.inuse { border-color: var(--state-inuse); background: white; color: var(--state-inuse); }
+  .mini-grid .b.overdue { border-color: var(--state-overdue); background: var(--state-overdue-soft); color: var(--state-overdue); }
+  .mini-grid .b.charging { border-color: var(--state-charging); background: white; color: var(--state-charging); }
+  .mini-grid .b.charged { border-color: var(--state-charged); background: white; color: var(--state-charged); }
+  .mini-grid .b.damaged { border-color: var(--state-damaged); background: var(--state-damaged-soft); color: var(--state-damaged); }
+  .mini-grid .b.maint { border-color: var(--state-maint); background: var(--state-maint-soft); color: var(--state-maint); }
+  .mini-grid .b.cleaning { border-color: var(--state-cleaning); background: var(--state-cleaning-soft); color: var(--state-cleaning); }
+  .mini-grid .b.dooropen { border-color: var(--state-dooropen); background: var(--state-dooropen-soft); color: var(--state-dooropen); }
+  .mini-grid .b.notdocked { border-color: var(--state-notdocked); background: var(--state-notdocked-soft); color: var(--state-notdocked); }
+
+  .legend-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 12px; margin-top: 10px; font-size: 11px; color: var(--text-2); }
+  .legend-row .li { display: flex; align-items: center; gap: 6px; }
+
+  /* confirm overlay */
+  .overlay {
+    position: absolute; inset: 0;
+    background: rgba(20,30,50,.55);
+    backdrop-filter: blur(2px);
+    display: none;
+    align-items: center; justify-content: center;
+    border-radius: 18px;
+    z-index: 50;
+  }
+  .overlay.show { display: flex; }
+  .confirm {
+    width: 320px; background: white; border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 18px; text-align: center;
+  }
+  .confirm h3 { margin: 0 0 6px; font-size: 16px; color: var(--text); }
+  .confirm p { margin: 0 0 12px; font-size: 12.5px; color: var(--text-2); line-height: 1.45; }
+  .confirm .actions { display: flex; gap: 8px; }
+  .confirm .actions .btn { flex: 1; justify-content: center; }
+  .hold-btn { position: relative; overflow: hidden; }
+  .hold-btn .progress { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: rgba(255,255,255,.25); transition: width 3s linear; }
+  .hold-btn.holding .progress { width: 100%; }
+
+</style>
+</head>
+<body>
+
+<div class="intro">
+  <h1>HonestWaves Tablet Admin — Redesign Prototype</h1>
+  <p>Click any item in the left nav to switch sections. The prototype applies every recommendation from the UI review: unified 10-state palette with distinct color + glyph, sentence-case copy, real names, friendly time formats, explicit save semantics with a sticky save bar, press-and-hold confirmations on destructive hardware actions, the rebuilt operator-facing Stats screen, the Group → Departments rename, and all dev-leak strings removed from operator view.</p>
+  <div class="legend">
+    <span class="swatch"><i style="background:var(--state-available)"></i>Available</span>
+    <span class="swatch"><i style="background:var(--state-inuse)"></i>In use</span>
+    <span class="swatch"><i style="background:var(--state-overdue)"></i>Overdue</span>
+    <span class="swatch"><i style="background:var(--state-notdocked)"></i>Returned, not docked</span>
+    <span class="swatch"><i style="background:var(--state-dooropen)"></i>Door open</span>
+    <span class="swatch"><i style="background:var(--state-cleaning)"></i>Cleaning</span>
+    <span class="swatch"><i style="background:var(--state-charging)"></i>Charging</span>
+    <span class="swatch"><i style="background:var(--state-charged)"></i>Charged</span>
+    <span class="swatch"><i style="background:var(--state-damaged)"></i>Damaged</span>
+    <span class="swatch"><i style="background:var(--state-maint)"></i>Maintenance</span>
+  </div>
+</div>
+
+<div class="tablet">
+  <div class="screen">
+    <header class="bar">
+      <div class="brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c3-6 6 6 9 0s6 6 9 0"/></svg>
+        HonestWaves
+      </div>
+      <div class="system-status"><span class="dot"></span>Online · Synced 12s ago</div>
+    </header>
+
+    <nav class="rail">
+      <button class="active" data-view="overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg>Overview</button>
+      <button data-view="notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>Notifications<span class="pill warn" style="margin-left:auto;font-size:10px;padding:2px 6px">12</span></button>
+      <button data-view="reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>Reports</button>
+
+      <div class="nav-divider"></div>
+      <div class="group-label">Inventory</div>
+      <button data-view="devices"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 19h6"/></svg>Devices</button>
+      <button data-view="models"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Models</button>
+      <button data-view="bays"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>Bays</button>
+
+      <div class="nav-divider"></div>
+      <div class="group-label">People</div>
+      <button data-view="users"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Users</button>
+      <button data-view="departments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-3-3.87"/><path d="M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/><path d="M13 3.13a4 4 0 0 1 0 7.75"/></svg>Departments</button>
+
+      <div class="nav-divider"></div>
+      <div class="group-label">Settings</div>
+      <button data-view="config"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Configuration</button>
+      <button data-view="branding"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 8 22 9 17 14 18 21 12 18 6 21 7 14 2 9 9 8 12 2"/></svg>Branding</button>
+      <button data-view="features"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="8" r="2"/><line x1="8" y1="8" x2="22" y2="8"/><circle cx="16" cy="16" r="2"/><line x1="2" y1="16" x2="14" y2="16"/></svg>Features</button>
+      <button data-view="hardware"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Hardware test</button>
+      <button data-view="stats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>System health</button>
+    </nav>
+
+    <main class="content">
+
+      <!-- =========================== OVERVIEW =========================== -->
+      <section class="view active" data-view="overview">
+        <h1 class="page-title">Overview</h1>
+        <p class="subtitle">At-a-glance status across people, inventory, and activity. Updated just now.</p>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <p class="card-title">People</p>
+              <p class="card-sub">User counts shown by lifecycle status</p>
+            </div>
+          </div>
+          <div class="stat-grid">
+            <div class="stat">
+              <div class="label">Users</div>
+              <div class="value">24</div>
+              <div class="meta">All active · 1 admin</div>
+            </div>
+            <div class="stat">
+              <div class="label">Departments</div>
+              <div class="value">1</div>
+              <div class="meta">Used by access matrix</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <p class="card-title">Inventory</p>
+              <p class="card-sub">Physical devices the kiosk can dispense</p>
+            </div>
+          </div>
+          <div class="stat-grid">
+            <div class="stat">
+              <div class="label">Devices</div>
+              <div class="value">74</div>
+              <div class="meta">All active · 0 lost · 0 retired</div>
+            </div>
+            <div class="stat">
+              <div class="label">Models</div>
+              <div class="value">3</div>
+              <div class="meta">2 chargeable · 1 accessory</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <p class="card-title">Activity (today)</p>
+              <p class="card-sub">Checkouts and returns over the last 24h</p>
+            </div>
+          </div>
+          <div class="stat-grid">
+            <div class="stat">
+              <div class="label">Checkouts</div>
+              <div class="value">18</div>
+              <div class="meta">1 open · 8 closed · 9 cancelled</div>
+            </div>
+            <div class="stat">
+              <div class="label">Overdue</div>
+              <div class="value" style="color:var(--state-overdue)">3</div>
+              <div class="meta">Oldest: 18h 49m past return time</div>
+            </div>
+          </div>
+          <div class="sparkline" style="margin-top:12px">
+            <div style="height:30%"></div><div style="height:50%"></div><div style="height:70%"></div>
+            <div style="height:45%"></div><div style="height:80%"></div><div style="height:65%"></div>
+            <div style="height:90%"></div><div style="height:55%"></div><div style="height:70%"></div>
+            <div style="height:40%"></div><div style="height:60%"></div><div style="height:75%"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <p class="card-title">Recent activity</p>
+          <p class="card-sub" style="margin-bottom:12px">Last 5 events across all bays</p>
+          <div style="font-size:12px; color:var(--text-2); display:flex; flex-direction:column; gap:8px">
+            <div><strong>Changalle Alcante</strong> checked out 3 devices from Bay 1 · <span style="color:var(--text-3)">2 min ago</span></div>
+            <div><strong>Bay 6</strong> was reset to Available · <span style="color:var(--text-3)">14 min ago</span></div>
+            <div><strong>Eric Johnson</strong> returned iPhone 16e #15 to Bay 3 · <span style="color:var(--text-3)">25 min ago</span></div>
+            <div><strong>Bay 4</strong> alarm: door left open for 60 seconds · <span style="color:var(--text-3)">52 min ago</span></div>
+            <div><strong>Casandra Wisoky</strong> checked out Arista badge #11 from Bay 2 · <span style="color:var(--text-3)">1h 4m ago</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================== NOTIFICATIONS =========================== -->
+      <section class="view" data-view="notifications">
+        <h1 class="page-title">Notifications</h1>
+        <p class="subtitle">12 unread · Showing newest first</p>
+
+        <div class="filter-bar">
+          <button class="chip active">All</button>
+          <button class="chip">Info</button>
+          <button class="chip">Warn</button>
+          <button class="chip">Error</button>
+          <button class="chip">Critical</button>
+        </div>
+        <div class="filter-bar" style="margin-bottom:16px">
+          <button class="chip">Last 24h</button>
+          <button class="chip active">Last 7 days</button>
+          <button class="chip">All time</button>
+          <button class="chip" style="margin-left:auto">Mark all read</button>
+        </div>
+
+        <div class="notification unread">
+          <div class="icon" style="background:var(--sev-warn-soft); color:var(--sev-warn)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div class="body">
+            <div class="title">Mode change deferred</div>
+            <div class="desc">Server requested switch to Designated mode, but 13 open checkouts block the change. Will apply once the open checkouts clear.</div>
+            <div class="when">Jun 5 · 12:20 PM <span class="sev warn" style="margin-left:6px">Warning</span></div>
+          </div>
+          <div class="actions">
+            <button class="text-link">Read</button>
+            <button class="text-link">Dismiss</button>
+          </div>
+        </div>
+
+        <div class="notification unread">
+          <div class="icon" style="background:var(--sev-warn-soft); color:var(--sev-warn)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 8v5"/><circle cx="12" cy="16" r="1"/></svg>
+          </div>
+          <div class="body">
+            <div class="title">Door open timeout · Bay 6</div>
+            <div class="desc">Bay 6's door has been open for 60 seconds without activity. Please verify the bay is clear and close the door.</div>
+            <div class="when">Jun 5 · 12:20 PM <span class="sev warn" style="margin-left:6px">Warning</span></div>
+          </div>
+          <div class="actions">
+            <button class="text-link">Acknowledge</button>
+            <button class="text-link">Dismiss</button>
+          </div>
+        </div>
+
+        <div class="notification unread">
+          <div class="icon" style="background:var(--sev-error-soft); color:var(--sev-error)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><circle cx="12" cy="16" r="1"/></svg>
+          </div>
+          <div class="body">
+            <div class="title">Hardware fault: 8 bays unreachable</div>
+            <div class="desc">Bays 1, 2, 3, 4, 5, 6, 7, 8 stopped responding — control board did not reply. Re-probe the hardware or contact support.</div>
+            <div class="when">Jun 5 · 12:18 PM <span class="sev error" style="margin-left:6px">Error</span></div>
+          </div>
+          <div class="actions">
+            <button class="text-link">Re-probe</button>
+            <button class="text-link">Dismiss</button>
+          </div>
+        </div>
+
+        <div class="notification">
+          <div class="icon" style="background:var(--sev-warn-soft); color:var(--sev-warn)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          </div>
+          <div class="body">
+            <div class="title">Checkout overdue · Bay 8</div>
+            <div class="desc">Checkout #10 by Mark Rivera is 18h 49m past the expected return time.</div>
+            <div class="when">Jun 5 · 12:10 PM <span class="sev warn" style="margin-left:6px">Warning</span></div>
+          </div>
+          <div class="actions">
+            <button class="text-link">Read</button>
+            <button class="text-link">Dismiss</button>
+          </div>
+        </div>
+
+        <div class="notification">
+          <div class="icon" style="background:var(--sev-info-soft); color:var(--sev-info)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01"/><path d="M11 12h1v4h1"/></svg>
+          </div>
+          <div class="body">
+            <div class="title">Guest registration denied</div>
+            <div class="desc">Anita Mills (Guest #P-002) was denied at sign-up — duplicate badge ID.</div>
+            <div class="when">Jun 3 · 9:44 AM <span class="sev info" style="margin-left:6px">Info</span></div>
+          </div>
+          <div class="actions">
+            <button class="text-link">View</button>
+            <button class="text-link">Dismiss</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================== REPORTS =========================== -->
+      <section class="view" data-view="reports">
+        <h1 class="page-title">Reports</h1>
+        <p class="subtitle">Chronological activity feed across all bays</p>
+
+        <div class="filter-bar">
+          <button class="chip active">Today</button>
+          <button class="chip">Last 24h</button>
+          <button class="chip">7d</button>
+          <button class="chip">30d</button>
+          <button class="chip">Custom…</button>
+        </div>
+        <div class="filter-bar" style="margin-bottom:16px">
+          <button class="chip">All events</button>
+          <button class="chip">All severities</button>
+          <button class="chip">All bays</button>
+          <button class="chip" style="margin-left:auto">Export ↓</button>
+        </div>
+
+        <div class="event">
+          <div class="when">2 min ago</div>
+          <div class="body">
+            <div class="title">Self-service checkout</div>
+            <div class="desc"><strong>Changalle Alcante</strong> took 3 devices from Bay 1: Sunglasses #1, iPhone 16e #15, Arista badge #11.</div>
+            <div class="ent-tags">
+              <span class="ent-tag bay">Bay 1</span>
+              <span class="ent-tag user">Changalle Alcante</span>
+              <span class="ent-tag">Checkout #18</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="when">14 min ago</div>
+          <div class="body">
+            <div class="title">Bay reset</div>
+            <div class="desc">Bay 6 was reset by <strong>Admin Rowe</strong> from <em>Delayed</em> to <em>Available</em>.</div>
+            <div class="ent-tags">
+              <span class="ent-tag bay">Bay 6</span>
+              <span class="ent-tag user">Admin Rowe</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="when">25 min ago</div>
+          <div class="body">
+            <div class="title">Device returned</div>
+            <div class="desc"><strong>Eric Johnson</strong> returned iPhone 16e #15 to Bay 3. Device is charging.</div>
+            <div class="ent-tags">
+              <span class="ent-tag bay">Bay 3</span>
+              <span class="ent-tag user">Eric Johnson</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="when">52 min ago</div>
+          <div class="body">
+            <div class="title">Door open timeout <span class="sev warn">Warning</span></div>
+            <div class="desc">Bay 4's door was open for 60 seconds without activity. Resolved automatically.</div>
+            <div class="ent-tags">
+              <span class="ent-tag bay">Bay 4</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="when">1h 4m</div>
+          <div class="body">
+            <div class="title">Self-service checkout</div>
+            <div class="desc"><strong>Casandra Wisoky</strong> took Arista badge #11 from Bay 2.</div>
+            <div class="ent-tags">
+              <span class="ent-tag bay">Bay 2</span>
+              <span class="ent-tag user">Casandra Wisoky</span>
+              <span class="ent-tag">Checkout #17</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="when">2h 12m</div>
+          <div class="body">
+            <div class="title">Mode change deferred <span class="sev warn">Warning</span></div>
+            <div class="desc">Server requested switch to Designated mode. 13 open checkouts blocked the change. Will apply once the checkouts clear.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================== DEVICES =========================== -->
+      <section class="view" data-view="devices">
+        <h1 class="page-title">Devices</h1>
+        <p class="subtitle">Inventory of physical devices the kiosk can dispense · 74 total</p>
+
+        <input class="search" placeholder="Search by name, model, or SN…">
+
+        <div class="filter-bar">
+          <button class="chip active">All states</button>
+          <button class="chip">Active</button>
+          <button class="chip">Lost</button>
+          <button class="chip">Retired</button>
+          <button class="chip" style="margin-left:auto">+ Add device</button>
+        </div>
+
+        <div class="row">
+          <div>
+            <div class="primary">iPhone 16e #1</div>
+            <div class="secondary">Apple · SN-A8E91047 · Currently in Bay 1</div>
+          </div>
+          <div class="meta">
+            <span class="state inuse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>In use</span>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <div class="primary">iPhone 16e #2</div>
+            <div class="secondary">Apple · SN-A8E91048 · Currently in Bay 5</div>
+          </div>
+          <div class="meta">
+            <span class="state charging"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2 3 14h8l-1 8 10-12h-8z"/></svg>Charging</span>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <div class="primary">Arista badge #11</div>
+            <div class="secondary">Arista · SN-AR23-0011 · Currently in Bay 2</div>
+          </div>
+          <div class="meta">
+            <span class="state available"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Available</span>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <div class="primary">Arista badge #12</div>
+            <div class="secondary">Arista · SN-AR23-0012 · Last seen: Bay 4 · 3d ago</div>
+          </div>
+          <div class="meta">
+            <span class="state damaged"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M9 15l6-6"/></svg>Damaged</span>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <div class="primary">Sunglasses #1</div>
+            <div class="secondary">Branded swag · Accessory · Currently with Changalle Alcante</div>
+          </div>
+          <div class="meta">
+            <span class="state inuse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>In use</span>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <div class="primary">iPhone 16e #7</div>
+            <div class="secondary">Apple · SN-A8E91053 · <span style="color:var(--state-damaged)">Last known: Bay 7</span></div>
+          </div>
+          <div class="meta">
+            <span class="state damaged"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16v.01"/></svg>Lost</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================== MODELS =========================== -->
+      <section class="view" data-view="models">
+        <h1 class="page-title">Device models</h1>
+        <p class="subtitle">Catalog of device models the kiosk recognizes. The Generic model is required by the system and can't be removed.</p>
+
+        <input class="search" placeholder="Search models…">
+
+        <div class="filter-bar" style="margin-bottom:12px">
+          <button class="chip active">All models</button>
+          <button class="chip">Chargeable</button>
+          <button class="chip">Accessory</button>
+          <button class="chip" style="margin-left:auto">+ Add model</button>
+        </div>
+
+        <div class="row">
+          <div>
+            <div class="primary">iPhone 16e <span class="pill gray" style="margin-left:6px">Chargeable</span></div>
+            <div class="secondary">Apple · 12 devices · Replacement cost $599</div>
+          </div>
+          <div class="meta"><span style="color:var(--text-3); font-size:18px">›</span></div>
+        </div>
+        <div class="row">
+          <div>
+            <div class="primary">Arista badge <span class="pill gray" style="margin-left:6px">Chargeable</span></div>
+            <div class="secondary">Arista · 35 devices · Replacement cost $85</div>
+          </div>
+          <div class="meta"><span style="color:var(--text-3); font-size:18px">›</span></div>
+        </div>
+        <div class="row">
+          <div>
+            <div class="primary">Sunglasses <span class="pill gray" style="margin-left:6px">Accessory</span></div>
+            <div class="secondary">Branded swag · 12 devices · Replacement cost $12</div>
+          </div>
+          <div class="meta"><span style="color:var(--text-3); font-size:18px">›</span></div>
+        </div>
+        <div class="row" style="opacity:.7">
+          <div>
+            <div class="primary">Generic <span class="pill gray" style="margin-left:6px">System</span></div>
+            <div class="secondary">Catch-all model · Required by the system</div>
+          </div>
+          <div class="meta"><span style="color:var(--text-3); font-size:11px">Not editable</span></div>
+        </div>
+      </section>
+
+      <!-- =========================== USERS =========================== -->
+      <section class="view" data-view="users">
+        <h1 class="page-title">Users</h1>
+        <p class="subtitle">Operator-managed roster · 24 total</p>
+
+        <input class="search" placeholder="Search by name, badge, or employee ID…">
+
+        <div class="filter-bar">
+          <button class="chip active">All</button>
+          <button class="chip">Active</button>
+          <button class="chip">Disabled</button>
+          <button class="chip">All departments</button>
+          <button class="chip" style="margin-left:auto">+ Add user</button>
+        </div>
+
+        <div class="row">
+          <div>
+            <div class="primary">Admin Rowe <span class="pill gray" style="margin-left:6px">Admin</span></div>
+            <div class="secondary">Badge ····7f7 · Employee EMP-ADMIN-001 · Corewell POC</div>
+          </div>
+          <div class="meta"><span class="state available">Active</span></div>
+        </div>
+        <div class="row">
+          <div>
+            <div class="primary">Changalle Alcante</div>
+            <div class="secondary">Badge 2983-1381 · Employee 10087333 · Corewell POC · 1 checkout open</div>
+          </div>
+          <div class="meta"><span class="state available">Active</span></div>
+        </div>
+        <div class="row">
+          <div>
+            <div class="primary">Casandra Wisoky</div>
+            <div class="secondary">Badge 3446-0341 · Employee 0521 · Corewell POC</div>
+          </div>
+          <div class="meta"><span class="state available">Active</span></div>
+        </div>
+        <div class="row">
+          <div>
+            <div class="primary">Eric Johnson</div>
+            <div class="secondary">No badge on file · Employee 1364714905 · Corewell POC</div>
+          </div>
+          <div class="meta"><span class="state available">Active</span></div>
+        </div>
+        <div class="row">
+          <div>
+            <div class="primary">Mark Rivera <span class="pill warn" style="margin-left:6px">Overdue</span></div>
+            <div class="secondary">Badge 8273-8285 · Employee 0719 · Corewell POC · iPhone 16e #15 · 18h 49m late</div>
+          </div>
+          <div class="meta"><span class="state overdue">Overdue</span></div>
+        </div>
+        <div class="row">
+          <div>
+            <div class="primary">Bryan Mitchell</div>
+            <div class="secondary">Badge 1907-3742 · No employee ID · Corewell POC</div>
+          </div>
+          <div class="meta"><span class="state available">Active</span></div>
+        </div>
+      </section>
+
+      <!-- =========================== DEPARTMENTS =========================== -->
+      <section class="view" data-view="departments">
+        <h1 class="page-title">Departments</h1>
+        <p class="subtitle">Logical user groupings. Used by Access Matrix for department-targeted access rules.</p>
+
+        <input class="search" placeholder="Search departments…">
+
+        <div class="filter-bar" style="margin-bottom:12px">
+          <button class="chip active">All departments</button>
+          <button class="chip" style="margin-left:auto">+ Add department</button>
+        </div>
+
+        <div class="row">
+          <div>
+            <div class="primary">Corewell POC</div>
+            <div class="secondary">24 users · 2 access rules · Created Jan 12</div>
+          </div>
+          <div class="meta"><span class="state available">Active</span></div>
+        </div>
+
+        <div class="helper-banner" style="margin-top:14px">
+          Add departments to scope user access by team or site. For example: a "Troy ED" department with rules that allow checkout only at Troy kiosks.
+        </div>
+      </section>
+
+      <!-- =========================== BAYS =========================== -->
+      <section class="view" data-view="bays">
+        <h1 class="page-title">Bays</h1>
+        <p class="subtitle">32 bays · Tap any bay to open, configure, or run a manual action.</p>
+
+        <div class="filter-bar">
+          <button class="chip active">All</button>
+          <button class="chip">With issues <span style="background:var(--state-damaged); color:white; padding:0 5px; border-radius:8px; font-size:9.5px; margin-left:3px">3</span></button>
+          <button class="chip">Empty bays <span style="background:var(--state-notdocked); color:white; padding:0 5px; border-radius:8px; font-size:9.5px; margin-left:3px">21</span></button>
+          <button class="chip">In use <span style="background:var(--state-inuse); color:white; padding:0 5px; border-radius:8px; font-size:9.5px; margin-left:3px">1</span></button>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <p class="card-title">Live bay grid</p>
+              <p class="card-sub">Color + glyph indicates state. Color alone is not the only signal — supports color-blind users.</p>
+            </div>
+            <button class="text-link">Open as list ↗</button>
+          </div>
+          <div class="mini-grid">
+            <div class="b inuse">1<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 11l3 3 8-8"/></svg></div>
+            <div class="b available">2<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/></svg></div>
+            <div class="b available">3<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/></svg></div>
+            <div class="b charging">4<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2 3 14h8l-1 8 10-12h-8z"/></svg></div>
+            <div class="b available">5<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/></svg></div>
+            <div class="b cleaning">6<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v6M12 22v-3M4 12H2M22 12h-2"/></svg></div>
+            <div class="b available">7<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/></svg></div>
+            <div class="b charged">8<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg></div>
+            <div class="b available">9<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/></svg></div>
+            <div class="b notdocked">10<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 9v4M12 17v.01"/><circle cx="12" cy="12" r="9"/></svg></div>
+            <div class="b notdocked">11<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 9v4M12 17v.01"/><circle cx="12" cy="12" r="9"/></svg></div>
+            <div class="b dooropen">12<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="5" y="3" width="14" height="18" rx="1"/><circle cx="15" cy="12" r="1"/></svg></div>
+            <div class="b available">13<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/></svg></div>
+            <div class="b damaged">14<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M9 15l6-6"/></svg></div>
+            <div class="b available">15<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/></svg></div>
+            <div class="b maint">16<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+          </div>
+
+          <div class="legend-row">
+            <div class="li"><span class="state available"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/></svg>Available</span></div>
+            <div class="li"><span class="state inuse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 11l3 3 8-8"/></svg>In use</span></div>
+            <div class="li"><span class="state overdue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Overdue</span></div>
+            <div class="li"><span class="state notdocked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 9v4M12 17v.01"/><circle cx="12" cy="12" r="9"/></svg>Returned, not docked</span></div>
+            <div class="li"><span class="state dooropen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="5" y="3" width="14" height="18" rx="1"/></svg>Door open</span></div>
+            <div class="li"><span class="state cleaning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v6M12 22v-3M4 12H2M22 12h-2"/></svg>Cleaning</span></div>
+            <div class="li"><span class="state charging"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2 3 14h8l-1 8 10-12h-8z"/></svg>Charging</span></div>
+            <div class="li"><span class="state charged"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Charged</span></div>
+            <div class="li"><span class="state damaged"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M9 15l6-6"/></svg>Damaged</span></div>
+            <div class="li"><span class="state maint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4"/></svg>Maintenance</span></div>
+          </div>
+        </div>
+
+        <p class="card-title" style="margin: 18px 0 8px">Bays needing attention</p>
+
+        <div class="bay-list-row">
+          <div class="bay-num" style="background:var(--state-overdue-soft); color:var(--state-overdue)">8</div>
+          <div class="bay-meta">
+            <div class="bay-name">Bay 8 · Mark Rivera</div>
+            <div class="bay-sub">iPhone 16e #15 · 18h 49m past return time</div>
+          </div>
+          <div><span class="state overdue">Overdue</span></div>
+        </div>
+        <div class="bay-list-row">
+          <div class="bay-num" style="background:var(--state-damaged-soft); color:var(--state-damaged)">14</div>
+          <div class="bay-meta">
+            <div class="bay-name">Bay 14 · Out of service</div>
+            <div class="bay-sub">Marked damaged Jun 4 by Admin Rowe · Lock actuator unresponsive</div>
+          </div>
+          <div><span class="state damaged">Damaged</span></div>
+        </div>
+        <div class="bay-list-row">
+          <div class="bay-num" style="background:var(--state-notdocked-soft); color:var(--state-notdocked)">21</div>
+          <div class="bay-meta">
+            <div class="bay-name">Bay 21 · Bryan Mitchell</div>
+            <div class="bay-sub">Arista badge #28 scanned at return but not docked · Not charging</div>
+          </div>
+          <div><span class="state notdocked">Not docked</span></div>
+        </div>
+      </section>
+
+      <!-- =========================== CONFIG =========================== -->
+      <section class="view" data-view="config">
+        <h1 class="page-title">Configuration</h1>
+        <p class="subtitle">Locker-wide settings. Changes save with a confirmation.</p>
+
+        <div class="card">
+          <p class="card-title">Locker mode</p>
+          <p class="card-sub" style="margin-bottom:10px">Top-level business mode. Anonymous = passcode at check-in. Designated = identity-gated per bay. Hybrid = both available.</p>
+          <div class="segmented full">
+            <button>Anonymous</button>
+            <button>Designated</button>
+            <button class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13"><path d="M5 13l4 4L19 7"/></svg>Hybrid</button>
+          </div>
+          <div class="helper-banner warn" style="margin-top:10px">Locked — close all 1 open checkout to switch modes.</div>
+        </div>
+
+        <div class="card">
+          <p class="card-title">Late detection</p>
+          <div class="toggle-row">
+            <div class="left">
+              <div class="label">Flag overdue checkouts</div>
+              <div class="help">Mark a checkout as overdue when it passes the threshold below. Notifications fire and the user is flagged at the next check-in.</div>
+            </div>
+            <div class="switch on"></div>
+          </div>
+          <div class="field-row" style="margin-top:10px">
+            <div class="field">
+              <label>Threshold</label>
+              <input value="1">
+            </div>
+            <div class="field unit">
+              <label>Unit</label>
+              <select><option>hour</option><option selected>hours</option><option>minutes</option></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <p class="card-title">Timeouts</p>
+          <div class="field-row" style="margin-top:6px">
+            <div class="field">
+              <label>Door open</label>
+              <input value="60">
+              <div class="help">Alert if a bay door stays open this long.</div>
+            </div>
+            <div class="field unit">
+              <label>Unit</label>
+              <select><option selected>seconds</option><option>minutes</option></select>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Cleaning delay (before UVC)</label>
+              <input value="30">
+            </div>
+            <div class="field unit">
+              <label>Unit</label>
+              <select><option selected>seconds</option></select>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Cleaning duration</label>
+              <input value="30">
+            </div>
+            <div class="field unit">
+              <label>Unit</label>
+              <select><option selected>seconds</option></select>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Max charging time</label>
+              <input value="8">
+            </div>
+            <div class="field unit">
+              <label>Unit</label>
+              <select><option selected>hours</option></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <p class="card-title">Screensaver</p>
+          <div class="toggle-row">
+            <div class="left">
+              <div class="label">Show screensaver when idle</div>
+              <div class="help">Returns to the home screen when the user interacts again.</div>
+            </div>
+            <div class="switch on"></div>
+          </div>
+          <div class="field-row" style="margin-top:10px">
+            <div class="field">
+              <label>Idle timeout</label>
+              <input value="5">
+            </div>
+            <div class="field unit">
+              <label>Unit</label>
+              <select><option selected>minutes</option></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <p class="card-title">Designated mode flows</p>
+          <p class="card-sub" style="margin-bottom:10px">How users identify themselves at check-in and check-out.</p>
+
+          <div style="margin-bottom:14px">
+            <label style="font-size:12px; font-weight:600; color:var(--text-2); display:block; margin-bottom:6px">Check-in identification</label>
+            <div class="segmented full">
+              <button>Device</button>
+              <button>User</button>
+              <button class="active">Both</button>
+            </div>
+            <div class="help" style="font-size:11.5px; color:var(--text-3); margin-top:6px">Both runs in sequence. Order is set by the Return flow below.</div>
+          </div>
+
+          <div class="toggle-row">
+            <div class="left">
+              <div class="label">Require PIN at check-in</div>
+              <div class="help">User confirms identity with PIN in addition to badge.</div>
+            </div>
+            <div class="switch"></div>
+          </div>
+
+          <div class="toggle-row">
+            <div class="left">
+              <div class="label">Require PIN at checkout</div>
+              <div class="help">Recommended on. Strengthens accountability — the device can't be released without identity confirmation.</div>
+            </div>
+            <div class="switch on"></div>
+          </div>
+        </div>
+
+        <div class="save-bar">
+          <div class="changed"><span class="dot"></span>3 unsaved changes</div>
+          <div style="display:flex; gap:8px">
+            <button class="btn ghost">Discard</button>
+            <button class="btn primary">Save changes</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================== BRANDING =========================== -->
+      <section class="view" data-view="branding">
+        <h1 class="page-title">Branding</h1>
+        <p class="subtitle">Customize the look of customer-facing surfaces on this kiosk.</p>
+
+        <div class="card">
+          <p class="card-title">Identity</p>
+          <div class="field">
+            <label>Company name</label>
+            <input value="HonestWaves">
+            <div class="help">Shown in the home top bar. Defaults to "HonestWaves" if cleared.</div>
+          </div>
+          <div class="field">
+            <label>Theme</label>
+            <select><option selected>Day</option><option>Night</option><option>Follow tablet OS</option></select>
+            <div class="help">Day/night mode for the entire kiosk app.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <p class="card-title">Wake screens</p>
+          <p class="card-sub" style="margin-bottom:10px">Splash and screensaver images shown when the kiosk is idle. Custom assets are uploaded via the admin dashboard.</p>
+
+          <div style="margin-bottom:12px">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px">
+              <span style="font-size:13px; font-weight:600">Splash</span>
+              <div class="segmented"><button>Off</button><button class="active">Default</button><button>Custom</button></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px">
+              <span style="font-size:13px; font-weight:600">Screensaver</span>
+              <div class="segmented"><button>Off</button><button class="active">Default</button><button>Custom</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <p class="card-title">Button artwork</p>
+          <p class="card-sub" style="margin-bottom:10px">Icons for check-in and check-out buttons on the kiosk home screen.</p>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
+            <span style="font-size:13px; font-weight:600">Check-in · Anonymous mode</span>
+            <div class="segmented"><button>Off</button><button class="active">Default</button><button>Custom</button></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
+            <span style="font-size:13px; font-weight:600">Check-out · Anonymous mode</span>
+            <div class="segmented"><button>Off</button><button class="active">Default</button><button>Custom</button></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
+            <span style="font-size:13px; font-weight:600">Check-in · Designated mode</span>
+            <div class="segmented"><button>Off</button><button class="active">Default</button><button>Custom</button></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center">
+            <span style="font-size:13px; font-weight:600">Check-out · Designated mode</span>
+            <div class="segmented"><button>Off</button><button class="active">Default</button><button>Custom</button></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================== FEATURES =========================== -->
+      <section class="view" data-view="features">
+        <h1 class="page-title">Features</h1>
+        <p class="subtitle">Enable or disable hardware capabilities. Disabling stops new operations; checkouts already in progress will complete.</p>
+
+        <div class="card">
+          <p class="card-title">Identification</p>
+          <div class="toggle-row">
+            <div class="left">
+              <div class="label">RFID scanner</div>
+              <div class="help">Reads RFID badges held to the kiosk's antenna. <button class="text-link" style="padding:0">Test scan ↗</button></div>
+            </div>
+            <div class="switch on"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="left">
+              <div class="label">NFC scanner</div>
+              <div class="help">Reads NFC badges and phones tapped to the kiosk. <button class="text-link" style="padding:0">Test scan ↗</button></div>
+            </div>
+            <div class="switch on"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="left">
+              <div class="label">Barcode scanner <span class="pill gray" style="margin-left:4px">Optional hardware</span></div>
+              <div class="help">External USB scanner. Disable when no scanner is attached.</div>
+            </div>
+            <div class="switch"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <p class="card-title">Updates</p>
+          <div class="toggle-row">
+            <div class="left">
+              <div class="label">Automatic software updates</div>
+              <div class="help">Pull firmware and app updates from the server overnight. Maintenance window can be scheduled.</div>
+            </div>
+            <div class="switch on"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="eng-toggle">
+            <span class="label">Show engineering features</span>
+            <div class="switch"></div>
+          </div>
+          <p style="font-size:11.5px; color:var(--text-3); margin:0">Reveals subsystems intended for support staff only.</p>
+        </div>
+      </section>
+
+      <!-- =========================== HARDWARE =========================== -->
+      <section class="view" data-view="hardware">
+        <h1 class="page-title">Hardware test</h1>
+        <p class="subtitle">Operate kiosk hardware directly for diagnostics. Destructive actions require confirmation.</p>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <p class="card-title">Live bay state</p>
+              <p class="card-sub">Live polling · Last refresh just now</p>
+            </div>
+            <button class="btn ghost" style="padding:6px 10px; font-size:12px">Re-probe</button>
+          </div>
+          <table class="live-bays">
+            <thead><tr><th>Bay</th><th>State</th><th>Door</th><th>Charging</th><th title="Voltage (resting voltage is ~0.7V when no device is plugged in)">Volts ⓘ</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td><span class="state inuse">In use</span></td><td>Closed</td><td>0.0W</td><td>0.77</td></tr>
+              <tr><td>2</td><td><span class="state available">Available</span></td><td>Closed</td><td>0.0W</td><td>0.78</td></tr>
+              <tr><td>3</td><td><span class="state charging">Charging</span></td><td>Closed</td><td>4.2W</td><td>5.05</td></tr>
+              <tr><td>4</td><td><span class="state available">Available</span></td><td>Closed</td><td>0.0W</td><td>0.78</td></tr>
+              <tr><td>5</td><td><span class="state available">Available</span></td><td>Closed</td><td>0.0W</td><td>0.77</td></tr>
+              <tr><td>6</td><td><span class="state cleaning">Cleaning</span></td><td>Closed</td><td>0.0W</td><td>0.78</td></tr>
+              <tr><td>7</td><td><span class="state available">Available</span></td><td>Closed</td><td>0.0W</td><td>0.78</td></tr>
+              <tr><td>8</td><td><span class="state charged">Charged</span></td><td>Closed</td><td>0.1W</td><td>5.01</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <p class="card-title">Manual hardware actions</p>
+          <p class="card-sub" style="margin-bottom:10px">Pick a target, then run an action. Actions that open a door or change power state will ask for confirmation.</p>
+
+          <div class="field">
+            <label>Apply to</label>
+            <select><option selected>Bay 1</option><option>All bays</option><option>Bay 2</option><option>Bay 3</option></select>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:6px">
+            <button class="btn ghost" onclick="confirmAction('open')" style="justify-content:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="3" y="11" width="18" height="10" rx="1"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Unlock bay</button>
+            <button class="btn ghost" style="justify-content:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M13 2 3 14h8l-1 8 10-12h-8z"/></svg>USB power…</button>
+            <button class="btn warn" onclick="confirmAction('uvc')" style="justify-content:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="12" cy="12" r="5"/><path d="M12 2v3M12 19v3M5 12H2M22 12h-3"/></svg>UVC light…</button>
+            <button class="btn ghost" style="justify-content:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>LED test…</button>
+          </div>
+          <div class="helper-banner warn" style="margin-top:10px">UVC light is a skin and eye hazard. The action requires press-and-hold to start.</div>
+        </div>
+
+        <div class="card">
+          <p class="card-title">Last scan</p>
+          <p class="card-sub" style="margin-bottom:10px">Hold a badge near the antenna to test the scanner.</p>
+          <div style="font-family:var(--font-mono); font-size:12px; background:var(--surface-2); border-radius:var(--radius-sm); padding:10px; color:var(--text-2)">Waiting for scan…</div>
+        </div>
+
+        <div class="overlay" id="confirm-open">
+          <div class="confirm">
+            <h3>Unlock Bay 1?</h3>
+            <p>This will pulse the bay's lock actuator and release the door. The device inside (iPhone 16e #1) will become accessible.</p>
+            <div class="actions">
+              <button class="btn ghost" onclick="closeConfirm()">Cancel</button>
+              <button class="btn primary" onclick="closeConfirm()">Yes, unlock</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="overlay" id="confirm-uvc">
+          <div class="confirm">
+            <h3>Turn on UVC light?</h3>
+            <p>UVC light is a skin and eye hazard. Verify the bay door is closed before continuing.</p>
+            <p><strong>Press and hold to start the cycle.</strong></p>
+            <div class="actions">
+              <button class="btn ghost" onclick="closeConfirm()">Cancel</button>
+              <button class="btn danger hold-btn" id="hold-uvc">
+                <span class="progress"></span>
+                <span style="position:relative">Press &amp; hold to confirm</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================== STATS =========================== -->
+      <section class="view" data-view="stats">
+        <h1 class="page-title">System health</h1>
+        <p class="subtitle">Operational telemetry. Counters refresh every second.</p>
+
+        <div class="stat-grid">
+          <div class="card" style="margin-bottom:0">
+            <div class="label" style="font-size:11px; color:var(--text-3)">Kiosk uptime</div>
+            <div style="font-size:24px; font-weight:700; margin-top:4px">15m 12s</div>
+            <div class="meta" style="font-size:11px; color:var(--text-2); margin-top:4px">Since 18:30 today</div>
+          </div>
+          <div class="card" style="margin-bottom:0">
+            <div class="label" style="font-size:11px; color:var(--text-3)">Cold start</div>
+            <div style="font-size:24px; font-weight:700; margin-top:4px">8.5s</div>
+            <div class="meta" style="font-size:11px; color:var(--text-2); margin-top:4px">From power-on to ready</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:14px">
+          <div class="card-header">
+            <div>
+              <p class="card-title">Hardware probe rate</p>
+              <p class="card-sub">923 polls in the last 15 min · 0 failed</p>
+            </div>
+            <span class="pill success">Healthy</span>
+          </div>
+          <div class="sparkline success">
+            <div style="height:80%"></div><div style="height:75%"></div><div style="height:90%"></div>
+            <div style="height:85%"></div><div style="height:80%"></div><div style="height:88%"></div>
+            <div style="height:82%"></div><div style="height:90%"></div><div style="height:85%"></div>
+            <div style="height:80%"></div><div style="height:88%"></div><div style="height:90%"></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-3); margin-top:6px"><span>Min 998ms</span><span>Avg 1.00s</span><span>Max 1.03s</span></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <p class="card-title">Hardware actions</p>
+              <p class="card-sub">Last 15 min · Unlock / USB / UVC / LED commands</p>
+            </div>
+            <span class="pill success">16 of 16 succeeded</span>
+          </div>
+          <div style="display:flex; gap:14px; font-size:12px">
+            <div><div style="color:var(--text-3); font-size:11px">Unlock</div><div style="font-weight:600">0 / 0</div></div>
+            <div><div style="color:var(--text-3); font-size:11px">USB power</div><div style="font-weight:600">3 / 3</div></div>
+            <div><div style="color:var(--text-3); font-size:11px">UVC</div><div style="font-weight:600">3 / 3</div></div>
+            <div><div style="color:var(--text-3); font-size:11px">LED</div><div style="font-weight:600">10 / 10</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <p class="card-title">Connectivity</p>
+              <p class="card-sub">Server sync and scanner traffic</p>
+            </div>
+            <span class="pill success">Online</span>
+          </div>
+          <div style="font-size:12px; color:var(--text-2); display:flex; flex-direction:column; gap:6px">
+            <div style="display:flex; justify-content:space-between"><span>Server sync</span><span style="color:var(--text)">Last 12 sec ago</span></div>
+            <div style="display:flex; justify-content:space-between"><span>Pending uploads</span><span style="color:var(--text)">0</span></div>
+            <div style="display:flex; justify-content:space-between"><span>Recent scans</span><span style="color:var(--text)">0 in last 15 min</span></div>
+            <div style="display:flex; justify-content:space-between"><span>Timeouts</span><span style="color:var(--sev-warn)">22 in last 24h <button class="text-link" style="padding:0">Why? ↗</button></span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="eng-toggle">
+            <span class="label">Show engineering view</span>
+            <div class="switch"></div>
+          </div>
+          <p style="font-size:11.5px; color:var(--text-3); margin:0">Reveals raw counters (PID, queue depth, MMKV writes, UART stats). Intended for support escalations.</p>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="foot">
+      <div>HonestWaves Console · v2.0.2</div>
+      <button class="text-link" style="padding:0 4px; font-size:11px">Kiosk info ↗</button>
+    </footer>
+  </div>
+</div>
+
+<div class="intro" style="max-width:740px">
+  <h1 style="font-size:14px; margin:0 0 4px">What was redesigned vs. today</h1>
+  <p style="font-size:12px">Every change in this prototype maps back to a finding in the review doc:</p>
+  <ul style="font-size:12px; color:var(--text-2); line-height:1.55; margin:6px 0 0; padding-left:18px">
+    <li>Group → Departments (nav label matches the page title).</li>
+    <li>Unified 10-state palette. Every state has a distinct color <em>and</em> glyph (accessibility for color-blind users).</li>
+    <li>Sentence case for status pills ("Active", not "ACTIVE"). Friendly event names ("Bay reset", not "bay_reset" or "BAY_RESET").</li>
+    <li>Real human names ("Mark Rivera"), real time formats ("18h 49m"). No "user #12" or "1129m".</li>
+    <li>No "Exit App" in the primary nav. No floating back-arrow FAB. Kiosk SN and dev-channel hidden from default view (revealable via "Kiosk info" link in the footer).</li>
+    <li>Configuration: Locker mode, Late detection, Timeouts, Screensaver, and Designated mode flows are separate cards. A sticky save bar appears when there are unsaved changes.</li>
+    <li>Hardware test: explicit confirmation for destructive actions. UVC requires <strong>press-and-hold</strong> to start, with safety messaging.</li>
+    <li>System health: rebuilt as an operator dashboard with plain-English KPIs and sparklines. Raw telemetry (PID, MMKV, UART, queryAllBays) lives under a "Show engineering view" toggle.</li>
+    <li>Features: "(placeholder)" rows removed. "/dev/ttyS3", "APK", "HID" stripped. Test-scan affordances added.</li>
+    <li>Bays: filter chips for "With issues / Empty / In use", a "Bays needing attention" surface up top, and the live grid uses color + glyph (not color alone).</li>
+  </ul>
+</div>
+
+<script>
+  // nav switching
+  document.querySelectorAll('nav.rail button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const view = btn.dataset.view;
+      document.querySelectorAll('nav.rail button').forEach(b => b.classList.toggle('active', b === btn));
+      document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.dataset.view === view));
+      // scroll content to top
+      document.querySelector('main.content').scrollTop = 0;
+    });
+  });
+
+  // toggle switches
+  document.querySelectorAll('.switch').forEach(sw => {
+    sw.addEventListener('click', () => sw.classList.toggle('on'));
+  });
+
+  // segmented controls
+  document.querySelectorAll('.segmented').forEach(seg => {
+    seg.querySelectorAll('button').forEach(b => {
+      b.addEventListener('click', () => {
+        seg.querySelectorAll('button').forEach(x => x.classList.toggle('active', x === b));
+      });
+    });
+  });
+
+  // filter chips (single-select within their bar)
+  document.querySelectorAll('.filter-bar').forEach(bar => {
+    bar.querySelectorAll('.chip').forEach(c => {
+      c.addEventListener('click', () => {
+        // simple toggle — for chips without "active" don't enforce single-select
+        if (c.classList.contains('active')) return;
+        bar.querySelectorAll('.chip.active').forEach(x => x.classList.remove('active'));
+        c.classList.add('active');
+      });
+    });
+  });
+
+  // confirm overlays
+  function confirmAction(which) {
+    const el = document.getElementById('confirm-' + which);
+    if (el) el.classList.add('show');
+  }
+  function closeConfirm() {
+    document.querySelectorAll('.overlay').forEach(o => o.classList.remove('show'));
+  }
+
+  // press-and-hold for UVC
+  const holdBtn = document.getElementById('hold-uvc');
+  if (holdBtn) {
+    let timer = null;
+    holdBtn.addEventListener('mousedown', () => {
+      holdBtn.classList.add('holding');
+      timer = setTimeout(() => {
+        alert('UVC cycle started.');
+        holdBtn.classList.remove('holding');
+        closeConfirm();
+      }, 3000);
+    });
+    const cancel = () => { if (timer) clearTimeout(timer); holdBtn.classList.remove('holding'); };
+    holdBtn.addEventListener('mouseup', cancel);
+    holdBtn.addEventListener('mouseleave', cancel);
+  }
+</script>
+
+</body>
+</html>
