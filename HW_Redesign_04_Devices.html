@@ -45,7 +45,39 @@
     button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
     svg{display:block}
 
-    .shell{display:grid;grid-template-columns:var(--sidebar-w) 1fr;grid-template-rows:var(--topbar-h) 1fr;grid-template-areas:"logo topbar" "side main";min-height:100vh}
+    .shell{display:grid;grid-template-columns:var(--sidebar-w) 1fr 380px;grid-template-rows:var(--topbar-h) 1fr;grid-template-areas:"logo topbar topbar" "side main drawer";min-height:100vh}
+    @media (max-width:1280px){.shell{grid-template-columns:var(--sidebar-w) 1fr;grid-template-areas:"logo topbar" "side main"}.drawer-side{display:none!important}}
+    .drawer-side{grid-area:drawer;background:var(--c-surface);border-left:1px solid var(--c-border);overflow-y:auto;box-shadow:-8px 0 24px rgba(15,23,42,.04)}
+    .drawer-head{padding:var(--s-4);border-bottom:1px solid var(--c-divider);position:sticky;top:0;background:var(--c-surface);z-index:3}
+    .drawer-head-row{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s-3)}
+    .drawer-title{font-size:var(--t-16);font-weight:600;letter-spacing:-.01em;margin:0;line-height:1.2}
+    .drawer-sub{font-size:var(--t-11);color:var(--c-text-muted);margin-top:4px;font-family:var(--font-mono)}
+    .drawer-close{width:28px;height:28px;display:grid;place-items:center;border-radius:var(--r-md);color:var(--c-text-2);flex-shrink:0}
+    .drawer-close:hover{background:var(--c-surface-3)}
+    .drawer-section{padding:var(--s-4);border-bottom:1px solid var(--c-divider)}
+    .drawer-section:last-child{border-bottom:0}
+    .drawer-h{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--c-text-muted);margin:0 0 var(--s-2)}
+    .info-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:var(--t-12);border-bottom:1px solid var(--c-divider)}
+    .info-row:last-child{border-bottom:0}
+    .info-label{color:var(--c-text-2)}
+    .info-value{font-weight:600;color:var(--c-text);font-variant-numeric:tabular-nums}
+    .info-value.mono{font-family:var(--font-mono);font-size:var(--t-11)}
+    .info-value.money{font-family:var(--font-mono);color:var(--c-money)}
+    .drawer-charge{height:50px;margin-top:var(--s-2)}
+    .drawer-event{display:flex;align-items:center;gap:var(--s-3);padding:7px 0;border-bottom:1px solid var(--c-divider);font-size:var(--t-12)}
+    .drawer-event:last-child{border-bottom:0}
+    .drawer-event .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .drawer-event .meta{flex:1;line-height:1.3;min-width:0}
+    .drawer-event .title{font-weight:500;color:var(--c-text);font-size:var(--t-12)}
+    .drawer-event .time{font-size:10px;color:var(--c-text-muted)}
+    .drawer-actions{display:flex;gap:6px;padding:var(--s-3) var(--s-4);background:var(--c-surface-2);border-top:1px solid var(--c-divider);flex-wrap:wrap}
+    .drawer-actions .btn{height:28px;font-size:var(--t-11);padding:0 10px;box-shadow:none}
+    .drawer-actions .btn.danger{color:var(--c-danger);border-color:var(--c-border)}
+    .owner-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#F59E0B,#D97706);color:white;font-size:11px;font-weight:600;display:grid;place-items:center;flex-shrink:0}
+    .owner-row{display:flex;align-items:center;gap:var(--s-3);padding:var(--s-2) 0}
+    .owner-meta{flex:1;line-height:1.2}
+    .owner-name{font-weight:600;font-size:var(--t-13);color:var(--c-text)}
+    .owner-sub{font-size:var(--t-11);color:var(--c-text-muted)}
 
     /* Chrome (same pattern as other prototypes) */
     .logo{grid-area:logo;background:var(--c-surface);border-right:1px solid var(--c-border);border-bottom:1px solid var(--c-border);display:flex;align-items:center;gap:10px;padding:0 var(--s-4);font-weight:600;font-size:var(--t-14)}
@@ -1224,6 +1256,94 @@
 
       </div>
     </main>
+
+    <!-- ============================================================
+         Right-side drawer — device detail (iPhone13, the overdue device)
+         ============================================================ -->
+    <aside class="drawer-side">
+      <div class="drawer-head">
+        <div class="drawer-head-row">
+          <div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+              <span class="pill warn pulse"><span class="pill-dot"></span>Overdue 10d 8h</span>
+            </div>
+            <h2 class="drawer-title">iPhone13</h2>
+            <div class="drawer-sub">SN-87133 · iPhone 16e</div>
+          </div>
+          <button class="drawer-close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg></button>
+        </div>
+      </div>
+
+      <div class="drawer-section">
+        <p class="drawer-h">Identity</p>
+        <div class="info-row"><span class="info-label">Display name</span><span class="info-value">iPhone13</span></div>
+        <div class="info-row"><span class="info-label">Model</span><span class="info-value">iPhone 16e</span></div>
+        <div class="info-row"><span class="info-label">Serial</span><span class="info-value mono">SN-87133</span></div>
+        <div class="info-row"><span class="info-label">NFC tag</span><span class="info-value mono">87133</span></div>
+        <div class="info-row"><span class="info-label">RFID tag</span><span class="info-value mono">—</span></div>
+        <div class="info-row"><span class="info-label">Replacement cost</span><span class="info-value money">$599</span></div>
+      </div>
+
+      <div class="drawer-section">
+        <p class="drawer-h">Currently with</p>
+        <div class="owner-row">
+          <div class="owner-avatar">Q</div>
+          <div class="owner-meta">
+            <div class="owner-name">Q</div>
+            <div class="owner-sub">EMP-Q-001 · Troy Hospital · Emergency Center</div>
+          </div>
+        </div>
+        <div class="info-row" style="border-top:1px solid var(--c-divider);margin-top:8px;padding-top:10px;"><span class="info-label">Checked out</span><span class="info-value">Apr 10 · 7:00 AM</span></div>
+        <div class="info-row"><span class="info-label">Expected back</span><span class="info-value">Apr 10 · 3:00 PM</span></div>
+        <div class="info-row"><span class="info-label">Overdue by</span><span class="info-value" style="color:var(--c-danger);">10d 8h</span></div>
+      </div>
+
+      <div class="drawer-section">
+        <p class="drawer-h">Current location</p>
+        <div class="info-row"><span class="info-label">Locker</span><span class="info-value">Orange</span></div>
+        <div class="info-row"><span class="info-label">Bay</span><span class="info-value">Bay 13</span></div>
+        <div class="info-row"><span class="info-label">Location</span><span class="info-value">Troy Hospital</span></div>
+        <div class="info-row"><span class="info-label">Department</span><span class="info-value">Emergency Center</span></div>
+      </div>
+
+      <div class="drawer-section">
+        <p class="drawer-h">Charge history · last 7 days</p>
+        <svg class="drawer-charge" viewBox="0 0 340 50" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="chargeGrad" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#7C3AED" stop-opacity=".25"/>
+              <stop offset="100%" stop-color="#7C3AED" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,40 L40,38 L80,32 L120,22 L160,14 L200,18 L240,28 L280,38 L320,42 L340,42 L340,50 L0,50 Z" fill="url(#chargeGrad)"/>
+          <path d="M0,40 L40,38 L80,32 L120,22 L160,14 L200,18 L240,28 L280,38 L320,42 L340,42" stroke="#7C3AED" stroke-width="1.5" fill="none"/>
+        </svg>
+        <div style="font-size:10px;color:var(--c-text-muted);text-align:center;margin-top:4px;">No charge sessions since Apr 10 · device is off-grid</div>
+      </div>
+
+      <div class="drawer-section">
+        <p class="drawer-h">Recent events</p>
+        <div class="drawer-event">
+          <span class="dot" style="background:var(--c-warning);"></span>
+          <div class="meta"><div class="title">Checkout overdue</div><div class="time">Apr 17 · 3:00 PM</div></div>
+        </div>
+        <div class="drawer-event">
+          <span class="dot" style="background:var(--c-info);"></span>
+          <div class="meta"><div class="title">Checked out by Q</div><div class="time">Apr 10 · 7:00 AM</div></div>
+        </div>
+        <div class="drawer-event">
+          <span class="dot" style="background:var(--c-success);"></span>
+          <div class="meta"><div class="title">Returned by Picard</div><div class="time">Apr 9 · 6:55 PM</div></div>
+        </div>
+      </div>
+
+      <div class="drawer-actions">
+        <button class="btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07"/></svg>Contact Q</button>
+        <button class="btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/></svg>Edit</button>
+        <button class="btn danger"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>Mark lost</button>
+      </div>
+    </aside>
+
   </div>
 
   <script>

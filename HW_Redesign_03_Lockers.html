@@ -82,11 +82,41 @@
 
     .shell {
       display: grid;
-      grid-template-columns: var(--sidebar-w) 1fr;
+      grid-template-columns: var(--sidebar-w) 1fr 380px;
       grid-template-rows: var(--topbar-h) 1fr;
-      grid-template-areas: "logo topbar" "side main";
+      grid-template-areas: "logo topbar topbar" "side main drawer";
       min-height: 100vh;
     }
+    @media (max-width: 1280px) {
+      .shell { grid-template-columns: var(--sidebar-w) 1fr; grid-template-areas: "logo topbar" "side main"; }
+      .drawer-side { display: none !important; }
+    }
+    .drawer-side { grid-area: drawer; background: var(--c-surface); border-left: 1px solid var(--c-border); overflow-y: auto; box-shadow: -8px 0 24px rgba(15,23,42,.04); }
+    .drawer-head { padding: var(--s-4); border-bottom: 1px solid var(--c-divider); position: sticky; top: 0; background: var(--c-surface); z-index: 3; }
+    .drawer-head-row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-3); }
+    .drawer-title { font-size: var(--t-16); font-weight: 600; letter-spacing: -.01em; margin: 0; line-height: 1.2; }
+    .drawer-sub { font-size: var(--t-11); color: var(--c-text-muted); margin-top: 4px; font-family: var(--font-mono); }
+    .drawer-close { width: 28px; height: 28px; display: grid; place-items: center; border-radius: var(--r-md); color: var(--c-text-2); flex-shrink: 0; }
+    .drawer-close:hover { background: var(--c-surface-3); }
+    .drawer-section { padding: var(--s-4); border-bottom: 1px solid var(--c-divider); }
+    .drawer-section:last-child { border-bottom: 0; }
+    .drawer-h { font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--c-text-muted); margin: 0 0 var(--s-2); }
+    .info-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; font-size: var(--t-12); border-bottom: 1px solid var(--c-divider); }
+    .info-row:last-child { border-bottom: 0; }
+    .info-label { color: var(--c-text-2); }
+    .info-value { font-weight: 600; color: var(--c-text); font-variant-numeric: tabular-nums; }
+    .info-value.mono { font-family: var(--font-mono); font-size: var(--t-11); }
+    .drawer-bay-mini { display: grid; grid-template-columns: repeat(8, 1fr); gap: 3px; margin-top: var(--s-2); }
+    .drawer-bay-mini .b { aspect-ratio: 1; border-radius: 2px; }
+    .drawer-event { display: flex; align-items: center; gap: var(--s-3); padding: 7px 0; border-bottom: 1px solid var(--c-divider); font-size: var(--t-12); }
+    .drawer-event:last-child { border-bottom: 0; }
+    .drawer-event .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .drawer-event .meta { flex: 1; line-height: 1.3; min-width: 0; }
+    .drawer-event .title { font-weight: 500; color: var(--c-text); font-size: var(--t-12); }
+    .drawer-event .time { font-size: 10px; color: var(--c-text-muted); }
+    .drawer-actions { display: flex; gap: 6px; padding: var(--s-3) var(--s-4); background: var(--c-surface-2); border-top: 1px solid var(--c-divider); flex-wrap: wrap; }
+    .drawer-actions .btn { height: 28px; font-size: var(--t-11); padding: 0 10px; box-shadow: none; }
+    .drawer-actions .btn.danger { color: var(--c-danger); border-color: var(--c-border); }
 
     /* ============================================================
        Chrome (same as 01/02) — abbreviated for brevity
@@ -1558,6 +1588,88 @@
 
       </div>
     </main>
+
+    <!-- ============================================================
+         Right-side drawer — locker detail for Pink8 (selected by default)
+         ============================================================ -->
+    <aside class="drawer-side">
+      <div class="drawer-head">
+        <div class="drawer-head-row">
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+              <span class="pill success" style="display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 8px;border-radius:999px;font-size:11px;font-weight:600;"><span class="pill-dot"></span>Online</span>
+              <span class="profile-chip" style="display:inline-flex;"><span class="profile-dot"></span>Profile One</span>
+            </div>
+            <h2 class="drawer-title">Pink8</h2>
+            <div class="drawer-sub">5c00…b221d · 8-bay model</div>
+          </div>
+          <button class="drawer-close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg></button>
+        </div>
+      </div>
+
+      <div class="drawer-section">
+        <p class="drawer-h">Identity</p>
+        <div class="info-row"><span class="info-label">Display name</span><span class="info-value">Pink8</span></div>
+        <div class="info-row"><span class="info-label">Serial</span><span class="info-value mono">5c000c89c3c606b221d</span></div>
+        <div class="info-row"><span class="info-label">Location</span><span class="info-value">HonestWaves OC Office</span></div>
+        <div class="info-row"><span class="info-label">Department</span><span class="info-value">Demo · Newport Beach</span></div>
+        <div class="info-row"><span class="info-label">Model</span><span class="info-value">8-bay</span></div>
+        <div class="info-row"><span class="info-label">IP address</span><span class="info-value mono">10.12.50.31</span></div>
+      </div>
+
+      <div class="drawer-section">
+        <p class="drawer-h">Bay state · live</p>
+        <div class="drawer-bay-mini">
+          <div class="b" style="background:var(--c-warning);"></div>
+          <div class="b" style="background:var(--c-warning);"></div>
+          <div class="b" style="background:#FB7185;"></div>
+          <div class="b" style="background:var(--c-warning);"></div>
+          <div class="b" style="background:var(--c-warning);"></div>
+          <div class="b" style="background:#FB7185;"></div>
+          <div class="b" style="background:#FB7185;"></div>
+          <div class="b" style="background:var(--c-warning);"></div>
+        </div>
+        <div style="display:flex;gap:14px;font-size:10px;color:var(--c-text-2);margin-top:8px;">
+          <span><span style="display:inline-block;width:8px;height:8px;background:var(--c-warning);border-radius:2px;vertical-align:middle;margin-right:4px;"></span>5 overdue</span>
+          <span><span style="display:inline-block;width:8px;height:8px;background:#FB7185;border-radius:2px;vertical-align:middle;margin-right:4px;"></span>3 no device</span>
+        </div>
+      </div>
+
+      <div class="drawer-section">
+        <p class="drawer-h">Software</p>
+        <div class="info-row"><span class="info-label">Installed version</span><span class="info-value mono">2.1.23.3003</span></div>
+        <div class="info-row"><span class="info-label">Update status</span><span class="info-value" style="color:var(--c-info);">Updating · 58%</span></div>
+        <div class="info-row"><span class="info-label">Last reported</span><span class="info-value">3 sec ago</span></div>
+      </div>
+
+      <div class="drawer-section">
+        <p class="drawer-h">Recent events · last 24h</p>
+        <div class="drawer-event">
+          <span class="dot" style="background:var(--c-danger);"></span>
+          <div class="meta"><div class="title">Hardware fault · bays 3, 6, 7</div><div class="time">3 min ago</div></div>
+        </div>
+        <div class="drawer-event">
+          <span class="dot" style="background:var(--c-warning);"></span>
+          <div class="meta"><div class="title">Door left open · Bay 4</div><div class="time">14 min ago</div></div>
+        </div>
+        <div class="drawer-event">
+          <span class="dot" style="background:var(--c-warning);"></span>
+          <div class="meta"><div class="title">3 checkouts went overdue</div><div class="time">22h ago</div></div>
+        </div>
+        <div class="drawer-event">
+          <span class="dot" style="background:var(--c-success);"></span>
+          <div class="meta"><div class="title">Sync command succeeded</div><div class="time">3h ago</div></div>
+        </div>
+      </div>
+
+      <div class="drawer-actions">
+        <button class="btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Open Mission Control</button>
+        <button class="btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/></svg>Edit</button>
+        <button class="btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>Sync now</button>
+        <button class="btn danger"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/></svg>Delete</button>
+      </div>
+    </aside>
+
   </div>
 
   <script>

@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1440">
+  <title>HonestWaves redesign · 11 · Settings</title>
+  <style>
+    :root{
+      --c-surface:#FFFFFF; --c-surface-2:#FAFAFB; --c-surface-3:#F4F5F7;
+      --c-border:#E5E7EB; --c-border-strong:#D1D5DB; --c-divider:#EDF0F4;
+      --c-text:#0F172A; --c-text-2:#475569; --c-text-muted:#94A3B8;
+      --c-brand:#2563EB; --c-brand-hover:#1D4ED8; --c-brand-soft:#EFF6FF; --c-brand-deep:#1E40AF;
+      --c-success:#10B981; --c-success-soft:#ECFDF5;
+      --c-warning:#F59E0B; --c-warning-soft:#FFFBEB; --c-warning-text:#B45309;
+      --c-danger:#EF4444; --c-danger-soft:#FEF2F2;
+      --c-info:#6366F1; --c-info-soft:#EEF2FF;
+      --c-violet:#7C3AED; --c-violet-soft:#F5F3FF;
+      --c-cyan:#06B6D4; --c-cyan-soft:#ECFEFF;
+      --font-sans:"Inter",-apple-system,sans-serif;
+      --font-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+      --t-10:10px; --t-11:11px; --t-12:12px; --t-13:13px; --t-14:14px; --t-16:16px; --t-20:20px;
+      --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:20px; --s-6:24px;
+      --r-sm:4px; --r-md:6px; --r-lg:8px;
+      --sh-1:0 1px 2px rgba(15,23,42,.04);
+      --sidebar-w:232px; --topbar-h:52px; --settings-w:220px;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:var(--font-sans);font-size:var(--t-13);line-height:1.45;color:var(--c-text);background:var(--c-surface-2);-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+    svg{display:block}
+    .shell{display:grid;grid-template-columns:var(--sidebar-w) 1fr;grid-template-rows:var(--topbar-h) 1fr;grid-template-areas:"logo topbar" "side main";min-height:100vh}
+    .logo{grid-area:logo;background:var(--c-surface);border-right:1px solid var(--c-border);border-bottom:1px solid var(--c-border);display:flex;align-items:center;gap:10px;padding:0 var(--s-4);font-weight:600;font-size:var(--t-14)}
+    .logo-mark{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--c-brand),var(--c-brand-deep));display:grid;place-items:center;color:white;font-weight:700;font-size:13px}
+    .logo-tenant{margin-left:auto;font-size:var(--t-11);color:var(--c-text-muted);background:var(--c-surface-3);padding:2px 6px;border-radius:var(--r-sm);font-weight:500}
+    .topbar{grid-area:topbar;background:var(--c-surface);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 var(--s-5);gap:var(--s-3)}
+    .breadcrumb{display:flex;align-items:center;gap:var(--s-2);color:var(--c-text-2);font-size:var(--t-13)}
+    .breadcrumb strong{color:var(--c-text);font-weight:600}
+    .topbar-spacer{flex:1}
+    .search{display:flex;align-items:center;gap:var(--s-2);width:340px;height:32px;padding:0 var(--s-3);background:var(--c-surface-2);border:1px solid var(--c-border);border-radius:var(--r-md);color:var(--c-text-muted);font-size:var(--t-13)}
+    .search-kbd{margin-left:auto;padding:1px 5px;font-family:var(--font-mono);font-size:10px;color:var(--c-text-2);background:var(--c-surface);border:1px solid var(--c-border);border-radius:3px}
+    .icon-btn{width:32px;height:32px;display:grid;place-items:center;border-radius:var(--r-md);color:var(--c-text-2);position:relative}
+    .icon-btn:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .icon-btn .badge{position:absolute;top:2px;right:2px;min-width:16px;height:16px;padding:0 4px;background:var(--c-danger);color:white;border:2px solid var(--c-surface);border-radius:999px;font-size:9px;font-weight:700;display:grid;place-items:center}
+    .avatar-btn{display:flex;align-items:center;gap:var(--s-2);padding:4px 8px 4px 4px;border-radius:var(--r-md)}
+    .avatar-btn:hover{background:var(--c-surface-3)}
+    .avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#6366F1,#2563EB);color:white;font-size:11px;font-weight:600;display:grid;place-items:center}
+    .avatar-meta{line-height:1.1;text-align:left}
+    .avatar-name{font-size:var(--t-12);font-weight:600}
+    .avatar-email{font-size:var(--t-11);color:var(--c-text-muted)}
+    .sidebar{grid-area:side;background:var(--c-surface);border-right:1px solid var(--c-border);padding:var(--s-3) var(--s-2);overflow-y:auto}
+    .nav-group{margin-bottom:var(--s-4)}
+    .nav-group-label{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--c-text-muted);padding:0 var(--s-3);margin:0 0 4px}
+    .nav-item{display:flex;align-items:center;gap:var(--s-3);padding:7px var(--s-3);border-radius:var(--r-md);font-size:var(--t-13);color:var(--c-text-2);position:relative}
+    .nav-item:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .nav-item.active{background:var(--c-brand-soft);color:var(--c-brand-deep);font-weight:600}
+    .nav-item.active::before{content:"";position:absolute;left:-2px;top:8px;bottom:8px;width:2px;background:var(--c-brand);border-radius:2px}
+    .nav-icon{width:16px;height:16px;flex-shrink:0;opacity:.85}
+    .nav-item.active .nav-icon{opacity:1}
+    .nav-badge{margin-left:auto;font-size:10px;font-weight:600;padding:1px 6px;border-radius:999px;background:var(--c-danger-soft);color:var(--c-danger)}
+
+    /* Main split — settings side nav + content */
+    .main{grid-area:main;overflow-y:auto;display:grid;grid-template-columns:var(--settings-w) 1fr;min-height:calc(100vh - var(--topbar-h))}
+    .settings-nav{background:var(--c-surface);border-right:1px solid var(--c-border);padding:var(--s-5) var(--s-3);overflow-y:auto}
+    .settings-nav-h{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--c-text-muted);padding:0 var(--s-2);margin:0 0 var(--s-2)}
+    .settings-nav-h:not(:first-child){margin-top:var(--s-4)}
+    .s-nav-item{display:flex;align-items:center;gap:8px;padding:6px var(--s-2);border-radius:var(--r-md);font-size:var(--t-12);color:var(--c-text-2);cursor:pointer}
+    .s-nav-item:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .s-nav-item.active{background:var(--c-brand-soft);color:var(--c-brand-deep);font-weight:600}
+    .s-nav-item .s-nav-icon{width:14px;height:14px;flex-shrink:0;opacity:.85}
+    .s-nav-item.active .s-nav-icon{opacity:1}
+    .s-nav-item .new-tag{margin-left:auto;font-size:8px;font-weight:700;padding:1px 4px;border-radius:3px;background:var(--c-violet-soft);color:var(--c-violet);text-transform:uppercase;letter-spacing:.04em}
+
+    .content{padding:var(--s-5) var(--s-6);max-width:840px}
+    .page-head{margin-bottom:var(--s-5)}
+    .page-title{font-size:var(--t-20);font-weight:600;letter-spacing:-.01em;margin:0 0 4px}
+    .page-sub{font-size:var(--t-12);color:var(--c-text-2);margin:0}
+
+    /* Section card */
+    .card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-lg);margin-bottom:var(--s-4)}
+    .card-head{padding:var(--s-4) var(--s-5);border-bottom:1px solid var(--c-divider);display:flex;align-items:center;justify-content:space-between}
+    .card-title{font-size:var(--t-14);font-weight:600;margin:0;letter-spacing:-.005em}
+    .card-sub{font-size:var(--t-11);color:var(--c-text-2);margin-top:3px}
+    .card-body{padding:var(--s-4) var(--s-5)}
+    .card-foot{padding:var(--s-3) var(--s-5);background:var(--c-surface-2);border-top:1px solid var(--c-divider);display:flex;justify-content:flex-end;gap:var(--s-2);border-radius:0 0 var(--r-lg) var(--r-lg)}
+
+    /* Fields */
+    .field{margin-bottom:var(--s-4)}
+    .field:last-child{margin-bottom:0}
+    .field-label{display:block;font-size:var(--t-12);font-weight:600;color:var(--c-text);margin-bottom:6px}
+    .field-label .required{color:var(--c-danger);margin-left:2px}
+    .field-input{display:flex;align-items:center;gap:var(--s-2);height:36px;padding:0 var(--s-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);font-size:var(--t-13);color:var(--c-text)}
+    .field-input:focus-within{border-color:var(--c-brand);box-shadow:0 0 0 3px var(--c-brand-soft)}
+    .field-input input{flex:1;height:100%;border:0;background:transparent;outline:none;font:inherit;color:inherit}
+    .field-input input::placeholder{color:var(--c-text-muted)}
+    .field-help{font-size:var(--t-11);color:var(--c-text-muted);margin-top:5px}
+    .field-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-3)}
+    .field.mono input{font-family:var(--font-mono);font-size:var(--t-12)}
+
+    /* Toggle */
+    .toggle-row{display:flex;align-items:flex-start;gap:var(--s-3);padding:var(--s-3) 0;border-bottom:1px solid var(--c-divider)}
+    .toggle-row:last-child{border-bottom:0}
+    .toggle-row:first-child{padding-top:0}
+    .toggle-meta{flex:1}
+    .toggle-label{font-size:var(--t-13);font-weight:600;color:var(--c-text)}
+    .toggle-sub{font-size:var(--t-11);color:var(--c-text-2);margin-top:3px;line-height:1.5}
+    .toggle{width:36px;height:20px;border-radius:999px;background:var(--c-border-strong);position:relative;flex-shrink:0;cursor:pointer;transition:background .12s;margin-top:2px}
+    .toggle::before{content:"";position:absolute;left:2px;top:2px;width:16px;height:16px;border-radius:50%;background:white;box-shadow:0 1px 2px rgba(0,0,0,.1);transition:left .12s}
+    .toggle.on{background:var(--c-brand)}
+    .toggle.on::before{left:18px}
+
+    /* Branding asset grid */
+    .asset-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-3)}
+    .asset-card{border:1px solid var(--c-border);border-radius:var(--r-md);overflow:hidden;background:var(--c-surface);transition:border-color .12s,box-shadow .12s;cursor:pointer}
+    .asset-card:hover{border-color:var(--c-brand);box-shadow:0 4px 12px rgba(37,99,235,.08)}
+    .asset-preview{aspect-ratio:1;background:var(--c-surface-3);display:grid;place-items:center;position:relative;border-bottom:1px solid var(--c-divider)}
+    .asset-preview .placeholder{color:var(--c-text-muted);font-size:22px}
+    .asset-preview .uploaded{background:linear-gradient(135deg,#3B82F6 0%,#1E40AF 100%);width:100%;height:100%;display:grid;place-items:center;color:white;font-weight:700;font-size:14px;letter-spacing:.04em}
+    .asset-meta{padding:8px 10px}
+    .asset-label{font-size:var(--t-11);font-weight:600;color:var(--c-text)}
+    .asset-state{font-size:10px;color:var(--c-text-muted);margin-top:2px;display:flex;align-items:center;gap:4px}
+    .asset-state.uploaded{color:var(--c-success)}
+    .asset-state .dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+
+    /* Identity provider strip */
+    .id-strip{display:flex;align-items:center;gap:var(--s-3);padding:var(--s-4) var(--s-5);background:linear-gradient(90deg,var(--c-violet-soft),#FAF5FF);border:1px solid #E9D5FF;border-radius:var(--r-md);margin-bottom:var(--s-4)}
+    .id-icon{width:36px;height:36px;border-radius:var(--r-md);background:var(--c-violet);color:white;display:grid;place-items:center;flex-shrink:0}
+    .id-meta{flex:1;line-height:1.3}
+    .id-title{font-weight:600;font-size:var(--t-13);color:var(--c-violet)}
+    .id-sub{font-size:var(--t-11);color:var(--c-text-2)}
+    .id-status{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;background:var(--c-success-soft);color:var(--c-success);border-radius:999px;font-size:var(--t-11);font-weight:600}
+    .id-status .dot{width:6px;height:6px;border-radius:50%;background:var(--c-success)}
+
+    .btn{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 var(--s-3);font-size:var(--t-12);font-weight:500;color:var(--c-text);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);box-shadow:var(--sh-1)}
+    .btn:hover{background:var(--c-surface-3);border-color:var(--c-border-strong)}
+    .btn.primary{background:var(--c-brand);color:white;border-color:var(--c-brand)}
+    .btn.primary:hover{background:var(--c-brand-hover);border-color:var(--c-brand-hover)}
+    .btn.ghost{background:transparent;border-color:transparent;box-shadow:none}
+    .btn.danger{color:var(--c-danger);border-color:var(--c-border)}
+    .btn.danger:hover{background:var(--c-danger-soft);border-color:var(--c-danger)}
+
+    .annotation-strip{background:linear-gradient(90deg,var(--c-brand-soft),#F0F7FF);border-bottom:1px solid #DBEAFE;padding:8px 24px;font-size:var(--t-12);color:var(--c-brand-deep);display:flex;align-items:center;gap:12px}
+    .annotation-strip strong{color:var(--c-brand-deep)}
+    .annotation-strip .chip{background:var(--c-brand);color:white;font-weight:600;padding:2px 7px;border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.04em}
+    .anno-pill{background:rgba(255,255,255,.6);color:var(--c-brand-deep);padding:2px 7px;border-radius:999px;font-size:11px}
+
+    .travis-credit{margin-top:var(--s-5);padding:var(--s-3) var(--s-4);background:var(--c-surface);border:1px dashed var(--c-border);border-radius:var(--r-md);font-size:var(--t-11);color:var(--c-text-2)}
+    .travis-credit strong{color:var(--c-text)}
+    .travis-credit .rec-tag{display:inline-block;background:var(--c-info-soft);color:var(--c-info);padding:1px 6px;border-radius:4px;font-size:10px;margin-right:4px;font-weight:600}
+  </style>
+</head>
+<body>
+
+  <div class="annotation-strip">
+    <span class="chip">Prototype 11</span>
+    <strong>Settings.</strong>
+    <span>Unified left rail · Profile / Branding / Identity / Security / System / API · current password required · auto-logout · timezone.</span>
+    <span class="anno-pill">5 Travis recs</span>
+  </div>
+
+  <div class="shell">
+    <div class="logo">
+      <div class="logo-mark">H</div>
+      <div>HonestWaves</div>
+      <span class="logo-tenant">QA</span>
+    </div>
+
+    <div class="topbar">
+      <div class="breadcrumb">
+        <span style="color:var(--c-text-2);">System</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--c-text-muted);"><polyline points="9 18 15 12 9 6"/></svg>
+        <strong>Settings</strong>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+        <span>Search lockers, devices, users…</span>
+        <span class="search-kbd">⌘K</span>
+      </div>
+      <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="badge">99+</span></button>
+      <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+      <button class="avatar-btn"><div class="avatar">AR</div><div class="avatar-meta"><div class="avatar-name">Admin Rowe</div><div class="avatar-email">admin@honestwaves.test</div></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+    </div>
+
+    <nav class="sidebar">
+      <div class="nav-group"><p class="nav-group-label">Monitor</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Mission Control</a>
+      </div>
+      <div class="nav-group"><p class="nav-group-label">Manage</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/></svg>Lockers</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Devices</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Users</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>Access matrix</a>
+      </div>
+      <div class="nav-group"><p class="nav-group-label">Investigate</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/></svg>Notifications<span class="nav-badge">99+</span></a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>Tracker</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Reports</a>
+      </div>
+      <div class="nav-group"><p class="nav-group-label">System</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>Software updates</a>
+        <a class="nav-item active" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>Settings</a>
+      </div>
+      <div style="padding:var(--s-3);font-size:var(--t-11);color:var(--c-text-muted);">v2.0.0</div>
+    </nav>
+
+    <main class="main">
+
+      <!-- Settings side nav -->
+      <aside class="settings-nav">
+        <p class="settings-nav-h">My account</p>
+        <div class="s-nav-item active"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>Profile</div>
+        <div class="s-nav-item"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Security</div>
+
+        <p class="settings-nav-h">Organization</p>
+        <div class="s-nav-item"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>Branding</div>
+        <div class="s-nav-item"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Identity provider <span class="new-tag">SSO</span></div>
+        <div class="s-nav-item"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Self-registration</div>
+        <div class="s-nav-item"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>System &amp; locale</div>
+
+        <p class="settings-nav-h">Developer</p>
+        <div class="s-nav-item"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="8 14 12 10 16 14"/></svg>API tokens</div>
+        <div class="s-nav-item"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="10 13 14 17 18 13"/><polyline points="10 11 14 7 18 11"/></svg>Webhooks</div>
+        <div class="s-nav-item"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Audit log</div>
+      </aside>
+
+      <!-- Content area -->
+      <div class="content">
+
+        <header class="page-head">
+          <h1 class="page-title">Profile</h1>
+          <p class="page-sub">Your account identity, sign-in, and security.</p>
+        </header>
+
+        <!-- Identity callout -->
+        <div class="id-strip">
+          <div class="id-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <div class="id-meta">
+            <div class="id-title">Signed in via Microsoft Entra ID SSO</div>
+            <div class="id-sub">Your name, email, and badge are kept in sync from Active Directory · last sync 14 min ago</div>
+          </div>
+          <span class="id-status"><span class="dot"></span>Active</span>
+        </div>
+
+        <!-- Identity -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3 class="card-title">Identity</h3>
+              <div class="card-sub">Your name and email — how the system addresses you and how teammates find you</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="field-row">
+              <div class="field">
+                <label class="field-label">First name</label>
+                <div class="field-input"><input type="text" value="Admin"></div>
+              </div>
+              <div class="field">
+                <label class="field-label">Last name</label>
+                <div class="field-input"><input type="text" value="Rowe"></div>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label">Work email</label>
+              <div class="field-input mono"><input type="text" value="admin@honestwaves.test"></div>
+              <div class="field-help">Synced from Microsoft Entra ID. To change, ask your IT team to update the AD account.</div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label class="field-label">Badge ID</label>
+                <div class="field-input mono" style="background:var(--c-surface-2);color:var(--c-text-muted);"><input type="text" value="EMP-ADMIN-001" readonly></div>
+                <div class="field-help">Assigned by your organization · contact admin to change</div>
+              </div>
+              <div class="field">
+                <label class="field-label">Employee ID</label>
+                <div class="field-input mono" style="background:var(--c-surface-2);color:var(--c-text-muted);"><input type="text" value="EMP-ADMIN-001" readonly></div>
+                <div class="field-help">Read-only · SCIM-managed</div>
+              </div>
+            </div>
+          </div>
+          <div class="card-foot">
+            <button class="btn">Cancel</button>
+            <button class="btn primary">Save</button>
+          </div>
+        </div>
+
+        <!-- Password (with Travis P1 current password) -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3 class="card-title">Password</h3>
+              <div class="card-sub">Change the password you use to sign in. You'll stay signed in on this device.</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="field">
+              <label class="field-label">Current password<span class="required">*</span></label>
+              <div class="field-input"><input type="password" value="••••••••••" autocomplete="current-password"></div>
+              <div class="field-help" style="color:var(--c-warning-text);">Required — verifies it's really you (security fix · Travis P1)</div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label class="field-label">New password<span class="required">*</span></label>
+                <div class="field-input"><input type="password" placeholder="At least 12 characters with one number and one symbol"></div>
+              </div>
+              <div class="field">
+                <label class="field-label">Confirm new password<span class="required">*</span></label>
+                <div class="field-input"><input type="password" placeholder="Re-enter the new password"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card-foot">
+            <button class="btn primary">Update password</button>
+          </div>
+        </div>
+
+        <!-- Security toggles -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3 class="card-title">Security &amp; sessions</h3>
+              <div class="card-sub">Auto-logout, two-factor, and active sessions</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="toggle-row">
+              <div class="toggle-meta">
+                <div class="toggle-label">Auto-logout after inactivity</div>
+                <div class="toggle-sub">Sign out dashboard users after the configured inactivity period. Configurable per role (Travis P5).</div>
+              </div>
+              <span class="toggle on"></span>
+            </div>
+            <div class="field-row" style="padding-left:0;padding-top:var(--s-3);">
+              <div class="field" style="margin-bottom:0;">
+                <label class="field-label">Inactivity timeout</label>
+                <div class="field-input"><input type="text" value="15 minutes"></div>
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label class="field-label">Maximum session</label>
+                <div class="field-input"><input type="text" value="12 hours"></div>
+              </div>
+            </div>
+            <div class="toggle-row" style="margin-top:var(--s-3);">
+              <div class="toggle-meta">
+                <div class="toggle-label">Force password change on first sign-in</div>
+                <div class="toggle-sub">Manually-added users must change their password the first time they sign in (Travis P1).</div>
+              </div>
+              <span class="toggle on"></span>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-meta">
+                <div class="toggle-label">Two-factor authentication</div>
+                <div class="toggle-sub">Require a verification code in addition to password. SSO users bypass this — Entra ID handles 2FA.</div>
+              </div>
+              <span class="toggle"></span>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-meta">
+                <div class="toggle-label">Sign out everywhere</div>
+                <div class="toggle-sub">End all sessions across browsers and devices. You'll need to sign back in.</div>
+              </div>
+              <button class="btn danger" style="height:28px;">Sign out everywhere</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- System & locale (Travis P3 timezone) -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3 class="card-title">System &amp; locale</h3>
+              <div class="card-sub">Time zone, date format, and currency. Applies to your view only.</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="field-row">
+              <div class="field">
+                <label class="field-label">Time zone</label>
+                <div class="field-input"><input type="text" value="America/Detroit (EDT, UTC-4)"></div>
+                <div class="field-help">Used for all timestamps shown to you (Travis P3)</div>
+              </div>
+              <div class="field">
+                <label class="field-label">Date format</label>
+                <div class="field-input"><input type="text" value="Jun 17, 2026 · 3:14 PM"></div>
+                <div class="field-help">12-hour with month name — per Conventions tab</div>
+              </div>
+            </div>
+            <div class="field-row" style="margin-top:var(--s-3);">
+              <div class="field">
+                <label class="field-label">Currency</label>
+                <div class="field-input"><input type="text" value="USD ($)"></div>
+                <div class="field-help">For replacement costs and chargebacks</div>
+              </div>
+              <div class="field">
+                <label class="field-label">Language</label>
+                <div class="field-input"><input type="text" value="English (US)"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card-foot">
+            <button class="btn primary">Save</button>
+          </div>
+        </div>
+
+        <!-- Branding section preview -->
+        <header class="page-head" style="margin-top:var(--s-6);">
+          <h1 class="page-title">Branding · preview</h1>
+          <p class="page-sub">Tenant brand assets shown to operators and customers. Tap any slot to upload.</p>
+        </header>
+
+        <!-- Shared brand -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3 class="card-title">Organization brand</h3>
+              <div class="card-sub">Logos and names shared across operator and customer surfaces</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="field-row">
+              <div class="field">
+                <label class="field-label">Company name</label>
+                <div class="field-input"><input type="text" value="HonestWaves"></div>
+                <div class="field-help">Shown in the dashboard header, on the locker screen, and in outbound notifications.</div>
+              </div>
+              <div class="field">
+                <label class="field-label">Brand logo</label>
+                <div class="field-input" style="height:auto;padding:var(--s-2) var(--s-3);">
+                  <div style="display:flex;align-items:center;gap:8px;flex:1;">
+                    <div style="width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#2563EB,#1E40AF);"></div>
+                    <span style="font-weight:600;">HonestWaves.svg</span>
+                  </div>
+                  <button class="btn" style="height:24px;font-size:var(--t-11);">Replace</button>
+                </div>
+                <div class="field-help">Used in dashboard header and locker home screen</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Locker app artwork -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3 class="card-title">Locker app artwork</h3>
+              <div class="card-sub">Per-screen artwork for customers at the locker · tap to upload</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="asset-grid">
+
+              <div class="asset-card">
+                <div class="asset-preview"><div class="uploaded">SPLASH</div></div>
+                <div class="asset-meta">
+                  <div class="asset-label">Splash screen</div>
+                  <div class="asset-state uploaded"><span class="dot"></span>Uploaded</div>
+                </div>
+              </div>
+              <div class="asset-card">
+                <div class="asset-preview"><div class="uploaded">SAVER</div></div>
+                <div class="asset-meta">
+                  <div class="asset-label">Screensaver</div>
+                  <div class="asset-state uploaded"><span class="dot"></span>Uploaded</div>
+                </div>
+              </div>
+              <div class="asset-card">
+                <div class="asset-preview"><span class="placeholder">＋</span></div>
+                <div class="asset-meta">
+                  <div class="asset-label">Check-in icon</div>
+                  <div class="asset-state"><span class="dot"></span>Using default</div>
+                </div>
+              </div>
+              <div class="asset-card">
+                <div class="asset-preview"><span class="placeholder">＋</span></div>
+                <div class="asset-meta">
+                  <div class="asset-label">Check-out icon</div>
+                  <div class="asset-state"><span class="dot"></span>Using default</div>
+                </div>
+              </div>
+              <div class="asset-card">
+                <div class="asset-preview"><span class="placeholder">＋</span></div>
+                <div class="asset-meta">
+                  <div class="asset-label">Sample device</div>
+                  <div class="asset-state"><span class="dot"></span>Using default</div>
+                </div>
+              </div>
+              <div class="asset-card">
+                <div class="asset-preview"><span class="placeholder">＋</span></div>
+                <div class="asset-meta">
+                  <div class="asset-label">Scan sample</div>
+                  <div class="asset-state"><span class="dot"></span>Using default</div>
+                </div>
+              </div>
+              <div class="asset-card">
+                <div class="asset-preview"><span class="placeholder">＋</span></div>
+                <div class="asset-meta">
+                  <div class="asset-label">Deposit sample</div>
+                  <div class="asset-state"><span class="dot"></span>Using default</div>
+                </div>
+              </div>
+              <div class="asset-card">
+                <div class="asset-preview"><span class="placeholder">＋</span></div>
+                <div class="asset-meta">
+                  <div class="asset-label">Pickup sample</div>
+                  <div class="asset-state"><span class="dot"></span>Using default</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="travis-credit">
+          <strong>Travis recs integrated:</strong>
+          <span class="rec-tag">P5</span>Auto-logout timeout &nbsp;
+          <span class="rec-tag">P3</span>Time zone setting &nbsp;
+          <span class="rec-tag">P1</span>Force password change on first sign-in &nbsp;
+          <span class="rec-tag">P1</span>Current password required for password change &nbsp;
+          <span class="rec-tag">P1</span>Unified User Management + Account Settings (one left rail)
+        </div>
+
+      </div>
+    </main>
+  </div>
+</body>
+</html>
