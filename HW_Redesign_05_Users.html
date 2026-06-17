@@ -297,7 +297,7 @@
     /* Compact select used in modal */
     .select-input{height:32px;padding:0 28px 0 var(--s-3);font-size:var(--t-13);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);color:var(--c-text);min-width:200px;appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--c-text-2) 50%),linear-gradient(135deg,var(--c-text-2) 50%,transparent 50%);background-position:calc(100% - 14px) 50%,calc(100% - 9px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
 
-    /* Source kiosk chip */
+    /* Source locker chip */
     .source-chip{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;background:var(--c-surface-3);color:var(--c-text-2);border-radius:var(--r-sm);font-size:var(--t-11);font-weight:500;font-variant-numeric:tabular-nums}
     .badge-id-mono{font-family:var(--font-mono);font-size:10px;color:var(--c-text-muted);letter-spacing:-.01em}
 
@@ -1401,7 +1401,7 @@
           <header class="page-head">
             <div>
               <h1 class="page-title">Guests</h1>
-              <p class="page-sub">Kiosk self-registrations · 47 total this month · auto-approval ON · default department: Corewell POC</p>
+              <p class="page-sub">Locker self-registrations · 47 total this month · auto-approval ON · default department: Corewell POC</p>
             </div>
             <div class="page-actions">
               <button class="btn ghost">
@@ -1461,7 +1461,7 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
               <input placeholder="Search guests by name, email, or badge ID..." style="border:none;outline:none;background:transparent;flex:1;color:var(--c-text);font:inherit;" />
             </div>
-            <select class="select-input"><option>Recently registered</option><option>Oldest first</option><option>Source kiosk</option><option>Status</option></select>
+            <select class="select-input"><option>Recently registered</option><option>Oldest first</option><option>Source locker</option><option>Status</option></select>
             <select class="select-input"><option>All statuses</option><option>Auto-approved</option><option>Pending</option><option>Manually approved</option><option>Denied</option></select>
           </div>
 
@@ -1473,7 +1473,7 @@
                   <th>Guest</th>
                   <th>Email</th>
                   <th>Badge ID</th>
-                  <th>Source kiosk</th>
+                  <th>Source locker</th>
                   <th>Registered</th>
                   <th>Assigned dept</th>
                   <th>Status</th>
@@ -1484,7 +1484,7 @@
                 <tr>
                   <td><strong>Avery Stone</strong></td>
                   <td>a.stone@guest.local</td>
-                  <td class="badge-id-mono">mock:e1f2-9c41-44b7-…</td>
+                  <td class="badge-id-mono">badge:e1f2-9c41-44b7-…</td>
                   <td><span class="source-chip">Pink8 · ER lobby</span></td>
                   <td>14m ago</td>
                   <td>Corewell POC <span class="muted" style="font-size:10px;">(default)</span></td>
@@ -1494,7 +1494,7 @@
                 <tr>
                   <td><strong>Marcus Reilly</strong></td>
                   <td>m.reilly@guest.local</td>
-                  <td class="badge-id-mono">mock:a2c4-6b8e-441d-…</td>
+                  <td class="badge-id-mono">badge:a2c4-6b8e-441d-…</td>
                   <td><span class="source-chip">Blue3 · IT closet</span></td>
                   <td>1h ago</td>
                   <td>Corewell POC <span class="muted" style="font-size:10px;">(default)</span></td>
@@ -1504,7 +1504,7 @@
                 <tr>
                   <td><strong>Priya Sharma</strong></td>
                   <td>p.sharma@guest.local</td>
-                  <td class="badge-id-mono">mock:3f51-7d92-4a3e-…</td>
+                  <td class="badge-id-mono">badge:3f51-7d92-4a3e-…</td>
                   <td><span class="source-chip">Green1 · Radiology</span></td>
                   <td>3h ago</td>
                   <td>Corewell POC <span class="muted" style="font-size:10px;">(default)</span></td>
@@ -1514,7 +1514,7 @@
                 <tr>
                   <td><strong>Dana Whitaker</strong></td>
                   <td>d.whitaker@guest.local</td>
-                  <td class="badge-id-mono">mock:9b14-2a76-4e8c-…</td>
+                  <td class="badge-id-mono">badge:9b14-2a76-4e8c-…</td>
                   <td><span class="source-chip">Pink8 · ER lobby</span></td>
                   <td>Yesterday · 4:02 PM</td>
                   <td>Corewell POC <span class="muted" style="font-size:10px;">(default)</span></td>
@@ -1524,7 +1524,7 @@
                 <tr>
                   <td><strong>Connor Bell</strong></td>
                   <td>c.bell@guest.local</td>
-                  <td class="badge-id-mono">mock:8a32-4f19-49b1-…</td>
+                  <td class="badge-id-mono">badge:8a32-4f19-49b1-…</td>
                   <td><span class="source-chip">Blue3 · IT closet</span></td>
                   <td>Yesterday · 11:18 AM</td>
                   <td>Corewell POC <span class="muted" style="font-size:10px;">(default)</span></td>
@@ -1534,7 +1534,7 @@
                 <tr style="background:var(--c-warning-soft);">
                   <td><strong>Unknown badge</strong></td>
                   <td class="muted">—</td>
-                  <td class="badge-id-mono">mock:5d71-8e22-49a1-…</td>
+                  <td class="badge-id-mono">badge:5d71-8e22-49a1-…</td>
                   <td><span class="source-chip">Green1 · Radiology</span></td>
                   <td>Jun 14 · 7:51 AM</td>
                   <td class="muted">—</td>
@@ -1544,7 +1544,7 @@
                 <tr>
                   <td><strong>Leah Yuen</strong></td>
                   <td>l.yuen@guest.local</td>
-                  <td class="badge-id-mono">mock:c4a8-1f93-4b76-…</td>
+                  <td class="badge-id-mono">badge:c4a8-1f93-4b76-…</td>
                   <td><span class="source-chip">Pink8 · ER lobby</span></td>
                   <td>Jun 13 · 2:34 PM</td>
                   <td>Corewell POC</td>
@@ -1554,7 +1554,7 @@
                 <tr>
                   <td><strong>Anonymous self-registrant</strong></td>
                   <td class="muted">—</td>
-                  <td class="badge-id-mono">mock:7e69-3c50-481a-…</td>
+                  <td class="badge-id-mono">badge:7e69-3c50-481a-…</td>
                   <td><span class="source-chip">Blue3 · IT closet</span></td>
                   <td>Jun 12 · 9:15 AM</td>
                   <td class="muted">—</td>
@@ -1569,7 +1569,7 @@
             <strong>Recommendations integrated from Travis @ Corewell:</strong>
             <div class="recs">
               <span class="rec-tag">P3</span>Auto-approval banner with one-click toggle &nbsp;
-              <span class="rec-tag">P3</span>Default department override + source-kiosk routing &nbsp;
+              <span class="rec-tag">P3</span>Default department override + source-locker routing &nbsp;
               <span class="rec-tag">P5</span>Denied-registration audit trail with reason codes &nbsp;
               <span class="rec-tag">P5</span>Surface Guest registration in main Settings nav (added in proto 11)
             </div>
@@ -1583,7 +1583,7 @@
             <header class="modal-head">
               <div>
                 <h2 id="guestRegModalTitle">Edit Guest registration</h2>
-                <p>How kiosk self-registrations are handled for this tenant.</p>
+                <p>How locker self-registrations are handled for this tenant.</p>
               </div>
               <button class="modal-close" id="guestRegModalClose" aria-label="Close">✕</button>
             </header>
