@@ -1,0 +1,1259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1440">
+  <title>HonestWaves redesign · 04 · Devices</title>
+  <style>
+    /* ============================================================
+       Design tokens — same as prototypes 01–03
+       ============================================================ */
+    :root {
+      --c-surface:#FFFFFF; --c-surface-2:#FAFAFB; --c-surface-3:#F4F5F7;
+      --c-border:#E5E7EB; --c-border-strong:#D1D5DB; --c-divider:#EDF0F4;
+      --c-text:#0F172A; --c-text-2:#475569; --c-text-muted:#94A3B8;
+      --c-brand:#2563EB; --c-brand-hover:#1D4ED8; --c-brand-soft:#EFF6FF; --c-brand-deep:#1E40AF;
+      --c-success:#10B981; --c-success-soft:#ECFDF5;
+      --c-warning:#F59E0B; --c-warning-soft:#FFFBEB; --c-warning-text:#B45309;
+      --c-danger:#EF4444; --c-danger-soft:#FEF2F2;
+      --c-info:#6366F1; --c-info-soft:#EEF2FF;
+      --c-violet:#7C3AED; --c-violet-soft:#F5F3FF;
+      --c-cyan:#06B6D4; --c-cyan-soft:#ECFEFF;
+      --c-rose:#F43F5E; --c-rose-soft:#FFF1F2;
+      --c-slate:#64748B; --c-slate-soft:#F1F5F9;
+      --c-money:#0D9488; --c-money-soft:#CCFBF1;
+
+      --font-sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+      --font-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+
+      --t-11:11px; --t-12:12px; --t-13:13px; --t-14:14px; --t-16:16px; --t-20:20px;
+
+      --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:20px; --s-6:24px;
+      --r-sm:4px; --r-md:6px; --r-lg:8px;
+
+      --sh-1:0 1px 2px rgba(15,23,42,.04);
+      --sh-2:0 1px 3px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04);
+      --sh-popover:0 8px 24px rgba(15,23,42,.10),0 2px 6px rgba(15,23,42,.06);
+
+      --sidebar-w:232px; --topbar-h:52px;
+    }
+
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:var(--font-sans);font-size:var(--t-13);line-height:1.45;color:var(--c-text);background:var(--c-surface-2);-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+    svg{display:block}
+
+    .shell{display:grid;grid-template-columns:var(--sidebar-w) 1fr;grid-template-rows:var(--topbar-h) 1fr;grid-template-areas:"logo topbar" "side main";min-height:100vh}
+
+    /* Chrome (same pattern as other prototypes) */
+    .logo{grid-area:logo;background:var(--c-surface);border-right:1px solid var(--c-border);border-bottom:1px solid var(--c-border);display:flex;align-items:center;gap:10px;padding:0 var(--s-4);font-weight:600;font-size:var(--t-14)}
+    .logo-mark{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--c-brand) 0%,var(--c-brand-deep) 100%);display:grid;place-items:center;color:white;font-weight:700;font-size:13px}
+    .logo-tenant{margin-left:auto;font-size:var(--t-11);color:var(--c-text-muted);background:var(--c-surface-3);padding:2px 6px;border-radius:var(--r-sm);font-weight:500}
+
+    .topbar{grid-area:topbar;background:var(--c-surface);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 var(--s-5);gap:var(--s-3)}
+    .breadcrumb{display:flex;align-items:center;gap:var(--s-2);color:var(--c-text-2);font-size:var(--t-13)}
+    .breadcrumb strong{color:var(--c-text);font-weight:600}
+    .topbar-spacer{flex:1}
+    .search{display:flex;align-items:center;gap:var(--s-2);width:340px;height:32px;padding:0 var(--s-3);background:var(--c-surface-2);border:1px solid var(--c-border);border-radius:var(--r-md);color:var(--c-text-muted);font-size:var(--t-13)}
+    .search-kbd{margin-left:auto;padding:1px 5px;font-family:var(--font-mono);font-size:10px;color:var(--c-text-2);background:var(--c-surface);border:1px solid var(--c-border);border-radius:3px}
+    .icon-btn{width:32px;height:32px;display:grid;place-items:center;border-radius:var(--r-md);color:var(--c-text-2);position:relative}
+    .icon-btn:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .icon-btn .badge{position:absolute;top:2px;right:2px;min-width:16px;height:16px;padding:0 4px;background:var(--c-danger);color:white;border:2px solid var(--c-surface);border-radius:999px;font-size:9px;font-weight:700;display:grid;place-items:center}
+    .avatar-btn{display:flex;align-items:center;gap:var(--s-2);padding:4px 8px 4px 4px;border-radius:var(--r-md)}
+    .avatar-btn:hover{background:var(--c-surface-3)}
+    .avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#6366F1 0%,#2563EB 100%);color:white;font-size:11px;font-weight:600;display:grid;place-items:center}
+    .avatar-meta{line-height:1.1;text-align:left}
+    .avatar-name{font-size:var(--t-12);font-weight:600}
+    .avatar-email{font-size:var(--t-11);color:var(--c-text-muted)}
+
+    .sidebar{grid-area:side;background:var(--c-surface);border-right:1px solid var(--c-border);padding:var(--s-3) var(--s-2);overflow-y:auto}
+    .nav-group{margin-bottom:var(--s-4)}
+    .nav-group-label{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--c-text-muted);padding:0 var(--s-3);margin:0 0 4px}
+    .nav-item{display:flex;align-items:center;gap:var(--s-3);padding:7px var(--s-3);border-radius:var(--r-md);font-size:var(--t-13);color:var(--c-text-2);position:relative}
+    .nav-item:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .nav-item.active{background:var(--c-brand-soft);color:var(--c-brand-deep);font-weight:600}
+    .nav-item.active::before{content:"";position:absolute;left:-2px;top:8px;bottom:8px;width:2px;background:var(--c-brand);border-radius:2px}
+    .nav-icon{width:16px;height:16px;flex-shrink:0;opacity:.85}
+    .nav-item.active .nav-icon{opacity:1}
+    .nav-badge{margin-left:auto;font-size:10px;font-weight:600;padding:1px 6px;border-radius:999px;background:var(--c-danger-soft);color:var(--c-danger)}
+
+    /* ============================================================
+       Main content
+       ============================================================ */
+    .main{grid-area:main;overflow-y:auto}
+    .main-inner{padding:var(--s-5) var(--s-6);max-width:1480px}
+
+    .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s-4);margin-bottom:var(--s-4)}
+    .page-title{font-size:var(--t-20);font-weight:600;letter-spacing:-.01em;margin:0 0 2px}
+    .page-sub{font-size:var(--t-12);color:var(--c-text-2);margin:0}
+    .page-actions{display:flex;align-items:center;gap:var(--s-2)}
+
+    .btn{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 var(--s-3);font-size:var(--t-12);font-weight:500;color:var(--c-text);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);box-shadow:var(--sh-1);transition:background .12s,border-color .12s}
+    .btn:hover{background:var(--c-surface-3);border-color:var(--c-border-strong)}
+    .btn.primary{background:var(--c-brand);color:white;border-color:var(--c-brand);box-shadow:var(--sh-1),inset 0 1px 0 rgba(255,255,255,.15)}
+    .btn.primary:hover{background:var(--c-brand-hover);border-color:var(--c-brand-hover)}
+    .btn.ghost{background:transparent;border-color:transparent;box-shadow:none}
+    .btn.ghost:hover{background:var(--c-surface-3)}
+    .btn.danger{color:var(--c-danger);border-color:var(--c-border)}
+    .btn.danger:hover{background:var(--c-danger-soft);border-color:var(--c-danger)}
+
+    /* View toggle */
+    .view-toggle{display:inline-flex;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);box-shadow:var(--sh-1);padding:2px}
+    .view-toggle button{width:28px;height:26px;display:grid;place-items:center;color:var(--c-text-muted);border-radius:var(--r-sm)}
+    .view-toggle button:hover{color:var(--c-text)}
+    .view-toggle button.active{background:var(--c-brand-soft);color:var(--c-brand-deep)}
+
+    /* ============================================================
+       KPI strip at top
+       ============================================================ */
+    .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:var(--s-3);margin-bottom:var(--s-4)}
+    .kpi{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);padding:var(--s-3) var(--s-4);position:relative;overflow:hidden}
+    .kpi-label{font-size:10px;font-weight:600;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:5px;margin-bottom:4px}
+    .kpi-label-dot{width:6px;height:6px;border-radius:50%}
+    .kpi-value{font-size:22px;font-weight:600;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums}
+    .kpi-sub{font-size:10px;color:var(--c-text-muted);margin-top:2px;font-variant-numeric:tabular-nums}
+    .kpi-value.money{color:var(--c-money)}
+
+    /* Filter bar */
+    .filter-bar{display:flex;align-items:center;gap:var(--s-2);padding:var(--s-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);margin-bottom:var(--s-3);flex-wrap:wrap}
+    .filter-search{flex:1;min-width:240px;display:flex;align-items:center;gap:var(--s-2);height:32px;padding:0 var(--s-3);background:var(--c-surface-2);border:1px solid var(--c-border);border-radius:var(--r-md);color:var(--c-text);font-size:var(--t-13)}
+    .filter-search:focus-within{background:var(--c-surface);border-color:var(--c-brand);box-shadow:0 0 0 3px var(--c-brand-soft)}
+    .filter-search input{flex:1;height:100%;border:0;background:transparent;outline:none;font:inherit;color:inherit}
+    .filter-search input::placeholder{color:var(--c-text-muted)}
+
+    .filter-select{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;font-size:var(--t-12);font-weight:500;color:var(--c-text);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);cursor:pointer;white-space:nowrap}
+    .filter-select:hover{background:var(--c-surface-3);border-color:var(--c-border-strong)}
+    .filter-select .chip-count{background:var(--c-brand);color:white;font-size:10px;font-weight:700;padding:1px 5px;border-radius:999px}
+    .filter-clear{color:var(--c-text-2);font-size:var(--t-12);padding:0 8px;height:32px;display:inline-flex;align-items:center}
+    .filter-clear:hover{color:var(--c-danger)}
+    .filter-toggle-row{display:inline-flex;align-items:center;gap:6px;padding:0 8px;height:32px;font-size:var(--t-12);color:var(--c-text-2);background:var(--c-surface-2);border:1px solid var(--c-border);border-radius:var(--r-md)}
+    .toggle-pill{width:26px;height:14px;border-radius:999px;background:var(--c-border-strong);position:relative;transition:background .12s}
+    .toggle-pill::before{content:"";position:absolute;left:2px;top:2px;width:10px;height:10px;border-radius:50%;background:white;transition:left .12s}
+    .toggle-pill.on{background:var(--c-brand)}
+    .toggle-pill.on::before{left:14px}
+
+    /* Bulk bar */
+    .bulk-bar{display:flex;align-items:center;gap:var(--s-2);padding:var(--s-2) var(--s-3);background:var(--c-brand-soft);border:1px solid var(--c-brand);border-radius:var(--r-md);margin-bottom:var(--s-3);animation:slideIn .15s ease-out}
+    @keyframes slideIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+    .bulk-count{font-size:var(--t-12);font-weight:600;color:var(--c-brand-deep);padding:4px 10px;background:var(--c-surface);border-radius:var(--r-md);font-variant-numeric:tabular-nums}
+    .bulk-divider{width:1px;height:18px;background:rgba(37,99,235,.3);margin:0 var(--s-1)}
+    .bulk-bar .btn{box-shadow:none;border-color:transparent;background:transparent;color:var(--c-brand-deep)}
+    .bulk-bar .btn:hover{background:rgba(255,255,255,.7);border-color:transparent}
+    .bulk-bar .btn.danger{color:var(--c-danger)}
+    .bulk-bar .btn.danger:hover{background:rgba(239,68,68,.1)}
+    .bulk-bar .clear-sel{margin-left:auto;color:var(--c-text-2);font-size:var(--t-12);padding:4px 8px;border-radius:var(--r-sm)}
+    .bulk-bar .clear-sel:hover{color:var(--c-text);background:rgba(255,255,255,.7)}
+
+    /* ============================================================
+       List view — table
+       ============================================================ */
+    .list-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-lg);overflow:hidden}
+    table.devices{width:100%;border-collapse:collapse;font-size:var(--t-12)}
+    table.devices thead th{text-align:left;font-weight:600;font-size:var(--t-11);color:var(--c-text-2);text-transform:uppercase;letter-spacing:.04em;padding:10px var(--s-3);border-bottom:1px solid var(--c-border);background:var(--c-surface-2);white-space:nowrap}
+    table.devices tbody td{padding:0 var(--s-3);height:42px;border-bottom:1px solid var(--c-divider);vertical-align:middle}
+    table.devices tbody tr{transition:background .12s;cursor:pointer}
+    table.devices tbody tr:hover{background:var(--c-surface-2)}
+    table.devices tbody tr.selected{background:var(--c-brand-soft)}
+    table.devices tbody tr.selected:hover{background:#DBEAFE}
+    table.devices tbody tr:last-child td{border-bottom:0}
+
+    /* checkbox */
+    .checkbox{width:16px;height:16px;border:1.5px solid var(--c-border-strong);border-radius:3px;display:inline-grid;place-items:center;cursor:pointer;background:white}
+    .checkbox:hover{border-color:var(--c-brand)}
+    .checkbox.checked{background:var(--c-brand);border-color:var(--c-brand);color:white}
+    .checkbox.indeterminate{background:var(--c-brand);border-color:var(--c-brand);color:white}
+
+    /* state pills */
+    .pill{display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 8px;border-radius:999px;font-size:var(--t-11);font-weight:600;line-height:1;white-space:nowrap}
+    .pill-dot{width:6px;height:6px;border-radius:50%}
+    .pill.success{background:var(--c-success-soft);color:var(--c-success)}
+    .pill.success .pill-dot{background:var(--c-success)}
+    .pill.warn{background:var(--c-warning-soft);color:var(--c-warning-text)}
+    .pill.warn .pill-dot{background:var(--c-warning)}
+    .pill.warn.pulse .pill-dot{animation:pulseAmber 2s infinite}
+    @keyframes pulseAmber{0%{box-shadow:0 0 0 0 rgba(245,158,11,.5)}70%{box-shadow:0 0 0 4px rgba(245,158,11,0)}100%{box-shadow:0 0 0 0 rgba(245,158,11,0)}}
+    .pill.danger{background:var(--c-danger-soft);color:var(--c-danger)}
+    .pill.danger .pill-dot{background:var(--c-danger)}
+    .pill.danger.pulse .pill-dot{animation:pulseDanger 2s infinite}
+    @keyframes pulseDanger{0%{box-shadow:0 0 0 0 rgba(239,68,68,.5)}70%{box-shadow:0 0 0 4px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
+    .pill.info{background:var(--c-info-soft);color:var(--c-info)}
+    .pill.info .pill-dot{background:var(--c-info)}
+    .pill.cyan{background:var(--c-cyan-soft);color:var(--c-cyan)}
+    .pill.cyan .pill-dot{background:var(--c-cyan)}
+    .pill.slate{background:var(--c-slate-soft);color:var(--c-slate)}
+    .pill.slate .pill-dot{background:var(--c-slate)}
+
+    /* Cell formats */
+    .device-name{font-weight:600;color:var(--c-text)}
+    .device-sub{font-size:10px;color:var(--c-text-muted);font-family:var(--font-mono);margin-top:1px}
+    .col-meta{line-height:1.2}
+    .col-meta-primary{font-weight:500;color:var(--c-text);font-size:var(--t-12)}
+    .col-meta-secondary{font-size:10px;color:var(--c-text-2)}
+    .user-cell{display:flex;align-items:center;gap:6px}
+    .user-mark{width:20px;height:20px;border-radius:50%;background:var(--c-info-soft);color:var(--c-info);font-size:9px;font-weight:600;display:grid;place-items:center;flex-shrink:0}
+    .user-cell.empty{color:var(--c-text-muted);font-style:italic}
+    .mono{font-family:var(--font-mono);font-size:var(--t-11);color:var(--c-text-2)}
+    .money{font-family:var(--font-mono);font-weight:600;color:var(--c-money);font-variant-numeric:tabular-nums}
+    .overdue-cell{color:var(--c-warning-text);font-weight:600;font-variant-numeric:tabular-nums}
+    .overdue-cell.crit{color:var(--c-danger)}
+    .row-actions{display:flex;align-items:center;justify-content:flex-end;gap:2px}
+    .row-actions button{width:26px;height:26px;display:grid;place-items:center;border-radius:var(--r-sm);color:var(--c-text-muted)}
+    .row-actions button:hover{color:var(--c-text);background:var(--c-surface-3)}
+
+    /* Table footer */
+    .table-foot{display:flex;align-items:center;padding:var(--s-3) var(--s-4);border-top:1px solid var(--c-border);background:var(--c-surface-2);font-size:var(--t-12);color:var(--c-text-2)}
+    .pag{margin-left:auto;display:flex;align-items:center;gap:4px}
+    .pag-btn{width:26px;height:26px;display:grid;place-items:center;border-radius:var(--r-sm);color:var(--c-text-2)}
+    .pag-btn:hover:not(:disabled){background:var(--c-surface-3);color:var(--c-text)}
+    .pag-btn:disabled{opacity:.3;cursor:not-allowed}
+    .pag-num{padding:0 8px;height:26px;display:inline-grid;place-items:center;font-variant-numeric:tabular-nums;border-radius:var(--r-sm);color:var(--c-text-2)}
+    .pag-num.active{background:var(--c-brand);color:white;font-weight:600}
+
+    /* ============================================================
+       Tile view
+       ============================================================ */
+    .tile-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-3)}
+    .tile{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-lg);overflow:hidden;transition:border-color .12s,box-shadow .12s,transform .12s;cursor:pointer;position:relative}
+    .tile:hover{border-color:var(--c-border-strong);box-shadow:var(--sh-2);transform:translateY(-1px)}
+    .tile.selected{border-color:var(--c-brand);box-shadow:0 0 0 3px var(--c-brand-soft)}
+    .tile-stripe{height:3px}
+    .tile-stripe.success{background:var(--c-success)}
+    .tile-stripe.warn{background:var(--c-warning)}
+    .tile-stripe.danger{background:var(--c-danger)}
+    .tile-stripe.info{background:var(--c-info)}
+    .tile-stripe.cyan{background:var(--c-cyan)}
+    .tile-stripe.slate{background:var(--c-slate)}
+    .tile-head{padding:var(--s-3) var(--s-4) var(--s-2);display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s-2)}
+    .tile-icon{width:36px;height:36px;border-radius:var(--r-md);background:var(--c-surface-3);color:var(--c-text-2);display:grid;place-items:center;flex-shrink:0}
+    .tile-name{font-weight:600;font-size:var(--t-13);color:var(--c-text);letter-spacing:-.005em}
+    .tile-model{font-size:10px;color:var(--c-text-muted);font-family:var(--font-mono);margin-top:1px}
+    .tile-body{padding:var(--s-2) var(--s-4);display:grid;gap:5px}
+    .tile-row{display:flex;align-items:center;justify-content:space-between;font-size:var(--t-11);color:var(--c-text-2)}
+    .tile-row strong{color:var(--c-text);font-weight:500}
+    .tile-user{display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--c-surface-2);border-radius:var(--r-sm);font-size:var(--t-11);margin:0 var(--s-4) var(--s-3);border:1px solid var(--c-divider)}
+    .tile-user .user-mark{width:18px;height:18px;font-size:9px}
+    .tile-user-meta{flex:1;min-width:0;line-height:1.2}
+    .tile-user-name{font-weight:600;color:var(--c-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .tile-user-since{color:var(--c-text-muted);font-size:10px}
+    .tile-foot{display:flex;align-items:center;justify-content:space-between;padding:var(--s-2) var(--s-4);font-size:10px;color:var(--c-text-muted);border-top:1px solid var(--c-divider);margin-top:var(--s-2)}
+
+    /* Annotation strip */
+    .annotation-strip{background:linear-gradient(90deg,var(--c-brand-soft),#F0F7FF);border-bottom:1px solid #DBEAFE;padding:8px 24px;font-size:var(--t-12);color:var(--c-brand-deep);display:flex;align-items:center;gap:12px}
+    .annotation-strip strong{color:var(--c-brand-deep)}
+    .annotation-strip .chip{background:var(--c-brand);color:white;font-weight:600;padding:2px 7px;border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.04em}
+    .anno-pill{background:rgba(255,255,255,.6);color:var(--c-brand-deep);padding:2px 7px;border-radius:999px;font-size:11px}
+
+    /* notes */
+    .note{position:absolute;background:#1F2937;color:white;padding:8px 10px;border-radius:6px;font-size:var(--t-11);max-width:240px;box-shadow:var(--sh-popover);line-height:1.4;z-index:30;display:none}
+    .note-host{position:relative}
+    .note-host:hover>.note{display:block}
+    .note::before{content:"";position:absolute;width:0;height:0;border:5px solid transparent}
+    .note.bl{bottom:100%;left:0;margin-bottom:6px}
+    .note.bl::before{top:100%;left:12px;border-top-color:#1F2937}
+    .note.tr{top:100%;right:0;margin-top:6px}
+    .note.tr::before{bottom:100%;right:12px;border-bottom-color:#1F2937}
+    .note.tl{top:100%;left:0;margin-top:6px}
+    .note.tl::before{bottom:100%;left:12px;border-bottom-color:#1F2937}
+
+    .view-list,.view-tile{display:none}
+    .view-list.show,.view-tile.show{display:block}
+
+    /* Travis credit */
+    .travis-credit{margin-top:var(--s-5);padding:var(--s-3) var(--s-4);background:var(--c-surface);border:1px dashed var(--c-border);border-radius:var(--r-md);font-size:var(--t-11);color:var(--c-text-2)}
+    .travis-credit strong{color:var(--c-text)}
+    .travis-credit .recs{margin-top:6px}
+    .travis-credit .rec-tag{display:inline-block;background:var(--c-info-soft);color:var(--c-info);padding:1px 6px;border-radius:4px;font-size:10px;margin-right:4px;font-weight:600}
+  </style>
+</head>
+<body>
+
+  <div class="annotation-strip">
+    <span class="chip">Prototype 04</span>
+    <strong>Devices.</strong>
+    <span>Travis status-report columns · new "Checked-in, not plugged in" pill · Replacement cost inline · list + tile.</span>
+    <span class="anno-pill">5 Travis recs integrated</span>
+    <span style="margin-left:auto;color:#64748B;">Toggle list/tile (top right) · hover elements for notes.</span>
+  </div>
+
+  <div class="shell">
+    <div class="logo">
+      <div class="logo-mark">H</div>
+      <div>HonestWaves</div>
+      <span class="logo-tenant">QA</span>
+    </div>
+
+    <div class="topbar">
+      <div class="breadcrumb">
+        <span style="color:var(--c-text-2);">Manage</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--c-text-muted);"><polyline points="9 18 15 12 9 6"/></svg>
+        <strong>Devices</strong>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+        <span>Search lockers, devices, users…</span>
+        <span class="search-kbd">⌘K</span>
+      </div>
+      <button class="icon-btn" aria-label="Notifications">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        <span class="badge">99+</span>
+      </button>
+      <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+      <button class="avatar-btn">
+        <div class="avatar">AR</div>
+        <div class="avatar-meta">
+          <div class="avatar-name">Admin Rowe</div>
+          <div class="avatar-email">admin@honestwaves.test</div>
+        </div>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+    </div>
+
+    <nav class="sidebar">
+      <div class="nav-group">
+        <p class="nav-group-label">Monitor</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Mission Control</a>
+      </div>
+      <div class="nav-group">
+        <p class="nav-group-label">Manage</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/></svg>Lockers</a>
+        <a class="nav-item active" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Devices</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Users</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>Access matrix</a>
+      </div>
+      <div class="nav-group">
+        <p class="nav-group-label">Investigate</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/></svg>Notifications<span class="nav-badge">99+</span></a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>Tracker</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Reports</a>
+      </div>
+      <div class="nav-group">
+        <p class="nav-group-label">System</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>Software updates</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>Settings</a>
+      </div>
+      <div style="padding:var(--s-3);font-size:var(--t-11);color:var(--c-text-muted);">v2.0.0</div>
+    </nav>
+
+    <main class="main">
+      <div class="main-inner">
+
+        <header class="page-head">
+          <div>
+            <h1 class="page-title">Devices</h1>
+            <p class="page-sub">128 devices across 12 lockers · 4 overdue · 2 lost · $76,544 fleet value</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn ghost">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+              Export
+            </button>
+            <button class="btn ghost">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+              Import
+            </button>
+            <button class="btn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/></svg>
+              Manage models
+            </button>
+
+            <div class="view-toggle">
+              <button id="viewTileBtn" aria-label="Tile view">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              </button>
+              <button id="viewListBtn" class="active" aria-label="List view">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" x2="21" y1="6" y2="6"/><line x1="3" x2="21" y1="12" y2="12"/><line x1="3" x2="21" y1="18" y2="18"/></svg>
+              </button>
+            </div>
+
+            <button class="btn primary">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+              Add device
+            </button>
+          </div>
+        </header>
+
+        <!-- KPI strip -->
+        <section class="kpis note-host">
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-text-2);"></span>Total devices</div>
+            <div class="kpi-value">128</div>
+            <div class="kpi-sub">across 12 lockers</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-info);"></span>In use</div>
+            <div class="kpi-value">52</div>
+            <div class="kpi-sub">40% of fleet</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-success);"></span>Available</div>
+            <div class="kpi-value">61</div>
+            <div class="kpi-sub">48% of fleet</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-warning);"></span>Overdue</div>
+            <div class="kpi-value">4</div>
+            <div class="kpi-sub">3 users · oldest 10d</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-danger);"></span>Lost</div>
+            <div class="kpi-value">2</div>
+            <div class="kpi-sub">$1,198 unrecovered</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-money);"></span>Fleet value</div>
+            <div class="kpi-value money">$76,544</div>
+            <div class="kpi-sub">at replacement cost</div>
+          </div>
+          <div class="note bl" style="left:240px;max-width:280px;">
+            <strong>Replacement cost surfaced inline (Travis P1).</strong><br>
+            Lost-value and fleet-value live in the KPI strip so finance has it at a glance. Per-row Replacement column shows it for each device.
+          </div>
+        </section>
+
+        <!-- Filter bar -->
+        <div class="filter-bar note-host">
+          <div class="filter-search">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+            <input type="text" placeholder="Search by name, serial, Tag ID, or user…">
+          </div>
+          <button class="filter-select">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7 12 7 12s.8-.7 1.7-1.7"/></svg>
+            Location
+          </button>
+          <button class="filter-select">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/></svg>
+            Department
+          </button>
+          <button class="filter-select">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
+            Model
+          </button>
+          <button class="filter-select">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg>
+            Status
+            <span class="chip-count">2</span>
+          </button>
+          <button class="filter-select">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
+            Locker
+          </button>
+          <span class="filter-toggle-row note-host">
+            <span class="toggle-pill"></span> Chargeable only
+            <div class="note tl" style="left:0;max-width:240px;">
+              <strong>Fixed typo (v2)</strong><br>
+              Was "Chargable" — corrected to "Chargeable only".
+            </div>
+          </span>
+          <button class="filter-clear">Clear filters (2)</button>
+          <div class="note tl" style="right:0;left:auto;">
+            <strong>Filters Travis flagged (P3).</strong><br>
+            Location and Department filters surface at the top; Status and Model already existed. Multi-select within each.
+          </div>
+        </div>
+
+        <!-- Bulk action bar -->
+        <div class="bulk-bar note-host">
+          <span class="bulk-count">3 selected</span>
+          <div class="bulk-divider"></div>
+          <button class="btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit
+          </button>
+          <button class="btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
+            Reassign locker
+          </button>
+          <button class="btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6"/><path d="m15 9-6 6"/></svg>
+            Mark lost
+          </button>
+          <button class="btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/></svg>
+            Mark damaged
+          </button>
+          <button class="btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Retire
+          </button>
+          <button class="btn danger">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Delete
+          </button>
+          <button class="clear-sel">✕ Clear selection</button>
+          <div class="note tr" style="left:160px;right:auto;max-width:260px;">
+            <strong>Mark Lost / Mark Damaged (Travis P3).</strong><br>
+            Bulk-mark with audit (operator + timestamp + reason from configurable list). Lost devices automatically unlock the user's account when removed.
+          </div>
+        </div>
+
+        <!-- ========= LIST VIEW ========= -->
+        <div class="view-list show">
+          <div class="list-card">
+            <table class="devices">
+              <thead>
+                <tr>
+                  <th style="width:36px;">
+                    <span class="checkbox indeterminate"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="6" x2="18" y1="12" y2="12"/></svg></span>
+                  </th>
+                  <th class="note-host">Status
+                    <div class="note tl" style="left:0;">
+                      <strong>New "Checked-in, not plugged in" pill (Travis P4)</strong><br>
+                      A cyan pill so ops can tell at a glance which returned devices won't charge for the next user. Pairs with the "Block checkout when not charged" setting.
+                    </div>
+                  </th>
+                  <th>Device</th>
+                  <th>Model</th>
+                  <th>Location · Department</th>
+                  <th>Locker · Bay</th>
+                  <th class="note-host">User
+                    <div class="note tl" style="left:0;">
+                      <strong>Travis P5: Device Status Report columns</strong><br>
+                      Location · Department · Device · Status · User · Locker · Bay · Overdue Duration · Last Update — all present.
+                    </div>
+                  </th>
+                  <th>Overdue</th>
+                  <th class="note-host">Replacement
+                    <div class="note tl" style="left:0;">
+                      <strong>Replacement cost inline (Travis P1)</strong><br>
+                      Per-device $ value pulled from the model. Used at checkout-block messages, lost-device notifications, and the locker home-screen total.
+                    </div>
+                  </th>
+                  <th>Last update</th>
+                  <th style="width:60px;"></th>
+                </tr>
+              </thead>
+              <tbody>
+
+                <!-- 1. Overdue 10 days — Q from Travis's example data -->
+                <tr class="selected">
+                  <td><span class="checkbox checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+                  <td><span class="pill warn pulse"><span class="pill-dot"></span>Overdue</span></td>
+                  <td>
+                    <div class="device-name">iPhone13</div>
+                    <div class="device-sub">SN-87133</div>
+                  </td>
+                  <td>iPhone 16e</td>
+                  <td>
+                    <div class="col-meta">
+                      <div class="col-meta-primary">Troy Hospital</div>
+                      <div class="col-meta-secondary">Emergency Center</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="col-meta">
+                      <div class="col-meta-primary">Orange</div>
+                      <div class="col-meta-secondary">Bay 13</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="user-cell">
+                      <span class="user-mark">Q</span>
+                      <div class="col-meta">
+                        <div class="col-meta-primary">Q</div>
+                        <div class="col-meta-secondary">EMP-Q-001</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="overdue-cell crit">10d 8h</span></td>
+                  <td><span class="money">$599</span></td>
+                  <td>Apr 10, 2026 · 7:00 AM</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <!-- 2. NEW PILL: Checked-in, not plugged in — Tasha Yar -->
+                <tr class="selected">
+                  <td><span class="checkbox checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+                  <td><span class="pill cyan"><span class="pill-dot"></span>Returned, no charge</span></td>
+                  <td>
+                    <div class="device-name">iPhone10</div>
+                    <div class="device-sub">SN-87110</div>
+                  </td>
+                  <td>iPhone 16e</td>
+                  <td>
+                    <div class="col-meta">
+                      <div class="col-meta-primary">Troy Hospital</div>
+                      <div class="col-meta-secondary">Emergency Center</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="col-meta">
+                      <div class="col-meta-primary">Orange</div>
+                      <div class="col-meta-secondary">Bay 10</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="user-cell">
+                      <span class="user-mark">TY</span>
+                      <div class="col-meta">
+                        <div class="col-meta-primary">Tasha Yar</div>
+                        <div class="col-meta-secondary">last user</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span style="color:var(--c-text-muted);">—</span></td>
+                  <td><span class="money">$599</span></td>
+                  <td>Apr 19, 2026 · 7:10 PM</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <!-- 3. Damaged — William Riker -->
+                <tr class="selected">
+                  <td><span class="checkbox checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+                  <td><span class="pill danger"><span class="pill-dot"></span>Damaged</span></td>
+                  <td>
+                    <div class="device-name">iPhone11</div>
+                    <div class="device-sub">SN-87111</div>
+                  </td>
+                  <td>iPhone 16e</td>
+                  <td>
+                    <div class="col-meta">
+                      <div class="col-meta-primary">Troy Hospital</div>
+                      <div class="col-meta-secondary">Emergency Center</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="col-meta">
+                      <div class="col-meta-primary">Orange</div>
+                      <div class="col-meta-secondary">Bay 11</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="user-cell">
+                      <span class="user-mark" style="background:var(--c-danger-soft);color:var(--c-danger);">WR</span>
+                      <div class="col-meta">
+                        <div class="col-meta-primary">William Riker</div>
+                        <div class="col-meta-secondary">last user</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span style="color:var(--c-text-muted);">—</span></td>
+                  <td><span class="money">$599</span></td>
+                  <td>Apr 18, 2026 · 6:55 AM</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <!-- 4. Overdue 5 days — Wesley Crusher -->
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td><span class="pill warn pulse"><span class="pill-dot"></span>Overdue</span></td>
+                  <td>
+                    <div class="device-name">iPhone02</div>
+                    <div class="device-sub">SN-87102</div>
+                  </td>
+                  <td>iPhone 16e</td>
+                  <td>
+                    <div class="col-meta">
+                      <div class="col-meta-primary">Troy Hospital</div>
+                      <div class="col-meta-secondary">Emergency Center</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="col-meta">
+                      <div class="col-meta-primary">Green</div>
+                      <div class="col-meta-secondary">Bay 2</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="user-cell">
+                      <span class="user-mark">WC</span>
+                      <div class="col-meta">
+                        <div class="col-meta-primary">Wesley Crusher</div>
+                        <div class="col-meta-secondary">EMP-2-001</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="overdue-cell">5d 8h</span></td>
+                  <td><span class="money">$599</span></td>
+                  <td>Apr 15, 2026 · 7:05 AM</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <!-- 5. Lost — pulsing red -->
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td><span class="pill danger pulse"><span class="pill-dot"></span>Lost</span></td>
+                  <td>
+                    <div class="device-name">iPhone104</div>
+                    <div class="device-sub">SN-87204</div>
+                  </td>
+                  <td>iPhone 16e</td>
+                  <td>
+                    <div class="col-meta">
+                      <div class="col-meta-primary">Troy Hospital</div>
+                      <div class="col-meta-secondary">ICU</div>
+                    </div>
+                  </td>
+                  <td><span style="color:var(--c-text-muted);">—</span></td>
+                  <td>
+                    <div class="user-cell">
+                      <span class="user-mark" style="background:var(--c-danger-soft);color:var(--c-danger);">KJ</span>
+                      <div class="col-meta">
+                        <div class="col-meta-primary">Kathryn Janeway</div>
+                        <div class="col-meta-secondary">marked lost by AR</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="overdue-cell crit">22d</span></td>
+                  <td><span class="money">$599</span></td>
+                  <td>Mar 26, 2026 · 9:14 AM</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <!-- 6. In use -->
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td><span class="pill info"><span class="pill-dot"></span>In use</span></td>
+                  <td>
+                    <div class="device-name">iPhone03</div>
+                    <div class="device-sub">SN-87103</div>
+                  </td>
+                  <td>iPhone 16e</td>
+                  <td>
+                    <div class="col-meta">
+                      <div class="col-meta-primary">Troy Hospital</div>
+                      <div class="col-meta-secondary">Emergency Center</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="col-meta">
+                      <div class="col-meta-primary">Green</div>
+                      <div class="col-meta-secondary">Bay 3</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="user-cell">
+                      <span class="user-mark">JP</span>
+                      <div class="col-meta">
+                        <div class="col-meta-primary">Jean-Luc Picard</div>
+                        <div class="col-meta-secondary">EMP-3-001</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span style="color:var(--c-text-muted);">—</span></td>
+                  <td><span class="money">$599</span></td>
+                  <td>16 sec ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <!-- 7. In use -->
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td><span class="pill info"><span class="pill-dot"></span>In use</span></td>
+                  <td>
+                    <div class="device-name">iPhone05</div>
+                    <div class="device-sub">SN-87105</div>
+                  </td>
+                  <td>iPhone 16e</td>
+                  <td>
+                    <div class="col-meta">
+                      <div class="col-meta-primary">Troy Hospital</div>
+                      <div class="col-meta-secondary">Emergency Center</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="col-meta">
+                      <div class="col-meta-primary">Green</div>
+                      <div class="col-meta-secondary">Bay 5</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="user-cell">
+                      <span class="user-mark">GF</span>
+                      <div class="col-meta">
+                        <div class="col-meta-primary">Geordi La Forge</div>
+                        <div class="col-meta-secondary">EMP-5-001</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span style="color:var(--c-text-muted);">—</span></td>
+                  <td><span class="money">$599</span></td>
+                  <td>3 min ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <!-- 8. Available -->
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Available</span></td>
+                  <td>
+                    <div class="device-name">iPhone01</div>
+                    <div class="device-sub">SN-87101</div>
+                  </td>
+                  <td>iPhone 16e</td>
+                  <td>
+                    <div class="col-meta">
+                      <div class="col-meta-primary">Troy Hospital</div>
+                      <div class="col-meta-secondary">Emergency Center</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="col-meta">
+                      <div class="col-meta-primary">Green</div>
+                      <div class="col-meta-secondary">Bay 1</div>
+                    </div>
+                  </td>
+                  <td class="user-cell empty">Not assigned</td>
+                  <td><span style="color:var(--c-text-muted);">—</span></td>
+                  <td><span class="money">$599</span></td>
+                  <td>11 min ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <!-- 9. In use -->
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td><span class="pill info"><span class="pill-dot"></span>In use</span></td>
+                  <td>
+                    <div class="device-name">iPhone06</div>
+                    <div class="device-sub">SN-87106</div>
+                  </td>
+                  <td>iPhone 16e</td>
+                  <td>
+                    <div class="col-meta">
+                      <div class="col-meta-primary">Troy Hospital</div>
+                      <div class="col-meta-secondary">Emergency Center</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="col-meta">
+                      <div class="col-meta-primary">Green</div>
+                      <div class="col-meta-secondary">Bay 6</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="user-cell">
+                      <span class="user-mark">WR</span>
+                      <div class="col-meta">
+                        <div class="col-meta-primary">Worf Rozhenko</div>
+                        <div class="col-meta-secondary">EMP-6-001</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span style="color:var(--c-text-muted);">—</span></td>
+                  <td><span class="money">$599</span></td>
+                  <td>22 min ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <!-- 10. Available — Arista badge -->
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Available</span></td>
+                  <td>
+                    <div class="device-name">Arista badge 76</div>
+                    <div class="device-sub">SN-AR0076</div>
+                  </td>
+                  <td>Arista A4</td>
+                  <td>
+                    <div class="col-meta">
+                      <div class="col-meta-primary">Troy Hospital</div>
+                      <div class="col-meta-secondary">ICU</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="col-meta">
+                      <div class="col-meta-primary">ICU3</div>
+                      <div class="col-meta-secondary">Bay 3</div>
+                    </div>
+                  </td>
+                  <td class="user-cell empty">Not assigned</td>
+                  <td><span style="color:var(--c-text-muted);">—</span></td>
+                  <td><span class="money">$85</span></td>
+                  <td>4 min ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <!-- 11. Retired -->
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td><span class="pill slate"><span class="pill-dot"></span>Retired</span></td>
+                  <td>
+                    <div class="device-name">iPhone old-21</div>
+                    <div class="device-sub">SN-OLD021</div>
+                  </td>
+                  <td>iPhone 12</td>
+                  <td>
+                    <div class="col-meta">
+                      <div class="col-meta-primary">HonestWaves HQ</div>
+                      <div class="col-meta-secondary">Signal Hill</div>
+                    </div>
+                  </td>
+                  <td><span style="color:var(--c-text-muted);">—</span></td>
+                  <td class="user-cell empty">—</td>
+                  <td><span style="color:var(--c-text-muted);">—</span></td>
+                  <td><span class="money" style="color:var(--c-text-muted);">$399</span></td>
+                  <td>3 weeks ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <!-- 12. Available -->
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Available</span></td>
+                  <td>
+                    <div class="device-name">iPhone103</div>
+                    <div class="device-sub">SN-87203</div>
+                  </td>
+                  <td>iPhone 16e</td>
+                  <td>
+                    <div class="col-meta">
+                      <div class="col-meta-primary">Troy Hospital</div>
+                      <div class="col-meta-secondary">ICU</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="col-meta">
+                      <div class="col-meta-primary">ICU4</div>
+                      <div class="col-meta-secondary">Bay 4</div>
+                    </div>
+                  </td>
+                  <td class="user-cell empty">Not assigned</td>
+                  <td><span style="color:var(--c-text-muted);">—</span></td>
+                  <td><span class="money">$599</span></td>
+                  <td>6 min ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+
+            <div class="table-foot">
+              <span>Showing 1–12 of 128 devices</span>
+              <div class="pag">
+                <button class="pag-btn" disabled><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+                <span class="pag-num active">1</span>
+                <span class="pag-num">2</span>
+                <span class="pag-num">3</span>
+                <span style="padding:0 4px;color:var(--c-text-muted);">…</span>
+                <span class="pag-num">11</span>
+                <button class="pag-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+                <span style="margin-left:12px;">25 per page</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========= TILE VIEW ========= -->
+        <div class="view-tile">
+          <div class="tile-grid">
+
+            <div class="tile selected">
+              <div class="tile-stripe warn"></div>
+              <div class="tile-head">
+                <div class="tile-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg></div>
+                <div style="flex:1;">
+                  <div class="tile-name">iPhone13</div>
+                  <div class="tile-model">iPhone 16e · SN-87133</div>
+                </div>
+                <span class="checkbox checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Status</span><span class="pill warn pulse"><span class="pill-dot"></span>Overdue 10d 8h</span></div>
+                <div class="tile-row"><span>Location</span><strong>Troy Hospital</strong></div>
+                <div class="tile-row"><span>Department</span><strong>Emergency Center</strong></div>
+                <div class="tile-row"><span>Locker · Bay</span><strong>Orange · Bay 13</strong></div>
+                <div class="tile-row"><span>Replacement</span><span class="money">$599</span></div>
+              </div>
+              <div class="tile-user">
+                <span class="user-mark">Q</span>
+                <div class="tile-user-meta">
+                  <div class="tile-user-name">Q</div>
+                  <div class="tile-user-since">Out since Apr 10 · 7:00 AM</div>
+                </div>
+              </div>
+              <div class="tile-foot">
+                <span>Updated Apr 10 · 7:00 AM</span>
+                <span style="color:var(--c-warning-text);font-weight:600;">10d overdue</span>
+              </div>
+            </div>
+
+            <div class="tile selected note-host">
+              <div class="tile-stripe cyan"></div>
+              <div class="tile-head">
+                <div class="tile-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg></div>
+                <div style="flex:1;">
+                  <div class="tile-name">iPhone10</div>
+                  <div class="tile-model">iPhone 16e · SN-87110</div>
+                </div>
+                <span class="checkbox checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Status</span><span class="pill cyan"><span class="pill-dot"></span>Returned, no charge</span></div>
+                <div class="tile-row"><span>Location</span><strong>Troy Hospital</strong></div>
+                <div class="tile-row"><span>Department</span><strong>Emergency Center</strong></div>
+                <div class="tile-row"><span>Locker · Bay</span><strong>Orange · Bay 10</strong></div>
+                <div class="tile-row"><span>Replacement</span><span class="money">$599</span></div>
+              </div>
+              <div class="tile-user">
+                <span class="user-mark">TY</span>
+                <div class="tile-user-meta">
+                  <div class="tile-user-name">Tasha Yar · last user</div>
+                  <div class="tile-user-since">Returned Apr 19 · 7:10 PM</div>
+                </div>
+              </div>
+              <div class="tile-foot">
+                <span>Won't charge next user</span>
+                <span>20h ago</span>
+              </div>
+              <div class="note tr" style="left:0;">
+                <strong>New status surfaces here too.</strong><br>
+                Cyan stripe + cyan pill + "Won't charge next user" footer text means ops sees this in tile view without reading every field.
+              </div>
+            </div>
+
+            <div class="tile selected">
+              <div class="tile-stripe danger"></div>
+              <div class="tile-head">
+                <div class="tile-icon" style="background:var(--c-danger-soft);color:var(--c-danger);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/></svg></div>
+                <div style="flex:1;">
+                  <div class="tile-name">iPhone11</div>
+                  <div class="tile-model">iPhone 16e · SN-87111</div>
+                </div>
+                <span class="checkbox checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Status</span><span class="pill danger"><span class="pill-dot"></span>Damaged</span></div>
+                <div class="tile-row"><span>Location</span><strong>Troy Hospital</strong></div>
+                <div class="tile-row"><span>Department</span><strong>Emergency Center</strong></div>
+                <div class="tile-row"><span>Locker · Bay</span><strong>Orange · Bay 11</strong></div>
+                <div class="tile-row"><span>Replacement</span><span class="money">$599</span></div>
+              </div>
+              <div class="tile-user">
+                <span class="user-mark" style="background:var(--c-danger-soft);color:var(--c-danger);">WR</span>
+                <div class="tile-user-meta">
+                  <div class="tile-user-name">William Riker · last user</div>
+                  <div class="tile-user-since">Marked damaged Apr 18 · 6:55 AM</div>
+                </div>
+              </div>
+              <div class="tile-foot">
+                <span>Damage reason: Cracked screen</span>
+                <span>2 days ago</span>
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="tile-stripe warn"></div>
+              <div class="tile-head">
+                <div class="tile-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg></div>
+                <div style="flex:1;">
+                  <div class="tile-name">iPhone02</div>
+                  <div class="tile-model">iPhone 16e · SN-87102</div>
+                </div>
+                <span class="checkbox"></span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Status</span><span class="pill warn pulse"><span class="pill-dot"></span>Overdue 5d 8h</span></div>
+                <div class="tile-row"><span>Location</span><strong>Troy Hospital</strong></div>
+                <div class="tile-row"><span>Department</span><strong>Emergency Center</strong></div>
+                <div class="tile-row"><span>Locker · Bay</span><strong>Green · Bay 2</strong></div>
+                <div class="tile-row"><span>Replacement</span><span class="money">$599</span></div>
+              </div>
+              <div class="tile-user">
+                <span class="user-mark">WC</span>
+                <div class="tile-user-meta">
+                  <div class="tile-user-name">Wesley Crusher</div>
+                  <div class="tile-user-since">Out since Apr 15 · 7:05 AM</div>
+                </div>
+              </div>
+              <div class="tile-foot">
+                <span>Last seen 5d ago</span>
+                <span style="color:var(--c-warning-text);font-weight:600;">5d overdue</span>
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="tile-stripe danger"></div>
+              <div class="tile-head">
+                <div class="tile-icon" style="background:var(--c-danger-soft);color:var(--c-danger);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 9 6 6"/><path d="m15 9-6 6"/></svg></div>
+                <div style="flex:1;">
+                  <div class="tile-name">iPhone104</div>
+                  <div class="tile-model">iPhone 16e · SN-87204</div>
+                </div>
+                <span class="checkbox"></span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Status</span><span class="pill danger pulse"><span class="pill-dot"></span>Lost</span></div>
+                <div class="tile-row"><span>Location</span><strong>Troy Hospital</strong></div>
+                <div class="tile-row"><span>Department</span><strong>ICU</strong></div>
+                <div class="tile-row"><span>Locker · Bay</span><span style="color:var(--c-text-muted);">—</span></div>
+                <div class="tile-row"><span>Replacement</span><span class="money">$599</span></div>
+              </div>
+              <div class="tile-user">
+                <span class="user-mark" style="background:var(--c-danger-soft);color:var(--c-danger);">KJ</span>
+                <div class="tile-user-meta">
+                  <div class="tile-user-name">Kathryn Janeway</div>
+                  <div class="tile-user-since">Marked lost by AR · Mar 26</div>
+                </div>
+              </div>
+              <div class="tile-foot">
+                <span>22 days unrecovered</span>
+                <span style="color:var(--c-danger);font-weight:600;">Charge dept</span>
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="tile-stripe info"></div>
+              <div class="tile-head">
+                <div class="tile-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg></div>
+                <div style="flex:1;">
+                  <div class="tile-name">iPhone03</div>
+                  <div class="tile-model">iPhone 16e · SN-87103</div>
+                </div>
+                <span class="checkbox"></span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Status</span><span class="pill info"><span class="pill-dot"></span>In use</span></div>
+                <div class="tile-row"><span>Location</span><strong>Troy Hospital</strong></div>
+                <div class="tile-row"><span>Department</span><strong>Emergency Center</strong></div>
+                <div class="tile-row"><span>Locker · Bay</span><strong>Green · Bay 3</strong></div>
+                <div class="tile-row"><span>Replacement</span><span class="money">$599</span></div>
+              </div>
+              <div class="tile-user">
+                <span class="user-mark">JP</span>
+                <div class="tile-user-meta">
+                  <div class="tile-user-name">Jean-Luc Picard</div>
+                  <div class="tile-user-since">Out since 16 sec ago</div>
+                </div>
+              </div>
+              <div class="tile-foot">
+                <span>Expected back at 2:00 PM</span>
+                <span>16 sec ago</span>
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="tile-stripe success"></div>
+              <div class="tile-head">
+                <div class="tile-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg></div>
+                <div style="flex:1;">
+                  <div class="tile-name">iPhone01</div>
+                  <div class="tile-model">iPhone 16e · SN-87101</div>
+                </div>
+                <span class="checkbox"></span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Status</span><span class="pill success"><span class="pill-dot"></span>Available</span></div>
+                <div class="tile-row"><span>Location</span><strong>Troy Hospital</strong></div>
+                <div class="tile-row"><span>Department</span><strong>Emergency Center</strong></div>
+                <div class="tile-row"><span>Locker · Bay</span><strong>Green · Bay 1</strong></div>
+                <div class="tile-row"><span>Replacement</span><span class="money">$599</span></div>
+              </div>
+              <div class="tile-foot" style="border-top:0;margin-top:var(--s-3);">
+                <span>Ready for checkout</span>
+                <span>11 min ago</span>
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="tile-stripe success"></div>
+              <div class="tile-head">
+                <div class="tile-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+                <div style="flex:1;">
+                  <div class="tile-name">Arista badge 76</div>
+                  <div class="tile-model">Arista A4 · SN-AR0076</div>
+                </div>
+                <span class="checkbox"></span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Status</span><span class="pill success"><span class="pill-dot"></span>Available</span></div>
+                <div class="tile-row"><span>Location</span><strong>Troy Hospital</strong></div>
+                <div class="tile-row"><span>Department</span><strong>ICU</strong></div>
+                <div class="tile-row"><span>Locker · Bay</span><strong>ICU3 · Bay 3</strong></div>
+                <div class="tile-row"><span>Replacement</span><span class="money">$85</span></div>
+              </div>
+              <div class="tile-foot" style="border-top:0;margin-top:var(--s-3);">
+                <span>Ready for checkout</span>
+                <span>4 min ago</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Travis credit -->
+        <div class="travis-credit">
+          <strong>Recommendations integrated from Travis @ Corewell:</strong>
+          <div class="recs">
+            <span class="rec-tag">P5</span>Device status report columns (location · department · device · status · user · locker · bay · overdue · last update) &nbsp;
+            <span class="rec-tag">P4</span>"Checked-in, not plugged in" status pill &nbsp;
+            <span class="rec-tag">P3</span>Lost field with audit (operator + timestamp) &nbsp;
+            <span class="rec-tag">P3</span>Advanced filters by location and department &nbsp;
+            <span class="rec-tag">P1</span>Replacement cost field on each device + fleet value KPI
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const listBtn = document.getElementById('viewListBtn');
+    const tileBtn = document.getElementById('viewTileBtn');
+    const listView = document.querySelector('.view-list');
+    const tileView = document.querySelector('.view-tile');
+
+    function show(view) {
+      if (view === 'tile') {
+        listView.classList.remove('show');
+        tileView.classList.add('show');
+        listBtn.classList.remove('active');
+        tileBtn.classList.add('active');
+        try { localStorage.setItem('hw.devices.view', 'tile'); } catch (e) {}
+      } else {
+        tileView.classList.remove('show');
+        listView.classList.add('show');
+        tileBtn.classList.remove('active');
+        listBtn.classList.add('active');
+        try { localStorage.setItem('hw.devices.view', 'list'); } catch (e) {}
+      }
+    }
+    listBtn.addEventListener('click', () => show('list'));
+    tileBtn.addEventListener('click', () => show('tile'));
+
+    try {
+      const saved = localStorage.getItem('hw.devices.view');
+      if (saved === 'tile') show('tile');
+    } catch (e) {}
+  </script>
+</body>
+</html>

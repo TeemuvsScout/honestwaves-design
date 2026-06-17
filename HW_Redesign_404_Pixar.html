@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>404 · HonestWaves Console</title>
+  <style>
+    :root {
+      --c-surface: #FFFFFF;
+      --c-surface-2: #FAFAFB;
+      --c-surface-3: #F4F5F7;
+      --c-paper: #FAF8F3;             /* warm paper backdrop for the sketch */
+      --c-border: #E5E7EB;
+      --c-border-strong: #D1D5DB;
+      --c-text: #0F172A;
+      --c-text-2: #475569;
+      --c-text-muted: #94A3B8;
+      --c-brand: #2563EB;
+      --c-brand-hover: #1D4ED8;
+      --c-brand-soft: #EFF6FF;
+      --c-brand-deep: #1E40AF;
+      --c-warning: #F59E0B;
+      --c-warning-soft: #FFFBEB;
+      --c-warning-text: #B45309;
+
+      --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --font-serif: "Lora", Georgia, "Times New Roman", serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      color: var(--c-text);
+      background: var(--c-surface-2);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+    svg { display: block; }
+
+    /* ============================================================
+       Top bar — minimal, just brand + breadcrumb
+       ============================================================ */
+    .topbar {
+      background: var(--c-surface);
+      border-bottom: 1px solid var(--c-border);
+      padding: 14px 24px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .logo-mark {
+      width: 28px; height: 28px;
+      border-radius: 7px;
+      background: linear-gradient(135deg, var(--c-brand) 0%, var(--c-brand-deep) 100%);
+      display: grid; place-items: center;
+      color: white; font-weight: 700; font-size: 14px;
+    }
+    .topbar-title { font-weight: 600; font-size: 15px; letter-spacing: -0.01em; }
+    .topbar-sub { color: var(--c-text-muted); font-size: 12px; }
+    .topbar-spacer { flex: 1; }
+    .topbar-status {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px;
+      background: var(--c-warning-soft);
+      color: var(--c-warning-text);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+    }
+    .topbar-status .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--c-warning);
+    }
+
+    /* ============================================================
+       Stage — split layout: portrait on the left, copy on the right.
+       Falls back to stacked on narrow screens.
+       ============================================================ */
+    .stage {
+      min-height: calc(100vh - 56px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 32px;
+      padding: 40px 64px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    /* Portrait — warm paper card with the pencil sketch.
+       If pixar.png is missing, the SVG fallback below shows in its place. */
+    .portrait {
+      position: relative;
+      background: var(--c-paper);
+      border: 1px solid var(--c-border);
+      border-radius: 18px;
+      padding: 28px;
+      overflow: hidden;
+      box-shadow:
+        0 1px 2px rgba(15, 23, 42, 0.04),
+        0 16px 48px rgba(15, 23, 42, 0.08);
+      transform: rotate(-1.2deg);
+      transition: transform .3s ease;
+    }
+    .portrait:hover { transform: rotate(0deg) scale(1.01); }
+    .portrait::after {
+      content: "";
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at top left, rgba(255,255,255,0.4) 0%, transparent 60%),
+        radial-gradient(ellipse at bottom right, rgba(15,23,42,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .portrait img,
+    .portrait .pixar-fallback {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 4px;
+      filter: contrast(1.05);
+    }
+    .portrait .caption {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 13px;
+      color: var(--c-text-muted);
+      text-align: center;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px dashed rgba(15, 23, 42, 0.15);
+    }
+    .portrait .caption-name { color: var(--c-text); font-weight: 500; }
+
+    /* SVG fallback — only visible if pixar.png is missing. */
+    .pixar-fallback {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      background: #F0EBE0;
+      display: grid; place-items: center;
+      color: #8B7355;
+      border-radius: 4px;
+    }
+    .pixar-fallback .fb-inner {
+      text-align: center;
+      padding: 24px;
+    }
+    .pixar-fallback .fb-mark {
+      font-size: 64px;
+      margin-bottom: 8px;
+    }
+    .pixar-fallback .fb-title {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 14px;
+      max-width: 200px;
+      margin: 0 auto;
+    }
+    /* Hide fallback when the image successfully loads */
+    .portrait img:not([src=""]):not([src*="MISSING"]) + .pixar-fallback { display: none; }
+
+    /* Copy side */
+    .copy {
+      max-width: 480px;
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px;
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      color: var(--c-text-muted);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 24px;
+      font-family: var(--font-mono);
+    }
+    .eyebrow .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--c-warning);
+    }
+
+    .copy h1 {
+      font-size: 42px;
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+      font-weight: 700;
+      margin: 0 0 12px;
+      color: var(--c-text);
+    }
+    .copy h1 .pixar {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 600;
+      color: var(--c-brand);
+    }
+    .copy p.lede {
+      font-size: 17px;
+      color: var(--c-text-2);
+      margin: 0 0 28px;
+      line-height: 1.55;
+    }
+
+    .actions {
+      display: flex; align-items: center; gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 40px;
+      padding: 0 18px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--c-text);
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+      transition: background .12s, border-color .12s, transform .12s;
+    }
+    .btn:hover {
+      background: var(--c-surface-3);
+      border-color: var(--c-border-strong);
+    }
+    .btn.primary {
+      background: var(--c-brand);
+      color: white;
+      border-color: var(--c-brand);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+    .btn.primary:hover { background: var(--c-brand-hover); border-color: var(--c-brand-hover); transform: translateY(-1px); }
+
+    .help {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 16px;
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: 10px;
+      font-size: 13px;
+      color: var(--c-text-2);
+    }
+    .help svg { color: var(--c-text-muted); flex-shrink: 0; margin-top: 2px; }
+    .help strong { color: var(--c-text); font-weight: 600; }
+    .help a {
+      color: var(--c-brand);
+      font-weight: 600;
+    }
+    .help-reqid {
+      display: inline-block;
+      padding: 2px 6px;
+      background: var(--c-surface-3);
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--c-text-2);
+      margin-left: 4px;
+    }
+
+    /* ============================================================
+       Annotation strip (for the prototype review)
+       ============================================================ */
+    .annotation-strip {
+      background: linear-gradient(90deg, var(--c-brand-soft), #F0F7FF);
+      border-bottom: 1px solid #DBEAFE;
+      padding: 8px 24px;
+      font-size: 12px;
+      color: var(--c-brand-deep);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .annotation-strip strong { color: var(--c-brand-deep); }
+    .annotation-strip .chip {
+      background: var(--c-brand);
+      color: white;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* ============================================================
+       Responsive — stack on tablet/mobile
+       ============================================================ */
+    @media (max-width: 980px) {
+      .stage {
+        grid-template-columns: 1fr;
+        padding: 32px 20px;
+        gap: 24px;
+      }
+      .copy { max-width: 100%; }
+      .copy h1 { font-size: 32px; }
+      .portrait { max-width: 360px; margin: 0 auto; transform: rotate(-1deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="annotation-strip">
+    <span class="chip">Prototype 404</span>
+    <strong>Page not found · Pixar edition.</strong>
+    <span>Brand-defining error page with the pencil portrait, friendly headline, and clear way back.</span>
+    <span style="margin-left:auto;color:#64748B;">Drop <code style="background:rgba(255,255,255,0.6);padding:1px 5px;border-radius:3px;font-size:11px;">pixar.png</code> alongside this file for the real image.</span>
+  </div>
+
+  <header class="topbar">
+    <div class="logo-mark">H</div>
+    <div>
+      <div class="topbar-title">HonestWaves Console</div>
+      <div class="topbar-sub">Dashboard · admin</div>
+    </div>
+    <div class="topbar-spacer"></div>
+    <span class="topbar-status">
+      <span class="dot"></span>
+      HTTP 404
+    </span>
+  </header>
+
+  <main class="stage">
+
+    <!-- Portrait card -->
+    <div class="portrait">
+      <img src="pixar.png" alt="Pixar — a wirehaired terrier — sitting on a couch, drawn in pencil." onerror="this.style.display='none';">
+      <div class="pixar-fallback" aria-hidden="true">
+        <div class="fb-inner">
+          <div class="fb-mark">🐾</div>
+          <div class="fb-title">Pixar's pencil portrait goes here<br><span style="font-size:11px;color:#A89070;">— add <code style="font-family:var(--font-mono);">pixar.png</code> next to this file</span></div>
+        </div>
+      </div>
+      <div class="caption">
+        A portrait of <span class="caption-name">Pixar</span>, our resident missing-page mascot.
+      </div>
+    </div>
+
+    <!-- Copy side -->
+    <div class="copy">
+      <span class="eyebrow"><span class="dot"></span>404 · Page not found</span>
+      <h1><span class="pixar">Pixar</span> was unable to find this page with his image.</h1>
+      <p class="lede">
+        The page you're looking for moved, was deleted, or never existed in the first place.
+        Pixar searched the couch, behind the couch, and under the dashboard. No luck.
+      </p>
+
+      <div class="actions">
+        <a class="btn primary" href="/dashboard">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12 12 3l9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V10"/></svg>
+          Back to dashboard
+        </a>
+        <a class="btn" href="javascript:history.back()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          Go back
+        </a>
+      </div>
+
+      <div class="help">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+          <div>
+            <strong>Still stuck?</strong> Check the URL for a typo, or
+            <a href="mailto:support@honestwaves.com">contact support</a>.
+            Mention reference <span class="help-reqid">req_8f4c2a1e</span> if you do.
+          </div>
+        </div>
+    </div>
+
+  </main>
+
+</body>
+</html>
