@@ -535,6 +535,27 @@
       max-width: 130px;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
+    /* Duration line — shows under user name. Amber for overdue, slate for active in-use. */
+    .bay-duration {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--c-text-2);
+      margin: 0 0 4px 24px;
+      font-variant-numeric: tabular-nums;
+    }
+    .bay-duration.overdue {
+      color: var(--c-warning-text);
+    }
+    .bay-duration.overdue::before {
+      content: "▲";
+      font-size: 8px;
+    }
+    .bay-duration.fresh::before {
+      content: "▾";
+      font-size: 8px;
+      color: var(--c-text-muted);
+    }
     .bay-device {
       display: flex; align-items: center; gap: 6px;
       font-size: var(--t-11);
@@ -1002,6 +1023,7 @@
               <span class="bay-user-mark">CS</span>
               <span class="bay-user-name">Crosby Smith</span>
             </div>
+            <div class="bay-duration overdue">Out 2h · overdue 2h</div>
             <div class="bay-device">
               <svg class="bay-device-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
               iPhone 16e 71
@@ -1026,6 +1048,7 @@
               <span class="bay-user-mark">JJ</span>
               <span class="bay-user-name">John Johnson</span>
             </div>
+            <div class="bay-duration overdue">Out 18h · overdue 10h</div>
             <div class="bay-device">
               <svg class="bay-device-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
               iPhone 16e 72
@@ -1071,6 +1094,7 @@
               <span class="bay-user-mark">NV</span>
               <span class="bay-user-name">Natashalee Vargas</span>
             </div>
+            <div class="bay-duration overdue">Out 14h · overdue 6h</div>
             <div class="bay-device">
               <svg class="bay-device-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
               iPhone 16e 74
@@ -1095,6 +1119,7 @@
               <span class="bay-user-mark">CH</span>
               <span class="bay-user-name">Corewell Health</span>
             </div>
+            <div class="bay-duration overdue">Out 1d 4h · overdue 20h</div>
             <div class="bay-device">
               <svg class="bay-device-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
               iPhone 16e 75
@@ -1161,6 +1186,7 @@
               <span class="bay-user-mark">LD</span>
               <span class="bay-user-name">Lauren Davis</span>
             </div>
+            <div class="bay-duration overdue">Out 22h · overdue 14h</div>
             <div class="bay-device">
               <svg class="bay-device-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
               iPhone 16e 78

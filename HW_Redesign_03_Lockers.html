@@ -1900,14 +1900,14 @@
       <div class="drawer-section">
         <p class="drawer-h">Bay state · live</p>
         <div class="drawer-bay-mini">
-          <div class="b" style="background:var(--c-warning);"></div>
-          <div class="b" style="background:var(--c-warning);"></div>
-          <div class="b" style="background:#FB7185;"></div>
-          <div class="b" style="background:var(--c-warning);"></div>
-          <div class="b" style="background:var(--c-warning);"></div>
-          <div class="b" style="background:#FB7185;"></div>
-          <div class="b" style="background:#FB7185;"></div>
-          <div class="b" style="background:var(--c-warning);"></div>
+          <div class="b" style="background:var(--c-warning);" title="Bay 1 · Crosby Smith · Out 2h · overdue 2h"></div>
+          <div class="b" style="background:var(--c-warning);" title="Bay 2 · John Johnson · Out 18h · overdue 10h"></div>
+          <div class="b" style="background:#FB7185;" title="Bay 3 · No device · last scan 14h ago"></div>
+          <div class="b" style="background:var(--c-warning);" title="Bay 4 · Natashalee Vargas · Out 14h · overdue 6h"></div>
+          <div class="b" style="background:var(--c-warning);" title="Bay 5 · Corewell Health · Out 1d 4h · overdue 20h"></div>
+          <div class="b" style="background:#FB7185;" title="Bay 6 · No device · last scan 1d ago"></div>
+          <div class="b" style="background:#FB7185;" title="Bay 7 · No device · last scan 14h ago"></div>
+          <div class="b" style="background:var(--c-warning);" title="Bay 8 · Lauren Davis · Out 22h · overdue 14h"></div>
         </div>
         <div style="display:flex;gap:14px;font-size:10px;color:var(--c-text-2);margin-top:8px;">
           <span><span style="display:inline-block;width:8px;height:8px;background:var(--c-warning);border-radius:2px;vertical-align:middle;margin-right:4px;"></span>5 overdue</span>
@@ -1993,6 +1993,46 @@
       const saved = localStorage.getItem('hw.lockers.view');
       if (saved === 'tile') show('tile');
     } catch (e) {}
+
+    // Auto-populate tile-bay tooltips so hovering shows who has the device + duration
+    // Generic state-based titles; Pink8 (the locker featured in the drawer) gets
+    // specific user + duration on each in-use/overdue bay.
+    (function decorateTileBayTooltips() {
+      const STATE_LABEL = {
+        av: 'Available',
+        iu: 'In use',
+        od: 'Overdue',
+        dn: 'No device',
+        dx: 'Deactivated',
+        cl: 'Cleaning'
+      };
+      // Generic pass: every tile-bay gets at minimum a state label
+      document.querySelectorAll('.tile-bay').forEach(el => {
+        if (el.hasAttribute('title')) return;
+        const cls = [...el.classList].find(c => STATE_LABEL[c]);
+        if (cls) el.setAttribute('title', STATE_LABEL[cls]);
+      });
+      // Pink8 specific overrides: this locker's tile grid sits inside the
+      // 4th .locker-tile (index 3). Map known holders + durations onto its
+      // in-use / overdue cells.
+      const PINK8_HOLDERS = [
+        { sel: 1, title: 'Bay 1 · Crosby Smith · Out 2h · overdue 2h' },
+        { sel: 2, title: 'Bay 2 · John Johnson · Out 18h · overdue 10h' },
+        { sel: 4, title: 'Bay 4 · Natashalee Vargas · Out 14h · overdue 6h' },
+        { sel: 5, title: 'Bay 5 · Corewell Health · Out 1d 4h · overdue 20h' },
+        { sel: 8, title: 'Bay 8 · Lauren Davis · Out 22h · overdue 14h' }
+      ];
+      const tiles = document.querySelectorAll('.locker-tile');
+      // Find the Pink8 tile (4th one with the dn + od mix). Use index 3 as default.
+      const pink8 = tiles[3];
+      if (pink8) {
+        const bays = pink8.querySelectorAll('.tile-bay');
+        PINK8_HOLDERS.forEach(h => {
+          const idx = h.sel - 1;
+          if (bays[idx]) bays[idx].setAttribute('title', h.title);
+        });
+      }
+    })();
   </script>
 </body>
 </html>
