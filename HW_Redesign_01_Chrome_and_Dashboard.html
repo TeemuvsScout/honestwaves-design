@@ -1,0 +1,1285 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1440">
+  <title>HonestWaves redesign · 01 · Chrome + Dashboard</title>
+  <style>
+    /* ============================================================
+       DESIGN TOKENS — every other prototype reads from these.
+       Mapped 1:1 to Tailwind defaults so the dev team can lift
+       them directly into their tailwind.config.js theme.extend.
+       PrimeVue components inherit via the Aura unstyled mode.
+       ============================================================ */
+    :root {
+      /* Color · neutral grays (Tailwind slate) */
+      --c-surface:        #FFFFFF;
+      --c-surface-2:      #FAFAFB;
+      --c-surface-3:      #F4F5F7;
+      --c-border:         #E5E7EB;
+      --c-border-strong:  #D1D5DB;
+      --c-divider:        #EDF0F4;
+
+      /* Color · text */
+      --c-text:           #0F172A;
+      --c-text-2:         #475569;
+      --c-text-muted:     #94A3B8;
+      --c-text-inverse:   #FFFFFF;
+
+      /* Color · brand (HonestWaves blue, refined) */
+      --c-brand:          #2563EB;
+      --c-brand-hover:    #1D4ED8;
+      --c-brand-soft:     #EFF6FF;
+      --c-brand-deep:     #1E40AF;
+
+      /* Color · semantic state */
+      --c-success:        #10B981;   /* Available, Up to date */
+      --c-success-soft:   #ECFDF5;
+      --c-warning:        #F59E0B;   /* Overdue, Door open, Cleaning */
+      --c-warning-soft:   #FFFBEB;
+      --c-danger:         #EF4444;   /* Fault, Missing, Lost */
+      --c-danger-soft:    #FEF2F2;
+      --c-info:           #6366F1;   /* In use, Reserved */
+      --c-info-soft:      #EEF2FF;
+      --c-violet:         #7C3AED;   /* Charging */
+      --c-violet-soft:    #F5F3FF;
+      --c-slate:          #64748B;   /* Deactivated, Retired, Not reported */
+      --c-slate-soft:     #F1F5F9;
+
+      /* Type */
+      --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo,
+                   Consolas, monospace;
+
+      --t-11: 11px;
+      --t-12: 12px;
+      --t-13: 13px;
+      --t-14: 14px;
+      --t-16: 16px;
+      --t-20: 20px;
+      --t-24: 24px;
+      --t-32: 32px;
+
+      /* Spacing scale (mirrors Tailwind: 1=4 2=8 3=12 4=16 5=20 6=24 8=32 10=40 12=48) */
+      --s-1:  4px;
+      --s-2:  8px;
+      --s-3:  12px;
+      --s-4:  16px;
+      --s-5:  20px;
+      --s-6:  24px;
+      --s-8:  32px;
+      --s-10: 40px;
+      --s-12: 48px;
+
+      /* Radius */
+      --r-sm: 4px;
+      --r-md: 6px;
+      --r-lg: 8px;
+      --r-xl: 12px;
+
+      /* Shadow */
+      --sh-1: 0 1px 2px rgba(15, 23, 42, 0.04);
+      --sh-2: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+      --sh-popover: 0 8px 24px rgba(15, 23, 42, 0.10), 0 2px 6px rgba(15, 23, 42, 0.06);
+
+      /* Layout */
+      --sidebar-w: 232px;
+      --topbar-h:  52px;
+    }
+
+    /* ============================================================
+       Reset / base
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      font-size: var(--t-13);
+      line-height: 1.45;
+      color: var(--c-text);
+      background: var(--c-surface-2);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    a { color: inherit; text-decoration: none; }
+    button {
+      font: inherit; color: inherit;
+      background: none; border: 0; padding: 0;
+      cursor: pointer;
+    }
+    svg { display: block; }
+
+    /* ============================================================
+       Layout shell — Topbar + Sidebar + Main
+       ============================================================ */
+    .shell {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      grid-template-rows: var(--topbar-h) 1fr;
+      grid-template-areas:
+        "logo  topbar"
+        "side  main";
+      min-height: 100vh;
+    }
+
+    /* ----- Logo block (top-left of sidebar) ----- */
+    .logo {
+      grid-area: logo;
+      background: var(--c-surface);
+      border-right: 1px solid var(--c-border);
+      border-bottom: 1px solid var(--c-border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 var(--s-4);
+      font-weight: 600;
+      font-size: var(--t-14);
+      letter-spacing: -0.01em;
+    }
+    .logo-mark {
+      width: 26px; height: 26px;
+      border-radius: 7px;
+      background: linear-gradient(135deg, var(--c-brand) 0%, var(--c-brand-deep) 100%);
+      display: grid; place-items: center;
+      color: var(--c-text-inverse);
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .logo-text { color: var(--c-text); }
+    .logo-tenant {
+      margin-left: auto;
+      font-size: var(--t-11);
+      color: var(--c-text-muted);
+      background: var(--c-surface-3);
+      padding: 2px 6px;
+      border-radius: var(--r-sm);
+      font-weight: 500;
+    }
+
+    /* ----- Topbar (across the top, right of logo) ----- */
+    .topbar {
+      grid-area: topbar;
+      background: var(--c-surface);
+      border-bottom: 1px solid var(--c-border);
+      display: flex;
+      align-items: center;
+      padding: 0 var(--s-5);
+      gap: var(--s-3);
+    }
+    .breadcrumb {
+      display: flex; align-items: center; gap: var(--s-2);
+      color: var(--c-text-2);
+      font-size: var(--t-13);
+    }
+    .breadcrumb strong { color: var(--c-text); font-weight: 600; }
+    .breadcrumb-sep { color: var(--c-text-muted); font-size: 14px; }
+
+    .topbar-spacer { flex: 1; }
+
+    .search {
+      display: flex; align-items: center; gap: var(--s-2);
+      width: 340px;
+      height: 32px;
+      padding: 0 var(--s-3);
+      background: var(--c-surface-2);
+      border: 1px solid var(--c-border);
+      border-radius: var(--r-md);
+      color: var(--c-text-muted);
+      font-size: var(--t-13);
+      transition: border-color .15s, background .15s;
+    }
+    .search:hover { border-color: var(--c-border-strong); }
+    .search:focus-within { background: var(--c-surface); border-color: var(--c-brand); }
+    .search-kbd {
+      margin-left: auto;
+      display: inline-flex; align-items: center;
+      padding: 1px 5px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--c-text-2);
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: 3px;
+    }
+
+    .icon-btn {
+      width: 32px; height: 32px;
+      display: grid; place-items: center;
+      border-radius: var(--r-md);
+      color: var(--c-text-2);
+      position: relative;
+      transition: background .15s, color .15s;
+    }
+    .icon-btn:hover { background: var(--c-surface-3); color: var(--c-text); }
+    .icon-btn .badge {
+      position: absolute;
+      top: 2px; right: 2px;
+      min-width: 16px; height: 16px;
+      padding: 0 4px;
+      background: var(--c-danger);
+      color: white;
+      border: 2px solid var(--c-surface);
+      border-radius: 999px;
+      font-size: 9px;
+      font-weight: 700;
+      display: grid; place-items: center;
+    }
+
+    .avatar-btn {
+      display: flex; align-items: center; gap: var(--s-2);
+      padding: 4px 8px 4px 4px;
+      border-radius: var(--r-md);
+      transition: background .15s;
+    }
+    .avatar-btn:hover { background: var(--c-surface-3); }
+    .avatar {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366F1 0%, #2563EB 100%);
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      display: grid; place-items: center;
+    }
+    .avatar-meta { line-height: 1.1; text-align: left; }
+    .avatar-name { font-size: var(--t-12); font-weight: 600; color: var(--c-text); }
+    .avatar-email { font-size: var(--t-11); color: var(--c-text-muted); }
+
+    /* ----- Sidebar ----- */
+    .sidebar {
+      grid-area: side;
+      background: var(--c-surface);
+      border-right: 1px solid var(--c-border);
+      padding: var(--s-3) var(--s-2);
+      overflow-y: auto;
+    }
+    .nav-group { margin-bottom: var(--s-4); }
+    .nav-group-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      padding: 0 var(--s-3);
+      margin: 0 0 4px;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: var(--s-3);
+      padding: 7px var(--s-3);
+      border-radius: var(--r-md);
+      font-size: var(--t-13);
+      color: var(--c-text-2);
+      position: relative;
+      transition: background .12s, color .12s;
+    }
+    .nav-item:hover {
+      background: var(--c-surface-3);
+      color: var(--c-text);
+    }
+    .nav-item.active {
+      background: var(--c-brand-soft);
+      color: var(--c-brand-deep);
+      font-weight: 600;
+    }
+    .nav-item.active::before {
+      content: "";
+      position: absolute;
+      left: -2px; top: 8px; bottom: 8px;
+      width: 2px;
+      background: var(--c-brand);
+      border-radius: 2px;
+    }
+    .nav-icon {
+      width: 16px; height: 16px;
+      flex-shrink: 0;
+      color: currentColor;
+      opacity: 0.85;
+    }
+    .nav-item.active .nav-icon { opacity: 1; }
+    .nav-badge {
+      margin-left: auto;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: var(--c-danger-soft);
+      color: var(--c-danger);
+    }
+
+    /* ----- Main scroll area ----- */
+    .main {
+      grid-area: main;
+      overflow-y: auto;
+    }
+    .main-inner {
+      max-width: 1480px;
+      padding: var(--s-5) var(--s-6);
+    }
+
+    /* Page header */
+    .page-head {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: var(--s-4);
+      margin-bottom: var(--s-5);
+    }
+    .page-title {
+      font-size: var(--t-20);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin: 0 0 2px;
+    }
+    .page-sub {
+      font-size: var(--t-12);
+      color: var(--c-text-2);
+      margin: 0;
+    }
+    .page-actions {
+      display: flex; align-items: center; gap: var(--s-2);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 30px;
+      padding: 0 var(--s-3);
+      font-size: var(--t-12);
+      font-weight: 500;
+      color: var(--c-text);
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: var(--r-md);
+      box-shadow: var(--sh-1);
+      transition: background .12s, border-color .12s;
+    }
+    .btn:hover { background: var(--c-surface-3); border-color: var(--c-border-strong); }
+    .btn.primary {
+      background: var(--c-brand);
+      color: var(--c-text-inverse);
+      border-color: var(--c-brand);
+      box-shadow: var(--sh-1), inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+    .btn.primary:hover { background: var(--c-brand-hover); border-color: var(--c-brand-hover); }
+    .btn.ghost { background: transparent; border-color: transparent; box-shadow: none; }
+    .btn.ghost:hover { background: var(--c-surface-3); }
+
+    .seg {
+      display: inline-flex; align-items: center;
+      padding: 2px;
+      background: var(--c-surface-3);
+      border-radius: var(--r-md);
+      border: 1px solid var(--c-border);
+    }
+    .seg-item {
+      padding: 4px 10px;
+      font-size: var(--t-12);
+      font-weight: 500;
+      color: var(--c-text-2);
+      border-radius: var(--r-sm);
+      cursor: pointer;
+    }
+    .seg-item.active {
+      background: var(--c-surface);
+      color: var(--c-text);
+      box-shadow: var(--sh-1);
+    }
+
+    /* ============================================================
+       KPI strip
+       ============================================================ */
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--s-3);
+      margin-bottom: var(--s-5);
+    }
+    .kpi {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: var(--r-lg);
+      padding: var(--s-4) var(--s-4) var(--s-3);
+      display: flex; flex-direction: column;
+      gap: var(--s-1);
+      position: relative;
+      overflow: hidden;
+    }
+    .kpi-label {
+      display: flex; align-items: center; gap: 6px;
+      font-size: var(--t-11);
+      font-weight: 500;
+      color: var(--c-text-2);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .kpi-label-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+    }
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--c-text);
+      line-height: 1.1;
+      margin-top: 4px;
+    }
+    .kpi-meta {
+      display: flex; align-items: center; gap: var(--s-2);
+      font-size: var(--t-11);
+      color: var(--c-text-2);
+    }
+    .delta {
+      display: inline-flex; align-items: center; gap: 2px;
+      font-size: var(--t-11);
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 999px;
+    }
+    .delta.up   { background: var(--c-success-soft); color: var(--c-success); }
+    .delta.down { background: var(--c-danger-soft);  color: var(--c-danger);  }
+    .delta.flat { background: var(--c-slate-soft);   color: var(--c-slate);   }
+    .kpi-spark {
+      position: absolute;
+      bottom: 0; right: 0;
+      height: 38px; width: 110px;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    /* ============================================================
+       Card system
+       ============================================================ */
+    .card {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: var(--r-lg);
+      display: flex; flex-direction: column;
+    }
+    .card-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: var(--s-3);
+      padding: var(--s-3) var(--s-4);
+      border-bottom: 1px solid var(--c-divider);
+    }
+    .card-title {
+      display: flex; align-items: center; gap: 8px;
+      font-size: var(--t-13);
+      font-weight: 600;
+      color: var(--c-text);
+      margin: 0;
+    }
+    .card-title-icon {
+      width: 14px; height: 14px;
+      color: var(--c-text-2);
+    }
+    .card-sub {
+      font-size: var(--t-11);
+      color: var(--c-text-muted);
+    }
+    .card-body { padding: var(--s-4); }
+    .card-body.flush { padding: 0; }
+    .card-foot {
+      padding: var(--s-2) var(--s-4);
+      border-top: 1px solid var(--c-divider);
+      font-size: var(--t-12);
+      color: var(--c-text-2);
+    }
+    .card-link {
+      color: var(--c-brand);
+      font-weight: 500;
+      font-size: var(--t-12);
+    }
+    .card-link:hover { color: var(--c-brand-hover); }
+
+    /* ============================================================
+       Pills — state pills used everywhere
+       ============================================================ */
+    .pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      height: 20px;
+      padding: 0 8px;
+      border-radius: 999px;
+      font-size: var(--t-11);
+      font-weight: 500;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .pill-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .pill.success { background: var(--c-success-soft); color: var(--c-success); }
+    .pill.success .pill-dot { background: var(--c-success); }
+    .pill.warn    { background: var(--c-warning-soft); color: #B45309; }
+    .pill.warn .pill-dot { background: var(--c-warning); }
+    .pill.danger  { background: var(--c-danger-soft);  color: var(--c-danger);  }
+    .pill.danger .pill-dot { background: var(--c-danger); }
+    .pill.info    { background: var(--c-info-soft);    color: var(--c-info);    }
+    .pill.info .pill-dot { background: var(--c-info); }
+    .pill.violet  { background: var(--c-violet-soft);  color: var(--c-violet);  }
+    .pill.violet .pill-dot { background: var(--c-violet); }
+    .pill.slate   { background: var(--c-slate-soft);   color: var(--c-slate);   }
+    .pill.slate .pill-dot { background: var(--c-slate); }
+
+    /* ============================================================
+       Dashboard grid
+       ============================================================ */
+    .dash-grid {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: var(--s-4);
+    }
+    .dash-row-1 { display: grid; gap: var(--s-4); }
+
+    /* Bay status — primary card */
+    .bay-locker {
+      padding: var(--s-4);
+      border-bottom: 1px solid var(--c-divider);
+    }
+    .bay-locker:last-child { border-bottom: 0; }
+    .bay-locker-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: var(--s-3);
+      margin-bottom: var(--s-3);
+    }
+    .bay-locker-name {
+      font-size: var(--t-13);
+      font-weight: 600;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .bay-locker-loc {
+      font-size: var(--t-11);
+      color: var(--c-text-muted);
+    }
+    .bay-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+      gap: 4px;
+    }
+    .bay {
+      aspect-ratio: 1;
+      border-radius: var(--r-sm);
+      border: 1px solid transparent;
+      display: grid; place-items: center;
+      font-size: 9px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.85);
+      position: relative;
+      cursor: pointer;
+      transition: transform .12s, box-shadow .12s;
+    }
+    .bay:hover { transform: translateY(-1px); box-shadow: var(--sh-2); }
+    .bay.available { background: var(--c-success); }
+    .bay.in-use    { background: var(--c-info); }
+    .bay.overdue   { background: var(--c-warning); }
+    .bay.fault     { background: var(--c-danger); }
+    .bay.charging  { background: var(--c-violet); }
+    .bay.deact     { background: #CBD5E1; color: #475569; }
+    .bay.cleaning  { background: #0EA5E9; }
+    .bay.missing   { background: #FB7185; }
+    .bay.init      { background: #94A3B8; color: #fff; }
+    .bay.disc      { background: #FEF3C7; color: #92400E; border-color: #FCD34D; }
+
+    .legend {
+      display: flex; align-items: center; flex-wrap: wrap;
+      gap: 4px 12px;
+      padding: var(--s-3) var(--s-4);
+      border-top: 1px solid var(--c-divider);
+      font-size: var(--t-11);
+      color: var(--c-text-2);
+    }
+    .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+    .legend-sw { width: 10px; height: 10px; border-radius: 3px; }
+    .legend-num { font-weight: 600; color: var(--c-text); }
+
+    /* Inbox / alarms list */
+    .feed-item {
+      display: flex; align-items: flex-start; gap: var(--s-3);
+      padding: var(--s-3) var(--s-4);
+      border-bottom: 1px solid var(--c-divider);
+      transition: background .12s;
+      cursor: pointer;
+    }
+    .feed-item:hover { background: var(--c-surface-2); }
+    .feed-item:last-child { border-bottom: 0; }
+    .feed-dot {
+      flex-shrink: 0;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: grid; place-items: center;
+      font-size: 11px;
+    }
+    .feed-dot.warn   { background: var(--c-warning-soft); color: var(--c-warning); }
+    .feed-dot.danger { background: var(--c-danger-soft);  color: var(--c-danger);  }
+    .feed-dot.info   { background: var(--c-info-soft);    color: var(--c-info);    }
+    .feed-dot.ok     { background: var(--c-success-soft); color: var(--c-success); }
+    .feed-content { flex: 1; min-width: 0; }
+    .feed-title {
+      font-size: var(--t-13);
+      font-weight: 500;
+      color: var(--c-text);
+      margin: 0 0 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .feed-sub {
+      font-size: var(--t-11);
+      color: var(--c-text-2);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .feed-time {
+      font-size: var(--t-11);
+      color: var(--c-text-muted);
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       Design System reference (collapsible at the bottom)
+       ============================================================ */
+    .ds-toggle {
+      position: fixed;
+      bottom: 20px; right: 20px;
+      z-index: 50;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 12px;
+      background: var(--c-text);
+      color: white;
+      border-radius: 999px;
+      font-size: var(--t-12);
+      font-weight: 500;
+      box-shadow: var(--sh-popover);
+    }
+    .ds-toggle:hover { background: var(--c-brand-deep); }
+
+    .ds {
+      display: none;
+      margin: var(--s-8) 0 0;
+      padding: var(--s-6);
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: var(--r-lg);
+    }
+    .ds.open { display: block; }
+    .ds-h {
+      font-size: var(--t-16);
+      font-weight: 600;
+      margin: 0 0 var(--s-4);
+      letter-spacing: -0.01em;
+    }
+    .ds-h2 {
+      font-size: var(--t-13);
+      font-weight: 600;
+      color: var(--c-text-2);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: var(--s-5) 0 var(--s-3);
+    }
+    .ds-swatches {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: var(--s-3);
+    }
+    .ds-sw {
+      border: 1px solid var(--c-border);
+      border-radius: var(--r-md);
+      overflow: hidden;
+    }
+    .ds-sw-block { height: 56px; }
+    .ds-sw-meta {
+      padding: 6px 8px;
+      font-size: var(--t-11);
+    }
+    .ds-sw-name { font-weight: 600; color: var(--c-text); }
+    .ds-sw-hex { color: var(--c-text-muted); font-family: var(--font-mono); }
+
+    .ds-type-row {
+      display: flex; align-items: baseline; gap: var(--s-3);
+      padding: 6px 0;
+      border-bottom: 1px solid var(--c-divider);
+    }
+    .ds-type-row:last-child { border-bottom: 0; }
+    .ds-type-token {
+      width: 80px;
+      font-family: var(--font-mono);
+      font-size: var(--t-11);
+      color: var(--c-text-muted);
+    }
+    .ds-type-sample { flex: 1; color: var(--c-text); }
+
+    /* Design notes callouts inside the prototype */
+    .note {
+      position: absolute;
+      background: #1F2937;
+      color: white;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: var(--t-11);
+      max-width: 220px;
+      box-shadow: var(--sh-popover);
+      line-height: 1.4;
+      z-index: 20;
+      display: none;
+    }
+    .note-host { position: relative; }
+    .note-host:hover .note { display: block; }
+    .note::before {
+      content: ""; position: absolute;
+      width: 0; height: 0;
+      border: 5px solid transparent;
+    }
+    .note.bl { bottom: 100%; left: 0; margin-bottom: 6px; }
+    .note.bl::before { top: 100%; left: 12px; border-top-color: #1F2937; }
+    .note.br { bottom: 100%; right: 0; margin-bottom: 6px; }
+    .note.br::before { top: 100%; right: 12px; border-top-color: #1F2937; }
+
+    /* Annotation strip at top */
+    .annotation-strip {
+      background: linear-gradient(90deg, var(--c-brand-soft), #F0F7FF);
+      border-bottom: 1px solid #DBEAFE;
+      padding: 8px 24px;
+      font-size: var(--t-12);
+      color: var(--c-brand-deep);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .annotation-strip strong { color: var(--c-brand-deep); }
+    .annotation-strip .chip {
+      background: var(--c-brand);
+      color: white;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="annotation-strip">
+    <span class="chip">Prototype 01</span>
+    <strong>Global chrome + Dashboard top half.</strong>
+    <span>Modern enterprise · compact · ops-first. Buildable in PrimeVue (Aura unstyled) + Tailwind.</span>
+    <span style="margin-left:auto; color:#64748B;">Hover any element to see redesign notes.</span>
+  </div>
+
+  <div class="shell">
+
+    <!-- Logo block in the top-left -->
+    <div class="logo note-host">
+      <div class="logo-mark">H</div>
+      <div class="logo-text">HonestWaves</div>
+      <span class="logo-tenant">QA</span>
+
+      <div class="note bl" style="left: 0; max-width:240px;">
+        <strong>Tenant chip</strong><br>
+        Always show which tenant you're signed in to. Admins juggling several tenants need this front-and-center.
+      </div>
+    </div>
+
+    <!-- Topbar across the top -->
+    <div class="topbar">
+      <div class="breadcrumb note-host">
+        <strong>Dashboard</strong>
+        <div class="note bl">
+          <strong>Breadcrumb</strong><br>
+          Page title lives in the topbar, not duplicated below. Saves vertical space and matches Linear / Stripe.
+        </div>
+      </div>
+
+      <div class="topbar-spacer"></div>
+
+      <div class="search note-host">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+        <span>Search lockers, devices, users…</span>
+        <span class="search-kbd">⌘K</span>
+        <div class="note bl" style="max-width:240px;">
+          <strong>Command palette</strong><br>
+          Single search across the whole console. ⌘K is the convention every ops user already knows from Linear / Notion / GitHub.
+        </div>
+      </div>
+
+      <button class="icon-btn note-host" aria-label="Notifications">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        <span class="badge">99+</span>
+        <div class="note br">
+          <strong>Bell</strong><br>
+          Opens a drawer with the 5 most recent notifications and a link to the full page. Today this jumps straight to the full page — too aggressive.
+        </div>
+      </button>
+
+      <button class="icon-btn" aria-label="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+
+      <button class="avatar-btn note-host">
+        <div class="avatar">AR</div>
+        <div class="avatar-meta">
+          <div class="avatar-name">Admin Rowe</div>
+          <div class="avatar-email">admin@honestwaves.test</div>
+        </div>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        <div class="note br">
+          <strong>Identity surfaces in the chrome</strong><br>
+          Name + email + tenant chip means admins always know who they are and where they are.
+        </div>
+      </button>
+    </div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+
+      <div class="nav-group">
+        <p class="nav-group-label">Monitor</p>
+        <a class="nav-item active" href="#">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+        <a class="nav-item" href="#">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/><circle cx="12" cy="12" r="4"/></svg>
+          Mission Control
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <p class="nav-group-label">Manage</p>
+        <a class="nav-item" href="#">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+          Lockers
+        </a>
+        <a class="nav-item" href="#">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" x2="12.01" y1="18" y2="18"/></svg>
+          Devices
+        </a>
+        <a class="nav-item" href="#">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Users
+        </a>
+        <a class="nav-item" href="#">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
+          Access matrix
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <p class="nav-group-label">Investigate</p>
+        <a class="nav-item" href="#">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+          Notifications
+          <span class="nav-badge">99+</span>
+        </a>
+        <a class="nav-item" href="#">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          Tracker
+        </a>
+        <a class="nav-item" href="#">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Reports
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <p class="nav-group-label">System</p>
+        <a class="nav-item" href="#">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
+          Software updates
+        </a>
+        <a class="nav-item" href="#">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Settings
+        </a>
+      </div>
+
+      <div style="padding: var(--s-3); font-size: var(--t-11); color: var(--c-text-muted);">
+        v2.0.0
+      </div>
+    </nav>
+
+    <!-- Main content area -->
+    <main class="main">
+      <div class="main-inner">
+
+        <!-- Page header -->
+        <header class="page-head">
+          <div>
+            <h1 class="page-title">Dashboard</h1>
+            <p class="page-sub">Live operational snapshot · 4 lockers · last sync 3 seconds ago</p>
+          </div>
+          <div class="page-actions">
+            <div class="seg">
+              <span class="seg-item active">Live</span>
+              <span class="seg-item">24h</span>
+              <span class="seg-item">7d</span>
+              <span class="seg-item">30d</span>
+            </div>
+            <button class="btn ghost">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Customize
+            </button>
+            <button class="btn primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+              Add widget
+            </button>
+          </div>
+        </header>
+
+        <!-- KPI strip -->
+        <section class="kpis note-host">
+          <div class="note bl" style="left: 0; max-width:300px;">
+            <strong>KPI strip replaces 6 separate widgets.</strong><br>
+            Single row of 4 numbers + trend deltas. Each card links to the relevant detail page. Spark lines show 24h shape at a glance.
+          </div>
+
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-info);"></span>In use right now</div>
+            <div class="kpi-value">37</div>
+            <div class="kpi-meta">of 56 bays · <span class="delta up">▲ 12</span> vs 7-day avg</div>
+            <svg class="kpi-spark" viewBox="0 0 110 38" preserveAspectRatio="none">
+              <path d="M0,26 L11,22 L22,28 L33,18 L44,20 L55,16 L66,12 L77,18 L88,10 L99,14 L110,8" stroke="var(--c-info)" stroke-width="1.5" fill="none"/>
+              <path d="M0,26 L11,22 L22,28 L33,18 L44,20 L55,16 L66,12 L77,18 L88,10 L99,14 L110,8 L110,38 L0,38 Z" fill="var(--c-info-soft)"/>
+            </svg>
+          </div>
+
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-success);"></span>Available</div>
+            <div class="kpi-value">23</div>
+            <div class="kpi-meta">41% of fleet · <span class="delta flat">— same</span> vs 7-day avg</div>
+            <svg class="kpi-spark" viewBox="0 0 110 38" preserveAspectRatio="none">
+              <path d="M0,16 L11,18 L22,12 L33,14 L44,17 L55,15 L66,14 L77,18 L88,16 L99,15 L110,14" stroke="var(--c-success)" stroke-width="1.5" fill="none"/>
+              <path d="M0,16 L11,18 L22,12 L33,14 L44,17 L55,15 L66,14 L77,18 L88,16 L99,15 L110,14 L110,38 L0,38 Z" fill="var(--c-success-soft)"/>
+            </svg>
+          </div>
+
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-warning);"></span>Overdue</div>
+            <div class="kpi-value">11</div>
+            <div class="kpi-meta">8 users · <span class="delta down">▲ 4</span> vs 7-day avg</div>
+            <svg class="kpi-spark" viewBox="0 0 110 38" preserveAspectRatio="none">
+              <path d="M0,30 L11,28 L22,26 L33,22 L44,20 L55,18 L66,16 L77,14 L88,11 L99,10 L110,8" stroke="var(--c-warning)" stroke-width="1.5" fill="none"/>
+              <path d="M0,30 L11,28 L22,26 L33,22 L44,20 L55,18 L66,16 L77,14 L88,11 L99,10 L110,8 L110,38 L0,38 Z" fill="var(--c-warning-soft)"/>
+            </svg>
+          </div>
+
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-danger);"></span>Hardware faults</div>
+            <div class="kpi-value">3</div>
+            <div class="kpi-meta">Pink8 · 3 bays · <span class="delta down">▲ 3</span> new today</div>
+            <svg class="kpi-spark" viewBox="0 0 110 38" preserveAspectRatio="none">
+              <path d="M0,32 L11,32 L22,32 L33,32 L44,32 L55,32 L66,32 L77,32 L88,28 L99,18 L110,12" stroke="var(--c-danger)" stroke-width="1.5" fill="none"/>
+              <path d="M0,32 L11,32 L22,32 L33,32 L44,32 L55,32 L66,32 L77,32 L88,28 L99,18 L110,12 L110,38 L0,38 Z" fill="var(--c-danger-soft)"/>
+            </svg>
+          </div>
+        </section>
+
+        <!-- Main row · Bay status (primary) + side column (alarms + inbox) -->
+        <section class="dash-grid">
+
+          <!-- Primary: Bay status -->
+          <div class="dash-row-1">
+            <div class="card note-host">
+              <div class="card-head">
+                <div>
+                  <div class="card-title">
+                    <svg class="card-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/></svg>
+                    Bay status
+                    <span class="card-sub">· 56 bays across 4 lockers</span>
+                  </div>
+                </div>
+                <div class="seg" style="font-size:11px;">
+                  <span class="seg-item active">All states</span>
+                  <span class="seg-item">Needs attention</span>
+                </div>
+              </div>
+
+              <div class="card-body flush">
+                <!-- Locker: Pink8 -->
+                <div class="bay-locker">
+                  <div class="bay-locker-head">
+                    <div>
+                      <div class="bay-locker-name">
+                        Pink8
+                        <span class="pill warn"><span class="pill-dot"></span>3 hardware faults</span>
+                      </div>
+                      <div class="bay-locker-loc">HonestWaves Orange County Office · 8 bays</div>
+                    </div>
+                    <a class="card-link" href="#">Open Mission Control →</a>
+                  </div>
+                  <div class="bay-grid">
+                    <div class="bay overdue" title="Bay 1 · Overdue · Crosby Smith">1</div>
+                    <div class="bay overdue" title="Bay 2 · Overdue">2</div>
+                    <div class="bay missing" title="Bay 3 · Device not connected">3</div>
+                    <div class="bay overdue" title="Bay 4 · Overdue">4</div>
+                    <div class="bay overdue" title="Bay 5 · Overdue">5</div>
+                    <div class="bay missing" title="Bay 6 · Device not connected">6</div>
+                    <div class="bay missing" title="Bay 7 · Device not connected">7</div>
+                    <div class="bay overdue" title="Bay 8 · Overdue">8</div>
+                  </div>
+                </div>
+
+                <!-- Locker: Blue34 -->
+                <div class="bay-locker">
+                  <div class="bay-locker-head">
+                    <div>
+                      <div class="bay-locker-name">
+                        Blue34
+                        <span class="pill success"><span class="pill-dot"></span>Healthy</span>
+                      </div>
+                      <div class="bay-locker-loc">HonestWaves HQ · 32 bays</div>
+                    </div>
+                    <a class="card-link" href="#">Open Mission Control →</a>
+                  </div>
+                  <div class="bay-grid">
+                    <div class="bay available">1</div><div class="bay available">2</div><div class="bay available">3</div>
+                    <div class="bay available">4</div><div class="bay available">5</div><div class="bay available">6</div>
+                    <div class="bay available">7</div><div class="bay available">8</div><div class="bay available">9</div>
+                    <div class="bay deact">10</div><div class="bay deact">11</div><div class="bay deact">12</div>
+                    <div class="bay deact">13</div><div class="bay deact">14</div><div class="bay deact">15</div>
+                    <div class="bay deact">16</div><div class="bay available">17</div><div class="bay available">18</div>
+                    <div class="bay available">19</div><div class="bay available">20</div><div class="bay available">21</div>
+                    <div class="bay available">22</div><div class="bay deact">23</div><div class="bay deact">24</div>
+                    <div class="bay deact">25</div><div class="bay deact">26</div><div class="bay deact">27</div>
+                    <div class="bay deact">28</div><div class="bay deact">29</div><div class="bay deact">30</div>
+                    <div class="bay deact">31</div><div class="bay deact">32</div>
+                  </div>
+                </div>
+
+                <!-- Locker: Green8 -->
+                <div class="bay-locker">
+                  <div class="bay-locker-head">
+                    <div>
+                      <div class="bay-locker-name">
+                        Green8
+                        <span class="pill warn"><span class="pill-dot"></span>6 overdue</span>
+                      </div>
+                      <div class="bay-locker-loc">HonestWaves Orange County Office · 8 bays</div>
+                    </div>
+                    <a class="card-link" href="#">Open Mission Control →</a>
+                  </div>
+                  <div class="bay-grid">
+                    <div class="bay overdue">1</div><div class="bay overdue">2</div><div class="bay overdue">3</div>
+                    <div class="bay available">4</div><div class="bay overdue">5</div><div class="bay overdue">6</div>
+                    <div class="bay available">7</div><div class="bay overdue">8</div>
+                  </div>
+                </div>
+
+                <!-- Locker: Adrian -->
+                <div class="bay-locker">
+                  <div class="bay-locker-head">
+                    <div>
+                      <div class="bay-locker-name">
+                        Adrian Local Test
+                        <span class="pill slate"><span class="pill-dot"></span>Mostly deactivated</span>
+                      </div>
+                      <div class="bay-locker-loc">Headquarters · 8 bays</div>
+                    </div>
+                    <a class="card-link" href="#">Open Mission Control →</a>
+                  </div>
+                  <div class="bay-grid">
+                    <div class="bay available">1</div><div class="bay deact">2</div><div class="bay deact">3</div>
+                    <div class="bay deact">4</div><div class="bay deact">5</div><div class="bay deact">6</div>
+                    <div class="bay available">7</div><div class="bay deact">8</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="legend">
+                <div class="legend-item"><span class="legend-sw" style="background:var(--c-success);"></span>Available <span class="legend-num">23</span></div>
+                <div class="legend-item"><span class="legend-sw" style="background:var(--c-info);"></span>In use <span class="legend-num">37</span></div>
+                <div class="legend-item"><span class="legend-sw" style="background:var(--c-warning);"></span>Overdue <span class="legend-num">11</span></div>
+                <div class="legend-item"><span class="legend-sw" style="background:#FB7185;"></span>Missing device <span class="legend-num">3</span></div>
+                <div class="legend-item"><span class="legend-sw" style="background:var(--c-danger);"></span>Hardware fault <span class="legend-num">0</span></div>
+                <div class="legend-item"><span class="legend-sw" style="background:#CBD5E1;"></span>Deactivated <span class="legend-num">23</span></div>
+                <div class="legend-item" style="margin-left:auto; color:var(--c-text-muted);">Hover a bay for detail · click to open it in Mission Control</div>
+              </div>
+
+              <div class="note bl" style="max-width:280px;">
+                <strong>One bay-status card per locker.</strong> Per-locker headline pill summarizes the situation at a glance ("3 hardware faults", "6 overdue", "Healthy"). Each row links to Mission Control with the locker preselected.
+              </div>
+            </div>
+          </div>
+
+          <!-- Side column · Alarms + Inbox -->
+          <div style="display: grid; gap: var(--s-4);">
+
+            <div class="card note-host">
+              <div class="card-head">
+                <div class="card-title">
+                  <svg class="card-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+                  Alarms
+                  <span class="card-sub">· last 24 hours</span>
+                </div>
+                <a class="card-link" href="#">View all →</a>
+              </div>
+              <div class="card-body flush">
+
+                <div class="feed-item">
+                  <div class="feed-dot danger">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/></svg>
+                  </div>
+                  <div class="feed-content">
+                    <p class="feed-title">Hardware fault on Pink8</p>
+                    <p class="feed-sub">Bays 3, 6, 7 went unreachable</p>
+                  </div>
+                  <span class="feed-time">14h ago</span>
+                </div>
+
+                <div class="feed-item">
+                  <div class="feed-dot warn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  </div>
+                  <div class="feed-content">
+                    <p class="feed-title">Door left open on Pink8 bay 4</p>
+                    <p class="feed-sub">Stayed open for 8 minutes — past the 5-minute threshold</p>
+                  </div>
+                  <span class="feed-time">18h ago</span>
+                </div>
+
+                <div class="feed-item">
+                  <div class="feed-dot warn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  </div>
+                  <div class="feed-content">
+                    <p class="feed-title">3 checkouts went overdue</p>
+                    <p class="feed-sub">Green8 bays 1, 2, 3 · Mark Rivera, Crosby Smith</p>
+                  </div>
+                  <span class="feed-time">22h ago</span>
+                </div>
+
+                <div class="feed-item">
+                  <div class="feed-dot ok">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <div class="feed-content">
+                    <p class="feed-title">Bay 4 alarm cleared</p>
+                    <p class="feed-sub">Pink8 · auto-resolved by hardware self-check</p>
+                  </div>
+                  <span class="feed-time">1d ago</span>
+                </div>
+              </div>
+
+              <div class="note bl" style="max-width:260px;">
+                <strong>Alarms are not the same as Inbox.</strong> Alarms = hardware + safety; Inbox below = workflow events (registration approvals, etc). Today they share the same widget.
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head">
+                <div class="card-title">
+                  <svg class="card-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+                  Inbox
+                  <span class="card-sub">· 0 unread</span>
+                </div>
+                <a class="card-link" href="#">View all →</a>
+              </div>
+              <div class="card-body flush">
+
+                <div class="feed-item">
+                  <div class="feed-dot info">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                  </div>
+                  <div class="feed-content">
+                    <p class="feed-title">Guest registration approved</p>
+                    <p class="feed-sub">Mark Rivera · Corewell POC</p>
+                  </div>
+                  <span class="feed-time">25d ago</span>
+                </div>
+
+                <div class="feed-item">
+                  <div class="feed-dot info">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                  </div>
+                  <div class="feed-content">
+                    <p class="feed-title">Guest registration denied</p>
+                    <p class="feed-sub">Auto-rejected — duplicate badge</p>
+                  </div>
+                  <span class="feed-time">18d ago</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ============================================================
+             Design System reference
+             ============================================================ -->
+        <section class="ds" id="ds">
+          <h2 class="ds-h">Design system reference</h2>
+          <p style="color:var(--c-text-2); margin:0;">Tokens used throughout this prototype. Every subsequent page-prototype inherits them. The dev team can lift these straight into <code style="background:var(--c-surface-3); padding:1px 4px; border-radius:3px; font-size:11px;">tailwind.config.js</code> theme tokens.</p>
+
+          <h3 class="ds-h2">Surfaces & borders</h3>
+          <div class="ds-swatches">
+            <div class="ds-sw"><div class="ds-sw-block" style="background:var(--c-surface);"></div><div class="ds-sw-meta"><div class="ds-sw-name">Surface</div><div class="ds-sw-hex">#FFFFFF</div></div></div>
+            <div class="ds-sw"><div class="ds-sw-block" style="background:var(--c-surface-2);"></div><div class="ds-sw-meta"><div class="ds-sw-name">Surface 2</div><div class="ds-sw-hex">#FAFAFB</div></div></div>
+            <div class="ds-sw"><div class="ds-sw-block" style="background:var(--c-surface-3);"></div><div class="ds-sw-meta"><div class="ds-sw-name">Surface 3</div><div class="ds-sw-hex">#F4F5F7</div></div></div>
+            <div class="ds-sw"><div class="ds-sw-block" style="background:var(--c-border);"></div><div class="ds-sw-meta"><div class="ds-sw-name">Border</div><div class="ds-sw-hex">#E5E7EB</div></div></div>
+          </div>
+
+          <h3 class="ds-h2">Brand</h3>
+          <div class="ds-swatches">
+            <div class="ds-sw"><div class="ds-sw-block" style="background:var(--c-brand-soft);"></div><div class="ds-sw-meta"><div class="ds-sw-name">Brand soft</div><div class="ds-sw-hex">#EFF6FF</div></div></div>
+            <div class="ds-sw"><div class="ds-sw-block" style="background:var(--c-brand);"></div><div class="ds-sw-meta"><div class="ds-sw-name">Brand</div><div class="ds-sw-hex">#2563EB</div></div></div>
+            <div class="ds-sw"><div class="ds-sw-block" style="background:var(--c-brand-hover);"></div><div class="ds-sw-meta"><div class="ds-sw-name">Brand hover</div><div class="ds-sw-hex">#1D4ED8</div></div></div>
+            <div class="ds-sw"><div class="ds-sw-block" style="background:var(--c-brand-deep);"></div><div class="ds-sw-meta"><div class="ds-sw-name">Brand deep</div><div class="ds-sw-hex">#1E40AF</div></div></div>
+          </div>
+
+          <h3 class="ds-h2">Semantic state</h3>
+          <p style="font-size:11px; color:var(--c-text-muted); margin:0 0 8px;">One paired hue per state: solid for icons / dots / borders, soft for backgrounds.</p>
+          <div class="ds-swatches">
+            <div class="ds-sw"><div class="ds-sw-block" style="background:var(--c-success);"></div><div class="ds-sw-meta"><div class="ds-sw-name">Success</div><div class="ds-sw-hex">#10B981 · Available</div></div></div>
+            <div class="ds-sw"><div class="ds-sw-block" style="background:var(--c-info);"></div><div class="ds-sw-meta"><div class="ds-sw-name">Info</div><div class="ds-sw-hex">#6366F1 · In use</div></div></div>
+            <div class="ds-sw"><div class="ds-sw-block" style="background:var(--c-warning);"></div><div class="ds-sw-meta"><div class="ds-sw-name">Warning</div><div class="ds-sw-hex">#F59E0B · Overdue</div></div></div>
+            <div class="ds-sw"><div class="ds-sw-block" style="background:var(--c-danger);"></div><div class="ds-sw-meta"><div class="ds-sw-name">Danger</div><div class="ds-sw-hex">#EF4444 · Fault</div></div></div>
+            <div class="ds-sw"><div class="ds-sw-block" style="background:var(--c-violet);"></div><div class="ds-sw-meta"><div class="ds-sw-name">Violet</div><div class="ds-sw-hex">#7C3AED · Charging</div></div></div>
+            <div class="ds-sw"><div class="ds-sw-block" style="background:var(--c-slate);"></div><div class="ds-sw-meta"><div class="ds-sw-name">Slate</div><div class="ds-sw-hex">#64748B · Deactivated</div></div></div>
+          </div>
+
+          <h3 class="ds-h2">Type scale</h3>
+          <div>
+            <div class="ds-type-row"><div class="ds-type-token">--t-32</div><div class="ds-type-sample" style="font-size:32px; font-weight:600; letter-spacing:-0.02em;">32 / page hero number</div></div>
+            <div class="ds-type-row"><div class="ds-type-token">--t-24</div><div class="ds-type-sample" style="font-size:24px; font-weight:600;">24 / page title (alt)</div></div>
+            <div class="ds-type-row"><div class="ds-type-token">--t-20</div><div class="ds-type-sample" style="font-size:20px; font-weight:600;">20 / page title (default)</div></div>
+            <div class="ds-type-row"><div class="ds-type-token">--t-16</div><div class="ds-type-sample" style="font-size:16px; font-weight:600;">16 / section header</div></div>
+            <div class="ds-type-row"><div class="ds-type-token">--t-14</div><div class="ds-type-sample" style="font-size:14px;">14 / paragraph (rare in dashboard)</div></div>
+            <div class="ds-type-row"><div class="ds-type-token">--t-13</div><div class="ds-type-sample" style="font-size:13px;">13 / body default · table cells · labels</div></div>
+            <div class="ds-type-row"><div class="ds-type-token">--t-12</div><div class="ds-type-sample" style="font-size:12px; color:var(--c-text-2);">12 / secondary · button labels · captions</div></div>
+            <div class="ds-type-row"><div class="ds-type-token">--t-11</div><div class="ds-type-sample" style="font-size:11px; color:var(--c-text-muted);">11 / meta · timestamps · pills · helper text</div></div>
+          </div>
+
+          <h3 class="ds-h2">PrimeVue + Tailwind mapping</h3>
+          <div style="font-size:12px; color:var(--c-text-2); line-height:1.6;">
+            Build this in PrimeVue (Aura unstyled preset) + Tailwind. Map every token here to a custom Tailwind theme value, then use PrimeVue's <code style="background:var(--c-surface-3); padding:1px 4px; border-radius:3px; font-size:11px;">pt</code> (pass-through) props to override component classes. Key component swaps from your current implementation:
+            <ul style="margin: 8px 0 0; padding-left: 18px;">
+              <li><strong>DataTable</strong> — for Devices / Users / Reports. Compact size, hover row highlight.</li>
+              <li><strong>Drawer</strong> — for Edit User / Edit Device / Branding asset (replaces today's bottom-panel slide).</li>
+              <li><strong>Dialog</strong> — for Add modals + Delete confirmations.</li>
+              <li><strong>Tag</strong> (custom severity) — for every state pill in this prototype.</li>
+              <li><strong>InputGroup + IconField</strong> — for search inputs everywhere.</li>
+              <li><strong>Menu</strong> (popover) — for avatar dropdown, row context menus.</li>
+              <li><strong>Toast</strong> + <strong>ConfirmDialog</strong> services — the two patterns from the Confirmations & toasts copy-audit tab.</li>
+              <li><strong>Skeleton</strong> — replace the spinning circles I saw on the live dashboard with skeleton rectangles per widget.</li>
+            </ul>
+          </div>
+
+          <h3 class="ds-h2">Density rules</h3>
+          <div style="font-size:12px; color:var(--c-text-2); line-height:1.6;">
+            Ops-first: smaller row heights, smaller font in tables, but never below 12px for primary content. Padding is for grouping, not for breathing room.
+            <ul style="margin: 8px 0 0; padding-left: 18px;">
+              <li>Sidebar item height: <strong>32px</strong> (was ~40px)</li>
+              <li>Table row height: <strong>36px</strong> compact (was ~52px)</li>
+              <li>Topbar height: <strong>52px</strong> (was ~64px)</li>
+              <li>State pill height: <strong>20px</strong> (uniform; was inconsistent 22–28px)</li>
+              <li>Card padding: <strong>16/20px</strong> (was 20/24px+)</li>
+            </ul>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <button class="ds-toggle" onclick="document.getElementById('ds').classList.toggle('open'); this.scrollIntoView({behavior:'smooth', block:'end'});">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    Design system
+  </button>
+
+</body>
+</html>
