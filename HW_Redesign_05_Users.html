@@ -1,0 +1,1082 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1440">
+  <title>HonestWaves redesign · 05 · Users</title>
+  <style>
+    :root {
+      --c-surface:#FFFFFF; --c-surface-2:#FAFAFB; --c-surface-3:#F4F5F7;
+      --c-border:#E5E7EB; --c-border-strong:#D1D5DB; --c-divider:#EDF0F4;
+      --c-text:#0F172A; --c-text-2:#475569; --c-text-muted:#94A3B8;
+      --c-brand:#2563EB; --c-brand-hover:#1D4ED8; --c-brand-soft:#EFF6FF; --c-brand-deep:#1E40AF;
+      --c-success:#10B981; --c-success-soft:#ECFDF5;
+      --c-warning:#F59E0B; --c-warning-soft:#FFFBEB; --c-warning-text:#B45309;
+      --c-danger:#EF4444; --c-danger-soft:#FEF2F2;
+      --c-info:#6366F1; --c-info-soft:#EEF2FF;
+      --c-violet:#7C3AED; --c-violet-soft:#F5F3FF;
+      --c-cyan:#06B6D4; --c-cyan-soft:#ECFEFF;
+      --c-rose:#F43F5E; --c-rose-soft:#FFF1F2;
+      --c-slate:#64748B; --c-slate-soft:#F1F5F9;
+
+      --font-sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+      --font-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+
+      --t-11:11px; --t-12:12px; --t-13:13px; --t-14:14px; --t-16:16px; --t-20:20px;
+      --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:20px; --s-6:24px;
+      --r-sm:4px; --r-md:6px; --r-lg:8px;
+      --sh-1:0 1px 2px rgba(15,23,42,.04);
+      --sh-2:0 1px 3px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04);
+      --sh-popover:0 8px 24px rgba(15,23,42,.10),0 2px 6px rgba(15,23,42,.06);
+
+      --sidebar-w:232px; --topbar-h:52px;
+    }
+
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:var(--font-sans);font-size:var(--t-13);line-height:1.45;color:var(--c-text);background:var(--c-surface-2);-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+    svg{display:block}
+
+    .shell{display:grid;grid-template-columns:var(--sidebar-w) 1fr;grid-template-rows:var(--topbar-h) 1fr;grid-template-areas:"logo topbar" "side main";min-height:100vh}
+
+    /* Chrome */
+    .logo{grid-area:logo;background:var(--c-surface);border-right:1px solid var(--c-border);border-bottom:1px solid var(--c-border);display:flex;align-items:center;gap:10px;padding:0 var(--s-4);font-weight:600;font-size:var(--t-14)}
+    .logo-mark{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--c-brand) 0%,var(--c-brand-deep) 100%);display:grid;place-items:center;color:white;font-weight:700;font-size:13px}
+    .logo-tenant{margin-left:auto;font-size:var(--t-11);color:var(--c-text-muted);background:var(--c-surface-3);padding:2px 6px;border-radius:var(--r-sm);font-weight:500}
+    .topbar{grid-area:topbar;background:var(--c-surface);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 var(--s-5);gap:var(--s-3)}
+    .breadcrumb{display:flex;align-items:center;gap:var(--s-2);color:var(--c-text-2);font-size:var(--t-13)}
+    .breadcrumb strong{color:var(--c-text);font-weight:600}
+    .topbar-spacer{flex:1}
+    .search{display:flex;align-items:center;gap:var(--s-2);width:340px;height:32px;padding:0 var(--s-3);background:var(--c-surface-2);border:1px solid var(--c-border);border-radius:var(--r-md);color:var(--c-text-muted);font-size:var(--t-13)}
+    .search-kbd{margin-left:auto;padding:1px 5px;font-family:var(--font-mono);font-size:10px;color:var(--c-text-2);background:var(--c-surface);border:1px solid var(--c-border);border-radius:3px}
+    .icon-btn{width:32px;height:32px;display:grid;place-items:center;border-radius:var(--r-md);color:var(--c-text-2);position:relative}
+    .icon-btn:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .icon-btn .badge{position:absolute;top:2px;right:2px;min-width:16px;height:16px;padding:0 4px;background:var(--c-danger);color:white;border:2px solid var(--c-surface);border-radius:999px;font-size:9px;font-weight:700;display:grid;place-items:center}
+    .avatar-btn{display:flex;align-items:center;gap:var(--s-2);padding:4px 8px 4px 4px;border-radius:var(--r-md)}
+    .avatar-btn:hover{background:var(--c-surface-3)}
+    .avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#6366F1 0%,#2563EB 100%);color:white;font-size:11px;font-weight:600;display:grid;place-items:center}
+    .avatar-meta{line-height:1.1;text-align:left}
+    .avatar-name{font-size:var(--t-12);font-weight:600}
+    .avatar-email{font-size:var(--t-11);color:var(--c-text-muted)}
+    .sidebar{grid-area:side;background:var(--c-surface);border-right:1px solid var(--c-border);padding:var(--s-3) var(--s-2);overflow-y:auto}
+    .nav-group{margin-bottom:var(--s-4)}
+    .nav-group-label{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--c-text-muted);padding:0 var(--s-3);margin:0 0 4px}
+    .nav-item{display:flex;align-items:center;gap:var(--s-3);padding:7px var(--s-3);border-radius:var(--r-md);font-size:var(--t-13);color:var(--c-text-2);position:relative}
+    .nav-item:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .nav-item.active{background:var(--c-brand-soft);color:var(--c-brand-deep);font-weight:600}
+    .nav-item.active::before{content:"";position:absolute;left:-2px;top:8px;bottom:8px;width:2px;background:var(--c-brand);border-radius:2px}
+    .nav-icon{width:16px;height:16px;flex-shrink:0;opacity:.85}
+    .nav-item.active .nav-icon{opacity:1}
+    .nav-badge{margin-left:auto;font-size:10px;font-weight:600;padding:1px 6px;border-radius:999px;background:var(--c-danger-soft);color:var(--c-danger)}
+
+    /* Main */
+    .main{grid-area:main;overflow-y:auto}
+    .main-inner{padding:var(--s-5) var(--s-6);max-width:1480px}
+
+    /* Sub-tabs (Users / Departments / Guests) */
+    .subtabs{display:flex;align-items:center;gap:2px;border-bottom:1px solid var(--c-border);margin-bottom:var(--s-5);padding-bottom:0}
+    .subtab{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;font-size:var(--t-13);font-weight:500;color:var(--c-text-2);border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer}
+    .subtab:hover{color:var(--c-text)}
+    .subtab.active{color:var(--c-brand-deep);border-bottom-color:var(--c-brand);font-weight:600}
+    .subtab .count{font-size:10px;font-weight:600;padding:1px 6px;border-radius:999px;background:var(--c-surface-3);color:var(--c-text-2);min-width:18px;text-align:center}
+    .subtab.active .count{background:var(--c-brand-soft);color:var(--c-brand-deep)}
+
+    .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s-4);margin-bottom:var(--s-4)}
+    .page-title{font-size:var(--t-20);font-weight:600;letter-spacing:-.01em;margin:0 0 2px}
+    .page-sub{font-size:var(--t-12);color:var(--c-text-2);margin:0}
+    .page-actions{display:flex;align-items:center;gap:var(--s-2)}
+
+    .btn{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 var(--s-3);font-size:var(--t-12);font-weight:500;color:var(--c-text);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);box-shadow:var(--sh-1)}
+    .btn:hover{background:var(--c-surface-3);border-color:var(--c-border-strong)}
+    .btn.primary{background:var(--c-brand);color:white;border-color:var(--c-brand);box-shadow:var(--sh-1),inset 0 1px 0 rgba(255,255,255,.15)}
+    .btn.primary:hover{background:var(--c-brand-hover);border-color:var(--c-brand-hover)}
+    .btn.ghost{background:transparent;border-color:transparent;box-shadow:none}
+    .btn.ghost:hover{background:var(--c-surface-3)}
+    .btn.danger{color:var(--c-danger);border-color:var(--c-border)}
+    .btn.danger:hover{background:var(--c-danger-soft);border-color:var(--c-danger)}
+
+    .view-toggle{display:inline-flex;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);box-shadow:var(--sh-1);padding:2px}
+    .view-toggle button{width:28px;height:26px;display:grid;place-items:center;color:var(--c-text-muted);border-radius:var(--r-sm)}
+    .view-toggle button:hover{color:var(--c-text)}
+    .view-toggle button.active{background:var(--c-brand-soft);color:var(--c-brand-deep)}
+
+    /* KPI strip */
+    .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--s-3);margin-bottom:var(--s-4)}
+    .kpi{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);padding:var(--s-3) var(--s-4)}
+    .kpi-label{font-size:10px;font-weight:600;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:5px;margin-bottom:4px}
+    .kpi-label-dot{width:6px;height:6px;border-radius:50%}
+    .kpi-value{font-size:22px;font-weight:600;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums}
+    .kpi-sub{font-size:10px;color:var(--c-text-muted);margin-top:2px;font-variant-numeric:tabular-nums}
+    .kpi-value.danger{color:var(--c-danger)}
+    .kpi-value.warn{color:var(--c-warning-text)}
+
+    /* Identity callout */
+    .id-callout{display:flex;align-items:center;gap:var(--s-3);padding:var(--s-3) var(--s-4);background:linear-gradient(90deg,var(--c-violet-soft),#FAF5FF);border:1px solid #E9D5FF;border-radius:var(--r-md);margin-bottom:var(--s-4)}
+    .id-callout-icon{width:32px;height:32px;border-radius:var(--r-md);background:var(--c-violet);color:white;display:grid;place-items:center;flex-shrink:0}
+    .id-callout-meta{flex:1;line-height:1.3}
+    .id-callout-title{font-weight:600;font-size:var(--t-13);color:var(--c-violet)}
+    .id-callout-sub{font-size:var(--t-11);color:var(--c-text-2)}
+    .id-callout-status{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;background:var(--c-success-soft);color:var(--c-success);border-radius:999px;font-size:var(--t-11);font-weight:600}
+    .id-callout-status .dot{width:6px;height:6px;border-radius:50%;background:var(--c-success)}
+
+    /* Filter bar */
+    .filter-bar{display:flex;align-items:center;gap:var(--s-2);padding:var(--s-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);margin-bottom:var(--s-3);flex-wrap:wrap}
+    .filter-search{flex:1;min-width:240px;display:flex;align-items:center;gap:var(--s-2);height:32px;padding:0 var(--s-3);background:var(--c-surface-2);border:1px solid var(--c-border);border-radius:var(--r-md);color:var(--c-text);font-size:var(--t-13)}
+    .filter-search:focus-within{background:var(--c-surface);border-color:var(--c-brand);box-shadow:0 0 0 3px var(--c-brand-soft)}
+    .filter-search input{flex:1;height:100%;border:0;background:transparent;outline:none;font:inherit;color:inherit}
+    .filter-search input::placeholder{color:var(--c-text-muted)}
+    .filter-select{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;font-size:var(--t-12);font-weight:500;color:var(--c-text);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);cursor:pointer;white-space:nowrap}
+    .filter-select:hover{background:var(--c-surface-3);border-color:var(--c-border-strong)}
+    .filter-select .chip-count{background:var(--c-brand);color:white;font-size:10px;font-weight:700;padding:1px 5px;border-radius:999px}
+    .filter-clear{color:var(--c-text-2);font-size:var(--t-12);padding:0 8px;height:32px;display:inline-flex;align-items:center}
+    .filter-clear:hover{color:var(--c-danger)}
+
+    /* Bulk bar */
+    .bulk-bar{display:flex;align-items:center;gap:var(--s-2);padding:var(--s-2) var(--s-3);background:var(--c-brand-soft);border:1px solid var(--c-brand);border-radius:var(--r-md);margin-bottom:var(--s-3);animation:slideIn .15s ease-out}
+    @keyframes slideIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+    .bulk-count{font-size:var(--t-12);font-weight:600;color:var(--c-brand-deep);padding:4px 10px;background:var(--c-surface);border-radius:var(--r-md);font-variant-numeric:tabular-nums}
+    .bulk-divider{width:1px;height:18px;background:rgba(37,99,235,.3);margin:0 var(--s-1)}
+    .bulk-bar .btn{box-shadow:none;border-color:transparent;background:transparent;color:var(--c-brand-deep)}
+    .bulk-bar .btn:hover{background:rgba(255,255,255,.7);border-color:transparent}
+    .bulk-bar .btn.danger{color:var(--c-danger)}
+    .bulk-bar .btn.danger:hover{background:rgba(239,68,68,.1)}
+    .bulk-bar .clear-sel{margin-left:auto;color:var(--c-text-2);font-size:var(--t-12);padding:4px 8px;border-radius:var(--r-sm)}
+    .bulk-bar .clear-sel:hover{color:var(--c-text);background:rgba(255,255,255,.7)}
+
+    /* Table */
+    .list-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-lg);overflow:hidden}
+    table.users{width:100%;border-collapse:collapse;font-size:var(--t-12)}
+    table.users thead th{text-align:left;font-weight:600;font-size:var(--t-11);color:var(--c-text-2);text-transform:uppercase;letter-spacing:.04em;padding:10px var(--s-3);border-bottom:1px solid var(--c-border);background:var(--c-surface-2);white-space:nowrap}
+    table.users tbody td{padding:0 var(--s-3);height:42px;border-bottom:1px solid var(--c-divider);vertical-align:middle}
+    table.users tbody tr{transition:background .12s;cursor:pointer}
+    table.users tbody tr:hover{background:var(--c-surface-2)}
+    table.users tbody tr.selected{background:var(--c-brand-soft)}
+    table.users tbody tr.selected:hover{background:#DBEAFE}
+    table.users tbody tr:last-child td{border-bottom:0}
+
+    .checkbox{width:16px;height:16px;border:1.5px solid var(--c-border-strong);border-radius:3px;display:inline-grid;place-items:center;cursor:pointer;background:white}
+    .checkbox:hover{border-color:var(--c-brand)}
+    .checkbox.checked{background:var(--c-brand);border-color:var(--c-brand);color:white}
+    .checkbox.indeterminate{background:var(--c-brand);border-color:var(--c-brand);color:white}
+
+    .pill{display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 8px;border-radius:999px;font-size:var(--t-11);font-weight:600;line-height:1;white-space:nowrap}
+    .pill-dot{width:6px;height:6px;border-radius:50%}
+    .pill.success{background:var(--c-success-soft);color:var(--c-success)}
+    .pill.success .pill-dot{background:var(--c-success)}
+    .pill.warn{background:var(--c-warning-soft);color:var(--c-warning-text)}
+    .pill.warn .pill-dot{background:var(--c-warning)}
+    .pill.danger{background:var(--c-danger-soft);color:var(--c-danger)}
+    .pill.danger .pill-dot{background:var(--c-danger)}
+    .pill.info{background:var(--c-info-soft);color:var(--c-info)}
+    .pill.info .pill-dot{background:var(--c-info)}
+    .pill.violet{background:var(--c-violet-soft);color:var(--c-violet)}
+    .pill.violet .pill-dot{background:var(--c-violet)}
+    .pill.cyan{background:var(--c-cyan-soft);color:var(--c-cyan)}
+    .pill.cyan .pill-dot{background:var(--c-cyan)}
+    .pill.slate{background:var(--c-slate-soft);color:var(--c-slate)}
+    .pill.slate .pill-dot{background:var(--c-slate)}
+
+    /* User cell */
+    .user-cell-inline{display:flex;align-items:center;gap:8px}
+    .user-avatar{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:600;flex-shrink:0;color:white}
+    .user-avatar.indigo{background:linear-gradient(135deg,#6366F1 0%,#4F46E5 100%)}
+    .user-avatar.green{background:linear-gradient(135deg,#10B981 0%,#059669 100%)}
+    .user-avatar.amber{background:linear-gradient(135deg,#F59E0B 0%,#D97706 100%)}
+    .user-avatar.violet{background:linear-gradient(135deg,#8B5CF6 0%,#7C3AED 100%)}
+    .user-avatar.rose{background:linear-gradient(135deg,#F43F5E 0%,#E11D48 100%)}
+    .user-avatar.cyan{background:linear-gradient(135deg,#06B6D4 0%,#0891B2 100%)}
+    .user-avatar.slate{background:linear-gradient(135deg,#94A3B8 0%,#64748B 100%)}
+    .user-meta{line-height:1.2;min-width:0}
+    .user-name{font-weight:600;color:var(--c-text);display:flex;align-items:center;gap:6px}
+    .user-email{font-size:10px;color:var(--c-text-muted);font-family:var(--font-mono)}
+    .lock-icon{color:var(--c-warning);width:12px;height:12px}
+
+    .col-meta{line-height:1.2}
+    .col-meta-primary{font-weight:500;color:var(--c-text);font-size:var(--t-12)}
+    .col-meta-secondary{font-size:10px;color:var(--c-text-2)}
+
+    /* Unreturned count */
+    .unret-count{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-weight:600;font-variant-numeric:tabular-nums;font-size:var(--t-12);cursor:pointer}
+    .unret-count.zero{color:var(--c-text-muted)}
+    .unret-count.low{background:var(--c-warning-soft);color:var(--c-warning-text)}
+    .unret-count.high{background:var(--c-danger-soft);color:var(--c-danger);animation:pulseDanger 2s infinite}
+    @keyframes pulseDanger{0%{box-shadow:0 0 0 0 rgba(239,68,68,.4)}70%{box-shadow:0 0 0 4px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
+    .unret-count .arrow{font-size:9px}
+
+    .row-actions{display:flex;align-items:center;justify-content:flex-end;gap:2px}
+    .row-actions button{width:26px;height:26px;display:grid;place-items:center;border-radius:var(--r-sm);color:var(--c-text-muted)}
+    .row-actions button:hover{color:var(--c-text);background:var(--c-surface-3)}
+
+    .table-foot{display:flex;align-items:center;padding:var(--s-3) var(--s-4);border-top:1px solid var(--c-border);background:var(--c-surface-2);font-size:var(--t-12);color:var(--c-text-2)}
+    .pag{margin-left:auto;display:flex;align-items:center;gap:4px}
+    .pag-btn{width:26px;height:26px;display:grid;place-items:center;border-radius:var(--r-sm);color:var(--c-text-2)}
+    .pag-btn:hover:not(:disabled){background:var(--c-surface-3);color:var(--c-text)}
+    .pag-btn:disabled{opacity:.3;cursor:not-allowed}
+    .pag-num{padding:0 8px;height:26px;display:inline-grid;place-items:center;font-variant-numeric:tabular-nums;border-radius:var(--r-sm);color:var(--c-text-2)}
+    .pag-num.active{background:var(--c-brand);color:white;font-weight:600}
+
+    /* Tile view */
+    .tile-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-3)}
+    .tile{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-lg);overflow:hidden;transition:border-color .12s,box-shadow .12s,transform .12s;cursor:pointer;position:relative}
+    .tile:hover{border-color:var(--c-border-strong);box-shadow:var(--sh-2);transform:translateY(-1px)}
+    .tile.selected{border-color:var(--c-brand);box-shadow:0 0 0 3px var(--c-brand-soft)}
+    .tile-head{padding:var(--s-4);display:flex;align-items:flex-start;gap:var(--s-3)}
+    .tile-head .user-avatar{width:44px;height:44px;font-size:14px}
+    .tile-head-meta{flex:1;min-width:0}
+    .tile-head-name{font-weight:600;font-size:var(--t-14);color:var(--c-text);display:flex;align-items:center;gap:6px}
+    .tile-head-email{font-size:var(--t-11);color:var(--c-text-muted);font-family:var(--font-mono);margin-top:1px}
+    .tile-head-checkbox{flex-shrink:0}
+    .tile-pills{display:flex;align-items:center;gap:4px;flex-wrap:wrap;padding:0 var(--s-4) var(--s-3)}
+    .tile-body{padding:0 var(--s-4) var(--s-3);display:grid;gap:5px;border-top:1px solid var(--c-divider);padding-top:var(--s-3)}
+    .tile-row{display:flex;align-items:center;justify-content:space-between;font-size:var(--t-11);color:var(--c-text-2)}
+    .tile-row strong{color:var(--c-text);font-weight:500}
+    .tile-foot{display:flex;align-items:center;justify-content:space-between;padding:var(--s-2) var(--s-4);font-size:10px;color:var(--c-text-muted);border-top:1px solid var(--c-divider)}
+
+    /* Annotation */
+    .annotation-strip{background:linear-gradient(90deg,var(--c-brand-soft),#F0F7FF);border-bottom:1px solid #DBEAFE;padding:8px 24px;font-size:var(--t-12);color:var(--c-brand-deep);display:flex;align-items:center;gap:12px}
+    .annotation-strip strong{color:var(--c-brand-deep)}
+    .annotation-strip .chip{background:var(--c-brand);color:white;font-weight:600;padding:2px 7px;border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.04em}
+    .anno-pill{background:rgba(255,255,255,.6);color:var(--c-brand-deep);padding:2px 7px;border-radius:999px;font-size:11px}
+
+    /* notes */
+    .note{position:absolute;background:#1F2937;color:white;padding:8px 10px;border-radius:6px;font-size:var(--t-11);max-width:240px;box-shadow:var(--sh-popover);line-height:1.4;z-index:30;display:none}
+    .note-host{position:relative}
+    .note-host:hover>.note{display:block}
+    .note::before{content:"";position:absolute;width:0;height:0;border:5px solid transparent}
+    .note.bl{bottom:100%;left:0;margin-bottom:6px}
+    .note.bl::before{top:100%;left:12px;border-top-color:#1F2937}
+    .note.tl{top:100%;left:0;margin-top:6px}
+    .note.tl::before{bottom:100%;left:12px;border-bottom-color:#1F2937}
+    .note.tr{top:100%;right:0;margin-top:6px}
+    .note.tr::before{bottom:100%;right:12px;border-bottom-color:#1F2937}
+
+    .view-list,.view-tile{display:none}
+    .view-list.show,.view-tile.show{display:block}
+
+    /* Travis credit */
+    .travis-credit{margin-top:var(--s-5);padding:var(--s-3) var(--s-4);background:var(--c-surface);border:1px dashed var(--c-border);border-radius:var(--r-md);font-size:var(--t-11);color:var(--c-text-2)}
+    .travis-credit strong{color:var(--c-text)}
+    .travis-credit .recs{margin-top:6px}
+    .travis-credit .rec-tag{display:inline-block;background:var(--c-info-soft);color:var(--c-info);padding:1px 6px;border-radius:4px;font-size:10px;margin-right:4px;font-weight:600}
+  </style>
+</head>
+<body>
+
+  <div class="annotation-strip">
+    <span class="chip">Prototype 05</span>
+    <strong>Users.</strong>
+    <span>Site Admin role · Locked pill · Unreturned device count · AD/SSO callout · list + tile.</span>
+    <span class="anno-pill">7 Travis recs integrated</span>
+    <span style="margin-left:auto;color:#64748B;">Toggle list/tile (top right). Hover columns for notes.</span>
+  </div>
+
+  <div class="shell">
+    <div class="logo">
+      <div class="logo-mark">H</div>
+      <div>HonestWaves</div>
+      <span class="logo-tenant">QA</span>
+    </div>
+
+    <div class="topbar">
+      <div class="breadcrumb">
+        <span style="color:var(--c-text-2);">Manage</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--c-text-muted);"><polyline points="9 18 15 12 9 6"/></svg>
+        <strong>Users</strong>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+        <span>Search lockers, devices, users…</span>
+        <span class="search-kbd">⌘K</span>
+      </div>
+      <button class="icon-btn" aria-label="Notifications">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        <span class="badge">99+</span>
+      </button>
+      <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+      <button class="avatar-btn">
+        <div class="avatar">AR</div>
+        <div class="avatar-meta">
+          <div class="avatar-name">Admin Rowe</div>
+          <div class="avatar-email">admin@honestwaves.test</div>
+        </div>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+    </div>
+
+    <nav class="sidebar">
+      <div class="nav-group">
+        <p class="nav-group-label">Monitor</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Mission Control</a>
+      </div>
+      <div class="nav-group">
+        <p class="nav-group-label">Manage</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/></svg>Lockers</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Devices</a>
+        <a class="nav-item active" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Users</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>Access matrix</a>
+      </div>
+      <div class="nav-group">
+        <p class="nav-group-label">Investigate</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/></svg>Notifications<span class="nav-badge">99+</span></a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>Tracker</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Reports</a>
+      </div>
+      <div class="nav-group">
+        <p class="nav-group-label">System</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>Software updates</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>Settings</a>
+      </div>
+      <div style="padding:var(--s-3);font-size:var(--t-11);color:var(--c-text-muted);">v2.0.0</div>
+    </nav>
+
+    <main class="main">
+      <div class="main-inner">
+
+        <!-- Sub-tabs -->
+        <div class="subtabs">
+          <div class="subtab active">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            Users <span class="count">247</span>
+          </div>
+          <div class="subtab">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/></svg>
+            Departments <span class="count">8</span>
+          </div>
+          <div class="subtab">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+            Guests <span class="count">12</span>
+          </div>
+        </div>
+
+        <header class="page-head">
+          <div>
+            <h1 class="page-title">Users</h1>
+            <p class="page-sub">247 users · 4 unreturned devices · 1 locked · last sync 2 seconds ago</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn ghost">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+              Export
+            </button>
+            <button class="btn ghost">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+              Import
+            </button>
+            <div class="view-toggle">
+              <button id="viewTileBtn" aria-label="Tile view">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              </button>
+              <button id="viewListBtn" class="active" aria-label="List view">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" x2="21" y1="6" y2="6"/><line x1="3" x2="21" y1="12" y2="12"/><line x1="3" x2="21" y1="18" y2="18"/></svg>
+              </button>
+            </div>
+            <button class="btn primary">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+              Add user
+            </button>
+          </div>
+        </header>
+
+        <!-- KPI strip -->
+        <section class="kpis">
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-text-2);"></span>Total users</div>
+            <div class="kpi-value">247</div>
+            <div class="kpi-sub">across 8 departments</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-success);"></span>Active</div>
+            <div class="kpi-value">231</div>
+            <div class="kpi-sub">94% of users</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-warning);"></span>Pending guests</div>
+            <div class="kpi-value">12</div>
+            <div class="kpi-sub">awaiting approval</div>
+          </div>
+          <div class="kpi note-host">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-danger);"></span>Locked / disabled</div>
+            <div class="kpi-value warn">5</div>
+            <div class="kpi-sub">1 locked · 4 disabled</div>
+            <div class="note bl" style="left:0;max-width:240px;">
+              <strong>"Locked" replaces asterisk prefix.</strong><br>
+              Users with an active checkout used to show as <code>*Crosby Smith</code> — now a clear Locked pill (per copy audit Gaps).
+            </div>
+          </div>
+          <div class="kpi note-host">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-danger);"></span>Unreturned devices</div>
+            <div class="kpi-value danger">4</div>
+            <div class="kpi-sub">across 3 users</div>
+            <div class="note bl" style="left:0;max-width:280px;">
+              <strong>Travis P5: Unreturned devices column.</strong><br>
+              Sum across all users — when ≥1, surfaces as a colored KPI. Per-user count in the table; click to see which devices, last seen + replacement value.
+            </div>
+          </div>
+        </section>
+
+        <!-- AD/SSO callout -->
+        <div class="id-callout note-host">
+          <div class="id-callout-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="id-callout-meta">
+            <div class="id-callout-title">Identity provider · Microsoft Entra ID</div>
+            <div class="id-callout-sub">SAML SSO + SCIM provisioning · 187 users synced from 6 AD groups · last sync 14 minutes ago</div>
+          </div>
+          <span class="id-callout-status"><span class="dot"></span>Connected</span>
+          <button class="btn ghost" style="color:var(--c-violet);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>
+            Manage
+          </button>
+          <div class="note tl" style="left:0;max-width:300px;">
+            <strong>Travis P5: AD / SSO / SAML / SCIM</strong><br>
+            Single callout strip surfaces the identity-provider status so admins always know users are syncing. Click Manage to map AD groups → custom role groups.
+          </div>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="filter-bar note-host">
+          <div class="filter-search">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+            <input type="text" placeholder="Search by name, email, Employee ID, or Badge ID…">
+          </div>
+          <button class="filter-select">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7 12 7 12s.8-.7 1.7-1.7"/></svg>
+            Location
+            <span class="chip-count">1</span>
+          </button>
+          <button class="filter-select">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/></svg>
+            Department
+          </button>
+          <button class="filter-select">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>
+            Status
+          </button>
+          <button class="filter-select">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Role
+          </button>
+          <button class="filter-select">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Access
+          </button>
+          <button class="filter-clear">Clear filters (1)</button>
+          <div class="note tl" style="right:0;left:auto;">
+            <strong>Travis P3: Advanced filters by location + department.</strong><br>
+            Both surface as primary chips at the front of the filter bar.
+          </div>
+        </div>
+
+        <!-- Bulk bar -->
+        <div class="bulk-bar note-host">
+          <span class="bulk-count">2 selected</span>
+          <div class="bulk-divider"></div>
+          <button class="btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit
+          </button>
+          <button class="btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/></svg>
+            Move to department
+          </button>
+          <button class="btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Assign role
+          </button>
+          <button class="btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="12" x2="12" y1="8" y2="12"/></svg>
+            Reset PIN
+          </button>
+          <button class="btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Lock
+          </button>
+          <button class="btn danger">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Delete
+          </button>
+          <button class="clear-sel">✕ Clear selection</button>
+          <div class="note tr" style="left:120px;right:auto;">
+            <strong>Travis P1: Bulk edit.</strong><br>
+            Multi-row select with batch actions for role assignment, department move, PIN reset, and locking.
+          </div>
+        </div>
+
+        <!-- LIST VIEW -->
+        <div class="view-list show">
+          <div class="list-card">
+            <table class="users">
+              <thead>
+                <tr>
+                  <th style="width:36px;"><span class="checkbox indeterminate"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="6" x2="18" y1="12" y2="12"/></svg></span></th>
+                  <th>User</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Department</th>
+                  <th>Location</th>
+                  <th>Access</th>
+                  <th class="note-host">Unreturned
+                    <div class="note tl" style="left:0;">
+                      <strong>Travis P5: Total unreturned</strong><br>
+                      Per-user count of devices not returned. Pulses red at 3+ (Travis's suggested supervisor-approval threshold). Click to drill into which devices.
+                    </div>
+                  </th>
+                  <th>Last sign-in</th>
+                  <th style="width:60px;"></th>
+                </tr>
+              </thead>
+              <tbody>
+
+                <!-- Locked user (replaces *Crosby Smith) -->
+                <tr class="selected">
+                  <td><span class="checkbox checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+                  <td>
+                    <div class="user-cell-inline">
+                      <div class="user-avatar amber">CS</div>
+                      <div class="user-meta">
+                        <div class="user-name">Crosby Smith
+                          <svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        </div>
+                        <div class="user-email">emily@honestwaves.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="pill info"><span class="pill-dot"></span>Manager</span></td>
+                  <td><span class="pill warn"><span class="pill-dot"></span>Locked</span></td>
+                  <td><strong>Corewell POC</strong></td>
+                  <td>Troy Hospital</td>
+                  <td><span class="pill cyan"><span class="pill-dot"></span>Selected bays</span></td>
+                  <td><span class="unret-count high">3 <span class="arrow">↗</span></span></td>
+                  <td>3 min ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <!-- Site admin -->
+                <tr class="selected">
+                  <td><span class="checkbox checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+                  <td>
+                    <div class="user-cell-inline">
+                      <div class="user-avatar indigo">AR</div>
+                      <div class="user-meta">
+                        <div class="user-name">Admin Rowe</div>
+                        <div class="user-email">admin@honestwaves.test</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="pill violet"><span class="pill-dot"></span>Site admin</span></td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Active</span></td>
+                  <td><strong>—</strong></td>
+                  <td>All locations</td>
+                  <td><span class="pill violet"><span class="pill-dot"></span>All bays</span></td>
+                  <td><span class="unret-count zero">0</span></td>
+                  <td>just now</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <!-- User with 1 unreturned (Wesley Crusher) -->
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td>
+                    <div class="user-cell-inline">
+                      <div class="user-avatar green">WC</div>
+                      <div class="user-meta">
+                        <div class="user-name">Wesley Crusher</div>
+                        <div class="user-email">wcrusher@corewell.test</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="pill slate"><span class="pill-dot"></span>User</span></td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Active</span></td>
+                  <td><strong>Emergency Center</strong></td>
+                  <td>Troy Hospital</td>
+                  <td><span class="pill slate"><span class="pill-dot"></span>Department</span></td>
+                  <td><span class="unret-count low">1 <span class="arrow">↗</span></span></td>
+                  <td>5 days ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <!-- Q (the device 13 user with 10 days overdue) -->
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td>
+                    <div class="user-cell-inline">
+                      <div class="user-avatar violet">Q</div>
+                      <div class="user-meta">
+                        <div class="user-name">Q</div>
+                        <div class="user-email">q@corewell.test</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="pill slate"><span class="pill-dot"></span>User</span></td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Active</span></td>
+                  <td><strong>Emergency Center</strong></td>
+                  <td>Troy Hospital</td>
+                  <td><span class="pill slate"><span class="pill-dot"></span>Department</span></td>
+                  <td><span class="unret-count high">3 <span class="arrow">↗</span></span></td>
+                  <td>10 days ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <!-- Jean-Luc Picard — Manager, active -->
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td>
+                    <div class="user-cell-inline">
+                      <div class="user-avatar indigo">JP</div>
+                      <div class="user-meta">
+                        <div class="user-name">Jean-Luc Picard</div>
+                        <div class="user-email">jpicard@corewell.test</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="pill info"><span class="pill-dot"></span>Manager</span></td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Active</span></td>
+                  <td><strong>Emergency Center</strong></td>
+                  <td>Troy Hospital</td>
+                  <td><span class="pill cyan"><span class="pill-dot"></span>Selected bays</span></td>
+                  <td><span class="unret-count zero">0</span></td>
+                  <td>16 sec ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <!-- Kathryn Janeway — lost device -->
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td>
+                    <div class="user-cell-inline">
+                      <div class="user-avatar rose">KJ</div>
+                      <div class="user-meta">
+                        <div class="user-name">Kathryn Janeway</div>
+                        <div class="user-email">kjaneway@corewell.test</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="pill slate"><span class="pill-dot"></span>User</span></td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Active</span></td>
+                  <td><strong>ICU</strong></td>
+                  <td>Troy Hospital</td>
+                  <td><span class="pill slate"><span class="pill-dot"></span>Department</span></td>
+                  <td><span class="unret-count low">1 <span class="arrow">↗</span></span></td>
+                  <td>22 days ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <!-- Geordi La Forge -->
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td>
+                    <div class="user-cell-inline">
+                      <div class="user-avatar cyan">GF</div>
+                      <div class="user-meta">
+                        <div class="user-name">Geordi La Forge</div>
+                        <div class="user-email">glaforge@corewell.test</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="pill slate"><span class="pill-dot"></span>User</span></td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Active</span></td>
+                  <td><strong>Emergency Center</strong></td>
+                  <td>Troy Hospital</td>
+                  <td><span class="pill slate"><span class="pill-dot"></span>Department</span></td>
+                  <td><span class="unret-count zero">0</span></td>
+                  <td>3 min ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <!-- Worf Rozhenko -->
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td>
+                    <div class="user-cell-inline">
+                      <div class="user-avatar slate">WR</div>
+                      <div class="user-meta">
+                        <div class="user-name">Worf Rozhenko</div>
+                        <div class="user-email">wrozhenko@corewell.test</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="pill slate"><span class="pill-dot"></span>User</span></td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Active</span></td>
+                  <td><strong>Emergency Center</strong></td>
+                  <td>Troy Hospital</td>
+                  <td><span class="pill slate"><span class="pill-dot"></span>Department</span></td>
+                  <td><span class="unret-count zero">0</span></td>
+                  <td>22 min ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <!-- Tasha Yar — disabled -->
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td>
+                    <div class="user-cell-inline">
+                      <div class="user-avatar slate">TY</div>
+                      <div class="user-meta">
+                        <div class="user-name">Tasha Yar</div>
+                        <div class="user-email">tyar@corewell.test</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="pill slate"><span class="pill-dot"></span>User</span></td>
+                  <td><span class="pill slate"><span class="pill-dot"></span>Disabled</span></td>
+                  <td><strong>Emergency Center</strong></td>
+                  <td>Troy Hospital</td>
+                  <td><span class="pill slate"><span class="pill-dot"></span>Department</span></td>
+                  <td><span class="unret-count zero">0</span></td>
+                  <td>2 weeks ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <!-- William Riker -->
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td>
+                    <div class="user-cell-inline">
+                      <div class="user-avatar green">WR</div>
+                      <div class="user-meta">
+                        <div class="user-name">William Riker</div>
+                        <div class="user-email">wriker@corewell.test</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="pill slate"><span class="pill-dot"></span>User</span></td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Active</span></td>
+                  <td><strong>Emergency Center</strong></td>
+                  <td>Troy Hospital</td>
+                  <td><span class="pill slate"><span class="pill-dot"></span>Department</span></td>
+                  <td><span class="unret-count zero">0</span></td>
+                  <td>1 day ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <!-- Tuvok -->
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td>
+                    <div class="user-cell-inline">
+                      <div class="user-avatar amber">TV</div>
+                      <div class="user-meta">
+                        <div class="user-name">Tuvok</div>
+                        <div class="user-email">tuvok@corewell.test</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="pill slate"><span class="pill-dot"></span>User</span></td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Active</span></td>
+                  <td><strong>ICU</strong></td>
+                  <td>Troy Hospital</td>
+                  <td><span class="pill slate"><span class="pill-dot"></span>Department</span></td>
+                  <td><span class="unret-count zero">0</span></td>
+                  <td>14 min ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+
+            <div class="table-foot">
+              <span>Showing 1–11 of 247 users</span>
+              <div class="pag">
+                <button class="pag-btn" disabled><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+                <span class="pag-num active">1</span>
+                <span class="pag-num">2</span>
+                <span class="pag-num">3</span>
+                <span style="padding:0 4px;color:var(--c-text-muted);">…</span>
+                <span class="pag-num">23</span>
+                <button class="pag-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+                <span style="margin-left:12px;">25 per page</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TILE VIEW -->
+        <div class="view-tile">
+          <div class="tile-grid">
+
+            <div class="tile selected">
+              <div class="tile-head">
+                <div class="user-avatar amber">CS</div>
+                <div class="tile-head-meta">
+                  <div class="tile-head-name">Crosby Smith
+                    <svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  </div>
+                  <div class="tile-head-email">emily@honestwaves.com</div>
+                </div>
+                <span class="checkbox checked tile-head-checkbox"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </div>
+              <div class="tile-pills">
+                <span class="pill info"><span class="pill-dot"></span>Manager</span>
+                <span class="pill warn"><span class="pill-dot"></span>Locked</span>
+                <span class="pill cyan"><span class="pill-dot"></span>Selected bays</span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Department</span><strong>Corewell POC</strong></div>
+                <div class="tile-row"><span>Location</span><strong>Troy Hospital</strong></div>
+                <div class="tile-row"><span>Unreturned devices</span><span class="unret-count high">3 <span class="arrow">↗</span></span></div>
+              </div>
+              <div class="tile-foot">
+                <span>Last sign-in 3 min ago</span>
+                <span style="color:var(--c-warning-text);font-weight:600;">Needs review</span>
+              </div>
+            </div>
+
+            <div class="tile selected">
+              <div class="tile-head">
+                <div class="user-avatar indigo">AR</div>
+                <div class="tile-head-meta">
+                  <div class="tile-head-name">Admin Rowe</div>
+                  <div class="tile-head-email">admin@honestwaves.test</div>
+                </div>
+                <span class="checkbox checked tile-head-checkbox"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </div>
+              <div class="tile-pills">
+                <span class="pill violet"><span class="pill-dot"></span>Site admin</span>
+                <span class="pill success"><span class="pill-dot"></span>Active</span>
+                <span class="pill violet"><span class="pill-dot"></span>All bays</span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Department</span><strong>—</strong></div>
+                <div class="tile-row"><span>Location</span><strong>All locations</strong></div>
+                <div class="tile-row"><span>Unreturned devices</span><span class="unret-count zero">0</span></div>
+              </div>
+              <div class="tile-foot">
+                <span>Signed in just now</span>
+                <span style="color:var(--c-success);font-weight:600;">Healthy</span>
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="tile-head">
+                <div class="user-avatar green">WC</div>
+                <div class="tile-head-meta">
+                  <div class="tile-head-name">Wesley Crusher</div>
+                  <div class="tile-head-email">wcrusher@corewell.test</div>
+                </div>
+                <span class="checkbox tile-head-checkbox"></span>
+              </div>
+              <div class="tile-pills">
+                <span class="pill slate"><span class="pill-dot"></span>User</span>
+                <span class="pill success"><span class="pill-dot"></span>Active</span>
+                <span class="pill slate"><span class="pill-dot"></span>Department</span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Department</span><strong>Emergency Center</strong></div>
+                <div class="tile-row"><span>Location</span><strong>Troy Hospital</strong></div>
+                <div class="tile-row"><span>Unreturned devices</span><span class="unret-count low">1 <span class="arrow">↗</span></span></div>
+              </div>
+              <div class="tile-foot">
+                <span>Last sign-in 5d ago</span>
+                <span style="color:var(--c-warning-text);">Has overdue</span>
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="tile-head">
+                <div class="user-avatar violet">Q</div>
+                <div class="tile-head-meta">
+                  <div class="tile-head-name">Q</div>
+                  <div class="tile-head-email">q@corewell.test</div>
+                </div>
+                <span class="checkbox tile-head-checkbox"></span>
+              </div>
+              <div class="tile-pills">
+                <span class="pill slate"><span class="pill-dot"></span>User</span>
+                <span class="pill success"><span class="pill-dot"></span>Active</span>
+                <span class="pill slate"><span class="pill-dot"></span>Department</span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Department</span><strong>Emergency Center</strong></div>
+                <div class="tile-row"><span>Location</span><strong>Troy Hospital</strong></div>
+                <div class="tile-row"><span>Unreturned devices</span><span class="unret-count high">3 <span class="arrow">↗</span></span></div>
+              </div>
+              <div class="tile-foot">
+                <span>Last sign-in 10d ago</span>
+                <span style="color:var(--c-danger);font-weight:600;">Block checkout</span>
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="tile-head">
+                <div class="user-avatar indigo">JP</div>
+                <div class="tile-head-meta">
+                  <div class="tile-head-name">Jean-Luc Picard</div>
+                  <div class="tile-head-email">jpicard@corewell.test</div>
+                </div>
+                <span class="checkbox tile-head-checkbox"></span>
+              </div>
+              <div class="tile-pills">
+                <span class="pill info"><span class="pill-dot"></span>Manager</span>
+                <span class="pill success"><span class="pill-dot"></span>Active</span>
+                <span class="pill cyan"><span class="pill-dot"></span>Selected bays</span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Department</span><strong>Emergency Center</strong></div>
+                <div class="tile-row"><span>Location</span><strong>Troy Hospital</strong></div>
+                <div class="tile-row"><span>Unreturned devices</span><span class="unret-count zero">0</span></div>
+              </div>
+              <div class="tile-foot">
+                <span>Signed in 16 sec ago</span>
+                <span style="color:var(--c-success);font-weight:600;">Healthy</span>
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="tile-head">
+                <div class="user-avatar rose">KJ</div>
+                <div class="tile-head-meta">
+                  <div class="tile-head-name">Kathryn Janeway</div>
+                  <div class="tile-head-email">kjaneway@corewell.test</div>
+                </div>
+                <span class="checkbox tile-head-checkbox"></span>
+              </div>
+              <div class="tile-pills">
+                <span class="pill slate"><span class="pill-dot"></span>User</span>
+                <span class="pill success"><span class="pill-dot"></span>Active</span>
+                <span class="pill slate"><span class="pill-dot"></span>Department</span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Department</span><strong>ICU</strong></div>
+                <div class="tile-row"><span>Location</span><strong>Troy Hospital</strong></div>
+                <div class="tile-row"><span>Unreturned devices</span><span class="unret-count low">1 <span class="arrow">↗</span></span></div>
+              </div>
+              <div class="tile-foot">
+                <span>Last sign-in 22d ago</span>
+                <span style="color:var(--c-warning-text);">1 device lost</span>
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="tile-head">
+                <div class="user-avatar cyan">GF</div>
+                <div class="tile-head-meta">
+                  <div class="tile-head-name">Geordi La Forge</div>
+                  <div class="tile-head-email">glaforge@corewell.test</div>
+                </div>
+                <span class="checkbox tile-head-checkbox"></span>
+              </div>
+              <div class="tile-pills">
+                <span class="pill slate"><span class="pill-dot"></span>User</span>
+                <span class="pill success"><span class="pill-dot"></span>Active</span>
+                <span class="pill slate"><span class="pill-dot"></span>Department</span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Department</span><strong>Emergency Center</strong></div>
+                <div class="tile-row"><span>Location</span><strong>Troy Hospital</strong></div>
+                <div class="tile-row"><span>Unreturned devices</span><span class="unret-count zero">0</span></div>
+              </div>
+              <div class="tile-foot">
+                <span>Signed in 3 min ago</span>
+                <span style="color:var(--c-success);font-weight:600;">Healthy</span>
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="tile-head">
+                <div class="user-avatar slate">TY</div>
+                <div class="tile-head-meta">
+                  <div class="tile-head-name">Tasha Yar</div>
+                  <div class="tile-head-email">tyar@corewell.test</div>
+                </div>
+                <span class="checkbox tile-head-checkbox"></span>
+              </div>
+              <div class="tile-pills">
+                <span class="pill slate"><span class="pill-dot"></span>User</span>
+                <span class="pill slate"><span class="pill-dot"></span>Disabled</span>
+                <span class="pill slate"><span class="pill-dot"></span>Department</span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Department</span><strong>Emergency Center</strong></div>
+                <div class="tile-row"><span>Location</span><strong>Troy Hospital</strong></div>
+                <div class="tile-row"><span>Unreturned devices</span><span class="unret-count zero">0</span></div>
+              </div>
+              <div class="tile-foot">
+                <span>Last sign-in 2w ago</span>
+                <span style="color:var(--c-text-muted);">Disabled</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Travis credit -->
+        <div class="travis-credit">
+          <strong>Recommendations integrated from Travis @ Corewell:</strong>
+          <div class="recs">
+            <span class="rec-tag">P5</span>AD / SSO / SAML / SCIM identity provider callout &nbsp;
+            <span class="rec-tag">P5</span>Total Unreturned Devices column with drill-down &nbsp;
+            <span class="rec-tag">P5</span>Custom role groups scoped by function + location &nbsp;
+            <span class="rec-tag">P3</span>Advanced filters: location + department &nbsp;
+            <span class="rec-tag">P1</span>Bulk edit (multi-select + batch actions) &nbsp;
+            <span class="rec-tag">P1</span>Unified User Management + Account Settings (subtabs) &nbsp;
+            <span class="rec-tag">P1</span>Force password change on first login (in Add user modal — flagged for proto 12)
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const listBtn = document.getElementById('viewListBtn');
+    const tileBtn = document.getElementById('viewTileBtn');
+    const listView = document.querySelector('.view-list');
+    const tileView = document.querySelector('.view-tile');
+    function show(view) {
+      if (view === 'tile') {
+        listView.classList.remove('show'); tileView.classList.add('show');
+        listBtn.classList.remove('active'); tileBtn.classList.add('active');
+        try { localStorage.setItem('hw.users.view', 'tile'); } catch (e) {}
+      } else {
+        tileView.classList.remove('show'); listView.classList.add('show');
+        tileBtn.classList.remove('active'); listBtn.classList.add('active');
+        try { localStorage.setItem('hw.users.view', 'list'); } catch (e) {}
+      }
+    }
+    listBtn.addEventListener('click', () => show('list'));
+    tileBtn.addEventListener('click', () => show('tile'));
+    try {
+      const saved = localStorage.getItem('hw.users.view');
+      if (saved === 'tile') show('tile');
+    } catch (e) {}
+  </script>
+</body>
+</html>
