@@ -292,6 +292,31 @@
     .view-list,.view-tile{display:none}
     .view-list.show,.view-tile.show{display:block}
 
+    /* Sub-tabs (Devices / Models) */
+    .subtabs{display:flex;align-items:center;gap:2px;border-bottom:1px solid var(--c-border);margin-bottom:var(--s-4);padding-bottom:0}
+    .subtab{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;font-size:var(--t-13);font-weight:500;color:var(--c-text-2);border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer;background:none;border-left:0;border-right:0;border-top:0}
+    .subtab:hover{color:var(--c-text)}
+    .subtab.active{color:var(--c-brand-deep);border-bottom-color:var(--c-brand);font-weight:600}
+    .subtab .count{font-size:10px;font-weight:600;padding:1px 6px;border-radius:999px;background:var(--c-surface-3);color:var(--c-text-2);min-width:18px;text-align:center}
+    .subtab.active .count{background:var(--c-brand-soft);color:var(--c-brand-deep)}
+    .tab-section{display:none}
+    .tab-section.active{display:block}
+
+    /* Models list (Manage models) */
+    .model-card{display:flex;gap:var(--s-3);padding:14px var(--s-4);border-bottom:1px solid var(--c-divider);cursor:pointer;transition:background .12s}
+    .model-card:hover{background:var(--c-surface-2)}
+    .model-card:last-child{border-bottom:0}
+    .model-icon{width:40px;height:40px;border-radius:var(--r-md);background:var(--c-cyan-soft);color:var(--c-cyan);display:grid;place-items:center;flex-shrink:0}
+    .model-meta{flex:1;min-width:0;line-height:1.3}
+    .model-name{font-weight:600;color:var(--c-text);font-size:var(--t-13);margin-bottom:2px}
+    .model-vendor{font-size:var(--t-11);color:var(--c-text-2);margin-bottom:6px}
+    .model-parts{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+    .part-pill{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:999px;background:var(--c-surface-3);color:var(--c-text-2);font-size:10px;font-family:var(--font-mono)}
+    .part-pill strong{color:var(--c-money);font-weight:600}
+    .model-counts{text-align:right;flex-shrink:0;align-self:flex-start;padding-top:2px;line-height:1.4}
+    .model-cost{font-family:var(--font-mono);font-weight:700;color:var(--c-money);font-size:var(--t-14)}
+    .model-units{font-size:10px;color:var(--c-text-muted)}
+
     /* Travis credit */
     .travis-credit{margin-top:var(--s-5);padding:var(--s-3) var(--s-4);background:var(--c-surface);border:1px dashed var(--c-border);border-radius:var(--r-md);font-size:var(--t-11);color:var(--c-text-2)}
     .travis-credit strong{color:var(--c-text)}
@@ -407,6 +432,21 @@
             </button>
           </div>
         </header>
+
+        <!-- Sub-tabs: Devices / Models -->
+        <div class="subtabs">
+          <button class="subtab active" onclick="showTab('devices',this)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
+            Devices <span class="count">128</span>
+          </button>
+          <button class="subtab" onclick="showTab('models',this)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
+            Models <span class="count">6</span>
+          </button>
+        </div>
+
+        <!-- TAB: DEVICES -->
+        <div class="tab-section active" id="tab-devices">
 
         <!-- KPI strip -->
         <section class="kpis note-host">
@@ -1254,6 +1294,151 @@
           </div>
         </div>
 
+        </div><!-- /tab-devices -->
+
+        <!-- TAB: MODELS (Manage models) -->
+        <div class="tab-section" id="tab-models">
+
+          <div class="filter-bar">
+            <div class="filter-search">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+              <input type="text" placeholder="Search by name or vendor…">
+            </div>
+            <button class="filter-select">Vendor</button>
+            <button class="filter-select">Replacement cost</button>
+          </div>
+
+          <div class="list-card">
+
+            <div class="model-card">
+              <div class="model-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
+              </div>
+              <div class="model-meta">
+                <div class="model-name">iPhone 16e</div>
+                <div class="model-vendor">Apple · seeded · last updated 4 days ago</div>
+                <div class="model-parts">
+                  <span class="part-pill">Screen <strong>$179</strong></span>
+                  <span class="part-pill">Battery <strong>$65</strong></span>
+                  <span class="part-pill">Port <strong>$89</strong></span>
+                  <span class="part-pill">Camera <strong>$110</strong></span>
+                  <span class="part-pill">Speaker <strong>$40</strong></span>
+                </div>
+              </div>
+              <div class="model-counts">
+                <div class="model-cost">$599</div>
+                <div class="model-units">50 devices · $29,950 total</div>
+              </div>
+            </div>
+
+            <div class="model-card">
+              <div class="model-icon" style="background:var(--c-violet-soft);color:var(--c-violet);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </div>
+              <div class="model-meta">
+                <div class="model-name">Arista badge</div>
+                <div class="model-vendor">Arista A4 series · seeded</div>
+                <div class="model-parts">
+                  <span class="part-pill">Strap <strong>$12</strong></span>
+                  <span class="part-pill">Battery <strong>$25</strong></span>
+                  <span class="part-pill">Faceplate <strong>$30</strong></span>
+                </div>
+              </div>
+              <div class="model-counts">
+                <div class="model-cost">$85</div>
+                <div class="model-units">49 devices · $4,165 total</div>
+              </div>
+            </div>
+
+            <div class="model-card">
+              <div class="model-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
+              </div>
+              <div class="model-meta">
+                <div class="model-name">Pixel 8 Pro</div>
+                <div class="model-vendor">Google · custom · last updated 2 weeks ago</div>
+                <div class="model-parts">
+                  <span class="part-pill">Screen <strong>$249</strong></span>
+                  <span class="part-pill">Battery <strong>$70</strong></span>
+                  <span class="part-pill">Port <strong>$95</strong></span>
+                </div>
+              </div>
+              <div class="model-counts">
+                <div class="model-cost">$899</div>
+                <div class="model-units">4 devices · $3,596 total</div>
+              </div>
+            </div>
+
+            <div class="model-card">
+              <div class="model-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
+              </div>
+              <div class="model-meta">
+                <div class="model-name">ChromeBook X360</div>
+                <div class="model-vendor">Lenovo · custom</div>
+                <div class="model-parts">
+                  <span class="part-pill">Keyboard <strong>$120</strong></span>
+                  <span class="part-pill">Battery <strong>$90</strong></span>
+                  <span class="part-pill">Hinge <strong>$45</strong></span>
+                </div>
+              </div>
+              <div class="model-counts">
+                <div class="model-cost">$549</div>
+                <div class="model-units">2 devices · $1,098 total</div>
+              </div>
+            </div>
+
+            <div class="model-card">
+              <div class="model-icon" style="background:var(--c-warning-soft);color:var(--c-warning-text);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+              </div>
+              <div class="model-meta">
+                <div class="model-name">CK65 Ultra Rugged</div>
+                <div class="model-vendor">Honeywell · scanner · custom · 2 weeks ago</div>
+                <div class="model-parts">
+                  <span class="part-pill">Scanner head <strong>$280</strong></span>
+                  <span class="part-pill">Battery <strong>$110</strong></span>
+                  <span class="part-pill">Handle <strong>$45</strong></span>
+                </div>
+              </div>
+              <div class="model-counts">
+                <div class="model-cost">$1,249</div>
+                <div class="model-units">2 devices · $2,498 total</div>
+              </div>
+            </div>
+
+            <div class="model-card">
+              <div class="model-icon" style="background:var(--c-slate-soft);color:var(--c-slate);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
+              </div>
+              <div class="model-meta">
+                <div class="model-name">Generic</div>
+                <div class="model-vendor">Catch-all for legacy devices · default value only</div>
+                <div class="model-parts">
+                  <span class="part-pill" style="color:var(--c-text-muted);">No component costs configured</span>
+                </div>
+              </div>
+              <div class="model-counts">
+                <div class="model-cost">$399</div>
+                <div class="model-units">6 devices · $2,394 total</div>
+              </div>
+            </div>
+
+          </div>
+
+          <div style="margin-top:var(--s-3);display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:var(--t-12);color:var(--c-text-2);">6 models · <strong style="color:var(--c-money);font-family:var(--font-mono);">$76,544</strong> total fleet value</span>
+            <button class="btn primary">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+              Add model
+            </button>
+          </div>
+
+          <div class="travis-credit">
+            <strong>Travis P1: Replacement cost &amp; per-component pricing</strong> — every model defines a top-line replacement value and per-part repair costs. Used at lost-device notifications, supervisor-approval prompts at the kiosk, and the locker home-screen "Total Bay Value" display.
+          </div>
+        </div>
+
       </div>
     </main>
 
@@ -1347,6 +1532,16 @@
   </div>
 
   <script>
+    // Sub-tab switching (Devices / Models)
+    function showTab(name, btn) {
+      document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+      document.getElementById('tab-' + name).classList.add('active');
+      document.querySelectorAll('.subtab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const drawer = document.querySelector('.drawer-side');
+      if (drawer) drawer.style.display = (name === 'devices') ? '' : 'none';
+    }
+
     const listBtn = document.getElementById('viewListBtn');
     const tileBtn = document.getElementById('viewTileBtn');
     const listView = document.querySelector('.view-list');

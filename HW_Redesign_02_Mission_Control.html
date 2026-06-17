@@ -502,6 +502,18 @@
     .bay-pill.deact    { background: var(--c-slate-soft); color: var(--c-slate); }
     .bay-pill.deact .bay-pill-dot { background: var(--c-slate); }
 
+    /* New states added after re-review of staging — June 17 2026 */
+    /* NOT_CONNECTED — bay can't reach its hub (distinct from "Missing device" which means no device docked) */
+    .bay-pill.disconnected { background: var(--c-slate-soft); color: var(--c-slate); }
+    .bay-pill.disconnected .bay-pill-dot { background: var(--c-slate); animation: blinkSlow 2s infinite; }
+    @keyframes blinkSlow { 0%, 60%, 100% { opacity: 1; } 80% { opacity: 0.3; } }
+    /* SUSPENDED — temporarily disabled (distinct from Deactivated which is admin-disabled long-term) */
+    .bay-pill.suspended { background: var(--c-warning-soft); color: var(--c-warning-text); }
+    .bay-pill.suspended .bay-pill-dot { background: var(--c-warning); }
+    /* CHECKED_OUT — alias of "In use" for backend display parity */
+    .bay-pill.checked-out { background: var(--c-info-soft); color: var(--c-info); }
+    .bay-pill.checked-out .bay-pill-dot { background: var(--c-info); }
+
     /* Bay body — assigned user + device */
     .bay-user {
       display: flex; align-items: center; gap: 6px;

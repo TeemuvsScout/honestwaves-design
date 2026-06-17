@@ -780,6 +780,46 @@
     .view-list, .view-tile { display: none; }
     .view-list.show, .view-tile.show { display: block; }
 
+    /* Sub-tabs (Lockers / Locations / Templates) */
+    .subtabs{display:flex;align-items:center;gap:2px;border-bottom:1px solid var(--c-border);margin-bottom:var(--s-4);padding-bottom:0}
+    .subtab{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;font-size:var(--t-13);font-weight:500;color:var(--c-text-2);border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer;background:none;border-left:0;border-right:0;border-top:0}
+    .subtab:hover{color:var(--c-text)}
+    .subtab.active{color:var(--c-brand-deep);border-bottom-color:var(--c-brand);font-weight:600}
+    .subtab .count{font-size:10px;font-weight:600;padding:1px 6px;border-radius:999px;background:var(--c-surface-3);color:var(--c-text-2);min-width:18px;text-align:center}
+    .subtab.active .count{background:var(--c-brand-soft);color:var(--c-brand-deep)}
+    .tab-section{display:none}
+    .tab-section.active{display:block}
+
+    /* Locations list */
+    .loc-row{display:flex;align-items:center;gap:var(--s-3);padding:12px var(--s-4);border-bottom:1px solid var(--c-divider);cursor:pointer;transition:background .12s}
+    .loc-row:hover{background:var(--c-surface-2)}
+    .loc-row:last-child{border-bottom:0}
+    .loc-icon{width:34px;height:34px;border-radius:var(--r-md);background:var(--c-info-soft);color:var(--c-info);display:grid;place-items:center;flex-shrink:0}
+    .loc-icon.default{background:linear-gradient(135deg,var(--c-brand-soft),var(--c-violet-soft));color:var(--c-brand)}
+    .loc-meta{flex:1;min-width:0;line-height:1.3}
+    .loc-name{font-weight:600;color:var(--c-text);font-size:var(--t-13);display:flex;align-items:center;gap:6px}
+    .loc-addr{font-size:var(--t-11);color:var(--c-text-2)}
+    .loc-coords{font-family:var(--font-mono);font-size:10px;color:var(--c-text-muted);margin-top:1px}
+    .loc-counts{display:flex;align-items:center;gap:16px;font-size:var(--t-11);color:var(--c-text-2)}
+    .loc-counts strong{color:var(--c-text);font-weight:600}
+    .default-pill{display:inline-flex;align-items:center;gap:5px;height:18px;padding:0 8px;border-radius:999px;font-size:10px;font-weight:600;background:var(--c-violet-soft);color:var(--c-violet)}
+    .default-pill .star{font-size:9px}
+
+    /* Templates list */
+    .tpl-card{display:flex;gap:var(--s-3);padding:14px var(--s-4);border-bottom:1px solid var(--c-divider);cursor:pointer;transition:background .12s}
+    .tpl-card:hover{background:var(--c-surface-2)}
+    .tpl-card:last-child{border-bottom:0}
+    .tpl-icon{width:38px;height:38px;border-radius:var(--r-md);background:var(--c-cyan-soft);color:var(--c-cyan);display:grid;place-items:center;flex-shrink:0}
+    .tpl-meta{flex:1;min-width:0}
+    .tpl-name{font-weight:600;color:var(--c-text);font-size:var(--t-13);display:flex;align-items:center;gap:6px;margin-bottom:3px}
+    .tpl-desc{font-size:var(--t-11);color:var(--c-text-2);line-height:1.4;margin-bottom:5px}
+    .tpl-pills{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:10px}
+    .tpl-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:999px;background:var(--c-surface-3);color:var(--c-text-2);font-weight:500}
+    .tpl-pill.mode{background:var(--c-info-soft);color:var(--c-info);font-weight:600}
+    .tpl-pill.default{background:var(--c-violet-soft);color:var(--c-violet);font-weight:600}
+    .tpl-used-by{margin-left:auto;font-size:var(--t-11);color:var(--c-text-muted);flex-shrink:0;align-self:flex-start;padding-top:2px}
+    .tpl-used-by strong{color:var(--c-text);font-weight:600}
+
     /* Travis credit footer */
     .travis-credit {
       margin-top: var(--s-5);
@@ -915,6 +955,25 @@
             </button>
           </div>
         </header>
+
+        <!-- Sub-tabs: Lockers / Locations / Templates -->
+        <div class="subtabs">
+          <button class="subtab active" onclick="showTab('lockers',this)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/></svg>
+            Lockers <span class="count">12</span>
+          </button>
+          <button class="subtab" onclick="showTab('locations',this)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7 12 7 12s.8-.7 1.7-1.7"/></svg>
+            Locations <span class="count">6</span>
+          </button>
+          <button class="subtab" onclick="showTab('templates',this)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Templates <span class="count">4</span>
+          </button>
+        </div>
+
+        <!-- TAB: LOCKERS -->
+        <div class="tab-section active" id="tab-lockers">
 
         <!-- Filter bar -->
         <div class="filter-bar note-host">
@@ -1586,6 +1645,227 @@
           </div>
         </div>
 
+        </div><!-- /tab-lockers -->
+
+        <!-- TAB: LOCATIONS (Travis P2: separate Locations module) -->
+        <div class="tab-section" id="tab-locations">
+
+          <div class="filter-bar">
+            <div class="filter-search">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+              <input type="text" placeholder="Search by name, address, or city…">
+            </div>
+            <button class="filter-select">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+              City
+            </button>
+            <button class="filter-select">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
+              Has lockers
+            </button>
+            <button class="filter-clear">Clear filters</button>
+          </div>
+
+          <div class="list-card">
+            <div class="loc-row">
+              <div class="loc-icon default">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7 12 7 12s.8-.7 1.7-1.7"/></svg>
+              </div>
+              <div class="loc-meta">
+                <div class="loc-name">Headquarters <span class="default-pill"><span class="star">★</span>Default</span></div>
+                <div class="loc-addr">New lockers start here until reassigned</div>
+              </div>
+              <div class="loc-counts">
+                <span><strong>1</strong> locker</span>
+                <span><strong>8</strong> devices</span>
+              </div>
+            </div>
+
+            <div class="loc-row">
+              <div class="loc-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7 12 7 12s.8-.7 1.7-1.7"/></svg>
+              </div>
+              <div class="loc-meta">
+                <div class="loc-name">Troy Hospital · Emergency Center</div>
+                <div class="loc-addr">2750 Raymond Ave · Troy, MI 48084</div>
+                <div class="loc-coords">42.6064°N · 83.1498°W</div>
+              </div>
+              <div class="loc-counts">
+                <span><strong>5</strong> lockers</span>
+                <span><strong>100</strong> devices</span>
+              </div>
+            </div>
+
+            <div class="loc-row">
+              <div class="loc-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7 12 7 12s.8-.7 1.7-1.7"/></svg>
+              </div>
+              <div class="loc-meta">
+                <div class="loc-name">Troy Hospital · ICU</div>
+                <div class="loc-addr">2750 Raymond Ave · Troy, MI 48084</div>
+                <div class="loc-coords">42.6064°N · 83.1498°W</div>
+              </div>
+              <div class="loc-counts">
+                <span><strong>2</strong> lockers</span>
+                <span><strong>40</strong> devices</span>
+              </div>
+            </div>
+
+            <div class="loc-row">
+              <div class="loc-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7 12 7 12s.8-.7 1.7-1.7"/></svg>
+              </div>
+              <div class="loc-meta">
+                <div class="loc-name">Butterworth Hospital · 2S MedSurg</div>
+                <div class="loc-addr">100 Michigan St NE · Grand Rapids, MI 49503</div>
+                <div class="loc-coords">42.9634°N · 85.6681°W</div>
+              </div>
+              <div class="loc-counts">
+                <span><strong>2</strong> lockers</span>
+                <span><strong>40</strong> devices</span>
+              </div>
+            </div>
+
+            <div class="loc-row">
+              <div class="loc-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7 12 7 12s.8-.7 1.7-1.7"/></svg>
+              </div>
+              <div class="loc-meta">
+                <div class="loc-name">HonestWaves HQ · Signal Hill</div>
+                <div class="loc-addr">2750 Raymond Ave · Signal Hill, CA 90755</div>
+                <div class="loc-coords">33.7989°N · 118.1681°W</div>
+              </div>
+              <div class="loc-counts">
+                <span><strong>1</strong> locker</span>
+                <span><strong>32</strong> devices</span>
+              </div>
+            </div>
+
+            <div class="loc-row">
+              <div class="loc-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7 12 7 12s.8-.7 1.7-1.7"/></svg>
+              </div>
+              <div class="loc-meta">
+                <div class="loc-name">HonestWaves OC Office · Newport Beach</div>
+                <div class="loc-addr">260 Newport Center Drive · Newport Beach, CA 92663</div>
+                <div class="loc-coords">33.6189°N · 117.9298°W</div>
+              </div>
+              <div class="loc-counts">
+                <span><strong>2</strong> lockers</span>
+                <span><strong>16</strong> devices</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:var(--s-3);display:flex;justify-content:flex-end;">
+            <button class="btn primary">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+              Add location
+            </button>
+          </div>
+
+          <div class="travis-credit">
+            <strong>Travis P2:</strong>
+            <span class="rec-tag">P2</span>Separate Locations module with hierarchy + address fields (Street, City, State, ZIP, coordinates)
+          </div>
+        </div>
+
+        <!-- TAB: TEMPLATES -->
+        <div class="tab-section" id="tab-templates">
+
+          <div class="filter-bar">
+            <div class="filter-search">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+              <input type="text" placeholder="Search by name, description, or mode…">
+            </div>
+            <button class="filter-select">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
+              Bay count
+            </button>
+            <button class="filter-select">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>
+              Operation mode
+            </button>
+          </div>
+
+          <div class="list-card">
+            <div class="tpl-card">
+              <div class="tpl-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/></svg>
+              </div>
+              <div class="tpl-meta">
+                <div class="tpl-name">Standard 12-bay <span class="tpl-pill default">★ Default</span></div>
+                <div class="tpl-desc">Standard branch deployment. Applied to most new lockers automatically.</div>
+                <div class="tpl-pills">
+                  <span class="tpl-pill">12 bays</span>
+                  <span class="tpl-pill mode">Direct assignment</span>
+                  <span class="tpl-pill">UVC sanitization</span>
+                  <span class="tpl-pill">PIN required at checkout</span>
+                </div>
+              </div>
+              <div class="tpl-used-by"><strong>7</strong> lockers using</div>
+            </div>
+
+            <div class="tpl-card">
+              <div class="tpl-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/></svg>
+              </div>
+              <div class="tpl-meta">
+                <div class="tpl-name">Heavy-duty 24-bay</div>
+                <div class="tpl-desc">For fleet environments. Direct assignment + extended charging window + late-return notifications.</div>
+                <div class="tpl-pills">
+                  <span class="tpl-pill">24 bays</span>
+                  <span class="tpl-pill mode">Direct assignment</span>
+                  <span class="tpl-pill">12h charging max</span>
+                  <span class="tpl-pill">Supervisor approval at 3 lost</span>
+                </div>
+              </div>
+              <div class="tpl-used-by"><strong>2</strong> lockers using</div>
+            </div>
+
+            <div class="tpl-card">
+              <div class="tpl-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/></svg>
+              </div>
+              <div class="tpl-meta">
+                <div class="tpl-name">Standard 8-bay</div>
+                <div class="tpl-desc">Small-footprint locker with self-service checkout. 6-digit access code at check-in.</div>
+                <div class="tpl-pills">
+                  <span class="tpl-pill">8 bays</span>
+                  <span class="tpl-pill mode" style="background:var(--c-warning-soft);color:var(--c-warning-text);">Self-service</span>
+                  <span class="tpl-pill">Anonymous mode</span>
+                  <span class="tpl-pill">No PIN required</span>
+                </div>
+              </div>
+              <div class="tpl-used-by"><strong>2</strong> lockers using</div>
+            </div>
+
+            <div class="tpl-card">
+              <div class="tpl-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/></svg>
+              </div>
+              <div class="tpl-meta">
+                <div class="tpl-name">Compact 4-bay</div>
+                <div class="tpl-desc">Smallest footprint with self-service checkout. Best for satellite locations and demo units.</div>
+                <div class="tpl-pills">
+                  <span class="tpl-pill">4 bays</span>
+                  <span class="tpl-pill mode" style="background:var(--c-warning-soft);color:var(--c-warning-text);">Self-service</span>
+                  <span class="tpl-pill">5min screensaver</span>
+                </div>
+              </div>
+              <div class="tpl-used-by"><strong>1</strong> locker using</div>
+            </div>
+          </div>
+
+          <div style="margin-top:var(--s-3);display:flex;justify-content:flex-end;">
+            <button class="btn primary">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+              Add template
+            </button>
+          </div>
+
+        </div>
+
       </div>
     </main>
 
@@ -1673,6 +1953,17 @@
   </div>
 
   <script>
+    // Sub-tab switching (Lockers / Locations / Templates)
+    function showTab(name, btn) {
+      document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+      document.getElementById('tab-' + name).classList.add('active');
+      document.querySelectorAll('.subtab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      // Hide drawer when not on lockers tab (it shows Pink8 detail which only applies there)
+      const drawer = document.querySelector('.drawer-side');
+      if (drawer) drawer.style.display = (name === 'lockers') ? '' : 'none';
+    }
+
     // View toggle (list / tile)
     const listBtn = document.getElementById('viewListBtn');
     const tileBtn = document.getElementById('viewTileBtn');
