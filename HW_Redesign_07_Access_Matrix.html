@@ -82,6 +82,14 @@
     .btn.primary:hover{background:var(--c-brand-hover);border-color:var(--c-brand-hover)}
     .btn.ghost{background:transparent;border-color:transparent;box-shadow:none}
 
+    /* Sidebar accordion sub-nav */
+    .sub-nav{margin:2px 0 6px 0;padding-left:0;border-left:1px solid var(--c-divider);margin-left:18px}
+    .sub-nav-item{display:flex;align-items:center;gap:8px;padding:5px 10px 5px 14px;font-size:12px;color:var(--c-text-2);border-radius:0 var(--r-sm) var(--r-sm) 0;cursor:pointer;position:relative;margin-left:-1px;border-left:2px solid transparent}
+    .sub-nav-item:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .sub-nav-item.active{color:var(--c-brand-deep);font-weight:600;border-left-color:var(--c-brand);background:var(--c-brand-soft)}
+    .sub-nav-icon{width:12px;height:12px;flex-shrink:0;opacity:.7}
+    .sub-nav-item.active .sub-nav-icon{opacity:1}
+
     /* Perspective tabs */
     .pivots{display:inline-flex;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);box-shadow:var(--sh-1);padding:2px}
     .pivot{padding:5px 12px;font-size:var(--t-12);font-weight:500;color:var(--c-text-2);border-radius:var(--r-sm);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
@@ -245,6 +253,12 @@
         <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Devices</a>
         <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Users</a>
         <a class="nav-item active" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>Access matrix</a>
+        <div class="sub-nav">
+          <div class="sub-nav-item active" data-pane="locker-bay" onclick="setPerspective('locker-bay',this)"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>By locker → bay</div>
+          <div class="sub-nav-item" data-pane="user" onclick="setPerspective('user',this)"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/></svg>By user</div>
+          <div class="sub-nav-item" data-pane="department" onclick="setPerspective('department',this)"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/></svg>By department</div>
+          <div class="sub-nav-item" data-pane="grant-path" onclick="setPerspective('grant-path',this)"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>By grant path</div>
+        </div>
       </div>
       <div class="nav-group"><p class="nav-group-label">Investigate</p>
         <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/></svg>Notifications<span class="nav-badge">99+</span></a>
@@ -272,10 +286,10 @@
               Export
             </button>
             <div class="pivots">
-              <button class="pivot active"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>By locker → bay</button>
-              <button class="pivot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/></svg>By user</button>
-              <button class="pivot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/></svg>By department</button>
-              <button class="pivot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>By grant path</button>
+              <button class="pivot active" data-pane="locker-bay" onclick="setPerspective('locker-bay',this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>By locker → bay</button>
+              <button class="pivot" data-pane="user" onclick="setPerspective('user',this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/></svg>By user</button>
+              <button class="pivot" data-pane="department" onclick="setPerspective('department',this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/></svg>By department</button>
+              <button class="pivot" data-pane="grant-path" onclick="setPerspective('grant-path',this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>By grant path</button>
             </div>
           </div>
         </header>
@@ -527,5 +541,19 @@
     </aside>
 
   </div>
+
+  <script>
+    // Sync perspective tabs (top) with sidebar accordion
+    function setPerspective(name, el) {
+      document.querySelectorAll('.pivot[data-pane], .sub-nav-item[data-pane]').forEach(p => {
+        p.classList.toggle('active', p.dataset.pane === name);
+      });
+      try { localStorage.setItem('hw.access.persp', name); } catch (e) {}
+    }
+    try {
+      const saved = localStorage.getItem('hw.access.persp');
+      if (saved) setPerspective(saved);
+    } catch (e) {}
+  </script>
 </body>
 </html>

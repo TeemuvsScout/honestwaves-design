@@ -58,6 +58,15 @@
     .nav-item.active::before{content:"";position:absolute;left:-2px;top:8px;bottom:8px;width:2px;background:var(--c-brand);border-radius:2px}
     .nav-icon{width:16px;height:16px;flex-shrink:0;opacity:.85}
     .nav-item.active .nav-icon{opacity:1}
+
+    /* Sidebar accordion sub-nav */
+    .sub-nav{margin:2px 0 6px 0;padding-left:0;border-left:1px solid var(--c-divider);margin-left:18px}
+    .sub-nav-item-side{display:flex;align-items:center;gap:8px;padding:5px 10px 5px 14px;font-size:12px;color:var(--c-text-2);border-radius:0 var(--r-sm) var(--r-sm) 0;cursor:pointer;position:relative;margin-left:-1px;border-left:2px solid transparent}
+    .sub-nav-item-side:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .sub-nav-item-side.active{color:var(--c-brand-deep);font-weight:600;border-left-color:var(--c-brand);background:var(--c-brand-soft)}
+    .sub-nav-icon{width:12px;height:12px;flex-shrink:0;opacity:.7}
+    .sub-nav-item-side.active .sub-nav-icon{opacity:1}
+    .sub-nav-item-side .new-tag{margin-left:auto;font-size:8px;font-weight:700;padding:1px 4px;border-radius:3px;background:var(--c-violet-soft);color:var(--c-violet);text-transform:uppercase;letter-spacing:.04em}
     .nav-badge{margin-left:auto;font-size:10px;font-weight:600;padding:1px 6px;border-radius:999px;background:var(--c-danger-soft);color:var(--c-danger)}
 
     /* Main split — settings side nav + content */
@@ -206,6 +215,17 @@
       <div class="nav-group"><p class="nav-group-label">System</p>
         <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>Software updates</a>
         <a class="nav-item active" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>Settings</a>
+        <div class="sub-nav">
+          <div class="sub-nav-item-side active" data-section="profile" onclick="showSection('profile')"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>Profile</div>
+          <div class="sub-nav-item-side" data-section="security" onclick="showSection('security')"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/></svg>Security</div>
+          <div class="sub-nav-item-side" data-section="branding" onclick="showSection('branding')"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>Branding</div>
+          <div class="sub-nav-item-side" data-section="idp" onclick="showSection('idp')"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Identity provider<span class="new-tag">SSO</span></div>
+          <div class="sub-nav-item-side" data-section="selfreg" onclick="showSection('selfreg')"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>Self-registration<span class="new-tag">NEW</span></div>
+          <div class="sub-nav-item-side" data-section="locale" onclick="showSection('locale')"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>System &amp; locale</div>
+          <div class="sub-nav-item-side" data-section="api" onclick="showSection('api')"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="8 14 12 10 16 14"/></svg>API tokens</div>
+          <div class="sub-nav-item-side" data-section="webhooks" onclick="showSection('webhooks')"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="10 13 14 17 18 13"/></svg>Webhooks</div>
+          <div class="sub-nav-item-side" data-section="audit" onclick="showSection('audit')"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Audit log</div>
+        </div>
       </div>
       <div style="padding:var(--s-3);font-size:var(--t-11);color:var(--c-text-muted);">v2.0.0</div>
     </nav>
@@ -647,8 +667,8 @@
   </div>
 
   <script>
-    // Sidebar section switching
-    const navItems = document.querySelectorAll('.s-nav-item[data-section]');
+    // Sidebar section switching — synced between in-page nav AND main sidebar accordion
+    const navItems = document.querySelectorAll('.s-nav-item[data-section], .sub-nav-item-side[data-section]');
     const sections = document.querySelectorAll('.settings-section[data-content]');
     function showSection(name) {
       navItems.forEach(n => n.classList.toggle('active', n.dataset.section === name));
