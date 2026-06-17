@@ -292,21 +292,87 @@
       <div class="main-inner">
 
         <div class="subtabs">
-          <div class="subtab active">
+          <div class="subtab active" data-pane="all">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/></svg>
             All notifications <span class="count">197</span>
           </div>
-          <div class="subtab">
+          <div class="subtab" data-pane="unread">
             Unread <span class="count">42</span>
           </div>
-          <div class="subtab">
+          <div class="subtab" data-pane="critical">
             Critical <span class="count">3</span>
           </div>
-          <div class="subtab">
+          <div class="subtab" data-pane="rules">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>
             Custom rules <span class="count">8</span>
           </div>
         </div>
+
+        <!-- Custom rules pane (hidden until tab is clicked) -->
+        <div id="pane-rules" style="display:none;">
+          <header class="page-head" style="margin-top:8px;">
+            <div>
+              <h1 class="page-title">Custom notification rules</h1>
+              <p class="page-sub">Define triggers, destinations, and quiet hours · 8 active rules · last fired 3 min ago</p>
+            </div>
+            <div class="page-actions">
+              <button class="btn primary">+ New rule</button>
+            </div>
+          </header>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+            <div style="background:var(--c-surface);border:1px solid var(--c-border);border-radius:8px;padding:16px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><strong style="font-size:13px;">Block at 3 lost devices</strong><span style="display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;background:var(--c-success-soft);color:var(--c-success);"><span style="width:6px;height:6px;border-radius:50%;background:currentColor;"></span>Active</span></div>
+              <div style="font-size:11px;color:var(--c-text-2);margin-bottom:10px;">User cannot check out new devices until a supervisor signs in. Currently affects Crosby Smith.</div>
+              <div style="font-size:11px;color:var(--c-text-muted);">1 blocked · 4 at warning · Threshold 3 · Window 90 days</div>
+              <div style="margin-top:10px;display:flex;gap:6px;"><button class="btn ghost" style="font-size:11px;">Edit</button><button class="btn ghost" style="font-size:11px;">View fires</button></div>
+            </div>
+            <div style="background:var(--c-surface);border:1px solid var(--c-border);border-radius:8px;padding:16px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><strong style="font-size:13px;">Dept loss &gt; $3,000 quarterly</strong><span style="display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;background:var(--c-success-soft);color:var(--c-success);"><span style="width:6px;height:6px;border-radius:50%;background:currentColor;"></span>Active</span></div>
+              <div style="font-size:11px;color:var(--c-text-2);margin-bottom:10px;">Digest email with top loss-prone users and recent incidents. Emergency Medicine + Nursing currently exceeding.</div>
+              <div style="font-size:11px;color:var(--c-text-muted);">2 departments triggered · Threshold $3,000 · Quarterly</div>
+              <div style="margin-top:10px;display:flex;gap:6px;"><button class="btn ghost" style="font-size:11px;">Edit</button><button class="btn ghost" style="font-size:11px;">View fires</button></div>
+            </div>
+            <div style="background:var(--c-surface);border:1px solid var(--c-border);border-radius:8px;padding:16px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><strong style="font-size:13px;">Hardware fault → Slack #ops-locker-alarms</strong><span style="display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;background:var(--c-success-soft);color:var(--c-success);"><span style="width:6px;height:6px;border-radius:50%;background:currentColor;"></span>Active</span></div>
+              <div style="font-size:11px;color:var(--c-text-2);margin-bottom:10px;">Sends a Slack message + email when any bay reports a hardware fault.</div>
+              <div style="font-size:11px;color:var(--c-text-muted);">Triggered 4 times this month · Destination: Slack #ops-locker-alarms + email Marcus Chen</div>
+              <div style="margin-top:10px;display:flex;gap:6px;"><button class="btn ghost" style="font-size:11px;">Edit</button><button class="btn ghost" style="font-size:11px;">View fires</button></div>
+            </div>
+            <div style="background:var(--c-surface);border:1px solid var(--c-border);border-radius:8px;padding:16px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><strong style="font-size:13px;">Overdue 24h → email department head</strong><span style="display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;background:var(--c-success-soft);color:var(--c-success);"><span style="width:6px;height:6px;border-radius:50%;background:currentColor;"></span>Active</span></div>
+              <div style="font-size:11px;color:var(--c-text-2);margin-bottom:10px;">When a checkout is overdue by 24+ hours, escalate to the user's department head.</div>
+              <div style="font-size:11px;color:var(--c-text-muted);">3 fires this week · Recipients resolved by user → dept → head</div>
+              <div style="margin-top:10px;display:flex;gap:6px;"><button class="btn ghost" style="font-size:11px;">Edit</button><button class="btn ghost" style="font-size:11px;">View fires</button></div>
+            </div>
+            <div style="background:var(--c-surface);border:1px solid var(--c-border);border-radius:8px;padding:16px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><strong style="font-size:13px;">Guest registration denied → Security group</strong><span style="display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;background:var(--c-success-soft);color:var(--c-success);"><span style="width:6px;height:6px;border-radius:50%;background:currentColor;"></span>Active</span></div>
+              <div style="font-size:11px;color:var(--c-text-2);margin-bottom:10px;">In-app + email to Security when any self-registration is denied.</div>
+              <div style="font-size:11px;color:var(--c-text-muted);">2 fires this month · Recipients: James Patel + Security distribution list</div>
+              <div style="margin-top:10px;display:flex;gap:6px;"><button class="btn ghost" style="font-size:11px;">Edit</button><button class="btn ghost" style="font-size:11px;">View fires</button></div>
+            </div>
+            <div style="background:var(--c-surface);border:1px solid var(--c-border);border-radius:8px;padding:16px;opacity:.6;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><strong style="font-size:13px;">Door open &gt; 5 min (paused)</strong><span style="display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;background:var(--c-surface-3);color:var(--c-text-2);"><span style="width:6px;height:6px;border-radius:50%;background:currentColor;"></span>Paused</span></div>
+              <div style="font-size:11px;color:var(--c-text-2);margin-bottom:10px;">Door open timeouts during restock — paused while Pink8 is being serviced.</div>
+              <div style="font-size:11px;color:var(--c-text-muted);">Last fire: 3 days ago · Paused until Jun 20</div>
+              <div style="margin-top:10px;display:flex;gap:6px;"><button class="btn ghost" style="font-size:11px;">Resume</button><button class="btn ghost" style="font-size:11px;">Edit</button></div>
+            </div>
+          </div>
+          <div style="background:var(--c-surface);border:1px solid var(--c-border);border-radius:8px;padding:16px;">
+            <h3 style="font-size:13px;margin:0 0 12px;">Notification routing</h3>
+            <table style="width:100%;font-size:12px;border-collapse:collapse;">
+              <thead><tr style="border-bottom:1px solid var(--c-border);text-align:left;color:var(--c-text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em;"><th style="padding:6px 8px;">Rule</th><th style="padding:6px 8px;">Email</th><th style="padding:6px 8px;">Slack</th><th style="padding:6px 8px;">SMS</th><th style="padding:6px 8px;">Webhook</th></tr></thead>
+              <tbody>
+                <tr style="border-bottom:1px solid var(--c-divider);"><td style="padding:8px;">Block at 3 lost</td><td style="padding:8px;">User + Supervisor</td><td style="padding:8px;">#ops-locker-alarms</td><td style="padding:8px;">—</td><td style="padding:8px;">—</td></tr>
+                <tr style="border-bottom:1px solid var(--c-divider);"><td style="padding:8px;">Dept loss &gt; $3K</td><td style="padding:8px;">Dept head</td><td style="padding:8px;">#finance-alerts</td><td style="padding:8px;">—</td><td style="padding:8px;">SAP</td></tr>
+                <tr style="border-bottom:1px solid var(--c-divider);"><td style="padding:8px;">Hardware fault</td><td style="padding:8px;">Marcus Chen</td><td style="padding:8px;">#ops-locker-alarms</td><td style="padding:8px;">—</td><td style="padding:8px;">—</td></tr>
+                <tr><td style="padding:8px;">Guest denied</td><td style="padding:8px;">Security group</td><td style="padding:8px;">—</td><td style="padding:8px;">—</td><td style="padding:8px;">—</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Wrapper for All / Unread / Critical filtered views -->
+        <div id="pane-notifs">
 
         <header class="page-head">
           <div>
@@ -663,6 +729,8 @@
           + dev catalog plain-English titles + Kind badges
         </div>
 
+        </div><!-- /#pane-notifs -->
+
       </div>
     </main>
 
@@ -749,6 +817,39 @@
     listBtn.addEventListener('click', () => show('list'));
     tileBtn.addEventListener('click', () => show('tile'));
     try { if (localStorage.getItem('hw.notif.view') === 'tile') show('tile'); } catch (e) {}
+
+    // Sub-tab switching: All / Unread / Critical / Custom rules
+    const notifSubtabs = document.querySelectorAll('.subtab[data-pane]');
+    const paneNotifs = document.getElementById('pane-notifs');
+    const paneRules = document.getElementById('pane-rules');
+    function showNotifPane(name) {
+      notifSubtabs.forEach(t => t.classList.toggle('active', t.dataset.pane === name));
+      if (name === 'rules') {
+        if (paneNotifs) paneNotifs.style.display = 'none';
+        if (paneRules) paneRules.style.display = 'block';
+      } else {
+        if (paneRules) paneRules.style.display = 'none';
+        if (paneNotifs) paneNotifs.style.display = 'block';
+        // Filter notif rows
+        document.querySelectorAll('.notif-row').forEach(row => {
+          if (name === 'all') {
+            row.style.display = '';
+          } else if (name === 'unread') {
+            row.style.display = row.classList.contains('unread') ? '' : 'none';
+          } else if (name === 'critical') {
+            const isCritical = row.querySelector('.notif-icon')?.classList.contains('danger') ||
+                               row.textContent.includes('Critical');
+            row.style.display = isCritical ? '' : 'none';
+          }
+        });
+      }
+      try { localStorage.setItem('hw.notif.pane', name); } catch (e) {}
+    }
+    notifSubtabs.forEach(t => t.addEventListener('click', () => showNotifPane(t.dataset.pane)));
+    try {
+      const savedPane = localStorage.getItem('hw.notif.pane');
+      if (savedPane) showNotifPane(savedPane);
+    } catch (e) {}
   </script>
 </body>
 </html>

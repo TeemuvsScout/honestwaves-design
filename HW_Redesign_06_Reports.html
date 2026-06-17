@@ -83,6 +83,22 @@
     .subtab.active{color:var(--c-brand-deep);border-bottom-color:var(--c-brand);font-weight:600}
     .subtab .count{font-size:10px;font-weight:600;padding:1px 6px;border-radius:999px;background:var(--c-surface-3);color:var(--c-text-2);min-width:18px;text-align:center}
     .subtab.active .count{background:var(--c-brand-soft);color:var(--c-brand-deep)}
+    .tab-pane{display:none}
+    .tab-pane.active{display:block}
+    .data-table-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);box-shadow:var(--sh-1);overflow:hidden;margin-bottom:var(--s-4)}
+    .data-table-card table{width:100%;border-collapse:collapse;font-size:var(--t-13)}
+    .data-table-card thead{background:var(--c-surface-2);border-bottom:1px solid var(--c-border)}
+    .data-table-card th{text-align:left;padding:8px 12px;font-size:var(--t-11);font-weight:600;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:.04em}
+    .data-table-card td{padding:10px 12px;border-bottom:1px solid var(--c-border);color:var(--c-text);vertical-align:middle}
+    .data-table-card tr:last-child td{border-bottom:none}
+    .data-table-card tr:hover{background:var(--c-surface-2)}
+    .pill{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:999px;font-size:var(--t-11);font-weight:600}
+    .pill .pill-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+    .pill.success{background:var(--c-success-soft);color:var(--c-success)}
+    .pill.warning{background:var(--c-warning-soft);color:var(--c-warning-text)}
+    .pill.danger{background:var(--c-danger-soft);color:var(--c-danger)}
+    .pill.info{background:var(--c-info-soft);color:var(--c-info)}
+    .pill.muted{background:var(--c-surface-3);color:var(--c-text-2)}
     .subtab .new-pill{font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;background:var(--c-violet-soft);color:var(--c-violet);text-transform:uppercase;letter-spacing:.05em}
 
     .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s-4);margin-bottom:var(--s-4)}
@@ -369,23 +385,26 @@
 
         <!-- Sub-tabs -->
         <div class="subtabs">
-          <div class="subtab active">
+          <div class="subtab active" data-pane="activity">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
             Activity log <span class="count">109</span>
           </div>
-          <div class="subtab">
+          <div class="subtab" data-pane="status">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
             Device status <span class="new-pill">Travis</span>
           </div>
-          <div class="subtab">
+          <div class="subtab" data-pane="scheduled">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
             Scheduled reports <span class="count">3</span> <span class="new-pill">Travis</span>
           </div>
-          <div class="subtab">
+          <div class="subtab" data-pane="custom">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-6-6"/><circle cx="10" cy="10" r="7"/></svg>
             Custom report
           </div>
         </div>
+
+        <!-- Activity log pane (existing content below) -->
+        <div id="pane-activity" class="tab-pane active">
 
         <header class="page-head">
           <div>
@@ -780,6 +799,119 @@
           </div>
         </div>
 
+        </div><!-- /#pane-activity -->
+
+        <!-- =============================== Device status pane =============================== -->
+        <div id="pane-status" class="tab-pane">
+          <header class="page-head">
+            <div>
+              <h1 class="page-title">Device status</h1>
+              <p class="page-sub">Where every device is right now · location · department · device · status · user · locker · bay · overdue · last update</p>
+            </div>
+            <div class="page-actions">
+              <button class="btn ghost">Export to Excel</button>
+              <button class="btn">Schedule this report</button>
+              <button class="btn primary">Save view</button>
+            </div>
+          </header>
+          <div class="data-table-card">
+            <table>
+              <thead>
+                <tr><th>Location</th><th>Department</th><th>Device</th><th>Status</th><th>User</th><th>Locker · Bay</th><th>Overdue</th><th>Last update</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Troy Hospital</td><td>Emergency Medicine</td><td><strong>iPhone15</strong><br><span style="font-size:11px;color:var(--c-text-muted);">SN-87115</span></td><td><span class="pill warning"><span class="pill-dot"></span>Overdue</span></td><td>Crosby Smith</td><td>Pink8 · Bay 1</td><td style="color:var(--c-warning-text);font-weight:600;">2h</td><td>2h ago</td></tr>
+                <tr><td>Troy Hospital</td><td>Nursing</td><td><strong>iPhone08</strong><br><span style="font-size:11px;color:var(--c-text-muted);">SN-87108</span></td><td><span class="pill warning"><span class="pill-dot"></span>Overdue</span></td><td>John Johnson</td><td>Pink8 · Bay 2</td><td style="color:var(--c-warning-text);font-weight:600;">10h</td><td>18h ago</td></tr>
+                <tr><td>Troy Hospital</td><td>Emergency Medicine</td><td><strong>iPhone12</strong><br><span style="font-size:11px;color:var(--c-text-muted);">SN-87112</span></td><td><span class="pill danger"><span class="pill-dot"></span>No device</span></td><td>—</td><td>Pink8 · Bay 3</td><td>—</td><td>14h ago</td></tr>
+                <tr><td>Troy Hospital</td><td>Emergency Medicine</td><td><strong>iPhone04</strong><br><span style="font-size:11px;color:var(--c-text-muted);">SN-87104</span></td><td><span class="pill warning"><span class="pill-dot"></span>Overdue</span></td><td>Natashalee Vargas</td><td>Pink8 · Bay 4</td><td style="color:var(--c-warning-text);font-weight:600;">6h</td><td>14h ago</td></tr>
+                <tr><td>Troy Hospital</td><td>Corewell POC</td><td><strong>iPhone09</strong><br><span style="font-size:11px;color:var(--c-text-muted);">SN-87109</span></td><td><span class="pill warning"><span class="pill-dot"></span>Overdue</span></td><td>Corewell Health</td><td>Pink8 · Bay 5</td><td style="color:var(--c-warning-text);font-weight:600;">20h</td><td>1d 4h ago</td></tr>
+                <tr><td>Troy Hospital</td><td>Nursing</td><td><strong>iPhone17</strong><br><span style="font-size:11px;color:var(--c-text-muted);">SN-87117</span></td><td><span class="pill warning"><span class="pill-dot"></span>Overdue</span></td><td>Lauren Davis</td><td>Pink8 · Bay 8</td><td style="color:var(--c-warning-text);font-weight:600;">14h</td><td>22h ago</td></tr>
+                <tr><td>Troy Hospital</td><td>Emergency Medicine</td><td><strong>iPhone03</strong></td><td><span class="pill info"><span class="pill-dot"></span>In use</span></td><td>Jean-Luc Picard</td><td>Green1 · Bay 3</td><td>—</td><td>16 sec ago</td></tr>
+                <tr><td>Troy Hospital</td><td>Nursing</td><td><strong>iPhone05</strong></td><td><span class="pill info"><span class="pill-dot"></span>In use</span></td><td>Geordi La Forge</td><td>Green1 · Bay 5</td><td>—</td><td>3 min ago</td></tr>
+                <tr><td>Royal Oak Campus</td><td>Radiology</td><td><strong>iPhone21</strong></td><td><span class="pill success"><span class="pill-dot"></span>Available</span></td><td>—</td><td>Blue3 · Bay 1</td><td>—</td><td>5 min ago</td></tr>
+                <tr><td>Royal Oak Campus</td><td>Physical Therapy</td><td><strong>iPhone23</strong></td><td><span class="pill success"><span class="pill-dot"></span>Available</span></td><td>—</td><td>Blue3 · Bay 4</td><td>—</td><td>11 min ago</td></tr>
+                <tr><td>Beaumont Annex</td><td>Admin / HR</td><td><strong>ChromeBook X360 #01</strong></td><td><span class="pill muted"><span class="pill-dot"></span>Deactivated</span></td><td>—</td><td>Pink8 · Bay 7</td><td>—</td><td>2 days ago</td></tr>
+                <tr><td>Royal Oak Campus</td><td>Radiology</td><td><strong>iPad Pro #03</strong></td><td><span class="pill danger"><span class="pill-dot"></span>Lost</span></td><td>(charged to Radiology)</td><td>—</td><td>—</td><td>3 days ago</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div><!-- /#pane-status -->
+
+        <!-- =============================== Scheduled reports pane =============================== -->
+        <div id="pane-scheduled" class="tab-pane">
+          <header class="page-head">
+            <div>
+              <h1 class="page-title">Scheduled reports</h1>
+              <p class="page-sub">Reports that run automatically on a cadence and email to recipients</p>
+            </div>
+            <div class="page-actions">
+              <button class="btn primary">+ Schedule new report</button>
+            </div>
+          </header>
+          <div class="data-table-card">
+            <table>
+              <thead>
+                <tr><th>Report</th><th>Cadence</th><th>Recipients</th><th>Format</th><th>Last sent</th><th>Next run</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Overdue device summary</strong><br><span style="font-size:11px;color:var(--c-text-muted);">Activity log · Overdue events only</span></td><td>Daily · 7:00 AM</td><td>Marcus Chen, Sarah Park</td><td>PDF + Excel</td><td>Today · 7:00 AM</td><td>Tomorrow · 7:00 AM</td><td><span class="pill success"><span class="pill-dot"></span>Active</span></td></tr>
+                <tr><td><strong>Weekly fleet status</strong><br><span style="font-size:11px;color:var(--c-text-muted);">Device status · all devices</span></td><td>Weekly · Mon 8:00 AM</td><td>Patricia Yamamoto, Marcus Chen</td><td>Excel</td><td>Mon Jun 15 · 8:00 AM</td><td>Mon Jun 22 · 8:00 AM</td><td><span class="pill success"><span class="pill-dot"></span>Active</span></td></tr>
+                <tr><td><strong>Monthly loss & damage</strong><br><span style="font-size:11px;color:var(--c-text-muted);">From Asset Accounting</span></td><td>Monthly · 1st</td><td>finance@corewell.org</td><td>PDF</td><td>Jun 1 · 9:00 AM</td><td>Jul 1 · 9:00 AM</td><td><span class="pill success"><span class="pill-dot"></span>Active</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="travis-credit"><strong>Travis P5:</strong> Schedule-this button on every saved view — added to Activity log and Device status toolbars.</div>
+        </div><!-- /#pane-scheduled -->
+
+        <!-- =============================== Custom report pane =============================== -->
+        <div id="pane-custom" class="tab-pane">
+          <header class="page-head">
+            <div>
+              <h1 class="page-title">Custom report</h1>
+              <p class="page-sub">Build a one-off query with any filters · save as a view · schedule for recurring delivery</p>
+            </div>
+          </header>
+          <div class="data-table-card" style="padding:24px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+              <div>
+                <h3 style="font-size:13px;margin:0 0 12px;">Data source</h3>
+                <select style="width:100%;height:32px;padding:0 12px;border:1px solid var(--c-border);border-radius:6px;background:var(--c-surface);"><option>Activity log</option><option>Device status</option><option>Users</option><option>Lockers</option><option>Loss & damage events</option></select>
+              </div>
+              <div>
+                <h3 style="font-size:13px;margin:0 0 12px;">Date range</h3>
+                <select style="width:100%;height:32px;padding:0 12px;border:1px solid var(--c-border);border-radius:6px;background:var(--c-surface);"><option>Last 7 days</option><option>Last 30 days</option><option>This quarter</option><option>YTD</option><option>Custom…</option></select>
+              </div>
+              <div>
+                <h3 style="font-size:13px;margin:0 0 12px;">Filters</h3>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                  <span class="pill info">Location: Troy Hospital ×</span>
+                  <span class="pill info">Department: Emergency Medicine ×</span>
+                  <span class="pill info">Status: Overdue ×</span>
+                  <button class="btn ghost" style="font-size:11px;">+ Add filter</button>
+                </div>
+              </div>
+              <div>
+                <h3 style="font-size:13px;margin:0 0 12px;">Columns</h3>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                  <span class="pill muted">Device ×</span>
+                  <span class="pill muted">User ×</span>
+                  <span class="pill muted">Locker · Bay ×</span>
+                  <span class="pill muted">Overdue ×</span>
+                  <span class="pill muted">Last update ×</span>
+                  <button class="btn ghost" style="font-size:11px;">+ Add column</button>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:24px;display:flex;gap:8px;justify-content:flex-end;">
+              <button class="btn ghost">Reset</button>
+              <button class="btn">Save view</button>
+              <button class="btn">Schedule</button>
+              <button class="btn primary">Run report</button>
+            </div>
+          </div>
+          <div class="travis-credit"><strong>Travis P5:</strong> Custom report builder — pick source, range, filters, columns; save reusable views; schedule for delivery.</div>
+        </div><!-- /#pane-custom -->
+
       </div>
     </main>
 
@@ -936,6 +1068,27 @@
       </div>
     </aside>
   </div>
+
+  <script>
+    // Sub-tab switching: Activity log / Device status / Scheduled / Custom
+    const subtabs = document.querySelectorAll('.subtab[data-pane]');
+    const panes = {
+      activity: document.getElementById('pane-activity'),
+      status: document.getElementById('pane-status'),
+      scheduled: document.getElementById('pane-scheduled'),
+      custom: document.getElementById('pane-custom')
+    };
+    function showPane(name) {
+      subtabs.forEach(t => t.classList.toggle('active', t.dataset.pane === name));
+      Object.entries(panes).forEach(([k, el]) => { if (el) el.classList.toggle('active', k === name); });
+      try { localStorage.setItem('hw.reports.pane', name); } catch (e) {}
+    }
+    subtabs.forEach(t => t.addEventListener('click', () => showPane(t.dataset.pane)));
+    try {
+      const saved = localStorage.getItem('hw.reports.pane');
+      if (saved && panes[saved]) showPane(saved);
+    } catch (e) {}
+  </script>
 
 </body>
 </html>

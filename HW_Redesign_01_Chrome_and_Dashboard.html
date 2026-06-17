@@ -1199,6 +1199,118 @@
         </section>
 
         <!-- ============================================================
+             Lost devices widget — accounting view (by dept + by user)
+             ============================================================ -->
+        <section style="margin-top:var(--s-5);">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--s-4);">
+            <!-- Lost devices by Department -->
+            <div style="background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-lg);box-shadow:var(--sh-1);overflow:hidden;">
+              <div style="padding:var(--s-3) var(--s-4);border-bottom:1px solid var(--c-divider);display:flex;align-items:center;justify-content:space-between;">
+                <div>
+                  <h3 style="margin:0;font-size:var(--t-14);font-weight:600;display:flex;align-items:center;gap:6px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--c-danger);"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    Lost devices by department
+                  </h3>
+                  <p style="margin:2px 0 0;font-size:var(--t-11);color:var(--c-text-2);">This quarter · click row to drill</p>
+                </div>
+                <a href="HW_Redesign_13_Asset_Accounting.html" style="font-size:11px;color:var(--c-brand);font-weight:500;">Open Asset Accounting →</a>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;padding:var(--s-3) var(--s-4);gap:var(--s-3);background:var(--c-surface-2);border-bottom:1px solid var(--c-divider);">
+                <div>
+                  <div style="font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--c-text-muted);font-weight:600;">Total lost</div>
+                  <div style="font-size:var(--t-20);font-weight:600;color:var(--c-danger);font-variant-numeric:tabular-nums;">$14,247</div>
+                </div>
+                <div>
+                  <div style="font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--c-text-muted);font-weight:600;">Recovered</div>
+                  <div style="font-size:var(--t-20);font-weight:600;color:var(--c-success);font-variant-numeric:tabular-nums;">$3,124</div>
+                </div>
+                <div>
+                  <div style="font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--c-text-muted);font-weight:600;">Recovery rate</div>
+                  <div style="font-size:var(--t-20);font-weight:600;font-variant-numeric:tabular-nums;">22%</div>
+                </div>
+              </div>
+              <div>
+                <div style="display:grid;grid-template-columns:1fr auto auto;padding:8px 16px;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--c-text-muted);font-weight:600;background:var(--c-surface-2);">
+                  <div>Department</div><div>Lost</div><div style="width:80px;text-align:right;">$ This Q</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr auto auto;padding:10px 16px;font-size:13px;border-bottom:1px solid var(--c-divider);align-items:center;cursor:pointer;" onmouseover="this.style.background='var(--c-surface-2)'" onmouseout="this.style.background='transparent'">
+                  <div><strong>Emergency Medicine</strong><br><span style="font-size:10px;color:var(--c-text-muted);">23 users · Troy Hospital</span></div>
+                  <div style="font-variant-numeric:tabular-nums;font-weight:600;padding-right:16px;">9</div>
+                  <div style="width:80px;text-align:right;color:var(--c-danger);font-weight:600;font-variant-numeric:tabular-nums;">$4,829</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr auto auto;padding:10px 16px;font-size:13px;border-bottom:1px solid var(--c-divider);align-items:center;cursor:pointer;" onmouseover="this.style.background='var(--c-surface-2)'" onmouseout="this.style.background='transparent'">
+                  <div><strong>Nursing</strong><br><span style="font-size:10px;color:var(--c-text-muted);">14 users · Troy Hospital</span></div>
+                  <div style="font-variant-numeric:tabular-nums;font-weight:600;padding-right:16px;">6</div>
+                  <div style="width:80px;text-align:right;color:var(--c-danger);font-weight:600;font-variant-numeric:tabular-nums;">$3,124</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr auto auto;padding:10px 16px;font-size:13px;border-bottom:1px solid var(--c-divider);align-items:center;cursor:pointer;" onmouseover="this.style.background='var(--c-surface-2)'" onmouseout="this.style.background='transparent'">
+                  <div><strong>Radiology</strong><br><span style="font-size:10px;color:var(--c-text-muted);">15 users · Royal Oak</span></div>
+                  <div style="font-variant-numeric:tabular-nums;font-weight:600;padding-right:16px;">4</div>
+                  <div style="width:80px;text-align:right;color:var(--c-warning-text);font-weight:600;font-variant-numeric:tabular-nums;">$1,847</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr auto auto;padding:10px 16px;font-size:13px;border-bottom:1px solid var(--c-divider);align-items:center;cursor:pointer;" onmouseover="this.style.background='var(--c-surface-2)'" onmouseout="this.style.background='transparent'">
+                  <div><strong>Security / Facilities</strong><br><span style="font-size:10px;color:var(--c-text-muted);">22 users · Troy Hospital</span></div>
+                  <div style="font-variant-numeric:tabular-nums;font-weight:600;padding-right:16px;">14</div>
+                  <div style="width:80px;text-align:right;color:var(--c-warning-text);font-weight:600;font-variant-numeric:tabular-nums;">$1,190</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr auto auto;padding:10px 16px;font-size:13px;align-items:center;cursor:pointer;" onmouseover="this.style.background='var(--c-surface-2)'" onmouseout="this.style.background='transparent'">
+                  <div><strong>Admin / HR</strong><br><span style="font-size:10px;color:var(--c-text-muted);">16 users · Beaumont</span></div>
+                  <div style="font-variant-numeric:tabular-nums;font-weight:600;padding-right:16px;">2</div>
+                  <div style="width:80px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600;">$340</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Lost devices by User (high-risk) -->
+            <div style="background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-lg);box-shadow:var(--sh-1);overflow:hidden;">
+              <div style="padding:var(--s-3) var(--s-4);border-bottom:1px solid var(--c-divider);display:flex;align-items:center;justify-content:space-between;">
+                <div>
+                  <h3 style="margin:0;font-size:var(--t-14);font-weight:600;display:flex;align-items:center;gap:6px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--c-warning-text);"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                    High-risk users · approaching or past thresholds
+                  </h3>
+                  <p style="margin:2px 0 0;font-size:var(--t-11);color:var(--c-text-2);">5 of 8 shown · sorted by quarter $ loss</p>
+                </div>
+                <a href="HW_Redesign_13_Asset_Accounting.html#users" style="font-size:11px;color:var(--c-brand);font-weight:500;">View all 8 →</a>
+              </div>
+              <div>
+                <div style="display:grid;grid-template-columns:1fr auto auto;padding:8px 16px;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--c-text-muted);font-weight:600;background:var(--c-surface-2);">
+                  <div>User</div><div>Status</div><div style="width:80px;text-align:right;">$ This Q</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr auto auto;padding:10px 16px;font-size:13px;border-bottom:1px solid var(--c-divider);align-items:center;gap:8px;cursor:pointer;" onmouseover="this.style.background='var(--c-surface-2)'" onmouseout="this.style.background='transparent'">
+                  <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--c-danger-soft);color:var(--c-danger);font-size:10px;font-weight:600;border-radius:50%;">CS</span><div><strong>Crosby Smith</strong><br><span style="font-size:10px;color:var(--c-text-muted);">Troy · ER · MD</span></div></div>
+                  <div><span style="display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;background:var(--c-danger-soft);color:var(--c-danger);"><span style="width:6px;height:6px;border-radius:50%;background:currentColor;"></span>Blocked</span></div>
+                  <div style="width:80px;text-align:right;color:var(--c-danger);font-weight:600;font-variant-numeric:tabular-nums;">$1,247</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr auto auto;padding:10px 16px;font-size:13px;border-bottom:1px solid var(--c-divider);align-items:center;gap:8px;cursor:pointer;" onmouseover="this.style.background='var(--c-surface-2)'" onmouseout="this.style.background='transparent'">
+                  <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--c-warning-soft);color:var(--c-warning-text);font-size:10px;font-weight:600;border-radius:50%;">LD</span><div><strong>Lauren Davis</strong><br><span style="font-size:10px;color:var(--c-text-muted);">Troy · ER · RN</span></div></div>
+                  <div><span style="display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;background:var(--c-warning-soft);color:var(--c-warning-text);"><span style="width:6px;height:6px;border-radius:50%;background:currentColor;"></span>Approval req</span></div>
+                  <div style="width:80px;text-align:right;color:var(--c-warning-text);font-weight:600;font-variant-numeric:tabular-nums;">$782</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr auto auto;padding:10px 16px;font-size:13px;border-bottom:1px solid var(--c-divider);align-items:center;gap:8px;cursor:pointer;" onmouseover="this.style.background='var(--c-surface-2)'" onmouseout="this.style.background='transparent'">
+                  <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--c-warning-soft);color:var(--c-warning-text);font-size:10px;font-weight:600;border-radius:50%;">NV</span><div><strong>Natashalee Vargas</strong><br><span style="font-size:10px;color:var(--c-text-muted);">Troy · ICU · MD</span></div></div>
+                  <div><span style="display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;background:var(--c-warning-soft);color:var(--c-warning-text);"><span style="width:6px;height:6px;border-radius:50%;background:currentColor;"></span>Approval req</span></div>
+                  <div style="width:80px;text-align:right;color:var(--c-warning-text);font-weight:600;font-variant-numeric:tabular-nums;">$599</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr auto auto;padding:10px 16px;font-size:13px;border-bottom:1px solid var(--c-divider);align-items:center;gap:8px;cursor:pointer;" onmouseover="this.style.background='var(--c-surface-2)'" onmouseout="this.style.background='transparent'">
+                  <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--c-brand-soft);color:var(--c-brand-deep);font-size:10px;font-weight:600;border-radius:50%;">JJ</span><div><strong>John Johnson</strong><br><span style="font-size:10px;color:var(--c-text-muted);">Troy · Cardiology · Tech</span></div></div>
+                  <div><span style="display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;background:var(--c-surface-3);color:var(--c-text-2);"><span style="width:6px;height:6px;border-radius:50%;background:currentColor;"></span>Watching</span></div>
+                  <div style="width:80px;text-align:right;font-weight:600;font-variant-numeric:tabular-nums;">$268</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr auto auto;padding:10px 16px;font-size:13px;align-items:center;gap:8px;cursor:pointer;" onmouseover="this.style.background='var(--c-surface-2)'" onmouseout="this.style.background='transparent'">
+                  <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--c-brand-soft);color:var(--c-brand-deep);font-size:10px;font-weight:600;border-radius:50%;">JS</span><div><strong>John Smith</strong><br><span style="font-size:10px;color:var(--c-text-muted);">Troy · ICU · RN</span></div></div>
+                  <div style="color:var(--c-text-muted);font-size:11px;">—</div>
+                  <div style="width:80px;text-align:right;font-weight:600;font-variant-numeric:tabular-nums;">$179</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:var(--s-3);padding:var(--s-3) var(--s-4);background:var(--c-info-soft);border:1px solid #93C5FD;border-radius:var(--r-md);font-size:var(--t-12);color:var(--c-brand-deep);">
+            <strong>Accounting view added to Dashboard</strong> · Two new widgets summarize the same data as the Asset Accounting section: <strong>by department</strong> (cost rollups) + <strong>by user</strong> (high-risk individuals). Click any row to drill into the full Loss &amp; damage report.
+          </div>
+        </section>
+
+        <!-- ============================================================
              Design System reference
              ============================================================ -->
         <section class="ds" id="ds">
