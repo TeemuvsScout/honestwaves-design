@@ -82,13 +82,24 @@
     .btn.primary:hover{background:var(--c-brand-hover);border-color:var(--c-brand-hover)}
     .btn.ghost{background:transparent;border-color:transparent;box-shadow:none}
 
-    /* Sidebar accordion sub-nav */
+    /* Sidebar accordion sub-nav — multi-level */
     .sub-nav{margin:2px 0 6px 0;padding-left:0;border-left:1px solid var(--c-divider);margin-left:18px}
-    .sub-nav-item{display:flex;align-items:center;gap:8px;padding:5px 10px 5px 14px;font-size:12px;color:var(--c-text-2);border-radius:0 var(--r-sm) var(--r-sm) 0;cursor:pointer;position:relative;margin-left:-1px;border-left:2px solid transparent}
+    .sub-nav-item{display:flex;align-items:center;gap:6px;padding:5px 10px 5px 12px;font-size:12px;color:var(--c-text-2);border-radius:0 var(--r-sm) var(--r-sm) 0;cursor:pointer;position:relative;margin-left:-1px;border-left:2px solid transparent}
     .sub-nav-item:hover{background:var(--c-surface-3);color:var(--c-text)}
     .sub-nav-item.active{color:var(--c-brand-deep);font-weight:600;border-left-color:var(--c-brand);background:var(--c-brand-soft)}
     .sub-nav-icon{width:12px;height:12px;flex-shrink:0;opacity:.7}
     .sub-nav-item.active .sub-nav-icon{opacity:1}
+    .chev{width:10px;height:10px;flex-shrink:0;color:var(--c-text-muted);transition:transform .15s ease;transform:rotate(-90deg)}
+    .sub-nav-group.expanded > .sub-nav-item > .chev{transform:rotate(0deg)}
+    .sub-nav-l3{margin:0 0 0 16px;padding-left:0;border-left:1px solid var(--c-divider);display:none}
+    .sub-nav-group.expanded > .sub-nav-l3{display:block}
+    .sub-nav-item-l3{display:flex;align-items:center;gap:6px;padding:4px 10px;font-size:11px;color:var(--c-text-2);border-radius:0 var(--r-sm) var(--r-sm) 0;cursor:pointer;margin-left:-1px;border-left:2px solid transparent}
+    .sub-nav-item-l3:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .sub-nav-item-l3 .l3-count{margin-left:auto;font-size:9px;font-weight:600;color:var(--c-text-muted)}
+    .sub-nav-l4{margin:0 0 0 14px;padding-left:0;border-left:1px solid var(--c-divider);display:none}
+    .sub-nav-group-l3.expanded > .sub-nav-l4{display:block}
+    .sub-nav-item-l4{display:flex;align-items:center;gap:6px;padding:3px 10px;font-size:11px;color:var(--c-text-muted);cursor:pointer;margin-left:-1px;border-left:2px solid transparent}
+    .sub-nav-item-l4:hover{background:var(--c-surface-3);color:var(--c-text)}
 
     /* Perspective tabs */
     .pivots{display:inline-flex;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);box-shadow:var(--sh-1);padding:2px}
@@ -254,10 +265,73 @@
         <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Users</a>
         <a class="nav-item active" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>Access matrix</a>
         <div class="sub-nav">
-          <div class="sub-nav-item active" data-pane="locker-bay" onclick="setPerspective('locker-bay',this)"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>By locker → bay</div>
-          <div class="sub-nav-item" data-pane="user" onclick="setPerspective('user',this)"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/></svg>By user</div>
-          <div class="sub-nav-item" data-pane="department" onclick="setPerspective('department',this)"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/></svg>By department</div>
-          <div class="sub-nav-item" data-pane="grant-path" onclick="setPerspective('grant-path',this)"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>By grant path</div>
+          <!-- L2: By locker → bay (with L3 drill into locations + L4 to specific lockers) -->
+          <div class="sub-nav-group expanded">
+            <div class="sub-nav-item active" data-pane="locker-bay" onclick="event.stopPropagation();setPerspective('locker-bay',this)">
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" onclick="event.stopPropagation();this.closest('.sub-nav-group').classList.toggle('expanded');"><polyline points="6 9 12 15 18 9"/></svg>
+              <svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
+              By locker → bay
+            </div>
+            <div class="sub-nav-l3">
+              <div class="sub-nav-group-l3 expanded">
+                <div class="sub-nav-item-l3" onclick="event.stopPropagation();this.closest('.sub-nav-group-l3').classList.toggle('expanded');">
+                  <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                  Troy Hospital<span class="l3-count">3 lockers</span>
+                </div>
+                <div class="sub-nav-l4">
+                  <div class="sub-nav-item-l4">Pink8 (8 bays)</div>
+                  <div class="sub-nav-item-l4">Green1 (8 bays)</div>
+                  <div class="sub-nav-item-l4">Blue3 (32 bays)</div>
+                </div>
+              </div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Royal Oak<span class="l3-count">2 lockers</span></div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Beaumont<span class="l3-count">1 locker</span></div>
+            </div>
+          </div>
+
+          <!-- L2: By user — L3 by department -->
+          <div class="sub-nav-group">
+            <div class="sub-nav-item" data-pane="user" onclick="event.stopPropagation();setPerspective('user',this)">
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" onclick="event.stopPropagation();this.closest('.sub-nav-group').classList.toggle('expanded');"><polyline points="6 9 12 15 18 9"/></svg>
+              <svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/></svg>
+              By user
+            </div>
+            <div class="sub-nav-l3">
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">All bays access<span class="l3-count">12</span></div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Selected bays<span class="l3-count">198</span></div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Department-only<span class="l3-count">37</span></div>
+            </div>
+          </div>
+
+          <!-- L2: By department — L3 individual depts -->
+          <div class="sub-nav-group">
+            <div class="sub-nav-item" data-pane="department" onclick="event.stopPropagation();setPerspective('department',this)">
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" onclick="event.stopPropagation();this.closest('.sub-nav-group').classList.toggle('expanded');"><polyline points="6 9 12 15 18 9"/></svg>
+              <svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/></svg>
+              By department
+            </div>
+            <div class="sub-nav-l3">
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Emergency Medicine<span class="l3-count">4 rules</span></div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Nursing<span class="l3-count">3 rules</span></div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">IT / Help Desk<span class="l3-count">2 rules</span></div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Security<span class="l3-count">1 rule</span></div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();" style="color:var(--c-text-muted);">+ 4 more</div>
+            </div>
+          </div>
+
+          <!-- L2: By grant path -->
+          <div class="sub-nav-group">
+            <div class="sub-nav-item" data-pane="grant-path" onclick="event.stopPropagation();setPerspective('grant-path',this)">
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" onclick="event.stopPropagation();this.closest('.sub-nav-group').classList.toggle('expanded');"><polyline points="6 9 12 15 18 9"/></svg>
+              <svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              By grant path
+            </div>
+            <div class="sub-nav-l3">
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Direct grants<span class="l3-count">42</span></div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Department inheritance<span class="l3-count">169</span></div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Master key<span class="l3-count">5</span></div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="nav-group"><p class="nav-group-label">Investigate</p>

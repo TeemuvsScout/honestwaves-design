@@ -292,15 +292,22 @@
     .view-list,.view-tile{display:none}
     .view-list.show,.view-tile.show{display:block}
 
-    /* Sidebar accordion sub-nav */
+    /* Sidebar accordion sub-nav — multi-level */
     .sub-nav{margin:2px 0 6px 0;padding-left:0;border-left:1px solid var(--c-divider);margin-left:18px}
-    .sub-nav-item{display:flex;align-items:center;gap:8px;padding:5px 10px 5px 14px;font-size:12px;color:var(--c-text-2);border-radius:0 var(--r-sm) var(--r-sm) 0;cursor:pointer;position:relative;margin-left:-1px;border-left:2px solid transparent}
+    .sub-nav-item{display:flex;align-items:center;gap:6px;padding:5px 10px 5px 12px;font-size:12px;color:var(--c-text-2);border-radius:0 var(--r-sm) var(--r-sm) 0;cursor:pointer;position:relative;margin-left:-1px;border-left:2px solid transparent}
     .sub-nav-item:hover{background:var(--c-surface-3);color:var(--c-text)}
     .sub-nav-item.active{color:var(--c-brand-deep);font-weight:600;border-left-color:var(--c-brand);background:var(--c-brand-soft)}
     .sub-nav-icon{width:12px;height:12px;flex-shrink:0;opacity:.7}
     .sub-nav-item.active .sub-nav-icon{opacity:1}
     .sub-nav-item .sub-count{margin-left:auto;font-size:9px;font-weight:600;padding:1px 5px;border-radius:999px;background:var(--c-surface-3);color:var(--c-text-2)}
     .sub-nav-item.active .sub-count{background:var(--c-brand-soft);color:var(--c-brand-deep)}
+    .chev{width:10px;height:10px;flex-shrink:0;color:var(--c-text-muted);transition:transform .15s ease;transform:rotate(-90deg)}
+    .sub-nav-group.expanded > .sub-nav-item > .chev{transform:rotate(0deg)}
+    .sub-nav-l3{margin:0 0 0 16px;padding-left:0;border-left:1px solid var(--c-divider);display:none}
+    .sub-nav-group.expanded > .sub-nav-l3{display:block}
+    .sub-nav-item-l3{display:flex;align-items:center;gap:6px;padding:4px 10px;font-size:11px;color:var(--c-text-2);border-radius:0 var(--r-sm) var(--r-sm) 0;cursor:pointer;margin-left:-1px;border-left:2px solid transparent}
+    .sub-nav-item-l3:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .sub-nav-item-l3 .l3-count{margin-left:auto;font-size:9px;font-weight:600;color:var(--c-text-muted)}
 
     /* Sub-tabs (Devices / Models) */
     .subtabs{display:flex;align-items:center;gap:2px;border-bottom:1px solid var(--c-border);margin-bottom:var(--s-4);padding-bottom:0}
@@ -389,8 +396,37 @@
         <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/></svg>Lockers</a>
         <a class="nav-item active" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Devices</a>
         <div class="sub-nav">
-          <div class="sub-nav-item active" data-pane="devices" onclick="showTabFromNav('devices')"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Devices<span class="sub-count">128</span></div>
-          <div class="sub-nav-item" data-pane="models" onclick="showTabFromNav('models')"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Manage models<span class="sub-count">6</span></div>
+          <!-- L2: Devices — L3 by status -->
+          <div class="sub-nav-group expanded">
+            <div class="sub-nav-item active" data-pane="devices" onclick="event.stopPropagation();showTabFromNav('devices')">
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" onclick="event.stopPropagation();this.closest('.sub-nav-group').classList.toggle('expanded');"><polyline points="6 9 12 15 18 9"/></svg>
+              <svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
+              Devices<span class="sub-count">128</span>
+            </div>
+            <div class="sub-nav-l3">
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Active<span class="l3-count">114</span></div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">In use<span class="l3-count">12</span></div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();" style="color:var(--c-warning-text);">Overdue<span class="l3-count">4</span></div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();" style="color:var(--c-danger);">Lost<span class="l3-count">2</span></div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Retired<span class="l3-count">8</span></div>
+            </div>
+          </div>
+
+          <!-- L2: Manage models — L3 by model -->
+          <div class="sub-nav-group">
+            <div class="sub-nav-item" data-pane="models" onclick="event.stopPropagation();showTabFromNav('models')">
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" onclick="event.stopPropagation();this.closest('.sub-nav-group').classList.toggle('expanded');"><polyline points="6 9 12 15 18 9"/></svg>
+              <svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
+              Manage models<span class="sub-count">6</span>
+            </div>
+            <div class="sub-nav-l3">
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">iPhone 16e<span class="l3-count">71</span></div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">AiRista badge<span class="l3-count">50</span></div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Pixel 8 Pro<span class="l3-count">4</span></div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">ChromeBook X360<span class="l3-count">2</span></div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();" style="color:var(--c-text-muted);">+ 2 more</div>
+            </div>
+          </div>
         </div>
         <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Users</a>
         <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>Access matrix</a>

@@ -780,15 +780,33 @@
     .view-list, .view-tile { display: none; }
     .view-list.show, .view-tile.show { display: block; }
 
-    /* Sidebar accordion sub-nav */
+    /* Sidebar accordion sub-nav — multi-level */
     .sub-nav{margin:2px 0 6px 0;padding-left:0;border-left:1px solid var(--c-divider);margin-left:18px}
-    .sub-nav-item{display:flex;align-items:center;gap:8px;padding:5px 10px 5px 14px;font-size:12px;color:var(--c-text-2);border-radius:0 var(--r-sm) var(--r-sm) 0;cursor:pointer;position:relative;margin-left:-1px;border-left:2px solid transparent}
+    .sub-nav-item{display:flex;align-items:center;gap:6px;padding:5px 10px 5px 12px;font-size:12px;color:var(--c-text-2);border-radius:0 var(--r-sm) var(--r-sm) 0;cursor:pointer;position:relative;margin-left:-1px;border-left:2px solid transparent}
     .sub-nav-item:hover{background:var(--c-surface-3);color:var(--c-text)}
     .sub-nav-item.active{color:var(--c-brand-deep);font-weight:600;border-left-color:var(--c-brand);background:var(--c-brand-soft)}
     .sub-nav-icon{width:12px;height:12px;flex-shrink:0;opacity:.7}
     .sub-nav-item.active .sub-nav-icon{opacity:1}
     .sub-nav-item .sub-count{margin-left:auto;font-size:9px;font-weight:600;padding:1px 5px;border-radius:999px;background:var(--c-surface-3);color:var(--c-text-2)}
     .sub-nav-item.active .sub-count{background:var(--c-brand-soft);color:var(--c-brand-deep)}
+    .chev{width:10px;height:10px;flex-shrink:0;color:var(--c-text-muted);transition:transform .15s ease;transform:rotate(-90deg)}
+    .sub-nav-group.expanded > .sub-nav-item > .chev{transform:rotate(0deg)}
+
+    /* Level 3 */
+    .sub-nav-l3{margin:0 0 0 16px;padding-left:0;border-left:1px solid var(--c-divider);display:none}
+    .sub-nav-group.expanded > .sub-nav-l3{display:block}
+    .sub-nav-item-l3{display:flex;align-items:center;gap:6px;padding:4px 10px 4px 10px;font-size:11px;color:var(--c-text-2);border-radius:0 var(--r-sm) var(--r-sm) 0;cursor:pointer;position:relative;margin-left:-1px;border-left:2px solid transparent}
+    .sub-nav-item-l3:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .sub-nav-item-l3.active{color:var(--c-brand-deep);font-weight:600;border-left-color:var(--c-brand);background:var(--c-brand-soft)}
+    .sub-nav-item-l3 .l3-count{margin-left:auto;font-size:9px;font-weight:600;color:var(--c-text-muted)}
+
+    /* Level 4 */
+    .sub-nav-l4{margin:0 0 0 14px;padding-left:0;border-left:1px solid var(--c-divider);display:none}
+    .sub-nav-group-l3.expanded > .sub-nav-l4{display:block}
+    .sub-nav-item-l4{display:flex;align-items:center;gap:6px;padding:3px 10px;font-size:11px;color:var(--c-text-muted);border-radius:0 var(--r-sm) var(--r-sm) 0;cursor:pointer;margin-left:-1px;border-left:2px solid transparent}
+    .sub-nav-item-l4:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .sub-nav-item-l4.active{color:var(--c-brand-deep);font-weight:600;border-left-color:var(--c-brand);background:var(--c-brand-soft)}
+    .sub-nav-item-l4 .l4-count{margin-left:auto;font-size:9px}
 
     /* Sub-tabs (Lockers / Locations / Templates) */
     .subtabs{display:flex;align-items:center;gap:2px;border-bottom:1px solid var(--c-border);margin-bottom:var(--s-4);padding-bottom:0}
@@ -909,9 +927,82 @@
         <p class="nav-group-label">Manage</p>
         <a class="nav-item active" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/></svg>Lockers</a>
         <div class="sub-nav">
-          <div class="sub-nav-item active" data-pane="lockers" onclick="showTabFromNav('lockers',this)"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/></svg>Lockers<span class="sub-count">12</span></div>
-          <div class="sub-nav-item" data-pane="locations" onclick="showTabFromNav('locations',this)"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7 12 7 12s.8-.7 1.7-1.7"/></svg>Locations<span class="sub-count">6</span></div>
-          <div class="sub-nav-item" data-pane="templates" onclick="showTabFromNav('templates',this)"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Templates<span class="sub-count">4</span></div>
+          <!-- L2: Lockers -->
+          <div class="sub-nav-group" onclick="toggleGroup(event,this)">
+            <div class="sub-nav-item active" data-pane="lockers" onclick="event.stopPropagation();showTabFromNav('lockers',this)">
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" onclick="event.stopPropagation();this.closest('.sub-nav-group').classList.toggle('expanded');"><polyline points="6 9 12 15 18 9"/></svg>
+              <svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/></svg>
+              Lockers<span class="sub-count">12</span>
+            </div>
+            <div class="sub-nav-l3">
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Pink8<span class="l3-count">8 bays</span></div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Green1<span class="l3-count">8 bays</span></div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Blue3<span class="l3-count">32 bays</span></div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Beaumont1<span class="l3-count">32 bays</span></div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();" style="color:var(--c-brand);">+ 8 more</div>
+            </div>
+          </div>
+
+          <!-- L2: Locations — expandable to L3 (sites) and L4 (departments) -->
+          <div class="sub-nav-group expanded" onclick="toggleGroup(event,this)">
+            <div class="sub-nav-item" data-pane="locations" onclick="event.stopPropagation();showTabFromNav('locations',this)">
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" onclick="event.stopPropagation();this.closest('.sub-nav-group').classList.toggle('expanded');"><polyline points="6 9 12 15 18 9"/></svg>
+              <svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7 12 7 12s.8-.7 1.7-1.7"/></svg>
+              Locations<span class="sub-count">6</span>
+            </div>
+            <div class="sub-nav-l3">
+              <!-- L3 sites — each expandable to L4 departments -->
+              <div class="sub-nav-group-l3 expanded">
+                <div class="sub-nav-item-l3" onclick="event.stopPropagation();this.closest('.sub-nav-group-l3').classList.toggle('expanded');">
+                  <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                  Troy Hospital<span class="l3-count">5 depts</span>
+                </div>
+                <div class="sub-nav-l4">
+                  <div class="sub-nav-item-l4" onclick="event.stopPropagation();">Emergency Medicine<span class="l4-count">62</span></div>
+                  <div class="sub-nav-item-l4" onclick="event.stopPropagation();">Nursing<span class="l4-count">84</span></div>
+                  <div class="sub-nav-item-l4" onclick="event.stopPropagation();">IT / Help Desk<span class="l4-count">18</span></div>
+                  <div class="sub-nav-item-l4" onclick="event.stopPropagation();">Security / Facilities<span class="l4-count">22</span></div>
+                  <div class="sub-nav-item-l4" onclick="event.stopPropagation();">Cardiology<span class="l4-count">8</span></div>
+                </div>
+              </div>
+              <div class="sub-nav-group-l3">
+                <div class="sub-nav-item-l3" onclick="event.stopPropagation();this.closest('.sub-nav-group-l3').classList.toggle('expanded');">
+                  <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                  Royal Oak Campus<span class="l3-count">3 depts</span>
+                </div>
+                <div class="sub-nav-l4">
+                  <div class="sub-nav-item-l4" onclick="event.stopPropagation();">Radiology<span class="l4-count">15</span></div>
+                  <div class="sub-nav-item-l4" onclick="event.stopPropagation();">Physical Therapy<span class="l4-count">11</span></div>
+                  <div class="sub-nav-item-l4" onclick="event.stopPropagation();">Pharmacy<span class="l4-count">19</span></div>
+                </div>
+              </div>
+              <div class="sub-nav-group-l3">
+                <div class="sub-nav-item-l3" onclick="event.stopPropagation();this.closest('.sub-nav-group-l3').classList.toggle('expanded');">
+                  <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                  Beaumont Annex<span class="l3-count">1 dept</span>
+                </div>
+                <div class="sub-nav-l4">
+                  <div class="sub-nav-item-l4" onclick="event.stopPropagation();">Admin / HR<span class="l4-count">16</span></div>
+                </div>
+              </div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();" style="color:var(--c-brand);">+ 3 more sites</div>
+            </div>
+          </div>
+
+          <!-- L2: Templates -->
+          <div class="sub-nav-group" onclick="toggleGroup(event,this)">
+            <div class="sub-nav-item" data-pane="templates" onclick="event.stopPropagation();showTabFromNav('templates',this)">
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" onclick="event.stopPropagation();this.closest('.sub-nav-group').classList.toggle('expanded');"><polyline points="6 9 12 15 18 9"/></svg>
+              <svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Templates<span class="sub-count">4</span>
+            </div>
+            <div class="sub-nav-l3">
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">4-bay default<span class="l3-count">Default</span></div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">8-bay Self-Service</div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">12-bay standard</div>
+              <div class="sub-nav-item-l3" onclick="event.stopPropagation();">24-bay fleet</div>
+            </div>
+          </div>
         </div>
         <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Devices</a>
         <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Users</a>
@@ -1984,7 +2075,24 @@
       // Find and trigger the matching top tab so its visual sync mirrors
       const matchBtn = Array.from(document.querySelectorAll('.subtab')).find(b => b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + name + "'"));
       showTab(name, matchBtn);
+      // Auto-expand this group when activated
+      if (navEl) {
+        const group = navEl.closest('.sub-nav-group');
+        if (group) group.classList.add('expanded');
+      }
     }
+    function toggleGroup(e, el) {
+      // Container click toggles expansion only if click was on background (not on chev or content)
+      if (e.target === el) el.classList.toggle('expanded');
+    }
+    // Auto-expand the currently-active sub-nav-group on load so user sees the hierarchy
+    document.addEventListener('DOMContentLoaded', () => {
+      const activeLink = document.querySelector('.sub-nav-item.active');
+      if (activeLink) {
+        const grp = activeLink.closest('.sub-nav-group');
+        if (grp) grp.classList.add('expanded');
+      }
+    });
 
     // View toggle (list / tile)
     const listBtn = document.getElementById('viewListBtn');
