@@ -73,6 +73,10 @@
     .s-nav-item .new-tag{margin-left:auto;font-size:8px;font-weight:700;padding:1px 4px;border-radius:3px;background:var(--c-violet-soft);color:var(--c-violet);text-transform:uppercase;letter-spacing:.04em}
 
     .content{padding:var(--s-5) var(--s-6);max-width:840px}
+    .settings-section{display:none}
+    .settings-section.active{display:block}
+    .empty-stub{padding:var(--s-5);text-align:center;color:var(--c-text-2);background:var(--c-surface-2);border:1px dashed var(--c-border);border-radius:var(--r-md)}
+    .empty-stub strong{display:block;color:var(--c-text);margin-bottom:4px}
     .page-head{margin-bottom:var(--s-5)}
     .page-title{font-size:var(--t-20);font-weight:600;letter-spacing:-.01em;margin:0 0 4px}
     .page-sub{font-size:var(--t-12);color:var(--c-text-2);margin:0}
@@ -211,24 +215,25 @@
       <!-- Settings side nav -->
       <aside class="settings-nav">
         <p class="settings-nav-h">My account</p>
-        <div class="s-nav-item active"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>Profile</div>
-        <div class="s-nav-item"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Security</div>
+        <div class="s-nav-item active" data-section="profile"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>Profile</div>
+        <div class="s-nav-item" data-section="security"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Security</div>
 
         <p class="settings-nav-h">Organization</p>
-        <div class="s-nav-item"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>Branding</div>
-        <div class="s-nav-item"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Identity provider <span class="new-tag">SSO</span></div>
-        <div class="s-nav-item"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Self-registration</div>
-        <div class="s-nav-item"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>System &amp; locale</div>
+        <div class="s-nav-item" data-section="branding"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>Branding</div>
+        <div class="s-nav-item" data-section="idp"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Identity provider <span class="new-tag">SSO</span></div>
+        <div class="s-nav-item" data-section="selfreg"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>Self-registration <span class="new-tag">NEW</span></div>
+        <div class="s-nav-item" data-section="locale"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>System &amp; locale</div>
 
         <p class="settings-nav-h">Developer</p>
-        <div class="s-nav-item"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="8 14 12 10 16 14"/></svg>API tokens</div>
-        <div class="s-nav-item"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="10 13 14 17 18 13"/><polyline points="10 11 14 7 18 11"/></svg>Webhooks</div>
-        <div class="s-nav-item"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Audit log</div>
+        <div class="s-nav-item" data-section="api"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="8 14 12 10 16 14"/></svg>API tokens</div>
+        <div class="s-nav-item" data-section="webhooks"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="10 13 14 17 18 13"/><polyline points="10 11 14 7 18 11"/></svg>Webhooks</div>
+        <div class="s-nav-item" data-section="audit"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Audit log</div>
       </aside>
 
       <!-- Content area -->
       <div class="content">
 
+      <section class="settings-section active" data-content="profile">
         <header class="page-head">
           <h1 class="page-title">Profile</h1>
           <p class="page-sub">Your account identity, sign-in, and security.</p>
@@ -521,9 +526,164 @@
           <span class="rec-tag">P1</span>Current password required for password change &nbsp;
           <span class="rec-tag">P1</span>Unified User Management + Account Settings (one left rail)
         </div>
+      </section><!-- /profile -->
+
+      <!-- =============== Self-registration section (mirrors staging "Edit Guest registration" + adds discoverability) =============== -->
+      <section class="settings-section" data-content="selfreg">
+        <header class="page-head">
+          <h1 class="page-title">Self-registration</h1>
+          <p class="page-sub">How kiosk self-registrations are handled for this tenant — the same controls available on Users → Guests, surfaced here for discoverability.</p>
+        </header>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3 class="card-title">Auto-approval</h3>
+              <p class="card-sub">When ON, the pending queue is bypassed and self-registrants get user access immediately.</p>
+            </div>
+            <span class="id-status" id="selfregStatusPill"><span class="dot"></span>On</span>
+          </div>
+          <div class="card-body">
+            <div class="toggle-row">
+              <div class="toggle-meta">
+                <div class="toggle-label">Auto-approve new self-registrations</div>
+                <div class="toggle-sub">New badges scanned at a kiosk skip the pending queue and are immediately granted user access in the default department. Turn off if your facility requires admin review before granting access.</div>
+              </div>
+              <div class="toggle on" id="selfregAutoToggle" role="switch" aria-checked="true"></div>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-meta">
+                <div class="toggle-label">Default department</div>
+                <div class="toggle-sub">Auto-approved users are added to this department on conversion. Override per kiosk in Kiosks → Templates.</div>
+              </div>
+              <select class="field-input" id="selfregDeptSelect" style="height:32px;width:220px;flex:none;">
+                <option>Corewell POC</option>
+                <option>Emergency Medicine</option>
+                <option>Nursing</option>
+                <option>IT / Help Desk</option>
+                <option>Security / Facilities</option>
+                <option>Radiology</option>
+                <option>Physical Therapy</option>
+                <option>Pharmacy</option>
+                <option>Admin / HR</option>
+              </select>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-meta">
+                <div class="toggle-label">Notify admins when a registration is denied <span style="font-size:10px;background:var(--c-violet-soft);color:var(--c-violet);padding:1px 6px;border-radius:4px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-left:6px;">v2 redesign</span></div>
+                <div class="toggle-sub">Send an in-app + email notification to the Security group when a self-registration is denied. Recommended even when auto-approval is on, so denials are reviewed.</div>
+              </div>
+              <div class="toggle on" role="switch" aria-checked="true"></div>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-meta">
+                <div class="toggle-label">Auto-revoke unused guests <span style="font-size:10px;background:var(--c-violet-soft);color:var(--c-violet);padding:1px 6px;border-radius:4px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-left:6px;">v2 redesign</span></div>
+                <div class="toggle-sub">Auto-deactivate self-registered users who have not checked out a device in 30 days. Their badge can be re-scanned to re-activate.</div>
+              </div>
+              <div class="toggle" role="switch" aria-checked="false"></div>
+            </div>
+          </div>
+          <div class="card-foot">
+            <button class="btn ghost">Cancel</button>
+            <button class="btn primary">Save changes</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3 class="card-title">Registration activity (30 days)</h3>
+              <p class="card-sub">Cross-link: full list of self-registrations on <a href="HW_Redesign_05_Users.html" style="color:var(--c-brand);">Users → Guests</a>.</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+              <div style="padding:12px;background:var(--c-surface-2);border:1px solid var(--c-divider);border-radius:8px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--c-text-muted);font-weight:600;">Total</div><div style="font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;">47</div></div>
+              <div style="padding:12px;background:var(--c-surface-2);border:1px solid var(--c-divider);border-radius:8px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--c-text-muted);font-weight:600;">Auto-approved</div><div style="font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--c-success);">45</div></div>
+              <div style="padding:12px;background:var(--c-surface-2);border:1px solid var(--c-divider);border-radius:8px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--c-text-muted);font-weight:600;">Pending</div><div style="font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;">0</div></div>
+              <div style="padding:12px;background:var(--c-surface-2);border:1px solid var(--c-divider);border-radius:8px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--c-text-muted);font-weight:600;">Denied</div><div style="font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--c-danger);">2</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="travis-credit">
+          <strong>Why this is in main Settings + Users → Guests:</strong>
+          Staging buries Guest registration behind a Settings button inside the Guests tab. We're surfacing the same controls in <strong>two</strong> places — admins who think "this is a tenant setting" find it in Settings; admins who think "this is part of guest management" find it under Users. Saves a support ticket.
+        </div>
+      </section><!-- /selfreg -->
+
+      <!-- Stub sections for other nav items -->
+      <section class="settings-section" data-content="security">
+        <header class="page-head"><h1 class="page-title">Security</h1><p class="page-sub">Password, MFA, sessions.</p></header>
+        <div class="empty-stub"><strong>Covered in Profile</strong>Password + force-change controls live in the Profile section above. Sessions and MFA configuration land in a future iteration.</div>
+      </section>
+      <section class="settings-section" data-content="branding">
+        <header class="page-head"><h1 class="page-title">Branding</h1><p class="page-sub">Tenant logo and brand assets shown on the kiosk and customer surfaces.</p></header>
+        <div class="empty-stub"><strong>Coming in v2 redesign</strong>Asset library with per-mode previews (AC deposit / AC pickup / DC check-in / DC check-out / Hybrid).</div>
+      </section>
+      <section class="settings-section" data-content="idp">
+        <header class="page-head"><h1 class="page-title">Identity provider · SSO</h1><p class="page-sub">SAML SSO + SCIM provisioning with Microsoft Entra ID, Okta, Google Workspace.</p></header>
+        <div class="empty-stub"><strong>Coming in v2 redesign</strong>Provider connect flow, SCIM token issuance, group → role mapping, and force-SSO toggle.</div>
+      </section>
+      <section class="settings-section" data-content="locale">
+        <header class="page-head"><h1 class="page-title">System &amp; locale</h1><p class="page-sub">Time zone, date format, language, units.</p></header>
+        <div class="empty-stub"><strong>Coming in v2 redesign</strong>Tenant time zone picker (Travis P3), 12/24h clock, ISO/US date format, weight + length units.</div>
+      </section>
+      <section class="settings-section" data-content="api">
+        <header class="page-head"><h1 class="page-title">API tokens</h1><p class="page-sub">Personal and service tokens for the HonestWaves API.</p></header>
+        <div class="empty-stub"><strong>Coming in v2 redesign</strong>Token issuance with scopes, last-used timestamp, rotation, and revoke.</div>
+      </section>
+      <section class="settings-section" data-content="webhooks">
+        <header class="page-head"><h1 class="page-title">Webhooks</h1><p class="page-sub">Outbound events to your systems.</p></header>
+        <div class="empty-stub"><strong>Coming in v2 redesign</strong>Subscribe to events (bay.state_changed, device.deposited, guest.registered, …), endpoint health, delivery retry log.</div>
+      </section>
+      <section class="settings-section" data-content="audit">
+        <header class="page-head"><h1 class="page-title">Audit log</h1><p class="page-sub">Who did what, when.</p></header>
+        <div class="empty-stub"><strong>Coming in v2 redesign</strong>Full audit trail of admin actions with filterable timeline; supplements the operational Reports view.</div>
+      </section>
 
       </div>
     </main>
   </div>
+
+  <script>
+    // Sidebar section switching
+    const navItems = document.querySelectorAll('.s-nav-item[data-section]');
+    const sections = document.querySelectorAll('.settings-section[data-content]');
+    function showSection(name) {
+      navItems.forEach(n => n.classList.toggle('active', n.dataset.section === name));
+      sections.forEach(s => s.classList.toggle('active', s.dataset.content === name));
+      try { localStorage.setItem('hw.settings.section', name); } catch (e) {}
+    }
+    navItems.forEach(n => n.addEventListener('click', () => showSection(n.dataset.section)));
+    try {
+      const saved = localStorage.getItem('hw.settings.section');
+      if (saved) showSection(saved);
+    } catch (e) {}
+
+    // Self-registration auto-approval toggle (visual)
+    const autoToggle = document.getElementById('selfregAutoToggle');
+    const statusPill = document.getElementById('selfregStatusPill');
+    if (autoToggle && statusPill) {
+      autoToggle.addEventListener('click', () => {
+        autoToggle.classList.toggle('on');
+        const isOn = autoToggle.classList.contains('on');
+        autoToggle.setAttribute('aria-checked', isOn);
+        statusPill.innerHTML = isOn
+          ? '<span class="dot"></span>On'
+          : '<span class="dot" style="background:var(--c-warning);"></span>Off';
+        statusPill.style.background = isOn ? 'var(--c-success-soft)' : 'var(--c-warning-soft)';
+        statusPill.style.color = isOn ? 'var(--c-success)' : 'var(--c-warning-text)';
+      });
+    }
+    // Other toggles on the page (simple click-to-toggle)
+    document.querySelectorAll('.toggle').forEach(t => {
+      if (t.id === 'selfregAutoToggle') return;
+      t.addEventListener('click', () => {
+        t.classList.toggle('on');
+        t.setAttribute('aria-checked', t.classList.contains('on'));
+      });
+    });
+  </script>
 </body>
 </html>

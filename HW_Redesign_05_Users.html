@@ -233,6 +233,51 @@
     .pill.slate{background:var(--c-slate-soft);color:var(--c-slate)}
     .pill.slate .pill-dot{background:var(--c-slate)}
 
+    /* Guest self-registration status banner */
+    .guest-banner{display:flex;align-items:center;gap:var(--s-4);padding:var(--s-3) var(--s-4);background:linear-gradient(90deg,var(--c-success-soft),#F0FDF4);border:1px solid #BBF7D0;border-radius:var(--r-md);margin-bottom:var(--s-4)}
+    .guest-banner.off{background:linear-gradient(90deg,var(--c-warning-soft),#FFFBEB);border-color:#FDE68A}
+    .guest-banner-icon{width:36px;height:36px;border-radius:50%;background:var(--c-success);color:white;display:grid;place-items:center;flex-shrink:0;font-size:18px}
+    .guest-banner.off .guest-banner-icon{background:var(--c-warning)}
+    .guest-banner-content{flex:1;line-height:1.35}
+    .guest-banner-title{font-weight:600;font-size:var(--t-13);color:var(--c-text)}
+    .guest-banner-sub{font-size:var(--t-12);color:var(--c-text-2);margin-top:2px}
+    .guest-banner-meta{display:flex;flex-direction:column;align-items:flex-end;gap:2px;padding:0 var(--s-3);border-left:1px solid var(--c-border);font-size:var(--t-11)}
+    .guest-banner-meta .b-label{font-size:10px;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+    .guest-banner-meta strong{font-size:var(--t-13);color:var(--c-text);font-weight:600}
+
+    /* Modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(2px);z-index:1000;display:none;align-items:center;justify-content:center;padding:var(--s-5)}
+    .modal-backdrop.open{display:flex}
+    .modal{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-lg);box-shadow:0 24px 48px rgba(15,23,42,.18);width:100%;max-width:540px;display:flex;flex-direction:column;overflow:hidden}
+    .modal-head{display:flex;align-items:flex-start;justify-content:space-between;padding:var(--s-4) var(--s-5);border-bottom:1px solid var(--c-border)}
+    .modal-head h2{margin:0;font-size:var(--t-16);font-weight:600;letter-spacing:-.01em;color:var(--c-text)}
+    .modal-head p{margin:2px 0 0;font-size:var(--t-12);color:var(--c-text-2)}
+    .modal-close{width:28px;height:28px;border-radius:var(--r-sm);display:grid;place-items:center;color:var(--c-text-muted);font-size:16px;cursor:pointer;background:none;border:none}
+    .modal-close:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .modal-body{padding:var(--s-4) var(--s-5);display:flex;flex-direction:column;gap:0}
+    .modal-foot{display:flex;align-items:center;justify-content:flex-end;gap:var(--s-2);padding:var(--s-3) var(--s-5);border-top:1px solid var(--c-border);background:var(--c-surface-2)}
+
+    .setting-row{display:flex;align-items:center;justify-content:space-between;gap:var(--s-4);padding:var(--s-4) 0;border-top:1px dashed var(--c-border)}
+    .setting-row:first-child{border-top:none;padding-top:0}
+    .setting-row-meta{flex:1;line-height:1.4}
+    .setting-row-title{font-weight:600;font-size:var(--t-13);color:var(--c-text)}
+    .setting-row-desc{font-size:var(--t-12);color:var(--c-text-2);margin-top:2px}
+
+    /* Toggle switch */
+    .toggle{position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0;cursor:pointer}
+    .toggle input{opacity:0;width:0;height:0}
+    .toggle-slider{position:absolute;inset:0;background:var(--c-border-strong);border-radius:999px;transition:.2s}
+    .toggle-slider::before{content:"";position:absolute;height:14px;width:14px;left:3px;top:3px;background:white;border-radius:50%;transition:.2s;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+    .toggle input:checked + .toggle-slider{background:var(--c-brand)}
+    .toggle input:checked + .toggle-slider::before{transform:translateX(16px)}
+
+    /* Compact select used in modal */
+    .select-input{height:32px;padding:0 28px 0 var(--s-3);font-size:var(--t-13);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);color:var(--c-text);min-width:200px;appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--c-text-2) 50%),linear-gradient(135deg,var(--c-text-2) 50%,transparent 50%);background-position:calc(100% - 14px) 50%,calc(100% - 9px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+
+    /* Source kiosk chip */
+    .source-chip{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;background:var(--c-surface-3);color:var(--c-text-2);border-radius:var(--r-sm);font-size:var(--t-11);font-weight:500;font-variant-numeric:tabular-nums}
+    .badge-id-mono{font-family:var(--font-mono);font-size:10px;color:var(--c-text-muted);letter-spacing:-.01em}
+
     /* User cell */
     .user-cell-inline{display:flex;align-items:center;gap:8px}
     .user-avatar{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:600;flex-shrink:0;color:white}
@@ -1266,143 +1311,172 @@
         </div><!-- /#pane-departments -->
 
         <!-- =============================== Guests pane =============================== -->
+        <!-- Self-registration management. NOT contractor/vendor management.
+             Mirrors staging Users → Guests (auto-approval banner + Settings button → Edit Guest registration modal). -->
         <div id="pane-guests" class="tab-pane">
 
           <header class="page-head">
             <div>
               <h1 class="page-title">Guests</h1>
-              <p class="page-sub">12 active guests · 3 expiring this week · 1 overdue device</p>
+              <p class="page-sub">Kiosk self-registrations · 47 total this month · auto-approval ON · default department: Corewell POC</p>
             </div>
             <div class="page-actions">
               <button class="btn ghost">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
                 Export
               </button>
-              <button class="btn primary">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
-                Invite guest
+              <button class="btn" id="openGuestSettingsBtn">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                Settings
               </button>
             </div>
           </header>
 
-          <!-- KPI strip -->
+          <!-- Auto-approval status banner — mirrors staging exactly -->
+          <div class="guest-banner" id="guestBanner">
+            <div class="guest-banner-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <div class="guest-banner-content">
+              <div class="guest-banner-title" id="guestBannerTitle">Auto-approval is on</div>
+              <div class="guest-banner-sub" id="guestBannerSub">New self-registrations are converted to regular users immediately. The pending queue is bypassed.</div>
+            </div>
+            <div class="guest-banner-meta">
+              <span class="b-label">Default department</span>
+              <strong id="guestBannerDept">Corewell POC</strong>
+            </div>
+            <button class="btn ghost" id="openGuestSettingsBtnB">Edit settings →</button>
+          </div>
+
+          <!-- KPI strip — self-registration metrics -->
           <section class="kpis" style="grid-template-columns:repeat(4,1fr);">
             <div class="kpi">
-              <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-brand);"></span>Active guests</div>
+              <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-brand);"></span>Self-registrations (30d)</div>
+              <div class="kpi-value">47</div>
+              <div class="kpi-sub">All-time: 312</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-success);"></span>Auto-approved (7d)</div>
               <div class="kpi-value">12</div>
-              <div class="kpi-sub">9 contractors · 3 vendors</div>
+              <div class="kpi-sub">vs 5 last week</div>
             </div>
             <div class="kpi">
-              <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-info);"></span>Devices checked out</div>
-              <div class="kpi-value">4</div>
-              <div class="kpi-sub">3 within SLA</div>
+              <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-warning);"></span>Pending approval</div>
+              <div class="kpi-value" id="kpiPending">0</div>
+              <div class="kpi-sub" id="kpiPendingSub">Auto-approve bypasses queue</div>
             </div>
             <div class="kpi">
-              <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-warning);"></span>Expiring ≤ 7 days</div>
-              <div class="kpi-value warn">3</div>
-              <div class="kpi-sub">Renew or auto-revoke</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-danger);"></span>Overdue devices</div>
-              <div class="kpi-value danger">1</div>
-              <div class="kpi-sub">PINNACLE Tech (vendor)</div>
+              <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-danger);"></span>Denied (30d)</div>
+              <div class="kpi-value">2</div>
+              <div class="kpi-sub">Reviewed manually</div>
             </div>
           </section>
 
+          <!-- Toolbar: search + sort -->
+          <div class="filter-bar">
+            <div class="filter-search">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <input placeholder="Search guests by name, email, or badge ID..." style="border:none;outline:none;background:transparent;flex:1;color:var(--c-text);font:inherit;" />
+            </div>
+            <select class="select-input"><option>Recently registered</option><option>Oldest first</option><option>Source kiosk</option><option>Status</option></select>
+            <select class="select-input"><option>All statuses</option><option>Auto-approved</option><option>Pending</option><option>Manually approved</option><option>Denied</option></select>
+          </div>
+
+          <!-- Recent self-registrations -->
           <div class="data-table-card">
             <table>
               <thead>
                 <tr>
-                  <th style="width:32px;"></th>
                   <th>Guest</th>
                   <th>Email</th>
-                  <th>Sponsor</th>
-                  <th>Access expires</th>
-                  <th>Devices out</th>
-                  <th>Last activity</th>
+                  <th>Badge ID</th>
+                  <th>Source kiosk</th>
+                  <th>Registered</th>
+                  <th>Assigned dept</th>
                   <th>Status</th>
+                  <th style="width:80px;text-align:right;">Actions</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="guestRegRows">
                 <tr>
-                  <td><span class="guest-mark">PT</span></td>
-                  <td><strong>PINNACLE Tech</strong><br><span class="muted" style="font-size:11px;">Vendor · GUEST-001</span></td>
-                  <td>tech@pinnacle.io</td>
-                  <td>Marcus Chen (IT)</td>
-                  <td>Jun 22 · <span style="color:var(--c-warning-text);font-weight:600;">5d</span></td>
-                  <td class="num"><span style="color:var(--c-danger);">1 (overdue)</span></td>
-                  <td>14h ago</td>
-                  <td><span class="pill warning"><span class="pill-dot"></span>Overdue</span></td>
+                  <td><strong>Avery Stone</strong></td>
+                  <td>a.stone@guest.local</td>
+                  <td class="badge-id-mono">mock:e1f2-9c41-44b7-…</td>
+                  <td><span class="source-chip">Pink8 · ER lobby</span></td>
+                  <td>14m ago</td>
+                  <td>Corewell POC <span class="muted" style="font-size:10px;">(default)</span></td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Auto-approved</span></td>
+                  <td style="text-align:right;"><button class="btn ghost" style="height:24px;padding:0 8px;font-size:11px;">View</button></td>
                 </tr>
                 <tr>
-                  <td><span class="guest-mark">JL</span></td>
-                  <td><strong>Jordan Lee</strong><br><span class="muted" style="font-size:11px;">Contractor · GUEST-002</span></td>
-                  <td>j.lee@contracts.com</td>
-                  <td>Sarah Park (ER)</td>
-                  <td>Jun 25 · <span style="color:var(--c-warning-text);font-weight:600;">8d</span></td>
-                  <td class="num">1</td>
-                  <td>2h ago</td>
-                  <td><span class="pill info"><span class="pill-dot"></span>In use</span></td>
-                </tr>
-                <tr>
-                  <td><span class="guest-mark">MK</span></td>
-                  <td><strong>Mia Khan</strong><br><span class="muted" style="font-size:11px;">Contractor · GUEST-003</span></td>
-                  <td>mia.k@meridian.net</td>
-                  <td>Lauren Davis (Nursing)</td>
-                  <td>Jun 23 · <span style="color:var(--c-warning-text);font-weight:600;">6d</span></td>
-                  <td class="num">1</td>
-                  <td>43 min ago</td>
-                  <td><span class="pill info"><span class="pill-dot"></span>In use</span></td>
-                </tr>
-                <tr>
-                  <td><span class="guest-mark">RG</span></td>
-                  <td><strong>Ravi Gupta</strong><br><span class="muted" style="font-size:11px;">Contractor · GUEST-004</span></td>
-                  <td>r.gupta@flexworks.com</td>
-                  <td>Anita Rao (Radiology)</td>
-                  <td>Jul 14</td>
-                  <td class="num">1</td>
+                  <td><strong>Marcus Reilly</strong></td>
+                  <td>m.reilly@guest.local</td>
+                  <td class="badge-id-mono">mock:a2c4-6b8e-441d-…</td>
+                  <td><span class="source-chip">Blue3 · IT closet</span></td>
                   <td>1h ago</td>
-                  <td><span class="pill info"><span class="pill-dot"></span>In use</span></td>
+                  <td>Corewell POC <span class="muted" style="font-size:10px;">(default)</span></td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Auto-approved</span></td>
+                  <td style="text-align:right;"><button class="btn ghost" style="height:24px;padding:0 8px;font-size:11px;">View</button></td>
                 </tr>
                 <tr>
-                  <td><span class="guest-mark">EN</span></td>
-                  <td><strong>Eli Nakamura</strong><br><span class="muted" style="font-size:11px;">Contractor · GUEST-005</span></td>
-                  <td>eli.n@bridgewire.io</td>
-                  <td>Marcus Chen (IT)</td>
-                  <td>Jul 30</td>
-                  <td class="num">0</td>
-                  <td>2 days ago</td>
-                  <td><span class="pill success"><span class="pill-dot"></span>Active</span></td>
+                  <td><strong>Priya Sharma</strong></td>
+                  <td>p.sharma@guest.local</td>
+                  <td class="badge-id-mono">mock:3f51-7d92-4a3e-…</td>
+                  <td><span class="source-chip">Green1 · Radiology</span></td>
+                  <td>3h ago</td>
+                  <td>Corewell POC <span class="muted" style="font-size:10px;">(default)</span></td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Auto-approved</span></td>
+                  <td style="text-align:right;"><button class="btn ghost" style="height:24px;padding:0 8px;font-size:11px;">View</button></td>
                 </tr>
                 <tr>
-                  <td><span class="guest-mark">HS</span></td>
-                  <td><strong>Hana Soto</strong><br><span class="muted" style="font-size:11px;">Vendor · GUEST-006</span></td>
-                  <td>hana@dataclear.com</td>
-                  <td>Patricia Yamamoto (HR)</td>
-                  <td>Aug 04</td>
-                  <td class="num">0</td>
-                  <td>4 days ago</td>
-                  <td><span class="pill success"><span class="pill-dot"></span>Active</span></td>
+                  <td><strong>Dana Whitaker</strong></td>
+                  <td>d.whitaker@guest.local</td>
+                  <td class="badge-id-mono">mock:9b14-2a76-4e8c-…</td>
+                  <td><span class="source-chip">Pink8 · ER lobby</span></td>
+                  <td>Yesterday · 4:02 PM</td>
+                  <td>Corewell POC <span class="muted" style="font-size:10px;">(default)</span></td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Auto-approved</span></td>
+                  <td style="text-align:right;"><button class="btn ghost" style="height:24px;padding:0 8px;font-size:11px;">View</button></td>
                 </tr>
                 <tr>
-                  <td><span class="guest-mark">DB</span></td>
-                  <td><strong>Diego Bautista</strong><br><span class="muted" style="font-size:11px;">Contractor · GUEST-007</span></td>
-                  <td>d.bautista@redrock.us</td>
-                  <td>James Patel (Security)</td>
-                  <td>Aug 18</td>
-                  <td class="num">0</td>
-                  <td>6 days ago</td>
-                  <td><span class="pill success"><span class="pill-dot"></span>Active</span></td>
+                  <td><strong>Connor Bell</strong></td>
+                  <td>c.bell@guest.local</td>
+                  <td class="badge-id-mono">mock:8a32-4f19-49b1-…</td>
+                  <td><span class="source-chip">Blue3 · IT closet</span></td>
+                  <td>Yesterday · 11:18 AM</td>
+                  <td>Corewell POC <span class="muted" style="font-size:10px;">(default)</span></td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Auto-approved</span></td>
+                  <td style="text-align:right;"><button class="btn ghost" style="height:24px;padding:0 8px;font-size:11px;">View</button></td>
+                </tr>
+                <tr style="background:var(--c-warning-soft);">
+                  <td><strong>Unknown badge</strong></td>
+                  <td class="muted">—</td>
+                  <td class="badge-id-mono">mock:5d71-8e22-49a1-…</td>
+                  <td><span class="source-chip">Green1 · Radiology</span></td>
+                  <td>Jun 14 · 7:51 AM</td>
+                  <td class="muted">—</td>
+                  <td><span class="pill danger"><span class="pill-dot"></span>Denied</span></td>
+                  <td style="text-align:right;"><button class="btn ghost" style="height:24px;padding:0 8px;font-size:11px;">View</button></td>
                 </tr>
                 <tr>
-                  <td><span class="guest-mark">SR</span></td>
-                  <td><strong>Sasha Reyes</strong><br><span class="muted" style="font-size:11px;">Contractor · GUEST-008</span></td>
-                  <td>s.reyes@parallaxlabs.com</td>
-                  <td>Erika Smith (PT)</td>
-                  <td>Sep 02</td>
-                  <td class="num">0</td>
-                  <td>1 week ago</td>
-                  <td><span class="pill success"><span class="pill-dot"></span>Active</span></td>
+                  <td><strong>Leah Yuen</strong></td>
+                  <td>l.yuen@guest.local</td>
+                  <td class="badge-id-mono">mock:c4a8-1f93-4b76-…</td>
+                  <td><span class="source-chip">Pink8 · ER lobby</span></td>
+                  <td>Jun 13 · 2:34 PM</td>
+                  <td>Corewell POC</td>
+                  <td><span class="pill info"><span class="pill-dot"></span>Manually approved</span></td>
+                  <td style="text-align:right;"><button class="btn ghost" style="height:24px;padding:0 8px;font-size:11px;">View</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Anonymous self-registrant</strong></td>
+                  <td class="muted">—</td>
+                  <td class="badge-id-mono">mock:7e69-3c50-481a-…</td>
+                  <td><span class="source-chip">Blue3 · IT closet</span></td>
+                  <td>Jun 12 · 9:15 AM</td>
+                  <td class="muted">—</td>
+                  <td><span class="pill danger"><span class="pill-dot"></span>Denied</span></td>
+                  <td style="text-align:right;"><button class="btn ghost" style="height:24px;padding:0 8px;font-size:11px;">View</button></td>
                 </tr>
               </tbody>
             </table>
@@ -1411,13 +1485,60 @@
           <div class="travis-credit" style="margin-top:16px;">
             <strong>Recommendations integrated from Travis @ Corewell:</strong>
             <div class="recs">
-              <span class="rec-tag">P3</span>Guest expiration auto-revoke + warning window &nbsp;
-              <span class="rec-tag">P3</span>Sponsor accountability column &nbsp;
-              <span class="rec-tag">P5</span>Vendor vs contractor tagging
+              <span class="rec-tag">P3</span>Auto-approval banner with one-click toggle &nbsp;
+              <span class="rec-tag">P3</span>Default department override + source-kiosk routing &nbsp;
+              <span class="rec-tag">P5</span>Denied-registration audit trail with reason codes &nbsp;
+              <span class="rec-tag">P5</span>Surface Guest registration in main Settings nav (added in proto 11)
             </div>
           </div>
 
         </div><!-- /#pane-guests -->
+
+        <!-- =============================== Edit Guest Registration modal =============================== -->
+        <div class="modal-backdrop" id="guestRegModal" role="dialog" aria-labelledby="guestRegModalTitle">
+          <div class="modal">
+            <header class="modal-head">
+              <div>
+                <h2 id="guestRegModalTitle">Edit Guest registration</h2>
+                <p>How kiosk self-registrations are handled for this tenant.</p>
+              </div>
+              <button class="modal-close" id="guestRegModalClose" aria-label="Close">✕</button>
+            </header>
+            <div class="modal-body">
+              <div class="setting-row">
+                <div class="setting-row-meta">
+                  <div class="setting-row-title">Auto-approve</div>
+                  <div class="setting-row-desc">New self-registrations skip the queue and are immediately granted user access.</div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="autoApproveToggle" checked />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="setting-row">
+                <div class="setting-row-meta">
+                  <div class="setting-row-title">Default department</div>
+                  <div class="setting-row-desc">Auto-approved users are added to this department on conversion.</div>
+                </div>
+                <select class="select-input" id="defaultDeptSelect">
+                  <option>Corewell POC</option>
+                  <option>Emergency Medicine</option>
+                  <option>Nursing</option>
+                  <option>IT / Help Desk</option>
+                  <option>Security / Facilities</option>
+                  <option>Radiology</option>
+                  <option>Physical Therapy</option>
+                  <option>Pharmacy</option>
+                  <option>Admin / HR</option>
+                </select>
+              </div>
+            </div>
+            <footer class="modal-foot">
+              <button class="btn ghost" id="guestRegCancel">Cancel</button>
+              <button class="btn primary" id="guestRegSave">Save</button>
+            </footer>
+          </div>
+        </div>
 
       </div>
     </main>
@@ -1569,6 +1690,58 @@
       const savedPane = localStorage.getItem('hw.users.pane');
       if (savedPane && panes[savedPane]) showPane(savedPane);
     } catch (e) {}
+
+    // ----- Guest registration modal + live banner sync -----
+    const guestModal = document.getElementById('guestRegModal');
+    const openBtnA = document.getElementById('openGuestSettingsBtn');
+    const openBtnB = document.getElementById('openGuestSettingsBtnB');
+    const closeBtn = document.getElementById('guestRegModalClose');
+    const cancelBtn = document.getElementById('guestRegCancel');
+    const saveBtn = document.getElementById('guestRegSave');
+    const autoApproveToggle = document.getElementById('autoApproveToggle');
+    const defaultDeptSelect = document.getElementById('defaultDeptSelect');
+    const banner = document.getElementById('guestBanner');
+    const bannerTitle = document.getElementById('guestBannerTitle');
+    const bannerSub = document.getElementById('guestBannerSub');
+    const bannerDept = document.getElementById('guestBannerDept');
+    const kpiPending = document.getElementById('kpiPending');
+    const kpiPendingSub = document.getElementById('kpiPendingSub');
+
+    function openGuestModal() { if (guestModal) guestModal.classList.add('open'); }
+    function closeGuestModal() { if (guestModal) guestModal.classList.remove('open'); }
+    if (openBtnA) openBtnA.addEventListener('click', openGuestModal);
+    if (openBtnB) openBtnB.addEventListener('click', openGuestModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeGuestModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeGuestModal);
+    if (guestModal) guestModal.addEventListener('click', (e) => {
+      if (e.target === guestModal) closeGuestModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && guestModal && guestModal.classList.contains('open')) closeGuestModal();
+    });
+
+    function syncBannerFromSettings() {
+      if (!banner) return;
+      const isOn = autoApproveToggle ? autoApproveToggle.checked : true;
+      const dept = defaultDeptSelect ? defaultDeptSelect.value : 'Corewell POC';
+      if (isOn) {
+        banner.classList.remove('off');
+        bannerTitle.textContent = 'Auto-approval is on';
+        bannerSub.textContent = 'New self-registrations are converted to regular users immediately. The pending queue is bypassed.';
+        kpiPending.textContent = '0';
+        kpiPendingSub.textContent = 'Auto-approve bypasses queue';
+      } else {
+        banner.classList.add('off');
+        bannerTitle.textContent = 'Auto-approval is off';
+        bannerSub.textContent = 'Self-registrations enter the pending queue and require manual approval.';
+        kpiPending.textContent = '3';
+        kpiPendingSub.textContent = 'Awaiting review';
+      }
+      bannerDept.textContent = dept;
+    }
+    if (saveBtn) saveBtn.addEventListener('click', () => { syncBannerFromSettings(); closeGuestModal(); });
+    if (autoApproveToggle) autoApproveToggle.addEventListener('change', syncBannerFromSettings);
+    if (defaultDeptSelect) defaultDeptSelect.addEventListener('change', syncBannerFromSettings);
   </script>
 </body>
 </html>
