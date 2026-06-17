@@ -1,0 +1,941 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1440">
+  <title>HonestWaves redesign · 06 · Reports</title>
+  <style>
+    :root {
+      --c-surface:#FFFFFF; --c-surface-2:#FAFAFB; --c-surface-3:#F4F5F7;
+      --c-border:#E5E7EB; --c-border-strong:#D1D5DB; --c-divider:#EDF0F4;
+      --c-text:#0F172A; --c-text-2:#475569; --c-text-muted:#94A3B8;
+      --c-brand:#2563EB; --c-brand-hover:#1D4ED8; --c-brand-soft:#EFF6FF; --c-brand-deep:#1E40AF;
+      --c-success:#10B981; --c-success-soft:#ECFDF5;
+      --c-warning:#F59E0B; --c-warning-soft:#FFFBEB; --c-warning-text:#B45309;
+      --c-danger:#EF4444; --c-danger-soft:#FEF2F2;
+      --c-info:#6366F1; --c-info-soft:#EEF2FF;
+      --c-violet:#7C3AED; --c-violet-soft:#F5F3FF;
+      --c-cyan:#06B6D4; --c-cyan-soft:#ECFEFF;
+      --c-slate:#64748B; --c-slate-soft:#F1F5F9;
+
+      --font-sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+      --font-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+
+      --t-10:10px; --t-11:11px; --t-12:12px; --t-13:13px; --t-14:14px; --t-16:16px; --t-20:20px;
+      --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:20px; --s-6:24px;
+      --r-sm:4px; --r-md:6px; --r-lg:8px;
+      --sh-1:0 1px 2px rgba(15,23,42,.04);
+      --sh-2:0 1px 3px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04);
+      --sh-sticky:0 4px 12px rgba(15,23,42,.06);
+      --sh-popover:0 8px 24px rgba(15,23,42,.10),0 2px 6px rgba(15,23,42,.06);
+
+      --sidebar-w:232px; --topbar-h:52px;
+    }
+
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:var(--font-sans);font-size:var(--t-13);line-height:1.45;color:var(--c-text);background:var(--c-surface-2);-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+    svg{display:block}
+
+    .shell{display:grid;grid-template-columns:var(--sidebar-w) 1fr 420px;grid-template-rows:var(--topbar-h) 1fr;grid-template-areas:"logo topbar topbar" "side main drawer";min-height:100vh}
+    @media (max-width: 1280px) { .shell { grid-template-columns: var(--sidebar-w) 1fr; grid-template-areas: "logo topbar" "side main"; } .drawer { display: none !important; } }
+
+    /* Chrome */
+    .logo{grid-area:logo;background:var(--c-surface);border-right:1px solid var(--c-border);border-bottom:1px solid var(--c-border);display:flex;align-items:center;gap:10px;padding:0 var(--s-4);font-weight:600;font-size:var(--t-14)}
+    .logo-mark{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--c-brand) 0%,var(--c-brand-deep) 100%);display:grid;place-items:center;color:white;font-weight:700;font-size:13px}
+    .logo-tenant{margin-left:auto;font-size:var(--t-11);color:var(--c-text-muted);background:var(--c-surface-3);padding:2px 6px;border-radius:var(--r-sm);font-weight:500}
+    .topbar{grid-area:topbar;background:var(--c-surface);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 var(--s-5);gap:var(--s-3)}
+    .breadcrumb{display:flex;align-items:center;gap:var(--s-2);color:var(--c-text-2);font-size:var(--t-13)}
+    .breadcrumb strong{color:var(--c-text);font-weight:600}
+    .topbar-spacer{flex:1}
+    .search{display:flex;align-items:center;gap:var(--s-2);width:340px;height:32px;padding:0 var(--s-3);background:var(--c-surface-2);border:1px solid var(--c-border);border-radius:var(--r-md);color:var(--c-text-muted);font-size:var(--t-13)}
+    .search-kbd{margin-left:auto;padding:1px 5px;font-family:var(--font-mono);font-size:10px;color:var(--c-text-2);background:var(--c-surface);border:1px solid var(--c-border);border-radius:3px}
+    .icon-btn{width:32px;height:32px;display:grid;place-items:center;border-radius:var(--r-md);color:var(--c-text-2);position:relative}
+    .icon-btn:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .icon-btn .badge{position:absolute;top:2px;right:2px;min-width:16px;height:16px;padding:0 4px;background:var(--c-danger);color:white;border:2px solid var(--c-surface);border-radius:999px;font-size:9px;font-weight:700;display:grid;place-items:center}
+    .avatar-btn{display:flex;align-items:center;gap:var(--s-2);padding:4px 8px 4px 4px;border-radius:var(--r-md)}
+    .avatar-btn:hover{background:var(--c-surface-3)}
+    .avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#6366F1 0%,#2563EB 100%);color:white;font-size:11px;font-weight:600;display:grid;place-items:center}
+    .avatar-meta{line-height:1.1;text-align:left}
+    .avatar-name{font-size:var(--t-12);font-weight:600}
+    .avatar-email{font-size:var(--t-11);color:var(--c-text-muted)}
+    .sidebar{grid-area:side;background:var(--c-surface);border-right:1px solid var(--c-border);padding:var(--s-3) var(--s-2);overflow-y:auto}
+    .nav-group{margin-bottom:var(--s-4)}
+    .nav-group-label{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--c-text-muted);padding:0 var(--s-3);margin:0 0 4px}
+    .nav-item{display:flex;align-items:center;gap:var(--s-3);padding:7px var(--s-3);border-radius:var(--r-md);font-size:var(--t-13);color:var(--c-text-2);position:relative}
+    .nav-item:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .nav-item.active{background:var(--c-brand-soft);color:var(--c-brand-deep);font-weight:600}
+    .nav-item.active::before{content:"";position:absolute;left:-2px;top:8px;bottom:8px;width:2px;background:var(--c-brand);border-radius:2px}
+    .nav-icon{width:16px;height:16px;flex-shrink:0;opacity:.85}
+    .nav-item.active .nav-icon{opacity:1}
+    .nav-badge{margin-left:auto;font-size:10px;font-weight:600;padding:1px 6px;border-radius:999px;background:var(--c-danger-soft);color:var(--c-danger)}
+
+    /* Main */
+    .main{grid-area:main;overflow-y:auto}
+    .main-inner{padding:var(--s-5) var(--s-6);max-width:1480px}
+
+    /* Sub-tabs */
+    .subtabs{display:flex;align-items:center;gap:2px;border-bottom:1px solid var(--c-border);margin-bottom:var(--s-5);padding-bottom:0}
+    .subtab{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;font-size:var(--t-13);font-weight:500;color:var(--c-text-2);border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer}
+    .subtab:hover{color:var(--c-text)}
+    .subtab.active{color:var(--c-brand-deep);border-bottom-color:var(--c-brand);font-weight:600}
+    .subtab .count{font-size:10px;font-weight:600;padding:1px 6px;border-radius:999px;background:var(--c-surface-3);color:var(--c-text-2);min-width:18px;text-align:center}
+    .subtab.active .count{background:var(--c-brand-soft);color:var(--c-brand-deep)}
+    .subtab .new-pill{font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;background:var(--c-violet-soft);color:var(--c-violet);text-transform:uppercase;letter-spacing:.05em}
+
+    .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s-4);margin-bottom:var(--s-4)}
+    .page-title{font-size:var(--t-20);font-weight:600;letter-spacing:-.01em;margin:0 0 2px}
+    .page-sub{font-size:var(--t-12);color:var(--c-text-2);margin:0}
+    .page-actions{display:flex;align-items:center;gap:var(--s-2)}
+
+    .btn{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 var(--s-3);font-size:var(--t-12);font-weight:500;color:var(--c-text);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);box-shadow:var(--sh-1)}
+    .btn:hover{background:var(--c-surface-3);border-color:var(--c-border-strong)}
+    .btn.primary{background:var(--c-brand);color:white;border-color:var(--c-brand)}
+    .btn.primary:hover{background:var(--c-brand-hover);border-color:var(--c-brand-hover)}
+    .btn.ghost{background:transparent;border-color:transparent;box-shadow:none}
+    .btn.ghost:hover{background:var(--c-surface-3)}
+
+    /* KPI strip */
+    .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--s-3);margin-bottom:var(--s-4)}
+    .kpi{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);padding:var(--s-3) var(--s-4);position:relative}
+    .kpi-label{font-size:10px;font-weight:600;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:5px;margin-bottom:4px}
+    .kpi-label-dot{width:6px;height:6px;border-radius:50%}
+    .kpi-value{font-size:22px;font-weight:600;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums}
+    .kpi-sub{font-size:10px;color:var(--c-text-muted);margin-top:2px;font-variant-numeric:tabular-nums}
+    .kpi-value.danger{color:var(--c-danger)}
+    .kpi-value.warn{color:var(--c-warning-text)}
+
+    /* Chart card */
+    .chart-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-lg);padding:var(--s-4) var(--s-5) var(--s-3);margin-bottom:var(--s-3)}
+    .chart-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--s-3)}
+    .chart-title{font-size:var(--t-13);font-weight:600;display:flex;align-items:center;gap:8px}
+    .chart-legend{display:flex;align-items:center;gap:14px;font-size:var(--t-11);color:var(--c-text-2)}
+    .legend-item{display:inline-flex;align-items:center;gap:5px}
+    .legend-sw{width:9px;height:9px;border-radius:2px}
+    .chart-area{height:120px;position:relative}
+    .chart-area svg{width:100%;height:100%}
+    .chart-x{display:flex;justify-content:space-between;margin-top:4px;font-size:10px;color:var(--c-text-muted);font-variant-numeric:tabular-nums}
+
+    /* Sticky filter bar */
+    .filter-sticky{position:sticky;top:0;z-index:5;background:var(--c-surface-2);padding-bottom:var(--s-2);padding-top:var(--s-1);margin:0 -var(--s-1)}
+    .filter-bar{display:flex;align-items:center;gap:var(--s-2);padding:var(--s-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);flex-wrap:wrap}
+    .filter-search{flex:1;min-width:260px;display:flex;align-items:center;gap:var(--s-2);height:32px;padding:0 var(--s-3);background:var(--c-surface-2);border:1px solid var(--c-border);border-radius:var(--r-md);color:var(--c-text);font-size:var(--t-13)}
+    .filter-search:focus-within{background:var(--c-surface);border-color:var(--c-brand);box-shadow:0 0 0 3px var(--c-brand-soft)}
+    .filter-search input{flex:1;height:100%;border:0;background:transparent;outline:none;font:inherit;color:inherit}
+    .filter-search input::placeholder{color:var(--c-text-muted)}
+    .filter-select{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;font-size:var(--t-12);font-weight:500;color:var(--c-text);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);cursor:pointer;white-space:nowrap}
+    .filter-select:hover{background:var(--c-surface-3);border-color:var(--c-border-strong)}
+    .filter-select .chip-count{background:var(--c-brand);color:white;font-size:10px;font-weight:700;padding:1px 5px;border-radius:999px}
+    .filter-clear{color:var(--c-text-2);font-size:var(--t-12);padding:0 8px;height:32px;display:inline-flex;align-items:center}
+    .filter-clear:hover{color:var(--c-danger)}
+
+    /* Quick filter chips row */
+    .quick-row{display:flex;align-items:center;gap:6px;margin-top:var(--s-2);flex-wrap:wrap}
+    .quick-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:999px;font-size:var(--t-11);font-weight:500;color:var(--c-text-2);cursor:pointer}
+    .quick-chip:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .quick-chip.active{background:var(--c-brand-soft);border-color:var(--c-brand);color:var(--c-brand-deep);font-weight:600}
+    .quick-chip .dot{width:6px;height:6px;border-radius:50%}
+
+    /* Log card / log rows — designed for max readability */
+    .log-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-lg);overflow:hidden}
+    .log-table{width:100%;border-collapse:collapse;font-size:var(--t-12)}
+    .log-table thead th{text-align:left;font-weight:600;font-size:10px;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:.06em;padding:8px var(--s-3);background:var(--c-surface-2);border-bottom:1px solid var(--c-border);position:sticky;top:0;z-index:2;white-space:nowrap}
+    .log-table tbody td{padding:6px var(--s-3);height:36px;border-bottom:1px solid var(--c-divider);vertical-align:middle;font-variant-numeric:tabular-nums}
+    .log-table tbody tr{transition:background .08s;cursor:pointer}
+    .log-table tbody tr:hover{background:var(--c-surface-2)}
+    .log-table tbody tr.selected{background:var(--c-brand-soft)}
+
+    /* Day separator row */
+    .day-row td{height:auto;padding:14px var(--s-3) 6px;background:var(--c-surface-2);font-size:10px;font-weight:600;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--c-border)}
+    .day-row .day-meta{margin-left:8px;color:var(--c-text-2);font-weight:500;text-transform:none;letter-spacing:0}
+
+    /* Time column */
+    .time-cell{color:var(--c-text-2);font-size:var(--t-11);width:130px;white-space:nowrap}
+    .time-cell .time-rel{font-weight:600;color:var(--c-text)}
+    .time-cell .time-abs{font-size:10px;color:var(--c-text-muted)}
+
+    /* Kind badge — from dev catalog */
+    .kind-badge{display:inline-flex;align-items:center;height:18px;padding:0 7px;border-radius:4px;font-size:var(--t-10);font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-family:var(--font-mono);width:fit-content}
+    .kind-badge.action{background:var(--c-success-soft);color:var(--c-success)}
+    .kind-badge.event{background:var(--c-danger-soft);color:var(--c-danger)}
+    .kind-badge.state{background:var(--c-info-soft);color:var(--c-info)}
+    .kind-badge.routine{background:var(--c-warning-soft);color:var(--c-warning-text)}
+    .kind-badge.command{background:var(--c-violet-soft);color:var(--c-violet)}
+
+    /* Severity dot — separate dimension */
+    .sev-dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+    .sev-dot.info{background:var(--c-info)}
+    .sev-dot.warn{background:var(--c-warning)}
+    .sev-dot.error{background:var(--c-danger);box-shadow:0 0 0 3px rgba(239,68,68,.15)}
+    .sev-dot.ok{background:var(--c-success)}
+    .sev-dot.critical{background:var(--c-danger);animation:pulseDanger 2s infinite}
+    @keyframes pulseDanger{0%{box-shadow:0 0 0 0 rgba(239,68,68,.5)}70%{box-shadow:0 0 0 5px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
+
+    /* Event title (plain English from catalog) */
+    .event-title{font-weight:600;color:var(--c-text);font-size:var(--t-12)}
+    .event-sub{font-size:10px;color:var(--c-text-muted);margin-top:1px}
+    .event-cell{display:flex;align-items:center;gap:8px}
+    .event-meta{min-width:0;flex:1}
+
+    /* Entity chips inline in the row */
+    .ent-chip{display:inline-flex;align-items:center;gap:4px;height:18px;padding:0 6px;background:var(--c-surface-3);border-radius:4px;font-size:var(--t-11);font-weight:500;color:var(--c-text);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .ent-chip:hover{background:var(--c-brand-soft);color:var(--c-brand-deep)}
+    .ent-chip svg{flex-shrink:0;width:11px;height:11px;color:var(--c-text-muted)}
+    .ent-chip.user svg{color:var(--c-info)}
+    .ent-chip.device svg{color:var(--c-cyan)}
+    .ent-chip.locker svg{color:var(--c-violet)}
+    .ent-chip.bay svg{color:var(--c-warning)}
+    .ent-empty{color:var(--c-text-muted);font-style:italic;font-size:var(--t-11)}
+
+    .col-source{font-family:var(--font-mono);font-size:10px;color:var(--c-text-muted)}
+    .row-actions-mini{display:flex;align-items:center;justify-content:flex-end;gap:2px}
+    .row-actions-mini button{width:22px;height:22px;display:grid;place-items:center;border-radius:var(--r-sm);color:var(--c-text-muted)}
+    .row-actions-mini button:hover{color:var(--c-text);background:var(--c-surface-3)}
+
+    /* Footer */
+    .table-foot{display:flex;align-items:center;padding:var(--s-3) var(--s-4);border-top:1px solid var(--c-border);background:var(--c-surface-2);font-size:var(--t-12);color:var(--c-text-2)}
+    .pag{margin-left:auto;display:flex;align-items:center;gap:4px}
+    .pag-btn{width:26px;height:26px;display:grid;place-items:center;border-radius:var(--r-sm);color:var(--c-text-2)}
+    .pag-btn:hover:not(:disabled){background:var(--c-surface-3);color:var(--c-text)}
+    .pag-btn:disabled{opacity:.3;cursor:not-allowed}
+    .pag-num{padding:0 8px;height:26px;display:inline-grid;place-items:center;font-variant-numeric:tabular-nums;border-radius:var(--r-sm);color:var(--c-text-2)}
+    .pag-num.active{background:var(--c-brand);color:white;font-weight:600}
+
+    /* Annotation */
+    .annotation-strip{background:linear-gradient(90deg,var(--c-brand-soft),#F0F7FF);border-bottom:1px solid #DBEAFE;padding:8px 24px;font-size:var(--t-12);color:var(--c-brand-deep);display:flex;align-items:center;gap:12px}
+    .annotation-strip strong{color:var(--c-brand-deep)}
+    .annotation-strip .chip{background:var(--c-brand);color:white;font-weight:600;padding:2px 7px;border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.04em}
+    .anno-pill{background:rgba(255,255,255,.6);color:var(--c-brand-deep);padding:2px 7px;border-radius:999px;font-size:11px}
+
+    .note{position:absolute;background:#1F2937;color:white;padding:8px 10px;border-radius:6px;font-size:var(--t-11);max-width:260px;box-shadow:var(--sh-popover);line-height:1.4;z-index:30;display:none}
+    .note-host{position:relative}
+    .note-host:hover>.note{display:block}
+    .note::before{content:"";position:absolute;width:0;height:0;border:5px solid transparent}
+    .note.bl{bottom:100%;left:0;margin-bottom:6px}
+    .note.bl::before{top:100%;left:12px;border-top-color:#1F2937}
+    .note.tl{top:100%;left:0;margin-top:6px}
+    .note.tl::before{bottom:100%;left:12px;border-bottom-color:#1F2937}
+    .note.tr{top:100%;right:0;margin-top:6px}
+    .note.tr::before{bottom:100%;right:12px;border-bottom-color:#1F2937}
+
+    /* ============================================================
+       Event detail drawer — appears when a row is selected
+       ============================================================ */
+    .drawer{grid-area:drawer;background:var(--c-surface);border-left:1px solid var(--c-border);overflow-y:auto;box-shadow:-8px 0 24px rgba(15,23,42,.04)}
+    .drawer-head{padding:var(--s-4);border-bottom:1px solid var(--c-divider);position:sticky;top:0;background:var(--c-surface);z-index:3}
+    .drawer-head-row{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s-3);margin-bottom:var(--s-3)}
+    .drawer-pills{display:flex;align-items:center;gap:6px;margin-bottom:var(--s-2);flex-wrap:wrap}
+    .drawer-title{font-size:var(--t-16);font-weight:600;letter-spacing:-.01em;margin:0;color:var(--c-text);line-height:1.2}
+    .drawer-sub{font-size:var(--t-11);color:var(--c-text-muted);margin-top:4px;font-family:var(--font-mono)}
+    .drawer-close{width:28px;height:28px;display:grid;place-items:center;border-radius:var(--r-md);color:var(--c-text-2);flex-shrink:0}
+    .drawer-close:hover{background:var(--c-surface-3)}
+    .drawer-actions-row{display:flex;align-items:center;gap:6px;padding-top:var(--s-2);border-top:1px solid var(--c-divider)}
+    .drawer-actions-row .btn{flex:1;justify-content:center;height:28px;font-size:var(--t-11)}
+    .pill-crit{display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 8px;border-radius:999px;font-size:var(--t-11);font-weight:600;background:var(--c-danger-soft);color:var(--c-danger)}
+    .pill-crit .pill-dot{width:6px;height:6px;border-radius:50%;background:var(--c-danger);animation:pulseDanger 2s infinite}
+
+    .drawer-section{padding:var(--s-4);border-bottom:1px solid var(--c-divider)}
+    .drawer-section:last-child{border-bottom:0}
+    .drawer-h{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--c-text-muted);margin:0 0 var(--s-2)}
+    .summary-text{font-size:var(--t-13);color:var(--c-text);line-height:1.5}
+    .summary-text strong{color:var(--c-text);font-weight:600}
+    .time-block{display:flex;gap:var(--s-4);font-size:var(--t-12);color:var(--c-text-2);margin-top:var(--s-2)}
+    .time-block .time-label{font-size:10px;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600;margin-bottom:2px}
+    .time-block .time-val{color:var(--c-text);font-weight:600;font-variant-numeric:tabular-nums}
+
+    .info-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:var(--t-12);border-bottom:1px solid var(--c-divider)}
+    .info-row:last-child{border-bottom:0}
+    .info-label{color:var(--c-text-2)}
+    .info-value{font-weight:600;color:var(--c-text);font-family:var(--font-mono);font-size:var(--t-11)}
+
+    .entity-list{display:flex;flex-direction:column;gap:6px}
+    .entity-card{display:flex;align-items:center;gap:var(--s-2);padding:8px var(--s-3);background:var(--c-surface-2);border:1px solid var(--c-border);border-radius:var(--r-md);font-size:var(--t-12);cursor:pointer;transition:background .12s}
+    .entity-card:hover{background:var(--c-brand-soft);border-color:var(--c-brand)}
+    .entity-card-icon{width:24px;height:24px;border-radius:var(--r-sm);display:grid;place-items:center;flex-shrink:0}
+    .entity-card-icon.locker{background:var(--c-violet-soft);color:var(--c-violet)}
+    .entity-card-icon.bay{background:var(--c-warning-soft);color:var(--c-warning)}
+    .entity-card-icon.device{background:var(--c-cyan-soft);color:var(--c-cyan)}
+    .entity-card-meta{flex:1;line-height:1.2;min-width:0}
+    .entity-card-name{font-weight:600;color:var(--c-text)}
+    .entity-card-sub{font-size:10px;color:var(--c-text-muted)}
+    .entity-card-arrow{color:var(--c-text-muted);flex-shrink:0}
+
+    /* Related events timeline */
+    .timeline{position:relative;padding-left:18px}
+    .timeline::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:var(--c-divider)}
+    .timeline-item{position:relative;padding:6px 0;font-size:var(--t-11)}
+    .timeline-item::before{content:"";position:absolute;left:-18px;top:10px;width:11px;height:11px;border-radius:50%;border:2px solid var(--c-surface);background:var(--c-text-muted);box-shadow:0 0 0 1px var(--c-border)}
+    .timeline-item.error::before{background:var(--c-danger);box-shadow:0 0 0 1px var(--c-danger)}
+    .timeline-item.warn::before{background:var(--c-warning);box-shadow:0 0 0 1px var(--c-warning)}
+    .timeline-item.info::before{background:var(--c-info);box-shadow:0 0 0 1px var(--c-info)}
+    .timeline-item.ok::before{background:var(--c-success);box-shadow:0 0 0 1px var(--c-success)}
+    .timeline-time{font-size:10px;color:var(--c-text-muted);font-variant-numeric:tabular-nums}
+    .timeline-text{color:var(--c-text);font-weight:500}
+    .timeline-text strong{font-weight:600}
+
+    /* Collapsible payload */
+    .payload-toggle{display:flex;align-items:center;gap:6px;font-size:var(--t-11);color:var(--c-text-2);cursor:pointer;margin-bottom:var(--s-2);font-weight:500}
+    .payload-toggle:hover{color:var(--c-text)}
+    .payload-box{background:#0F172A;color:#E2E8F0;border-radius:var(--r-md);padding:var(--s-3);font-family:var(--font-mono);font-size:10px;line-height:1.6;overflow-x:auto;display:none}
+    .payload-box.open{display:block}
+    .payload-box .key{color:#93C5FD}
+    .payload-box .str{color:#86EFAC}
+    .payload-box .num{color:#FCD34D}
+    .payload-box .null{color:#94A3B8}
+
+    .travis-credit{margin-top:var(--s-5);padding:var(--s-3) var(--s-4);background:var(--c-surface);border:1px dashed var(--c-border);border-radius:var(--r-md);font-size:var(--t-11);color:var(--c-text-2)}
+    .travis-credit strong{color:var(--c-text)}
+    .travis-credit .recs{margin-top:6px}
+    .travis-credit .rec-tag{display:inline-block;background:var(--c-info-soft);color:var(--c-info);padding:1px 6px;border-radius:4px;font-size:10px;margin-right:4px;font-weight:600}
+    .testing-credit{margin-top:var(--s-3);padding:var(--s-3) var(--s-4);background:var(--c-warning-soft);border:1px dashed var(--c-warning);border-radius:var(--r-md);font-size:var(--t-11);color:var(--c-warning-text)}
+    .testing-credit strong{color:var(--c-warning-text);font-weight:700}
+  </style>
+</head>
+<body>
+
+  <div class="annotation-strip">
+    <span class="chip">Prototype 06</span>
+    <strong>Reports / Activity log.</strong>
+    <span>Catalog-driven event titles · Kind + Severity badges · sticky filter bar · grouped by day · mini chart.</span>
+    <span class="anno-pill">Built for log readability</span>
+    <span style="margin-left:auto;color:#64748B;">Hover columns for design notes.</span>
+  </div>
+
+  <div class="shell">
+    <div class="logo">
+      <div class="logo-mark">H</div>
+      <div>HonestWaves</div>
+      <span class="logo-tenant">QA</span>
+    </div>
+
+    <div class="topbar">
+      <div class="breadcrumb">
+        <span style="color:var(--c-text-2);">Investigate</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--c-text-muted);"><polyline points="9 18 15 12 9 6"/></svg>
+        <strong>Reports</strong>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+        <span>Search lockers, devices, users…</span>
+        <span class="search-kbd">⌘K</span>
+      </div>
+      <button class="icon-btn" aria-label="Notifications">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        <span class="badge">99+</span>
+      </button>
+      <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+      <button class="avatar-btn">
+        <div class="avatar">AR</div>
+        <div class="avatar-meta">
+          <div class="avatar-name">Admin Rowe</div>
+          <div class="avatar-email">admin@honestwaves.test</div>
+        </div>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+    </div>
+
+    <nav class="sidebar">
+      <div class="nav-group">
+        <p class="nav-group-label">Monitor</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Mission Control</a>
+      </div>
+      <div class="nav-group">
+        <p class="nav-group-label">Manage</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/></svg>Lockers</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Devices</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Users</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>Access matrix</a>
+      </div>
+      <div class="nav-group">
+        <p class="nav-group-label">Investigate</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/></svg>Notifications<span class="nav-badge">99+</span></a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>Tracker</a>
+        <a class="nav-item active" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Reports</a>
+      </div>
+      <div class="nav-group">
+        <p class="nav-group-label">System</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>Software updates</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>Settings</a>
+      </div>
+      <div style="padding:var(--s-3);font-size:var(--t-11);color:var(--c-text-muted);">v2.0.0</div>
+    </nav>
+
+    <main class="main">
+      <div class="main-inner">
+
+        <!-- Sub-tabs -->
+        <div class="subtabs">
+          <div class="subtab active">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Activity log <span class="count">109</span>
+          </div>
+          <div class="subtab">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
+            Device status <span class="new-pill">Travis</span>
+          </div>
+          <div class="subtab">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+            Scheduled reports <span class="count">3</span> <span class="new-pill">Travis</span>
+          </div>
+          <div class="subtab">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-6-6"/><circle cx="10" cy="10" r="7"/></svg>
+            Custom report
+          </div>
+        </div>
+
+        <header class="page-head">
+          <div>
+            <h1 class="page-title">Activity log</h1>
+            <p class="page-sub">Every event from your fleet, in plain English · live · last 1,247 events shown</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn ghost">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+              Export
+            </button>
+            <button class="btn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+              Schedule this
+            </button>
+            <button class="btn primary">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>
+              Save view
+            </button>
+          </div>
+        </header>
+
+        <!-- KPI strip -->
+        <section class="kpis">
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-text-2);"></span>Events · 7 days</div>
+            <div class="kpi-value">1,247</div>
+            <div class="kpi-sub">vs 1,389 prior 7d</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-success);"></span>Actions</div>
+            <div class="kpi-value">913</div>
+            <div class="kpi-sub">73% checkouts + returns</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-warning);"></span>Routines</div>
+            <div class="kpi-value warn">184</div>
+            <div class="kpi-sub">overdue, cleaning, timeouts</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-danger);"></span>Failures &amp; faults</div>
+            <div class="kpi-value danger">27</div>
+            <div class="kpi-sub">3 hardware · 24 rejected</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-violet);"></span>Commands</div>
+            <div class="kpi-value">42</div>
+            <div class="kpi-sub">all succeeded</div>
+          </div>
+        </section>
+
+        <!-- Mini chart -->
+        <div class="chart-card note-host">
+          <div class="chart-head">
+            <div class="chart-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Events over the last 24 hours
+              <span style="font-size:10px;color:var(--c-text-muted);font-weight:500;">by Kind</span>
+            </div>
+            <div class="chart-legend">
+              <span class="legend-item"><span class="legend-sw" style="background:var(--c-success);"></span>Action</span>
+              <span class="legend-item"><span class="legend-sw" style="background:var(--c-danger);"></span>Event</span>
+              <span class="legend-item"><span class="legend-sw" style="background:var(--c-info);"></span>State change</span>
+              <span class="legend-item"><span class="legend-sw" style="background:var(--c-warning);"></span>Routine</span>
+              <span class="legend-item"><span class="legend-sw" style="background:var(--c-violet);"></span>Command</span>
+            </div>
+          </div>
+          <div class="chart-area">
+            <svg viewBox="0 0 800 120" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="actionGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#10B981" stop-opacity=".3"/><stop offset="100%" stop-color="#10B981" stop-opacity="0"/></linearGradient>
+              </defs>
+              <!-- grid -->
+              <line x1="0" y1="30" x2="800" y2="30" stroke="#EDF0F4" stroke-width="1"/>
+              <line x1="0" y1="60" x2="800" y2="60" stroke="#EDF0F4" stroke-width="1"/>
+              <line x1="0" y1="90" x2="800" y2="90" stroke="#EDF0F4" stroke-width="1"/>
+              <!-- Action area -->
+              <path d="M0,90 L33,80 L66,75 L100,70 L133,65 L166,55 L200,50 L233,45 L266,40 L300,35 L333,30 L366,38 L400,40 L433,35 L466,40 L500,30 L533,28 L566,32 L600,28 L633,30 L666,38 L700,45 L733,55 L766,60 L800,55 L800,120 L0,120Z" fill="url(#actionGrad)"/>
+              <path d="M0,90 L33,80 L66,75 L100,70 L133,65 L166,55 L200,50 L233,45 L266,40 L300,35 L333,30 L366,38 L400,40 L433,35 L466,40 L500,30 L533,28 L566,32 L600,28 L633,30 L666,38 L700,45 L733,55 L766,60 L800,55" stroke="#10B981" stroke-width="2" fill="none"/>
+              <!-- Event line -->
+              <path d="M0,108 L33,108 L66,110 L100,110 L133,105 L166,108 L200,108 L233,107 L266,104 L300,100 L333,102 L366,98 L400,98 L433,95 L466,98 L500,90 L533,88 L566,90 L600,92 L633,95 L666,100 L700,102 L733,105 L766,108 L800,108" stroke="#EF4444" stroke-width="1.5" fill="none"/>
+              <!-- Routine line -->
+              <path d="M0,102 L33,100 L66,98 L100,98 L133,95 L166,92 L200,90 L233,88 L266,85 L300,83 L333,85 L366,88 L400,90 L433,90 L466,88 L500,85 L533,85 L566,87 L600,89 L633,92 L666,95 L700,98 L733,99 L766,100 L800,98" stroke="#F59E0B" stroke-width="1.5" fill="none"/>
+              <!-- State change line -->
+              <path d="M0,95 L33,92 L66,90 L100,88 L133,85 L166,80 L200,78 L233,75 L266,72 L300,70 L333,68 L366,72 L400,72 L433,70 L466,72 L500,68 L533,65 L566,68 L600,65 L633,68 L666,72 L700,78 L733,82 L766,85 L800,85" stroke="#6366F1" stroke-width="1.5" fill="none"/>
+              <!-- Command line -->
+              <path d="M0,115 L33,115 L66,113 L100,114 L133,112 L166,114 L200,113 L233,112 L266,111 L300,110 L333,112 L366,113 L400,113 L433,112 L466,111 L500,110 L533,108 L566,109 L600,110 L633,111 L666,113 L700,114 L733,114 L766,115 L800,115" stroke="#7C3AED" stroke-width="1.5" fill="none"/>
+              <!-- Hotspot marker on Pink8 fault -->
+              <circle cx="650" cy="100" r="5" fill="#EF4444"/>
+              <line x1="650" y1="0" x2="650" y2="120" stroke="#EF4444" stroke-width="1" stroke-dasharray="3,2" opacity=".3"/>
+            </svg>
+          </div>
+          <div class="chart-x"><span>24h ago</span><span>18h</span><span>12h</span><span>6h</span><span>now</span></div>
+          <div class="note bl" style="left:0;max-width:280px;">
+            <strong>Catalog-driven Kinds</strong><br>
+            Stacked by the 5 catalog Kinds (Action · Event · State change · Routine · Command). Red dot = Pink8 hardware fault spike ~6h ago.
+          </div>
+        </div>
+
+        <!-- Sticky filter bar + quick chips -->
+        <div class="filter-sticky">
+          <div class="filter-bar note-host">
+            <div class="filter-search">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+              <input type="text" placeholder="Search by event title, user name, device serial, or order #…">
+            </div>
+            <button class="filter-select">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              User
+            </button>
+            <button class="filter-select">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
+              Device
+            </button>
+            <button class="filter-select">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
+              Locker
+              <span class="chip-count">1</span>
+            </button>
+            <button class="filter-select">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7 12 7 12s.8-.7 1.7-1.7"/></svg>
+              Location
+            </button>
+            <button class="filter-select">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/></svg>
+              Department
+            </button>
+            <button class="filter-select note-host">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+              Last 7 days
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              <div class="note bl" style="left:0;">
+                <strong>Date in 12-hour</strong><br>
+                Calendar uses month name + 12-hour clock with am/pm (per Conventions tab). The 24-hour leak in v1 is fixed.
+              </div>
+            </button>
+            <button class="filter-clear">Clear (1)</button>
+            <div class="note tl" style="right:0;left:auto;">
+              <strong>Sticky filter bar.</strong><br>
+              Stays at the top while you scroll the log so you don't lose your filters when reviewing pages of events.
+            </div>
+          </div>
+          <div class="quick-row note-host">
+            <span style="font-size:10px;color:var(--c-text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding-right:4px;">Quick filters:</span>
+            <button class="quick-chip"><span class="dot" style="background:var(--c-success);"></span>Checkouts only</button>
+            <button class="quick-chip active"><span class="dot" style="background:var(--c-danger);"></span>Failures &amp; faults</button>
+            <button class="quick-chip"><span class="dot" style="background:var(--c-warning);"></span>Overdue today</button>
+            <button class="quick-chip"><span class="dot" style="background:var(--c-info);"></span>Bay state changes</button>
+            <button class="quick-chip"><span class="dot" style="background:var(--c-violet);"></span>Admin actions</button>
+            <button class="quick-chip"><span class="dot" style="background:var(--c-cyan);"></span>Restock issues</button>
+            <span style="margin-left:auto;font-size:11px;color:var(--c-text-2);">→ <strong>27 events</strong> match these filters</span>
+            <div class="note tl" style="left:0;">
+              <strong>Quick-filter chips replace clutter.</strong><br>
+              One-click presets save 6+ filter clicks. The chips are the cure for "logs are hard to read" — they collapse 1,200+ events into the ones that matter right now.
+            </div>
+          </div>
+        </div>
+
+        <!-- Log table -->
+        <div class="log-card" style="margin-top:var(--s-3);">
+          <table class="log-table">
+            <thead>
+              <tr>
+                <th style="width:140px;">Time</th>
+                <th style="width:74px;">Kind</th>
+                <th style="width:30px;"></th>
+                <th>Event</th>
+                <th style="width:160px;">User</th>
+                <th style="width:200px;">Locker · Bay</th>
+                <th style="width:160px;">Device</th>
+                <th style="width:50px;"></th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <!-- DAY: Today -->
+              <tr class="day-row"><td colspan="8">Today · Jun 17, 2026 <span class="day-meta">· 86 events</span></td></tr>
+
+              <tr class="selected">
+                <td class="time-cell"><div class="time-rel">3 min ago</div><div class="time-abs">3:21 PM</div></td>
+                <td><span class="kind-badge event">Event</span></td>
+                <td><span class="sev-dot critical" title="Critical"></span></td>
+                <td><div class="event-title">Hardware fault</div><div class="event-sub">Bays 3, 6, 7 went unreachable — solenoid driver board</div></td>
+                <td><div class="ent-empty">— system —</div></td>
+                <td><span class="ent-chip locker"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Pink8</span></td>
+                <td><div class="ent-empty">multiple</div></td>
+                <td class="row-actions-mini"><button><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+              </tr>
+
+              <tr>
+                <td class="time-cell"><div class="time-rel">14 min ago</div><div class="time-abs">3:10 PM</div></td>
+                <td><span class="kind-badge routine">Routine</span></td>
+                <td><span class="sev-dot warn"></span></td>
+                <td><div class="event-title">Door left open</div><div class="event-sub">Door was open for 8 min — past the 5 min threshold</div></td>
+                <td><div class="ent-empty">— system —</div></td>
+                <td><span class="ent-chip locker"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Pink8</span> <span class="ent-chip bay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Bay 4</span></td>
+                <td><div class="ent-empty">—</div></td>
+                <td class="row-actions-mini"><button><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+              </tr>
+
+              <tr>
+                <td class="time-cell"><div class="time-rel">22 min ago</div><div class="time-abs">3:02 PM</div></td>
+                <td><span class="kind-badge event">Event</span></td>
+                <td><span class="sev-dot error"></span></td>
+                <td><div class="event-title">Checkout failed</div><div class="event-sub">Crosby Smith blocked — 3 unreturned devices · supervisor approval required</div></td>
+                <td><span class="ent-chip user"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Crosby Smith</span></td>
+                <td><span class="ent-chip locker"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Pink8</span> <span class="ent-chip bay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Bay 4</span></td>
+                <td><div class="ent-empty">—</div></td>
+                <td class="row-actions-mini"><button><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+              </tr>
+
+              <tr>
+                <td class="time-cell"><div class="time-rel">48 min ago</div><div class="time-abs">2:36 PM</div></td>
+                <td><span class="kind-badge event">Event</span></td>
+                <td><span class="sev-dot warn"></span></td>
+                <td><div class="event-title">Device in wrong bay</div><div class="event-sub">iPhone 16e 74 was scanned into Bay 11, but it's assigned to Bay 4</div></td>
+                <td><span class="ent-chip user"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Worf Rozhenko</span></td>
+                <td><span class="ent-chip locker"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Pink8</span> <span class="ent-chip bay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Bay 11</span></td>
+                <td><span class="ent-chip device"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>iPhone 16e 74</span></td>
+                <td class="row-actions-mini"><button><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+              </tr>
+
+              <tr>
+                <td class="time-cell"><div class="time-rel">1h 12m ago</div><div class="time-abs">2:12 PM</div></td>
+                <td><span class="kind-badge routine">Routine</span></td>
+                <td><span class="sev-dot warn"></span></td>
+                <td><div class="event-title">Checkout overdue</div><div class="event-sub">Wesley Crusher's checkout is 5d 8h past the return window</div></td>
+                <td><span class="ent-chip user"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Wesley Crusher</span></td>
+                <td><span class="ent-chip locker"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Green</span> <span class="ent-chip bay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Bay 2</span></td>
+                <td><span class="ent-chip device"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>iPhone02</span></td>
+                <td class="row-actions-mini"><button><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+              </tr>
+
+              <tr>
+                <td class="time-cell"><div class="time-rel">2h 8m ago</div><div class="time-abs">1:16 PM</div></td>
+                <td><span class="kind-badge state">State change</span></td>
+                <td><span class="sev-dot info"></span></td>
+                <td><div class="event-title">Bay state changed</div><div class="event-sub">Bay 32 went from Available to Deactivated</div></td>
+                <td><span class="ent-chip user"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Admin Rowe</span></td>
+                <td><span class="ent-chip locker"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Blue34</span> <span class="ent-chip bay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Bay 32</span></td>
+                <td><div class="ent-empty">—</div></td>
+                <td class="row-actions-mini"><button><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+              </tr>
+
+              <tr>
+                <td class="time-cell"><div class="time-rel">2h 34m ago</div><div class="time-abs">12:50 PM</div></td>
+                <td><span class="kind-badge action">Action</span></td>
+                <td><span class="sev-dot ok"></span></td>
+                <td><div class="event-title">Returned</div><div class="event-sub">Picard returned iPhone03 to Bay 3 — no damage</div></td>
+                <td><span class="ent-chip user"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Jean-Luc Picard</span></td>
+                <td><span class="ent-chip locker"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Green</span> <span class="ent-chip bay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Bay 3</span></td>
+                <td><span class="ent-chip device"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>iPhone03</span></td>
+                <td class="row-actions-mini"><button><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+              </tr>
+
+              <tr>
+                <td class="time-cell"><div class="time-rel">2h 45m ago</div><div class="time-abs">12:39 PM</div></td>
+                <td><span class="kind-badge action">Action</span></td>
+                <td><span class="sev-dot ok"></span></td>
+                <td><div class="event-title">Checked out</div><div class="event-sub">Geordi La Forge took iPhone05 from Bay 5</div></td>
+                <td><span class="ent-chip user"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Geordi La Forge</span></td>
+                <td><span class="ent-chip locker"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Green</span> <span class="ent-chip bay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Bay 5</span></td>
+                <td><span class="ent-chip device"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>iPhone05</span></td>
+                <td class="row-actions-mini"><button><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+              </tr>
+
+              <tr>
+                <td class="time-cell"><div class="time-rel">3h 1m ago</div><div class="time-abs">12:23 PM</div></td>
+                <td><span class="kind-badge command">Command</span></td>
+                <td><span class="sev-dot ok"></span></td>
+                <td><div class="event-title">Command succeeded</div><div class="event-sub">Locker Pink8 confirmed `sync_now` — 47 records refreshed</div></td>
+                <td><span class="ent-chip user"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Admin Rowe</span></td>
+                <td><span class="ent-chip locker"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Pink8</span></td>
+                <td><div class="ent-empty">—</div></td>
+                <td class="row-actions-mini"><button><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+              </tr>
+
+              <tr>
+                <td class="time-cell"><div class="time-rel">3h 12m ago</div><div class="time-abs">12:12 PM</div></td>
+                <td><span class="kind-badge action">Action</span></td>
+                <td><span class="sev-dot info"></span></td>
+                <td><div class="event-title">Device assigned to bay</div><div class="event-sub">iPhone 16e 77 was assigned to Bay 7 on Pink8</div></td>
+                <td><span class="ent-chip user"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Admin Rowe</span></td>
+                <td><span class="ent-chip locker"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Pink8</span> <span class="ent-chip bay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Bay 7</span></td>
+                <td><span class="ent-chip device"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>iPhone 16e 77</span></td>
+                <td class="row-actions-mini"><button><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+              </tr>
+
+              <!-- DAY: Yesterday -->
+              <tr class="day-row"><td colspan="8">Yesterday · Jun 16, 2026 <span class="day-meta">· 147 events</span></td></tr>
+
+              <tr>
+                <td class="time-cell"><div class="time-rel">21h ago</div><div class="time-abs">Jun 16 · 6:30 PM</div></td>
+                <td><span class="kind-badge action">Action</span></td>
+                <td><span class="sev-dot ok"></span></td>
+                <td><div class="event-title">Bay reset</div><div class="event-sub">Admin Rowe reset Bay 1 — 1 open checkout force-closed</div></td>
+                <td><span class="ent-chip user"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Admin Rowe</span></td>
+                <td><span class="ent-chip locker"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Pink8</span> <span class="ent-chip bay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Bay 1</span></td>
+                <td><div class="ent-empty">—</div></td>
+                <td class="row-actions-mini"><button><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+              </tr>
+
+              <tr>
+                <td class="time-cell"><div class="time-rel">22h ago</div><div class="time-abs">Jun 16 · 5:24 PM</div></td>
+                <td><span class="kind-badge event">Event</span></td>
+                <td><span class="sev-dot error"></span></td>
+                <td><div class="event-title">Unknown device scanned</div><div class="event-sub">Code 88301 was scanned during restock but doesn't match any known device</div></td>
+                <td><span class="ent-chip user"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Tuvok</span></td>
+                <td><span class="ent-chip locker"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>ICU2</span> <span class="ent-chip bay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Bay 1</span></td>
+                <td><div class="ent-empty">unknown</div></td>
+                <td class="row-actions-mini"><button><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+              </tr>
+
+              <tr>
+                <td class="time-cell"><div class="time-rel">23h ago</div><div class="time-abs">Jun 16 · 4:08 PM</div></td>
+                <td><span class="kind-badge action">Action</span></td>
+                <td><span class="sev-dot ok"></span></td>
+                <td><div class="event-title">Device removed</div><div class="event-sub">Admin Rowe removed iPhone old-21 — lifecycle replacement</div></td>
+                <td><span class="ent-chip user"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Admin Rowe</span></td>
+                <td><div class="ent-empty">—</div></td>
+                <td><span class="ent-chip device"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>iPhone old-21</span></td>
+                <td class="row-actions-mini"><button><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+              </tr>
+
+              <tr>
+                <td class="time-cell"><div class="time-rel">1d ago</div><div class="time-abs">Jun 16 · 3:12 PM</div></td>
+                <td><span class="kind-badge event">Event</span></td>
+                <td><span class="sev-dot error"></span></td>
+                <td><div class="event-title">Mode change waiting on open checkouts</div><div class="event-sub">Mode change from Direct Assignment to Hybrid is waiting — 4 checkouts still open</div></td>
+                <td><span class="ent-chip user"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Admin Rowe</span></td>
+                <td><span class="ent-chip locker"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Pink8</span></td>
+                <td><div class="ent-empty">—</div></td>
+                <td class="row-actions-mini"><button><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+              </tr>
+
+              <tr>
+                <td class="time-cell"><div class="time-rel">1d 2h ago</div><div class="time-abs">Jun 16 · 1:20 PM</div></td>
+                <td><span class="kind-badge routine">Routine</span></td>
+                <td><span class="sev-dot ok"></span></td>
+                <td><div class="event-title">Cleaning finished</div><div class="event-sub">Bay 2 finished its UV-C cleaning hold and is back in service</div></td>
+                <td><div class="ent-empty">— system —</div></td>
+                <td><span class="ent-chip locker"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Green</span> <span class="ent-chip bay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Bay 2</span></td>
+                <td><div class="ent-empty">—</div></td>
+                <td class="row-actions-mini"><button><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+              </tr>
+
+              <!-- DAY: Two days ago -->
+              <tr class="day-row"><td colspan="8">Jun 15, 2026 <span class="day-meta">· 192 events · 1 hardware fault, recovered</span></td></tr>
+
+              <tr>
+                <td class="time-cell"><div class="time-rel">2d 5h ago</div><div class="time-abs">Jun 15 · 10:46 AM</div></td>
+                <td><span class="kind-badge event">Event</span></td>
+                <td><span class="sev-dot ok"></span></td>
+                <td><div class="event-title">Hardware recovered</div><div class="event-sub">Previously faulty Bay 8 is back online after 14 min of downtime</div></td>
+                <td><div class="ent-empty">— system —</div></td>
+                <td><span class="ent-chip locker"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Pink8</span> <span class="ent-chip bay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Bay 8</span></td>
+                <td><div class="ent-empty">—</div></td>
+                <td class="row-actions-mini"><button><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+              </tr>
+
+            </tbody>
+          </table>
+
+          <div class="table-foot">
+            <span>Showing 16 of 1,247 events (filtered)</span>
+            <div class="pag">
+              <button class="pag-btn" disabled><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <span class="pag-num active">1</span>
+              <span class="pag-num">2</span>
+              <span class="pag-num">3</span>
+              <span style="padding:0 4px;color:var(--c-text-muted);">…</span>
+              <button class="pag-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+              <span style="margin-left:12px;">50 per page</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testing team feedback credit -->
+        <div class="testing-credit">
+          <strong>Built for the testing team's "logs are hard to read" feedback.</strong>
+          Key fixes: <strong>plain-English event titles</strong> from the dev catalog (no more <code style="font-family:var(--font-mono);background:rgba(255,255,255,.6);padding:1px 4px;border-radius:3px;">Bay 32: ∅ → DEACTIVATED</code>); <strong>2-line row format</strong> with title + sub; <strong>Kind badge + Severity dot</strong> kept as separate dimensions; <strong>day separators</strong> with running totals; <strong>sticky filter bar</strong>; <strong>quick-filter chips</strong> for one-click presets; <strong>entity chips inline</strong> (User · Locker · Bay · Device) so you don't have to read every line to find what you're after.
+        </div>
+
+        <!-- Travis credit -->
+        <div class="travis-credit">
+          <strong>Recommendations integrated from Travis @ Corewell:</strong>
+          <div class="recs">
+            <span class="rec-tag">P5</span>Device status report (separate sub-tab — columns: location · department · device · status · user · locker · bay · overdue · last update) &nbsp;
+            <span class="rec-tag">P5</span>Scheduled reports (sub-tab + Schedule-this button on every saved view) &nbsp;
+            <span class="rec-tag">P5</span>Filter by location + department &nbsp;
+            <span class="rec-tag">P4</span>Restock events surfaced (Unknown device scanned · Device in wrong bay)
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- ============================================================
+         Event detail drawer — opens when a log row is clicked.
+         Shows the selected "Hardware fault on Pink8" event in full.
+         ============================================================ -->
+    <aside class="drawer">
+      <div class="drawer-head">
+        <div class="drawer-head-row">
+          <div style="min-width:0;flex:1;">
+            <div class="drawer-pills">
+              <span class="kind-badge event">Event</span>
+              <span class="pill-crit"><span class="pill-dot"></span>Critical</span>
+            </div>
+            <h2 class="drawer-title">Hardware fault</h2>
+            <div class="drawer-sub">bay.hardware.fault · evt_8f4c2a1e</div>
+          </div>
+          <button class="drawer-close" aria-label="Close">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="drawer-actions-row">
+          <button class="btn primary">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 6 12 12 16 14"/></svg>
+            Open in Tracker
+          </button>
+          <button class="btn">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Acknowledge
+          </button>
+          <button class="btn">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div class="drawer-section">
+        <p class="drawer-h">What happened</p>
+        <div class="summary-text">
+          Pink8's hardware self-check reported faults on <strong>bays 3, 6, and 7</strong>. Diagnostics point to the
+          <strong>solenoid driver board</strong> — devices in those bays are not detectable until repair or replacement.
+        </div>
+        <div class="time-block">
+          <div>
+            <div class="time-label">First seen</div>
+            <div class="time-val">3:21 PM</div>
+          </div>
+          <div>
+            <div class="time-label">Affected for</div>
+            <div class="time-val">3 min</div>
+          </div>
+          <div>
+            <div class="time-label">Recurrence</div>
+            <div class="time-val">First today</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Affected entities -->
+      <div class="drawer-section">
+        <p class="drawer-h">Affected</p>
+        <div class="entity-list">
+          <div class="entity-card">
+            <div class="entity-card-icon locker">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
+            </div>
+            <div class="entity-card-meta">
+              <div class="entity-card-name">Pink8</div>
+              <div class="entity-card-sub">HonestWaves Orange County Office · 5c00…b221d</div>
+            </div>
+            <svg class="entity-card-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="entity-card">
+            <div class="entity-card-icon bay">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
+            </div>
+            <div class="entity-card-meta">
+              <div class="entity-card-name">Bays 3, 6, 7</div>
+              <div class="entity-card-sub">Solenoid driver board · all unreachable</div>
+            </div>
+            <svg class="entity-card-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="entity-card">
+            <div class="entity-card-icon device">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
+            </div>
+            <div class="entity-card-meta">
+              <div class="entity-card-name">iPhone 16e 73, 76, 77</div>
+              <div class="entity-card-sub">All marked "No device" — last scan 14h ago</div>
+            </div>
+            <svg class="entity-card-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Related events timeline -->
+      <div class="drawer-section">
+        <p class="drawer-h">Related events on Pink8 · last 24h</p>
+        <div class="timeline">
+          <div class="timeline-item error">
+            <div class="timeline-time">3:21 PM · 3 min ago</div>
+            <div class="timeline-text"><strong>Hardware fault</strong> — this event</div>
+          </div>
+          <div class="timeline-item warn">
+            <div class="timeline-time">3:10 PM · 14 min ago</div>
+            <div class="timeline-text">Door left open · Bay 4</div>
+          </div>
+          <div class="timeline-item error">
+            <div class="timeline-time">3:02 PM · 22 min ago</div>
+            <div class="timeline-text">Checkout failed · Crosby Smith</div>
+          </div>
+          <div class="timeline-item warn">
+            <div class="timeline-time">2:36 PM · 48 min ago</div>
+            <div class="timeline-text">Device in wrong bay · iPhone 16e 74</div>
+          </div>
+          <div class="timeline-item ok">
+            <div class="timeline-time">12:23 PM · 3h ago</div>
+            <div class="timeline-text">Sync command succeeded</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Source & metadata -->
+      <div class="drawer-section">
+        <p class="drawer-h">Source &amp; metadata</p>
+        <div class="info-row"><span class="info-label">Reported by</span><span class="info-value">Hardware self-check</span></div>
+        <div class="info-row"><span class="info-label">Source IP</span><span class="info-value">10.12.100.54</span></div>
+        <div class="info-row"><span class="info-label">Firmware</span><span class="info-value">v2.1.23.3003</span></div>
+        <div class="info-row"><span class="info-label">Event ID</span><span class="info-value">evt_8f4c2a1e</span></div>
+        <div class="info-row"><span class="info-label">Catalog type</span><span class="info-value">bay.hardware.fault</span></div>
+      </div>
+
+      <!-- Raw payload (collapsed) -->
+      <div class="drawer-section">
+        <div class="payload-toggle" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('svg').style.transform=this.nextElementSibling.classList.contains('open')?'rotate(90deg)':''">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transition:transform .12s;"><polyline points="9 18 15 12 9 6"/></svg>
+          Raw event payload
+        </div>
+        <pre class="payload-box">{
+  <span class="key">"type"</span>: <span class="str">"bay.hardware.fault"</span>,
+  <span class="key">"kind"</span>: <span class="str">"event"</span>,
+  <span class="key">"severity"</span>: <span class="str">"critical"</span>,
+  <span class="key">"locker_id"</span>: <span class="str">"5c00…b221d"</span>,
+  <span class="key">"affected_bays"</span>: [<span class="num">3</span>, <span class="num">6</span>, <span class="num">7</span>],
+  <span class="key">"diagnostics"</span>: {
+    <span class="key">"board"</span>: <span class="str">"solenoid_driver"</span>,
+    <span class="key">"error_code"</span>: <span class="str">"DRV_UNREACHABLE"</span>,
+    <span class="key">"last_response_ms"</span>: <span class="num">2847</span>
+  },
+  <span class="key">"emitted_at"</span>: <span class="str">"2026-06-17T15:21:04.812Z"</span>
+}</pre>
+      </div>
+    </aside>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1440">
+  <title>HonestWaves redesign · 09 · Tracker</title>
+  <style>
+    :root {
+      --c-surface:#FFFFFF; --c-surface-2:#FAFAFB; --c-surface-3:#F4F5F7;
+      --c-border:#E5E7EB; --c-border-strong:#D1D5DB; --c-divider:#EDF0F4;
+      --c-text:#0F172A; --c-text-2:#475569; --c-text-muted:#94A3B8;
+      --c-brand:#2563EB; --c-brand-hover:#1D4ED8; --c-brand-soft:#EFF6FF; --c-brand-deep:#1E40AF;
+      --c-success:#10B981; --c-success-soft:#ECFDF5;
+      --c-warning:#F59E0B; --c-warning-soft:#FFFBEB; --c-warning-text:#B45309;
+      --c-danger:#EF4444; --c-danger-soft:#FEF2F2;
+      --c-info:#6366F1; --c-info-soft:#EEF2FF;
+      --c-violet:#7C3AED; --c-violet-soft:#F5F3FF;
+      --c-cyan:#06B6D4; --c-cyan-soft:#ECFEFF;
+      --c-amber:#F59E0B; --c-amber-soft:#FFFBEB;
+      --c-rose:#F43F5E; --c-rose-soft:#FFF1F2;
+      --c-slate:#64748B; --c-slate-soft:#F1F5F9;
+      --font-sans:"Inter",-apple-system,sans-serif;
+      --font-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+      --t-10:10px; --t-11:11px; --t-12:12px; --t-13:13px; --t-14:14px; --t-16:16px; --t-20:20px;
+      --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:20px; --s-6:24px;
+      --r-sm:4px; --r-md:6px; --r-lg:8px;
+      --sh-1:0 1px 2px rgba(15,23,42,.04);
+      --sh-2:0 1px 3px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04);
+      --sh-popover:0 8px 24px rgba(15,23,42,.10),0 2px 6px rgba(15,23,42,.06);
+      --sidebar-w:232px; --topbar-h:52px;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:var(--font-sans);font-size:var(--t-13);line-height:1.45;color:var(--c-text);background:var(--c-surface-2);-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+    svg{display:block}
+    .shell{display:grid;grid-template-columns:var(--sidebar-w) 1fr 400px;grid-template-rows:var(--topbar-h) 1fr;grid-template-areas:"logo topbar topbar" "side main drawer";min-height:100vh}
+    @media (max-width: 1280px){.shell{grid-template-columns:var(--sidebar-w) 1fr;grid-template-areas:"logo topbar" "side main"}.drawer{display:none!important}}
+
+    /* Chrome */
+    .logo{grid-area:logo;background:var(--c-surface);border-right:1px solid var(--c-border);border-bottom:1px solid var(--c-border);display:flex;align-items:center;gap:10px;padding:0 var(--s-4);font-weight:600;font-size:var(--t-14)}
+    .logo-mark{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--c-brand),var(--c-brand-deep));display:grid;place-items:center;color:white;font-weight:700;font-size:13px}
+    .logo-tenant{margin-left:auto;font-size:var(--t-11);color:var(--c-text-muted);background:var(--c-surface-3);padding:2px 6px;border-radius:var(--r-sm);font-weight:500}
+    .topbar{grid-area:topbar;background:var(--c-surface);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 var(--s-5);gap:var(--s-3)}
+    .breadcrumb{display:flex;align-items:center;gap:var(--s-2);color:var(--c-text-2);font-size:var(--t-13)}
+    .breadcrumb strong{color:var(--c-text);font-weight:600}
+    .topbar-spacer{flex:1}
+    .search{display:flex;align-items:center;gap:var(--s-2);width:340px;height:32px;padding:0 var(--s-3);background:var(--c-surface-2);border:1px solid var(--c-border);border-radius:var(--r-md);color:var(--c-text-muted);font-size:var(--t-13)}
+    .search-kbd{margin-left:auto;padding:1px 5px;font-family:var(--font-mono);font-size:10px;color:var(--c-text-2);background:var(--c-surface);border:1px solid var(--c-border);border-radius:3px}
+    .icon-btn{width:32px;height:32px;display:grid;place-items:center;border-radius:var(--r-md);color:var(--c-text-2);position:relative}
+    .icon-btn:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .icon-btn .badge{position:absolute;top:2px;right:2px;min-width:16px;height:16px;padding:0 4px;background:var(--c-danger);color:white;border:2px solid var(--c-surface);border-radius:999px;font-size:9px;font-weight:700;display:grid;place-items:center}
+    .avatar-btn{display:flex;align-items:center;gap:var(--s-2);padding:4px 8px 4px 4px;border-radius:var(--r-md)}
+    .avatar-btn:hover{background:var(--c-surface-3)}
+    .avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#6366F1,#2563EB);color:white;font-size:11px;font-weight:600;display:grid;place-items:center}
+    .avatar-meta{line-height:1.1;text-align:left}
+    .avatar-name{font-size:var(--t-12);font-weight:600}
+    .avatar-email{font-size:var(--t-11);color:var(--c-text-muted)}
+    .sidebar{grid-area:side;background:var(--c-surface);border-right:1px solid var(--c-border);padding:var(--s-3) var(--s-2);overflow-y:auto}
+    .nav-group{margin-bottom:var(--s-4)}
+    .nav-group-label{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--c-text-muted);padding:0 var(--s-3);margin:0 0 4px}
+    .nav-item{display:flex;align-items:center;gap:var(--s-3);padding:7px var(--s-3);border-radius:var(--r-md);font-size:var(--t-13);color:var(--c-text-2);position:relative}
+    .nav-item:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .nav-item.active{background:var(--c-brand-soft);color:var(--c-brand-deep);font-weight:600}
+    .nav-item.active::before{content:"";position:absolute;left:-2px;top:8px;bottom:8px;width:2px;background:var(--c-brand);border-radius:2px}
+    .nav-icon{width:16px;height:16px;flex-shrink:0;opacity:.85}
+    .nav-item.active .nav-icon{opacity:1}
+    .nav-badge{margin-left:auto;font-size:10px;font-weight:600;padding:1px 6px;border-radius:999px;background:var(--c-danger-soft);color:var(--c-danger)}
+
+    /* Main */
+    .main{grid-area:main;overflow-y:auto}
+    .main-inner{padding:var(--s-5) var(--s-6);max-width:1080px}
+    .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s-4);margin-bottom:var(--s-4)}
+    .page-title{font-size:var(--t-20);font-weight:600;letter-spacing:-.01em;margin:0 0 2px}
+    .page-sub{font-size:var(--t-12);color:var(--c-text-2);margin:0}
+    .page-actions{display:flex;align-items:center;gap:var(--s-2)}
+    .btn{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 var(--s-3);font-size:var(--t-12);font-weight:500;color:var(--c-text);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);box-shadow:var(--sh-1)}
+    .btn:hover{background:var(--c-surface-3);border-color:var(--c-border-strong)}
+    .btn.primary{background:var(--c-brand);color:white;border-color:var(--c-brand)}
+    .btn.primary:hover{background:var(--c-brand-hover);border-color:var(--c-brand-hover)}
+    .btn.ghost{background:transparent;border-color:transparent;box-shadow:none}
+
+    /* Entity picker — Travis P0: includes Order */
+    .picker-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-lg);padding:var(--s-4);margin-bottom:var(--s-4)}
+    .picker-h{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--c-text-muted);margin:0 0 var(--s-2)}
+    .picker-row{display:flex;gap:var(--s-2);align-items:center}
+    .picker-types{display:inline-flex;background:var(--c-surface-3);border-radius:var(--r-md);padding:2px}
+    .picker-type{padding:6px 12px;font-size:var(--t-12);font-weight:500;color:var(--c-text-2);border-radius:var(--r-sm);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+    .picker-type:hover{color:var(--c-text)}
+    .picker-type.active{background:var(--c-surface);color:var(--c-text);box-shadow:var(--sh-1);font-weight:600}
+    .picker-type .new-tag{font-size:8px;font-weight:700;padding:1px 4px;border-radius:3px;background:var(--c-violet-soft);color:var(--c-violet);text-transform:uppercase;letter-spacing:.04em}
+    .picker-input{flex:1;display:flex;align-items:center;gap:var(--s-2);height:36px;padding:0 var(--s-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);color:var(--c-text);font-size:var(--t-13)}
+    .picker-input:focus-within{border-color:var(--c-brand);box-shadow:0 0 0 3px var(--c-brand-soft)}
+    .picker-input input{flex:1;height:100%;border:0;background:transparent;outline:none;font:inherit;color:inherit}
+    .picker-input input::placeholder{color:var(--c-text-muted)}
+
+    /* Selected entity card (the "anchor") */
+    .anchor-card{background:linear-gradient(90deg,var(--c-brand-soft),#F0F7FF);border:1px solid var(--c-brand);border-radius:var(--r-md);padding:var(--s-3) var(--s-4);margin-bottom:var(--s-3);display:flex;align-items:center;gap:var(--s-3)}
+    .anchor-icon{width:36px;height:36px;border-radius:var(--r-md);background:var(--c-brand);color:white;display:grid;place-items:center;flex-shrink:0}
+    .anchor-meta{flex:1}
+    .anchor-label{font-size:10px;font-weight:600;color:var(--c-brand-deep);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+    .anchor-name{font-weight:600;font-size:var(--t-14);color:var(--c-text)}
+    .anchor-sub{font-size:var(--t-11);color:var(--c-text-2)}
+    .anchor-stats{display:flex;align-items:center;gap:14px;font-size:var(--t-11);color:var(--c-text-2)}
+    .anchor-stats strong{color:var(--c-text);font-weight:600}
+
+    /* Filter chips (Show only) */
+    .show-row{display:flex;align-items:center;gap:6px;margin-bottom:var(--s-3);flex-wrap:wrap}
+    .show-label{font-size:10px;color:var(--c-text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding-right:4px}
+    .show-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:999px;font-size:var(--t-11);font-weight:500;color:var(--c-text-2);cursor:pointer;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.04em}
+    .show-chip:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .show-chip.active{font-weight:700}
+    .show-chip.action.active{background:var(--c-success-soft);border-color:var(--c-success);color:var(--c-success)}
+    .show-chip.event.active{background:var(--c-danger-soft);border-color:var(--c-danger);color:var(--c-danger)}
+    .show-chip.state.active{background:var(--c-info-soft);border-color:var(--c-info);color:var(--c-info)}
+    .show-chip.routine.active{background:var(--c-warning-soft);border-color:var(--c-warning);color:var(--c-warning-text)}
+    .show-chip.command.active{background:var(--c-violet-soft);border-color:var(--c-violet);color:var(--c-violet)}
+    .date-input{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);font-size:var(--t-12);color:var(--c-text);height:30px;cursor:pointer}
+
+    /* Timeline */
+    .timeline-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-lg);padding:var(--s-4) var(--s-5)}
+    .timeline-section{padding-bottom:var(--s-4)}
+    .timeline-day{font-size:10px;font-weight:600;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:.08em;padding:var(--s-3) 0 var(--s-2);position:sticky;top:0;background:var(--c-surface);z-index:2;border-bottom:1px solid var(--c-divider);margin-bottom:var(--s-2)}
+    .timeline-day strong{color:var(--c-text-2)}
+    .timeline-day-count{margin-left:6px;color:var(--c-text-muted);font-weight:500;text-transform:none;letter-spacing:0}
+
+    .tl{position:relative;padding-left:36px}
+    .tl::before{content:"";position:absolute;left:14px;top:14px;bottom:14px;width:1px;background:var(--c-divider)}
+    .tl-item{position:relative;padding:8px 0;cursor:pointer;border-radius:var(--r-sm);transition:background .12s}
+    .tl-item:hover{background:var(--c-surface-2)}
+    .tl-item.selected{background:var(--c-brand-soft)}
+    .tl-item::before{content:"";position:absolute;left:-28px;top:14px;width:13px;height:13px;border-radius:50%;background:var(--c-text-muted);box-shadow:0 0 0 2px var(--c-surface)}
+    .tl-item.action::before{background:var(--c-success)}
+    .tl-item.event::before{background:var(--c-danger)}
+    .tl-item.state::before{background:var(--c-info)}
+    .tl-item.routine::before{background:var(--c-warning)}
+    .tl-item.command::before{background:var(--c-violet)}
+    .tl-item.critical::before{animation:pulseDanger 2s infinite}
+    @keyframes pulseDanger{0%{box-shadow:0 0 0 0 rgba(239,68,68,.5)}70%{box-shadow:0 0 0 6px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
+
+    .tl-row{display:flex;align-items:flex-start;gap:var(--s-3);padding:0 var(--s-2)}
+    .tl-time{font-size:var(--t-11);color:var(--c-text-2);width:120px;flex-shrink:0;font-variant-numeric:tabular-nums;padding-top:1px}
+    .tl-time .tl-rel{font-weight:600;color:var(--c-text)}
+    .tl-time .tl-abs{color:var(--c-text-muted);font-size:10px}
+    .tl-meta{flex:1;min-width:0}
+    .tl-title{font-weight:600;font-size:var(--t-13);color:var(--c-text);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .tl-kind{display:inline-flex;align-items:center;height:16px;padding:0 6px;border-radius:3px;font-size:var(--t-10);font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-family:var(--font-mono)}
+    .tl-kind.action{background:var(--c-success-soft);color:var(--c-success)}
+    .tl-kind.event{background:var(--c-danger-soft);color:var(--c-danger)}
+    .tl-kind.state{background:var(--c-info-soft);color:var(--c-info)}
+    .tl-kind.routine{background:var(--c-warning-soft);color:var(--c-warning-text)}
+    .tl-kind.command{background:var(--c-violet-soft);color:var(--c-violet)}
+    .tl-sub{font-size:var(--t-11);color:var(--c-text-2);margin-top:3px}
+    .tl-chips{display:flex;align-items:center;gap:5px;margin-top:5px}
+    .tl-chip{display:inline-flex;align-items:center;gap:3px;padding:1px 7px;background:var(--c-surface-3);border-radius:4px;font-size:10px;font-weight:500;color:var(--c-text-2)}
+    .tl-chip svg{width:9px;height:9px;color:var(--c-text-muted)}
+
+    /* Drawer */
+    .drawer{grid-area:drawer;background:var(--c-surface);border-left:1px solid var(--c-border);overflow-y:auto}
+    .drawer-head{padding:var(--s-4);border-bottom:1px solid var(--c-divider);position:sticky;top:0;background:var(--c-surface);z-index:3}
+    .drawer-head-row{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s-3)}
+    .drawer-pills{display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+    .drawer-title{font-size:var(--t-16);font-weight:600;letter-spacing:-.01em;margin:0;color:var(--c-text);line-height:1.2}
+    .drawer-sub{font-size:var(--t-11);color:var(--c-text-muted);margin-top:4px;font-family:var(--font-mono)}
+    .drawer-close{width:28px;height:28px;display:grid;place-items:center;border-radius:var(--r-md);color:var(--c-text-2);flex-shrink:0}
+    .drawer-close:hover{background:var(--c-surface-3)}
+    .drawer-section{padding:var(--s-4);border-bottom:1px solid var(--c-divider)}
+    .drawer-section:last-child{border-bottom:0}
+    .drawer-h{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--c-text-muted);margin:0 0 var(--s-2)}
+    .summary-text{font-size:var(--t-13);color:var(--c-text);line-height:1.5}
+    .summary-text strong{font-weight:600}
+    .entity-list{display:flex;flex-direction:column;gap:6px}
+    .entity-card{display:flex;align-items:center;gap:var(--s-2);padding:8px var(--s-3);background:var(--c-surface-2);border:1px solid var(--c-border);border-radius:var(--r-md);font-size:var(--t-12);cursor:pointer}
+    .entity-card:hover{background:var(--c-brand-soft);border-color:var(--c-brand)}
+    .entity-icon{width:24px;height:24px;border-radius:var(--r-sm);display:grid;place-items:center;flex-shrink:0}
+    .entity-icon.user{background:var(--c-info-soft);color:var(--c-info)}
+    .entity-icon.locker{background:var(--c-violet-soft);color:var(--c-violet)}
+    .entity-icon.bay{background:var(--c-warning-soft);color:var(--c-warning)}
+    .entity-icon.device{background:var(--c-cyan-soft);color:var(--c-cyan)}
+    .entity-icon.order{background:var(--c-rose-soft);color:var(--c-rose)}
+    .entity-meta{flex:1;line-height:1.2;min-width:0}
+    .entity-name{font-weight:600;color:var(--c-text)}
+    .entity-sub{font-size:10px;color:var(--c-text-muted)}
+    .info-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:var(--t-12);border-bottom:1px solid var(--c-divider)}
+    .info-row:last-child{border-bottom:0}
+    .info-label{color:var(--c-text-2)}
+    .info-value{font-weight:600;color:var(--c-text);font-variant-numeric:tabular-nums}
+    .info-value.mono{font-family:var(--font-mono);font-size:var(--t-11)}
+    .drawer-actions{display:flex;gap:6px;padding:var(--s-3) var(--s-4);background:var(--c-surface-2);border-top:1px solid var(--c-divider)}
+    .drawer-actions .btn{flex:1;justify-content:center;height:28px;font-size:var(--t-11)}
+
+    /* Annotation */
+    .annotation-strip{background:linear-gradient(90deg,var(--c-brand-soft),#F0F7FF);border-bottom:1px solid #DBEAFE;padding:8px 24px;font-size:var(--t-12);color:var(--c-brand-deep);display:flex;align-items:center;gap:12px}
+    .annotation-strip strong{color:var(--c-brand-deep)}
+    .annotation-strip .chip{background:var(--c-brand);color:white;font-weight:600;padding:2px 7px;border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.04em}
+    .anno-pill{background:rgba(255,255,255,.6);color:var(--c-brand-deep);padding:2px 7px;border-radius:999px;font-size:11px}
+  </style>
+</head>
+<body>
+
+  <div class="annotation-strip">
+    <span class="chip">Prototype 09</span>
+    <strong>Tracker.</strong>
+    <span>Entity picker (now includes Order) · catalog-driven event titles · Kind badges in timeline · drawer for any event.</span>
+    <span class="anno-pill">P0 Order fix</span>
+    <span style="margin-left:auto;color:#64748B;">Click any timeline item for detail.</span>
+  </div>
+
+  <div class="shell">
+
+    <div class="logo">
+      <div class="logo-mark">H</div>
+      <div>HonestWaves</div>
+      <span class="logo-tenant">QA</span>
+    </div>
+
+    <div class="topbar">
+      <div class="breadcrumb">
+        <span style="color:var(--c-text-2);">Investigate</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--c-text-muted);"><polyline points="9 18 15 12 9 6"/></svg>
+        <strong>Tracker</strong>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+        <span>Search lockers, devices, users…</span>
+        <span class="search-kbd">⌘K</span>
+      </div>
+      <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="badge">99+</span></button>
+      <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+      <button class="avatar-btn">
+        <div class="avatar">AR</div>
+        <div class="avatar-meta"><div class="avatar-name">Admin Rowe</div><div class="avatar-email">admin@honestwaves.test</div></div>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+    </div>
+
+    <nav class="sidebar">
+      <div class="nav-group"><p class="nav-group-label">Monitor</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Mission Control</a>
+      </div>
+      <div class="nav-group"><p class="nav-group-label">Manage</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/></svg>Lockers</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Devices</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Users</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>Access matrix</a>
+      </div>
+      <div class="nav-group"><p class="nav-group-label">Investigate</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/></svg>Notifications<span class="nav-badge">99+</span></a>
+        <a class="nav-item active" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>Tracker</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Reports</a>
+      </div>
+      <div class="nav-group"><p class="nav-group-label">System</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>Software updates</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>Settings</a>
+      </div>
+      <div style="padding:var(--s-3);font-size:var(--t-11);color:var(--c-text-muted);">v2.0.0</div>
+    </nav>
+
+    <main class="main">
+      <div class="main-inner">
+
+        <header class="page-head">
+          <div>
+            <h1 class="page-title">Tracker</h1>
+            <p class="page-sub">Trace the full activity history for any user, device, bay, locker, or order — across time.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn ghost"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Export trace</button>
+            <button class="btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>Save view</button>
+          </div>
+        </header>
+
+        <!-- Entity picker -->
+        <div class="picker-card">
+          <p class="picker-h">Pick what to trace</p>
+          <div class="picker-row">
+            <div class="picker-types">
+              <button class="picker-type"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>User</button>
+              <button class="picker-type"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Device</button>
+              <button class="picker-type"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Bay</button>
+              <button class="picker-type"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Locker</button>
+              <button class="picker-type active"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/></svg>Order <span class="new-tag">Fixed</span></button>
+            </div>
+            <div class="picker-input">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+              <input type="text" placeholder="Search by order # or user…" value="Order #187">
+            </div>
+            <button class="btn primary">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+              Look up
+            </button>
+          </div>
+        </div>
+
+        <!-- Anchor card (selected entity) -->
+        <div class="anchor-card">
+          <div class="anchor-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/></svg></div>
+          <div class="anchor-meta">
+            <div class="anchor-label">Tracing Order</div>
+            <div class="anchor-name">Order #187 · checked out by Crosby Smith</div>
+            <div class="anchor-sub">Pink8 · Bay 1 · iPhone 16e 71 + Arista badge 71 · still open · overdue 2h</div>
+          </div>
+          <div class="anchor-stats">
+            <span><strong>17</strong> events</span>
+            <span><strong>2</strong> days</span>
+            <span><strong>2</strong> devices</span>
+          </div>
+          <button class="btn ghost"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg></button>
+        </div>
+
+        <!-- Show only chips + date range -->
+        <div class="show-row">
+          <span class="show-label">Show only:</span>
+          <button class="show-chip action active">Action</button>
+          <button class="show-chip event active">Event</button>
+          <button class="show-chip state active">State change</button>
+          <button class="show-chip routine active">Routine</button>
+          <button class="show-chip command">Command</button>
+          <span style="margin-left:auto;display:flex;align-items:center;gap:6px;">
+            <span class="show-label" style="padding:0;">From</span>
+            <button class="date-input">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/></svg>
+              Jun 6 · 4:02 PM
+            </button>
+            <span class="show-label" style="padding:0;">to</span>
+            <button class="date-input">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/></svg>
+              Jun 13 · 4:02 PM
+            </button>
+          </span>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline-card">
+
+          <div class="timeline-day">Today · <strong>Jun 17, 2026</strong> <span class="timeline-day-count">· 3 events</span></div>
+          <div class="tl">
+
+            <div class="tl-item routine critical selected">
+              <div class="tl-row">
+                <div class="tl-time">
+                  <div class="tl-rel">2h ago</div>
+                  <div class="tl-abs">1:21 PM</div>
+                </div>
+                <div class="tl-meta">
+                  <div class="tl-title">Checkout overdue <span class="tl-kind routine">Routine</span></div>
+                  <div class="tl-sub">Order #187 has passed its expected return time by 2 hours</div>
+                  <div class="tl-chips">
+                    <span class="tl-chip">Crosby Smith</span>
+                    <span class="tl-chip">Pink8 · Bay 1</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tl-item state">
+              <div class="tl-row">
+                <div class="tl-time">
+                  <div class="tl-rel">2h ago</div>
+                  <div class="tl-abs">1:21 PM</div>
+                </div>
+                <div class="tl-meta">
+                  <div class="tl-title">Bay state changed <span class="tl-kind state">State change</span></div>
+                  <div class="tl-sub">Bay 1 went from Checked-out to Overdue</div>
+                  <div class="tl-chips">
+                    <span class="tl-chip">Pink8 · Bay 1</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tl-item state">
+              <div class="tl-row">
+                <div class="tl-time">
+                  <div class="tl-rel">2h ago</div>
+                  <div class="tl-abs">1:21 PM</div>
+                </div>
+                <div class="tl-meta">
+                  <div class="tl-title">Bay state changed <span class="tl-kind state">State change</span></div>
+                  <div class="tl-sub">Bay 1 went from null to Overdue (watchdog flag)</div>
+                  <div class="tl-chips">
+                    <span class="tl-chip">Watchdog</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="timeline-day">Yesterday · <strong>Jun 16, 2026</strong> <span class="timeline-day-count">· 5 events</span></div>
+          <div class="tl">
+
+            <div class="tl-item action">
+              <div class="tl-row">
+                <div class="tl-time">
+                  <div class="tl-rel">22h ago</div>
+                  <div class="tl-abs">5:24 PM</div>
+                </div>
+                <div class="tl-meta">
+                  <div class="tl-title">Bay opened <span class="tl-kind action">Action</span></div>
+                  <div class="tl-sub">Crosby Smith opened Bay 1 from the customer screen</div>
+                  <div class="tl-chips">
+                    <span class="tl-chip">Crosby Smith</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tl-item action">
+              <div class="tl-row">
+                <div class="tl-time">
+                  <div class="tl-rel">22h ago</div>
+                  <div class="tl-abs">5:24 PM</div>
+                </div>
+                <div class="tl-meta">
+                  <div class="tl-title">Checked out <span class="tl-kind action">Action</span></div>
+                  <div class="tl-sub">Crosby Smith took iPhone 16e 71 and Arista badge 71 from Bay 1</div>
+                  <div class="tl-chips">
+                    <span class="tl-chip">iPhone 16e 71</span>
+                    <span class="tl-chip">Arista badge 71</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tl-item event">
+              <div class="tl-row">
+                <div class="tl-time">
+                  <div class="tl-rel">22h ago</div>
+                  <div class="tl-abs">5:23 PM</div>
+                </div>
+                <div class="tl-meta">
+                  <div class="tl-title">Order opened <span class="tl-kind event">Event</span></div>
+                  <div class="tl-sub">Order #187 opened for Crosby Smith — expected back by 1:00 PM Jun 17</div>
+                  <div class="tl-chips">
+                    <span class="tl-chip">Anchor</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tl-item state">
+              <div class="tl-row">
+                <div class="tl-time">
+                  <div class="tl-rel">22h ago</div>
+                  <div class="tl-abs">5:23 PM</div>
+                </div>
+                <div class="tl-meta">
+                  <div class="tl-title">Bay state changed <span class="tl-kind state">State change</span></div>
+                  <div class="tl-sub">Bay 1 went from Available to Checked-out</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tl-item routine">
+              <div class="tl-row">
+                <div class="tl-time">
+                  <div class="tl-rel">1d ago</div>
+                  <div class="tl-abs">1:08 PM</div>
+                </div>
+                <div class="tl-meta">
+                  <div class="tl-title">Cleaning finished <span class="tl-kind routine">Routine</span></div>
+                  <div class="tl-sub">Bay 1 finished UV-C cycle and returned to Available</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+
+    <!-- DRAWER -->
+    <aside class="drawer">
+      <div class="drawer-head">
+        <div class="drawer-head-row">
+          <div>
+            <div class="drawer-pills">
+              <span class="tl-kind routine">Routine</span>
+              <span style="font-size:var(--t-11);color:var(--c-warning-text);font-weight:600;">Overdue 2h</span>
+            </div>
+            <h2 class="drawer-title">Checkout overdue</h2>
+            <div class="drawer-sub">order.delayed · evt_a7f3211</div>
+          </div>
+          <button class="drawer-close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg></button>
+        </div>
+      </div>
+
+      <div class="drawer-section">
+        <p class="drawer-h">What happened</p>
+        <div class="summary-text">
+          The system flagged <strong>Order #187</strong> as overdue at <strong>1:21 PM today</strong>.
+          It was due back at <strong>1:00 PM</strong>, so it's currently <strong>2 hours past</strong> the return window.
+        </div>
+      </div>
+
+      <div class="drawer-section">
+        <p class="drawer-h">Related entities</p>
+        <div class="entity-list">
+          <div class="entity-card">
+            <div class="entity-icon user"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+            <div class="entity-meta">
+              <div class="entity-name">Crosby Smith</div>
+              <div class="entity-sub">Manager · 3 unreturned devices</div>
+            </div>
+          </div>
+          <div class="entity-card">
+            <div class="entity-icon order"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/></svg></div>
+            <div class="entity-meta">
+              <div class="entity-name">Order #187</div>
+              <div class="entity-sub">Open · checked out 22h ago</div>
+            </div>
+          </div>
+          <div class="entity-card">
+            <div class="entity-icon locker"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg></div>
+            <div class="entity-meta">
+              <div class="entity-name">Pink8 · Bay 1</div>
+              <div class="entity-sub">HonestWaves Orange County Office</div>
+            </div>
+          </div>
+          <div class="entity-card">
+            <div class="entity-icon device"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg></div>
+            <div class="entity-meta">
+              <div class="entity-name">iPhone 16e 71</div>
+              <div class="entity-sub">Out · $599 replacement value</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer-section">
+        <p class="drawer-h">Source &amp; metadata</p>
+        <div class="info-row"><span class="info-label">Detected by</span><span class="info-value">Order watchdog</span></div>
+        <div class="info-row"><span class="info-label">Detected at</span><span class="info-value">Jun 17 · 1:21 PM</span></div>
+        <div class="info-row"><span class="info-label">Expected return</span><span class="info-value">Jun 17 · 1:00 PM</span></div>
+        <div class="info-row"><span class="info-label">Catalog type</span><span class="info-value mono">order.delayed</span></div>
+        <div class="info-row"><span class="info-label">Event ID</span><span class="info-value mono">evt_a7f3211</span></div>
+      </div>
+
+      <div class="drawer-actions">
+        <button class="btn primary"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07"/></svg>Contact user</button>
+        <button class="btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>Mark lost</button>
+        <button class="btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+      </div>
+    </aside>
+
+  </div>
+</body>
+</html>
