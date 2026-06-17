@@ -1,0 +1,1595 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1440">
+  <title>HonestWaves redesign · 03 · Lockers</title>
+  <style>
+    /* ============================================================
+       Design tokens — identical to prototypes 01 + 02.
+       ============================================================ */
+    :root {
+      --c-surface: #FFFFFF;
+      --c-surface-2: #FAFAFB;
+      --c-surface-3: #F4F5F7;
+      --c-border: #E5E7EB;
+      --c-border-strong: #D1D5DB;
+      --c-divider: #EDF0F4;
+      --c-text: #0F172A;
+      --c-text-2: #475569;
+      --c-text-muted: #94A3B8;
+      --c-text-inverse: #FFFFFF;
+      --c-brand: #2563EB;
+      --c-brand-hover: #1D4ED8;
+      --c-brand-soft: #EFF6FF;
+      --c-brand-deep: #1E40AF;
+      --c-success: #10B981;
+      --c-success-soft: #ECFDF5;
+      --c-warning: #F59E0B;
+      --c-warning-soft: #FFFBEB;
+      --c-warning-text: #B45309;
+      --c-danger: #EF4444;
+      --c-danger-soft: #FEF2F2;
+      --c-info: #6366F1;
+      --c-info-soft: #EEF2FF;
+      --c-violet: #7C3AED;
+      --c-violet-soft: #F5F3FF;
+      --c-cyan: #06B6D4;
+      --c-cyan-soft: #ECFEFF;
+      --c-rose: #F43F5E;
+      --c-rose-soft: #FFF1F2;
+      --c-slate: #64748B;
+      --c-slate-soft: #F1F5F9;
+
+      --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+      --t-11: 11px;
+      --t-12: 12px;
+      --t-13: 13px;
+      --t-14: 14px;
+      --t-16: 16px;
+      --t-20: 20px;
+      --t-24: 24px;
+
+      --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px;
+      --s-5: 20px; --s-6: 24px; --s-8: 32px;
+
+      --r-sm: 4px; --r-md: 6px; --r-lg: 8px; --r-xl: 12px;
+
+      --sh-1: 0 1px 2px rgba(15, 23, 42, 0.04);
+      --sh-2: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+      --sh-popover: 0 8px 24px rgba(15, 23, 42, 0.10), 0 2px 6px rgba(15, 23, 42, 0.06);
+
+      --sidebar-w: 232px;
+      --topbar-h: 52px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      font-size: var(--t-13);
+      line-height: 1.45;
+      color: var(--c-text);
+      background: var(--c-surface-2);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+    svg { display: block; }
+
+    .shell {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      grid-template-rows: var(--topbar-h) 1fr;
+      grid-template-areas: "logo topbar" "side main";
+      min-height: 100vh;
+    }
+
+    /* ============================================================
+       Chrome (same as 01/02) — abbreviated for brevity
+       ============================================================ */
+    .logo {
+      grid-area: logo;
+      background: var(--c-surface);
+      border-right: 1px solid var(--c-border);
+      border-bottom: 1px solid var(--c-border);
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 var(--s-4);
+      font-weight: 600; font-size: var(--t-14);
+      letter-spacing: -0.01em;
+    }
+    .logo-mark {
+      width: 26px; height: 26px;
+      border-radius: 7px;
+      background: linear-gradient(135deg, var(--c-brand) 0%, var(--c-brand-deep) 100%);
+      display: grid; place-items: center;
+      color: white; font-weight: 700; font-size: 13px;
+    }
+    .logo-tenant {
+      margin-left: auto; font-size: var(--t-11);
+      color: var(--c-text-muted);
+      background: var(--c-surface-3);
+      padding: 2px 6px; border-radius: var(--r-sm);
+      font-weight: 500;
+    }
+
+    .topbar {
+      grid-area: topbar;
+      background: var(--c-surface);
+      border-bottom: 1px solid var(--c-border);
+      display: flex; align-items: center;
+      padding: 0 var(--s-5); gap: var(--s-3);
+    }
+    .breadcrumb { display: flex; align-items: center; gap: var(--s-2); color: var(--c-text-2); font-size: var(--t-13); }
+    .breadcrumb strong { color: var(--c-text); font-weight: 600; }
+    .topbar-spacer { flex: 1; }
+    .search {
+      display: flex; align-items: center; gap: var(--s-2);
+      width: 340px; height: 32px; padding: 0 var(--s-3);
+      background: var(--c-surface-2);
+      border: 1px solid var(--c-border);
+      border-radius: var(--r-md);
+      color: var(--c-text-muted); font-size: var(--t-13);
+    }
+    .search-kbd {
+      margin-left: auto; padding: 1px 5px;
+      font-family: var(--font-mono); font-size: 10px; color: var(--c-text-2);
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: 3px;
+    }
+    .icon-btn {
+      width: 32px; height: 32px;
+      display: grid; place-items: center;
+      border-radius: var(--r-md);
+      color: var(--c-text-2);
+      position: relative;
+    }
+    .icon-btn:hover { background: var(--c-surface-3); color: var(--c-text); }
+    .icon-btn .badge {
+      position: absolute; top: 2px; right: 2px;
+      min-width: 16px; height: 16px; padding: 0 4px;
+      background: var(--c-danger); color: white;
+      border: 2px solid var(--c-surface);
+      border-radius: 999px;
+      font-size: 9px; font-weight: 700;
+      display: grid; place-items: center;
+    }
+    .avatar-btn {
+      display: flex; align-items: center; gap: var(--s-2);
+      padding: 4px 8px 4px 4px;
+      border-radius: var(--r-md);
+    }
+    .avatar-btn:hover { background: var(--c-surface-3); }
+    .avatar {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: linear-gradient(135deg, #6366F1 0%, #2563EB 100%);
+      color: white; font-size: 11px; font-weight: 600;
+      display: grid; place-items: center;
+    }
+    .avatar-meta { line-height: 1.1; text-align: left; }
+    .avatar-name { font-size: var(--t-12); font-weight: 600; }
+    .avatar-email { font-size: var(--t-11); color: var(--c-text-muted); }
+
+    .sidebar {
+      grid-area: side;
+      background: var(--c-surface);
+      border-right: 1px solid var(--c-border);
+      padding: var(--s-3) var(--s-2);
+      overflow-y: auto;
+    }
+    .nav-group { margin-bottom: var(--s-4); }
+    .nav-group-label {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--c-text-muted);
+      padding: 0 var(--s-3); margin: 0 0 4px;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: var(--s-3);
+      padding: 7px var(--s-3);
+      border-radius: var(--r-md);
+      font-size: var(--t-13);
+      color: var(--c-text-2);
+      position: relative;
+    }
+    .nav-item:hover { background: var(--c-surface-3); color: var(--c-text); }
+    .nav-item.active {
+      background: var(--c-brand-soft);
+      color: var(--c-brand-deep);
+      font-weight: 600;
+    }
+    .nav-item.active::before {
+      content: ""; position: absolute;
+      left: -2px; top: 8px; bottom: 8px;
+      width: 2px; background: var(--c-brand);
+      border-radius: 2px;
+    }
+    .nav-icon { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.85; }
+    .nav-item.active .nav-icon { opacity: 1; }
+    .nav-badge {
+      margin-left: auto;
+      font-size: 10px; font-weight: 600;
+      padding: 1px 6px; border-radius: 999px;
+      background: var(--c-danger-soft); color: var(--c-danger);
+    }
+
+    /* ============================================================
+       Main content
+       ============================================================ */
+    .main {
+      grid-area: main;
+      overflow-y: auto;
+    }
+    .main-inner {
+      padding: var(--s-5) var(--s-6);
+      max-width: 1480px;
+    }
+
+    /* Page header */
+    .page-head {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: var(--s-4);
+      margin-bottom: var(--s-4);
+    }
+    .page-title {
+      font-size: var(--t-20);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin: 0 0 2px;
+    }
+    .page-sub {
+      font-size: var(--t-12);
+      color: var(--c-text-2);
+      margin: 0;
+    }
+    .page-actions { display: flex; align-items: center; gap: var(--s-2); }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 30px; padding: 0 var(--s-3);
+      font-size: var(--t-12); font-weight: 500;
+      color: var(--c-text);
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: var(--r-md);
+      box-shadow: var(--sh-1);
+      transition: background .12s, border-color .12s;
+    }
+    .btn:hover { background: var(--c-surface-3); border-color: var(--c-border-strong); }
+    .btn.primary {
+      background: var(--c-brand); color: white; border-color: var(--c-brand);
+      box-shadow: var(--sh-1), inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+    .btn.primary:hover { background: var(--c-brand-hover); border-color: var(--c-brand-hover); }
+    .btn.ghost { background: transparent; border-color: transparent; box-shadow: none; }
+    .btn.ghost:hover { background: var(--c-surface-3); }
+    .btn.danger {
+      color: var(--c-danger);
+      border-color: var(--c-border);
+    }
+    .btn.danger:hover {
+      background: var(--c-danger-soft);
+      border-color: var(--c-danger);
+    }
+
+    /* ============================================================
+       View toggle (list / tile) — pattern Jeff sent
+       ============================================================ */
+    .view-toggle {
+      display: inline-flex;
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: var(--r-md);
+      box-shadow: var(--sh-1);
+      padding: 2px;
+    }
+    .view-toggle button {
+      width: 28px; height: 26px;
+      display: grid; place-items: center;
+      color: var(--c-text-muted);
+      border-radius: var(--r-sm);
+    }
+    .view-toggle button:hover { color: var(--c-text); }
+    .view-toggle button.active {
+      background: var(--c-brand-soft);
+      color: var(--c-brand-deep);
+    }
+
+    /* ============================================================
+       Filter bar
+       ============================================================ */
+    .filter-bar {
+      display: flex; align-items: center; gap: var(--s-2);
+      padding: var(--s-3);
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: var(--r-md);
+      margin-bottom: var(--s-3);
+      flex-wrap: wrap;
+    }
+    .filter-search {
+      flex: 1;
+      min-width: 240px;
+      display: flex; align-items: center; gap: var(--s-2);
+      height: 32px; padding: 0 var(--s-3);
+      background: var(--c-surface-2);
+      border: 1px solid var(--c-border);
+      border-radius: var(--r-md);
+      color: var(--c-text);
+      font-size: var(--t-13);
+    }
+    .filter-search:focus-within {
+      background: var(--c-surface);
+      border-color: var(--c-brand);
+      box-shadow: 0 0 0 3px var(--c-brand-soft);
+    }
+    .filter-search input {
+      flex: 1; height: 100%;
+      border: 0; background: transparent;
+      outline: none; font: inherit; color: inherit;
+    }
+    .filter-search input::placeholder { color: var(--c-text-muted); }
+
+    .filter-select {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 32px; padding: 0 10px;
+      font-size: var(--t-12); font-weight: 500;
+      color: var(--c-text);
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: var(--r-md);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .filter-select:hover { background: var(--c-surface-3); border-color: var(--c-border-strong); }
+    .filter-select .chip-count {
+      background: var(--c-brand);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 999px;
+    }
+    .filter-clear {
+      color: var(--c-text-2);
+      font-size: var(--t-12);
+      padding: 0 8px;
+      height: 32px;
+      display: inline-flex; align-items: center;
+    }
+    .filter-clear:hover { color: var(--c-danger); }
+
+    /* ============================================================
+       Bulk action toolbar (shown when rows selected)
+       ============================================================ */
+    .bulk-bar {
+      display: flex; align-items: center; gap: var(--s-2);
+      padding: var(--s-2) var(--s-3);
+      background: var(--c-brand-soft);
+      border: 1px solid var(--c-brand);
+      border-radius: var(--r-md);
+      margin-bottom: var(--s-3);
+      animation: slideIn .15s ease-out;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .bulk-count {
+      font-size: var(--t-12);
+      font-weight: 600;
+      color: var(--c-brand-deep);
+      padding: 4px 10px;
+      background: var(--c-surface);
+      border-radius: var(--r-md);
+      font-variant-numeric: tabular-nums;
+    }
+    .bulk-divider {
+      width: 1px; height: 18px;
+      background: rgba(37, 99, 235, 0.3);
+      margin: 0 var(--s-1);
+    }
+    .bulk-bar .btn {
+      box-shadow: none;
+      border-color: transparent;
+      background: transparent;
+      color: var(--c-brand-deep);
+    }
+    .bulk-bar .btn:hover {
+      background: rgba(255,255,255,0.7);
+      border-color: transparent;
+    }
+    .bulk-bar .btn.danger { color: var(--c-danger); }
+    .bulk-bar .btn.danger:hover { background: rgba(239,68,68,0.1); }
+    .bulk-bar .clear-sel {
+      margin-left: auto;
+      color: var(--c-text-2);
+      font-size: var(--t-12);
+      padding: 4px 8px;
+      border-radius: var(--r-sm);
+    }
+    .bulk-bar .clear-sel:hover { color: var(--c-text); background: rgba(255,255,255,0.7); }
+
+    /* ============================================================
+       List view — data table
+       ============================================================ */
+    .list-card {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+    }
+    table.lockers {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--t-12);
+    }
+    table.lockers thead th {
+      text-align: left;
+      font-weight: 600;
+      font-size: var(--t-11);
+      color: var(--c-text-2);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 10px var(--s-3);
+      border-bottom: 1px solid var(--c-border);
+      background: var(--c-surface-2);
+      white-space: nowrap;
+    }
+    table.lockers thead th .sort-arrow {
+      display: inline-block; margin-left: 3px;
+      font-size: 10px; opacity: 0.5;
+    }
+    table.lockers tbody td {
+      padding: 0 var(--s-3);
+      height: 42px;
+      border-bottom: 1px solid var(--c-divider);
+      vertical-align: middle;
+      font-variant-numeric: tabular-nums;
+    }
+    table.lockers tbody tr {
+      transition: background .12s;
+      cursor: pointer;
+    }
+    table.lockers tbody tr:hover {
+      background: var(--c-surface-2);
+    }
+    table.lockers tbody tr.selected {
+      background: var(--c-brand-soft);
+    }
+    table.lockers tbody tr.selected:hover {
+      background: #DBEAFE;
+    }
+    table.lockers tbody tr:last-child td { border-bottom: 0; }
+
+    /* checkbox */
+    .checkbox {
+      width: 16px; height: 16px;
+      border: 1.5px solid var(--c-border-strong);
+      border-radius: 3px;
+      display: inline-grid; place-items: center;
+      cursor: pointer;
+      transition: all .12s;
+      background: white;
+    }
+    .checkbox:hover { border-color: var(--c-brand); }
+    .checkbox.checked {
+      background: var(--c-brand);
+      border-color: var(--c-brand);
+      color: white;
+    }
+    .checkbox.indeterminate {
+      background: var(--c-brand);
+      border-color: var(--c-brand);
+      color: white;
+    }
+
+    /* health dot */
+    .health {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+    }
+    .health-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.04);
+    }
+    .health.ok    .health-dot { background: var(--c-success); box-shadow: 0 0 0 3px var(--c-success-soft); }
+    .health.warn  .health-dot { background: var(--c-warning); box-shadow: 0 0 0 3px var(--c-warning-soft); }
+    .health.crit  .health-dot { background: var(--c-danger);  box-shadow: 0 0 0 3px var(--c-danger-soft);  }
+
+    /* state pills */
+    .pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      height: 20px; padding: 0 8px;
+      border-radius: 999px;
+      font-size: var(--t-11);
+      font-weight: 600;
+      line-height: 1; white-space: nowrap;
+    }
+    .pill-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .pill.success { background: var(--c-success-soft); color: var(--c-success); }
+    .pill.success .pill-dot { background: var(--c-success); }
+    .pill.warn { background: var(--c-warning-soft); color: var(--c-warning-text); }
+    .pill.warn .pill-dot { background: var(--c-warning); }
+    .pill.danger { background: var(--c-danger-soft); color: var(--c-danger); }
+    .pill.danger .pill-dot { background: var(--c-danger); }
+    .pill.slate { background: var(--c-slate-soft); color: var(--c-slate); }
+    .pill.slate .pill-dot { background: var(--c-slate); }
+
+    /* locker name + meta cells */
+    .locker-name {
+      font-weight: 600;
+      font-size: var(--t-13);
+      color: var(--c-text);
+    }
+    .locker-name + .locker-meta {
+      font-size: var(--t-11);
+      color: var(--c-text-muted);
+      font-family: var(--font-mono);
+      margin-top: 1px;
+    }
+    .col-loc { line-height: 1.2; }
+    .col-loc .loc-primary { font-weight: 500; color: var(--c-text); }
+    .col-loc .loc-secondary { font-size: var(--t-11); color: var(--c-text-2); }
+
+    .profile-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px;
+      background: var(--c-info-soft);
+      color: var(--c-info);
+      border-radius: 999px;
+      font-size: var(--t-11);
+      font-weight: 500;
+    }
+    .profile-chip .profile-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c-info); }
+
+    .mono { font-family: var(--font-mono); font-size: var(--t-11); color: var(--c-text-2); }
+
+    .row-actions {
+      display: flex; align-items: center; justify-content: flex-end; gap: 2px;
+    }
+    .row-actions button {
+      width: 26px; height: 26px;
+      display: grid; place-items: center;
+      border-radius: var(--r-sm);
+      color: var(--c-text-muted);
+    }
+    .row-actions button:hover {
+      color: var(--c-text);
+      background: var(--c-surface-3);
+    }
+
+    /* Table footer / pagination */
+    .table-foot {
+      display: flex; align-items: center;
+      padding: var(--s-3) var(--s-4);
+      border-top: 1px solid var(--c-border);
+      background: var(--c-surface-2);
+      font-size: var(--t-12);
+      color: var(--c-text-2);
+    }
+    .pag {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .pag-btn {
+      width: 26px; height: 26px;
+      display: grid; place-items: center;
+      border-radius: var(--r-sm);
+      color: var(--c-text-2);
+    }
+    .pag-btn:hover:not(:disabled) { background: var(--c-surface-3); color: var(--c-text); }
+    .pag-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .pag-num {
+      padding: 0 8px; height: 26px;
+      display: inline-grid; place-items: center;
+      font-variant-numeric: tabular-nums;
+      border-radius: var(--r-sm);
+      color: var(--c-text-2);
+    }
+    .pag-num.active {
+      background: var(--c-brand);
+      color: white;
+      font-weight: 600;
+    }
+
+    /* ============================================================
+       Tile view
+       ============================================================ */
+    .tile-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--s-3);
+    }
+    .tile {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      transition: border-color .12s, box-shadow .12s, transform .12s;
+      cursor: pointer;
+      position: relative;
+    }
+    .tile:hover {
+      border-color: var(--c-border-strong);
+      box-shadow: var(--sh-2);
+      transform: translateY(-1px);
+    }
+    .tile.selected {
+      border-color: var(--c-brand);
+      box-shadow: 0 0 0 3px var(--c-brand-soft);
+    }
+    .tile-health-stripe {
+      height: 3px;
+    }
+    .tile-health-stripe.ok { background: var(--c-success); }
+    .tile-health-stripe.warn { background: var(--c-warning); }
+    .tile-health-stripe.crit { background: var(--c-danger); }
+
+    .tile-head {
+      padding: var(--s-3) var(--s-4) var(--s-2);
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: var(--s-2);
+    }
+    .tile-name {
+      font-weight: 600;
+      font-size: var(--t-14);
+      color: var(--c-text);
+      letter-spacing: -0.005em;
+    }
+    .tile-name + .tile-serial {
+      font-size: 10px;
+      color: var(--c-text-muted);
+      font-family: var(--font-mono);
+      margin-top: 1px;
+    }
+    .tile-checkbox {
+      flex-shrink: 0;
+    }
+
+    .tile-body {
+      padding: 0 var(--s-4);
+      display: grid; gap: 6px;
+    }
+    .tile-row {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: var(--t-11);
+      color: var(--c-text-2);
+    }
+    .tile-row strong { color: var(--c-text); font-weight: 500; }
+
+    .tile-bays {
+      padding: var(--s-3) var(--s-4) 0;
+    }
+    .tile-bays-grid {
+      display: grid;
+      gap: 2px;
+      grid-template-columns: repeat(8, 1fr);
+    }
+    .tile-bay {
+      aspect-ratio: 1;
+      border-radius: 2px;
+    }
+    .tile-bay.av { background: var(--c-success); }
+    .tile-bay.iu { background: var(--c-info); }
+    .tile-bay.od { background: var(--c-warning); }
+    .tile-bay.dn { background: var(--c-rose); }
+    .tile-bay.dx { background: #CBD5E1; }
+    .tile-bay.cl { background: var(--c-cyan); }
+
+    .tile-foot {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: var(--s-3) var(--s-4);
+      font-size: var(--t-11);
+      color: var(--c-text-muted);
+      border-top: 1px solid var(--c-divider);
+      margin-top: var(--s-3);
+    }
+
+    /* ============================================================
+       Annotation strip + notes
+       ============================================================ */
+    .annotation-strip {
+      background: linear-gradient(90deg, var(--c-brand-soft), #F0F7FF);
+      border-bottom: 1px solid #DBEAFE;
+      padding: 8px 24px;
+      font-size: var(--t-12);
+      color: var(--c-brand-deep);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .annotation-strip strong { color: var(--c-brand-deep); }
+    .annotation-strip .chip {
+      background: var(--c-brand);
+      color: white;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .anno-pill {
+      background: rgba(255,255,255,0.6);
+      color: var(--c-brand-deep);
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 11px;
+    }
+
+    /* notes (hover) */
+    .note {
+      position: absolute;
+      background: #1F2937;
+      color: white;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: var(--t-11);
+      max-width: 240px;
+      box-shadow: var(--sh-popover);
+      line-height: 1.4;
+      z-index: 30;
+      display: none;
+    }
+    .note-host { position: relative; }
+    .note-host:hover > .note { display: block; }
+    .note::before { content: ""; position: absolute; width: 0; height: 0; border: 5px solid transparent; }
+    .note.bl { bottom: 100%; left: 0; margin-bottom: 6px; }
+    .note.bl::before { top: 100%; left: 12px; border-top-color: #1F2937; }
+    .note.tr { top: 100%; right: 0; margin-top: 6px; }
+    .note.tr::before { bottom: 100%; right: 12px; border-bottom-color: #1F2937; }
+    .note.tl { top: 100%; left: 0; margin-top: 6px; }
+    .note.tl::before { bottom: 100%; left: 12px; border-bottom-color: #1F2937; }
+
+    /* hidden by default, controlled by JS */
+    .view-list, .view-tile { display: none; }
+    .view-list.show, .view-tile.show { display: block; }
+
+    /* Travis credit footer */
+    .travis-credit {
+      margin-top: var(--s-5);
+      padding: var(--s-3) var(--s-4);
+      background: var(--c-surface);
+      border: 1px dashed var(--c-border);
+      border-radius: var(--r-md);
+      font-size: var(--t-11);
+      color: var(--c-text-2);
+    }
+    .travis-credit strong { color: var(--c-text); }
+    .travis-credit .recs { margin-top: 6px; }
+    .travis-credit .rec-tag {
+      display: inline-block;
+      background: var(--c-info-soft);
+      color: var(--c-info);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      margin-right: 4px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="annotation-strip">
+    <span class="chip">Prototype 03</span>
+    <strong>Lockers.</strong>
+    <span>List view (primary) + Tile view · health column · profiles · bulk actions · advanced filters</span>
+    <span class="anno-pill">Includes Travis @ Corewell recs</span>
+    <span style="margin-left:auto; color:#64748B;">Click the view toggle (top right) to switch between list and tile.</span>
+  </div>
+
+  <div class="shell">
+
+    <div class="logo">
+      <div class="logo-mark">H</div>
+      <div>HonestWaves</div>
+      <span class="logo-tenant">QA</span>
+    </div>
+
+    <div class="topbar">
+      <div class="breadcrumb">
+        <span style="color: var(--c-text-2);">Manage</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--c-text-muted);"><polyline points="9 18 15 12 9 6"/></svg>
+        <strong>Lockers</strong>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+        <span>Search lockers, devices, users…</span>
+        <span class="search-kbd">⌘K</span>
+      </div>
+      <button class="icon-btn" aria-label="Notifications">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        <span class="badge">99+</span>
+      </button>
+      <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+      <button class="avatar-btn">
+        <div class="avatar">AR</div>
+        <div class="avatar-meta">
+          <div class="avatar-name">Admin Rowe</div>
+          <div class="avatar-email">admin@honestwaves.test</div>
+        </div>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+    </div>
+
+    <nav class="sidebar">
+      <div class="nav-group">
+        <p class="nav-group-label">Monitor</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Mission Control</a>
+      </div>
+      <div class="nav-group">
+        <p class="nav-group-label">Manage</p>
+        <a class="nav-item active" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/></svg>Lockers</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Devices</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Users</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>Access matrix</a>
+      </div>
+      <div class="nav-group">
+        <p class="nav-group-label">Investigate</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/></svg>Notifications<span class="nav-badge">99+</span></a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>Tracker</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Reports</a>
+      </div>
+      <div class="nav-group">
+        <p class="nav-group-label">System</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>Software updates</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>Settings</a>
+      </div>
+      <div style="padding: var(--s-3); font-size: var(--t-11); color: var(--c-text-muted);">v2.0.0</div>
+    </nav>
+
+    <main class="main">
+      <div class="main-inner">
+
+        <!-- Page header -->
+        <header class="page-head">
+          <div>
+            <h1 class="page-title">Lockers</h1>
+            <p class="page-sub">12 lockers across 3 locations · 1 has issues · 1 offline</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn ghost">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+              Export
+            </button>
+            <button class="btn ghost">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+              Import
+            </button>
+
+            <!-- View toggle — matches Jeff's reference image -->
+            <div class="view-toggle note-host">
+              <button id="viewTileBtn" aria-label="Tile view">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              </button>
+              <button id="viewListBtn" class="active" aria-label="List view">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" x2="21" y1="6" y2="6"/><line x1="3" x2="21" y1="12" y2="12"/><line x1="3" x2="21" y1="18" y2="18"/></svg>
+              </button>
+              <div class="note bl" style="left: -120px;">
+                <strong>View toggle</strong><br>
+                List view is default for ops staff scanning the whole fleet. Tile view is better for spotting which lockers need attention visually. Preference persists per page in localStorage.
+              </div>
+            </div>
+
+            <button class="btn primary">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+              Add locker
+            </button>
+          </div>
+        </header>
+
+        <!-- Filter bar -->
+        <div class="filter-bar note-host">
+          <div class="filter-search">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+            <input type="text" placeholder="Search by name, serial, location, or department…">
+          </div>
+          <button class="filter-select">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7 12 7 12s.8-.7 1.7-1.7"/><path d="M20 16l-3 3-2-2"/></svg>
+            Location
+            <span class="chip-count">2</span>
+          </button>
+          <button class="filter-select">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/></svg>
+            Department
+          </button>
+          <button class="filter-select">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg>
+            Status
+          </button>
+          <button class="filter-select">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Profile
+          </button>
+          <button class="filter-select">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
+            Bay count
+          </button>
+          <button class="filter-clear">Clear filters (2)</button>
+          <div class="note tl" style="right:0; left:auto;">
+            <strong>Filters Travis flagged.</strong><br>
+            Search by name + serial + <em>location + department</em> (P3). Plus dedicated chips for Location, Department, Status, Profile, Bay count. Multi-select within each.
+          </div>
+        </div>
+
+        <!-- Bulk action toolbar (visible because 2 rows are pre-selected to demo) -->
+        <div class="bulk-bar note-host">
+          <span class="bulk-count">2 selected</span>
+          <div class="bulk-divider"></div>
+          <button class="btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit
+          </button>
+          <button class="btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+            Sync now
+          </button>
+          <button class="btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Apply profile…
+          </button>
+          <button class="btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
+            Push update
+          </button>
+          <button class="btn danger">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Delete
+          </button>
+          <button class="clear-sel">✕ Clear selection</button>
+          <div class="note tr" style="left:120px; right:auto;">
+            <strong>Bulk action toolbar.</strong><br>
+            Appears only when rows are selected. Includes <em>Apply profile</em> and <em>Sync now</em> per Travis's P3/P4 requests. Position fixed at top to avoid accidental clicks (his "Open All Bays" P1 concern).
+          </div>
+        </div>
+
+        <!-- ========= LIST VIEW ========= -->
+        <div class="view-list show">
+          <div class="list-card">
+            <table class="lockers">
+              <thead>
+                <tr>
+                  <th style="width:36px;">
+                    <span class="checkbox indeterminate">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="6" x2="18" y1="12" y2="12"/></svg>
+                    </span>
+                  </th>
+                  <th style="width:40px;" class="note-host">
+                    Health
+                    <div class="note tl" style="left:0;">
+                      <strong>Health column (P4)</strong><br>
+                      Travis: Green = working as expected · Orange = working with issues · Red = offline. Drives ServiceNow / ITSM alerts.
+                    </div>
+                  </th>
+                  <th>Locker <span class="sort-arrow">↓</span></th>
+                  <th>Location · Department</th>
+                  <th>Status</th>
+                  <th class="note-host">Profile
+                    <div class="note tl" style="left:0;">
+                      <strong>Profile column (P3)</strong><br>
+                      Centrally managed configuration profile applied to this locker. Bulk-apply via the toolbar.
+                    </div>
+                  </th>
+                  <th>Model · Bays</th>
+                  <th>IP address</th>
+                  <th>Last seen</th>
+                  <th style="width:60px;"></th>
+                </tr>
+              </thead>
+              <tbody>
+
+                <tr class="selected">
+                  <td><span class="checkbox checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+                  <td><span class="health ok" title="Working as expected"><span class="health-dot"></span></span></td>
+                  <td>
+                    <div class="locker-name">Blue</div>
+                    <div class="locker-meta">5c00…b221d</div>
+                  </td>
+                  <td>
+                    <div class="col-loc">
+                      <div class="loc-primary">Troy Hospital</div>
+                      <div class="loc-secondary">Emergency Center</div>
+                    </div>
+                  </td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Online</span></td>
+                  <td><span class="profile-chip"><span class="profile-dot"></span>Profile One</span></td>
+                  <td>20-bay · <strong style="color:var(--c-text);">20</strong></td>
+                  <td><span class="mono">10.12.100.54</span></td>
+                  <td>2 sec ago</td>
+                  <td class="row-actions">
+                    <button title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button title="More"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <tr class="selected">
+                  <td><span class="checkbox checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+                  <td><span class="health ok"><span class="health-dot"></span></span></td>
+                  <td>
+                    <div class="locker-name">Brown</div>
+                    <div class="locker-meta">5e6f…2e8c</div>
+                  </td>
+                  <td>
+                    <div class="col-loc">
+                      <div class="loc-primary">Troy Hospital</div>
+                      <div class="loc-secondary">Emergency Center</div>
+                    </div>
+                  </td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Online</span></td>
+                  <td><span class="profile-chip"><span class="profile-dot"></span>Profile One</span></td>
+                  <td>20-bay · <strong style="color:var(--c-text);">20</strong></td>
+                  <td><span class="mono">10.12.100.55</span></td>
+                  <td>4 sec ago</td>
+                  <td class="row-actions">
+                    <button title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button title="More"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td><span class="health ok"><span class="health-dot"></span></span></td>
+                  <td>
+                    <div class="locker-name">Green</div>
+                    <div class="locker-meta">3cf3…1ce7</div>
+                  </td>
+                  <td>
+                    <div class="col-loc">
+                      <div class="loc-primary">Troy Hospital</div>
+                      <div class="loc-secondary">Emergency Center</div>
+                    </div>
+                  </td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Online</span></td>
+                  <td><span class="profile-chip"><span class="profile-dot"></span>Profile One</span></td>
+                  <td>20-bay · <strong style="color:var(--c-text);">20</strong></td>
+                  <td><span class="mono">10.12.100.56</span></td>
+                  <td>1 sec ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td><span class="health warn" title="Working — solenoid fault on bays 4, 7"><span class="health-dot"></span></span></td>
+                  <td>
+                    <div class="locker-name">Purple</div>
+                    <div class="locker-meta">2b7a…0512</div>
+                  </td>
+                  <td>
+                    <div class="col-loc">
+                      <div class="loc-primary">Troy Hospital</div>
+                      <div class="loc-secondary">Emergency Center</div>
+                    </div>
+                  </td>
+                  <td><span class="pill warn"><span class="pill-dot"></span>Has issues</span></td>
+                  <td><span class="profile-chip"><span class="profile-dot"></span>Profile One</span></td>
+                  <td>32-bay · <strong style="color:var(--c-text);">32</strong></td>
+                  <td><span class="mono">10.12.100.57</span></td>
+                  <td>14 sec ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td><span class="health ok"><span class="health-dot"></span></span></td>
+                  <td>
+                    <div class="locker-name">Red</div>
+                    <div class="locker-meta">f0c5…6855</div>
+                  </td>
+                  <td>
+                    <div class="col-loc">
+                      <div class="loc-primary">Troy Hospital</div>
+                      <div class="loc-secondary">Emergency Center</div>
+                    </div>
+                  </td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Online</span></td>
+                  <td><span class="profile-chip"><span class="profile-dot"></span>Profile One</span></td>
+                  <td>20-bay · <strong style="color:var(--c-text);">20</strong></td>
+                  <td><span class="mono">10.12.100.58</span></td>
+                  <td>5 sec ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td><span class="health crit" title="No heartbeat for 47 minutes"><span class="health-dot"></span></span></td>
+                  <td>
+                    <div class="locker-name">ICU1</div>
+                    <div class="locker-meta">0b32…028f</div>
+                  </td>
+                  <td>
+                    <div class="col-loc">
+                      <div class="loc-primary">Troy Hospital</div>
+                      <div class="loc-secondary">ICU</div>
+                    </div>
+                  </td>
+                  <td><span class="pill danger"><span class="pill-dot"></span>Offline</span></td>
+                  <td><span class="profile-chip" style="background:var(--c-violet-soft);color:var(--c-violet);"><span class="profile-dot" style="background:var(--c-violet);"></span>Profile Two</span></td>
+                  <td>20-bay · <strong style="color:var(--c-text);">20</strong></td>
+                  <td><span class="mono">10.50.200.90</span></td>
+                  <td><span style="color:var(--c-danger);">47 min ago</span></td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td><span class="health ok"><span class="health-dot"></span></span></td>
+                  <td>
+                    <div class="locker-name">ICU2</div>
+                    <div class="locker-meta">6900…8662</div>
+                  </td>
+                  <td>
+                    <div class="col-loc">
+                      <div class="loc-primary">Troy Hospital</div>
+                      <div class="loc-secondary">ICU</div>
+                    </div>
+                  </td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Online</span></td>
+                  <td><span class="profile-chip" style="background:var(--c-violet-soft);color:var(--c-violet);"><span class="profile-dot" style="background:var(--c-violet);"></span>Profile Two</span></td>
+                  <td>20-bay · <strong style="color:var(--c-text);">20</strong></td>
+                  <td><span class="mono">10.50.200.91</span></td>
+                  <td>3 sec ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td><span class="health ok"><span class="health-dot"></span></span></td>
+                  <td>
+                    <div class="locker-name">2S1</div>
+                    <div class="locker-meta">6900…3001</div>
+                  </td>
+                  <td>
+                    <div class="col-loc">
+                      <div class="loc-primary">Butterworth Hospital</div>
+                      <div class="loc-secondary">2S MedSurg</div>
+                    </div>
+                  </td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Online</span></td>
+                  <td><span class="profile-chip" style="background:var(--c-cyan-soft);color:var(--c-cyan);"><span class="profile-dot" style="background:var(--c-cyan);"></span>Profile Three</span></td>
+                  <td>20-bay · <strong style="color:var(--c-text);">20</strong></td>
+                  <td><span class="mono">10.32.100.50</span></td>
+                  <td>1 sec ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td><span class="health ok"><span class="health-dot"></span></span></td>
+                  <td>
+                    <div class="locker-name">2S2</div>
+                    <div class="locker-meta">6900…3402</div>
+                  </td>
+                  <td>
+                    <div class="col-loc">
+                      <div class="loc-primary">Butterworth Hospital</div>
+                      <div class="loc-secondary">2S MedSurg</div>
+                    </div>
+                  </td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Online</span></td>
+                  <td><span class="profile-chip" style="background:var(--c-cyan-soft);color:var(--c-cyan);"><span class="profile-dot" style="background:var(--c-cyan);"></span>Profile Three</span></td>
+                  <td>20-bay · <strong style="color:var(--c-text);">20</strong></td>
+                  <td><span class="mono">10.32.100.51</span></td>
+                  <td>2 sec ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td><span class="health ok"><span class="health-dot"></span></span></td>
+                  <td>
+                    <div class="locker-name">Pink8</div>
+                    <div class="locker-meta">5c00…b221d</div>
+                  </td>
+                  <td>
+                    <div class="col-loc">
+                      <div class="loc-primary">HonestWaves OC Office</div>
+                      <div class="loc-secondary">Demo · Newport Beach</div>
+                    </div>
+                  </td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Online</span></td>
+                  <td><span class="profile-chip"><span class="profile-dot"></span>Profile One</span></td>
+                  <td>8-bay · <strong style="color:var(--c-text);">8</strong></td>
+                  <td><span class="mono">10.12.50.31</span></td>
+                  <td>3 sec ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td><span class="health ok"><span class="health-dot"></span></span></td>
+                  <td>
+                    <div class="locker-name">Blue34</div>
+                    <div class="locker-meta">5c00…e205d</div>
+                  </td>
+                  <td>
+                    <div class="col-loc">
+                      <div class="loc-primary">HonestWaves HQ</div>
+                      <div class="loc-secondary">Signal Hill</div>
+                    </div>
+                  </td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Online</span></td>
+                  <td><span class="profile-chip"><span class="profile-dot"></span>Profile One</span></td>
+                  <td>32-bay · <strong style="color:var(--c-text);">32</strong></td>
+                  <td><span class="mono">10.12.50.32</span></td>
+                  <td>1 sec ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><span class="checkbox"></span></td>
+                  <td><span class="health ok"><span class="health-dot"></span></span></td>
+                  <td>
+                    <div class="locker-name">Green8</div>
+                    <div class="locker-meta">5c00…01f9d</div>
+                  </td>
+                  <td>
+                    <div class="col-loc">
+                      <div class="loc-primary">HonestWaves OC Office</div>
+                      <div class="loc-secondary">Demo · Newport Beach</div>
+                    </div>
+                  </td>
+                  <td><span class="pill success"><span class="pill-dot"></span>Online</span></td>
+                  <td><span class="profile-chip"><span class="profile-dot"></span>Profile One</span></td>
+                  <td>8-bay · <strong style="color:var(--c-text);">8</strong></td>
+                  <td><span class="mono">10.12.50.33</span></td>
+                  <td>4 sec ago</td>
+                  <td class="row-actions">
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+
+            <div class="table-foot">
+              <span>Showing 12 of 12 lockers</span>
+              <div class="pag">
+                <button class="pag-btn" disabled><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+                <span class="pag-num active">1</span>
+                <button class="pag-btn" disabled><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+                <span style="margin-left: 12px;">25 per page</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========= TILE VIEW ========= -->
+        <div class="view-tile">
+          <div class="tile-grid">
+
+            <div class="tile selected">
+              <div class="tile-health-stripe ok"></div>
+              <div class="tile-head">
+                <div>
+                  <div class="tile-name">Blue</div>
+                  <div class="tile-serial">5c00…b221d</div>
+                </div>
+                <span class="checkbox checked" style="margin-top:2px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Status</span><span class="pill success"><span class="pill-dot"></span>Online</span></div>
+                <div class="tile-row"><span>Profile</span><span><strong>Profile One</strong></span></div>
+                <div class="tile-row"><span>Location</span><span><strong>Troy Hospital</strong></span></div>
+                <div class="tile-row"><span>Department</span><span><strong>Emergency Center</strong></span></div>
+              </div>
+              <div class="tile-bays">
+                <div class="tile-bays-grid">
+                  <div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay iu"></div><div class="tile-bay iu"></div>
+                  <div class="tile-bay av"></div><div class="tile-bay iu"></div><div class="tile-bay av"></div><div class="tile-bay av"></div>
+                  <div class="tile-bay iu"></div><div class="tile-bay iu"></div><div class="tile-bay av"></div><div class="tile-bay av"></div>
+                  <div class="tile-bay av"></div><div class="tile-bay iu"></div><div class="tile-bay iu"></div><div class="tile-bay iu"></div>
+                  <div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay iu"></div><div class="tile-bay iu"></div>
+                </div>
+              </div>
+              <div class="tile-foot">
+                <span>20-bay model</span>
+                <span>2 sec ago</span>
+              </div>
+            </div>
+
+            <div class="tile selected">
+              <div class="tile-health-stripe ok"></div>
+              <div class="tile-head">
+                <div>
+                  <div class="tile-name">Brown</div>
+                  <div class="tile-serial">5e6f…2e8c</div>
+                </div>
+                <span class="checkbox checked"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Status</span><span class="pill success"><span class="pill-dot"></span>Online</span></div>
+                <div class="tile-row"><span>Profile</span><span><strong>Profile One</strong></span></div>
+                <div class="tile-row"><span>Location</span><span><strong>Troy Hospital</strong></span></div>
+                <div class="tile-row"><span>Department</span><span><strong>Emergency Center</strong></span></div>
+              </div>
+              <div class="tile-bays">
+                <div class="tile-bays-grid">
+                  <div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay iu"></div>
+                  <div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay iu"></div><div class="tile-bay iu"></div>
+                  <div class="tile-bay av"></div><div class="tile-bay iu"></div><div class="tile-bay av"></div><div class="tile-bay av"></div>
+                  <div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay iu"></div><div class="tile-bay iu"></div>
+                  <div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay iu"></div><div class="tile-bay iu"></div>
+                </div>
+              </div>
+              <div class="tile-foot">
+                <span>20-bay model</span>
+                <span>4 sec ago</span>
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="tile-health-stripe ok"></div>
+              <div class="tile-head">
+                <div>
+                  <div class="tile-name">Green</div>
+                  <div class="tile-serial">3cf3…1ce7</div>
+                </div>
+                <span class="checkbox"></span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Status</span><span class="pill success"><span class="pill-dot"></span>Online</span></div>
+                <div class="tile-row"><span>Profile</span><span><strong>Profile One</strong></span></div>
+                <div class="tile-row"><span>Location</span><span><strong>Troy Hospital</strong></span></div>
+                <div class="tile-row"><span>Department</span><span><strong>Emergency Center</strong></span></div>
+              </div>
+              <div class="tile-bays">
+                <div class="tile-bays-grid">
+                  <div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay av"></div>
+                  <div class="tile-bay iu"></div><div class="tile-bay iu"></div><div class="tile-bay av"></div><div class="tile-bay av"></div>
+                  <div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay iu"></div>
+                  <div class="tile-bay av"></div><div class="tile-bay iu"></div><div class="tile-bay iu"></div><div class="tile-bay iu"></div>
+                  <div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay iu"></div><div class="tile-bay iu"></div>
+                </div>
+              </div>
+              <div class="tile-foot">
+                <span>20-bay model</span>
+                <span>1 sec ago</span>
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="tile-health-stripe warn"></div>
+              <div class="tile-head">
+                <div>
+                  <div class="tile-name">Purple</div>
+                  <div class="tile-serial">2b7a…0512</div>
+                </div>
+                <span class="checkbox"></span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Status</span><span class="pill warn"><span class="pill-dot"></span>Has issues</span></div>
+                <div class="tile-row"><span>Profile</span><span><strong>Profile One</strong></span></div>
+                <div class="tile-row"><span>Location</span><span><strong>Troy Hospital</strong></span></div>
+                <div class="tile-row"><span>Department</span><span><strong>Emergency Center</strong></span></div>
+              </div>
+              <div class="tile-bays">
+                <div class="tile-bays-grid">
+                  <div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay dn"></div>
+                  <div class="tile-bay iu"></div><div class="tile-bay iu"></div><div class="tile-bay dn"></div><div class="tile-bay av"></div>
+                  <div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay iu"></div><div class="tile-bay iu"></div>
+                  <div class="tile-bay od"></div><div class="tile-bay iu"></div><div class="tile-bay od"></div><div class="tile-bay iu"></div>
+                  <div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay av"></div>
+                  <div class="tile-bay iu"></div><div class="tile-bay iu"></div><div class="tile-bay iu"></div><div class="tile-bay iu"></div>
+                  <div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay dx"></div><div class="tile-bay dx"></div>
+                  <div class="tile-bay dx"></div><div class="tile-bay dx"></div><div class="tile-bay dx"></div><div class="tile-bay dx"></div>
+                </div>
+              </div>
+              <div class="tile-foot">
+                <span>32-bay model</span>
+                <span>14 sec ago</span>
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="tile-health-stripe ok"></div>
+              <div class="tile-head">
+                <div>
+                  <div class="tile-name">Red</div>
+                  <div class="tile-serial">f0c5…6855</div>
+                </div>
+                <span class="checkbox"></span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Status</span><span class="pill success"><span class="pill-dot"></span>Online</span></div>
+                <div class="tile-row"><span>Profile</span><span><strong>Profile One</strong></span></div>
+                <div class="tile-row"><span>Location</span><span><strong>Troy Hospital</strong></span></div>
+                <div class="tile-row"><span>Department</span><span><strong>Emergency Center</strong></span></div>
+              </div>
+              <div class="tile-bays">
+                <div class="tile-bays-grid">
+                  <div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay av"></div>
+                  <div class="tile-bay av"></div><div class="tile-bay iu"></div><div class="tile-bay iu"></div><div class="tile-bay av"></div>
+                  <div class="tile-bay av"></div><div class="tile-bay iu"></div><div class="tile-bay iu"></div><div class="tile-bay av"></div>
+                  <div class="tile-bay iu"></div><div class="tile-bay iu"></div><div class="tile-bay av"></div><div class="tile-bay av"></div>
+                  <div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay iu"></div><div class="tile-bay iu"></div>
+                </div>
+              </div>
+              <div class="tile-foot">
+                <span>20-bay model</span>
+                <span>5 sec ago</span>
+              </div>
+            </div>
+
+            <div class="tile note-host">
+              <div class="tile-health-stripe crit"></div>
+              <div class="tile-head">
+                <div>
+                  <div class="tile-name">ICU1</div>
+                  <div class="tile-serial">0b32…028f</div>
+                </div>
+                <span class="checkbox"></span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Status</span><span class="pill danger"><span class="pill-dot"></span>Offline</span></div>
+                <div class="tile-row"><span>Profile</span><span><strong>Profile Two</strong></span></div>
+                <div class="tile-row"><span>Location</span><span><strong>Troy Hospital</strong></span></div>
+                <div class="tile-row"><span>Department</span><span><strong>ICU</strong></span></div>
+              </div>
+              <div class="tile-bays">
+                <div class="tile-bays-grid" style="opacity:0.4;">
+                  <div class="tile-bay dx"></div><div class="tile-bay dx"></div><div class="tile-bay dx"></div><div class="tile-bay dx"></div>
+                  <div class="tile-bay dx"></div><div class="tile-bay dx"></div><div class="tile-bay dx"></div><div class="tile-bay dx"></div>
+                  <div class="tile-bay dx"></div><div class="tile-bay dx"></div><div class="tile-bay dx"></div><div class="tile-bay dx"></div>
+                  <div class="tile-bay dx"></div><div class="tile-bay dx"></div><div class="tile-bay dx"></div><div class="tile-bay dx"></div>
+                  <div class="tile-bay dx"></div><div class="tile-bay dx"></div><div class="tile-bay dx"></div><div class="tile-bay dx"></div>
+                </div>
+              </div>
+              <div class="tile-foot">
+                <span>20-bay model</span>
+                <span style="color:var(--c-danger);">47 min ago</span>
+              </div>
+              <div class="note tr" style="left:0;">
+                <strong>Offline state.</strong><br>
+                Bay grid grays out so you can't tell whether the data is stale. Footer time turns red. Travis (P4): ITSM ticket auto-creates.
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="tile-health-stripe ok"></div>
+              <div class="tile-head">
+                <div>
+                  <div class="tile-name">ICU2</div>
+                  <div class="tile-serial">6900…8662</div>
+                </div>
+                <span class="checkbox"></span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Status</span><span class="pill success"><span class="pill-dot"></span>Online</span></div>
+                <div class="tile-row"><span>Profile</span><span><strong>Profile Two</strong></span></div>
+                <div class="tile-row"><span>Location</span><span><strong>Troy Hospital</strong></span></div>
+                <div class="tile-row"><span>Department</span><span><strong>ICU</strong></span></div>
+              </div>
+              <div class="tile-bays">
+                <div class="tile-bays-grid">
+                  <div class="tile-bay av"></div><div class="tile-bay iu"></div><div class="tile-bay av"></div><div class="tile-bay av"></div>
+                  <div class="tile-bay av"></div><div class="tile-bay iu"></div><div class="tile-bay iu"></div><div class="tile-bay av"></div>
+                  <div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay iu"></div>
+                  <div class="tile-bay iu"></div><div class="tile-bay iu"></div><div class="tile-bay av"></div><div class="tile-bay av"></div>
+                  <div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay iu"></div><div class="tile-bay iu"></div>
+                </div>
+              </div>
+              <div class="tile-foot">
+                <span>20-bay model</span>
+                <span>3 sec ago</span>
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="tile-health-stripe ok"></div>
+              <div class="tile-head">
+                <div>
+                  <div class="tile-name">2S1</div>
+                  <div class="tile-serial">6900…3001</div>
+                </div>
+                <span class="checkbox"></span>
+              </div>
+              <div class="tile-body">
+                <div class="tile-row"><span>Status</span><span class="pill success"><span class="pill-dot"></span>Online</span></div>
+                <div class="tile-row"><span>Profile</span><span><strong>Profile Three</strong></span></div>
+                <div class="tile-row"><span>Location</span><span><strong>Butterworth Hospital</strong></span></div>
+                <div class="tile-row"><span>Department</span><span><strong>2S MedSurg</strong></span></div>
+              </div>
+              <div class="tile-bays">
+                <div class="tile-bays-grid">
+                  <div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay iu"></div>
+                  <div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay iu"></div><div class="tile-bay iu"></div>
+                  <div class="tile-bay av"></div><div class="tile-bay iu"></div><div class="tile-bay av"></div><div class="tile-bay iu"></div>
+                  <div class="tile-bay iu"></div><div class="tile-bay iu"></div><div class="tile-bay av"></div><div class="tile-bay av"></div>
+                  <div class="tile-bay av"></div><div class="tile-bay av"></div><div class="tile-bay iu"></div><div class="tile-bay av"></div>
+                </div>
+              </div>
+              <div class="tile-foot">
+                <span>20-bay model</span>
+                <span>1 sec ago</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Travis credit -->
+        <div class="travis-credit">
+          <strong>Recommendations integrated from Travis @ Corewell</strong> (full list in the workbook):
+          <div class="recs">
+            <span class="rec-tag">P4</span>List view with bulk select &nbsp;
+            <span class="rec-tag">P4</span>Health: Green / Orange / Red &nbsp;
+            <span class="rec-tag">P3</span>Configuration profiles &nbsp;
+            <span class="rec-tag">P3</span>Advanced filters (location, dept) &nbsp;
+            <span class="rec-tag">P3</span>Search by location + dept &nbsp;
+            <span class="rec-tag">P1</span>Safer Open All Bays placement (moved off filter bar)
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // View toggle (list / tile)
+    const listBtn = document.getElementById('viewListBtn');
+    const tileBtn = document.getElementById('viewTileBtn');
+    const listView = document.querySelector('.view-list');
+    const tileView = document.querySelector('.view-tile');
+
+    function show(view) {
+      if (view === 'tile') {
+        listView.classList.remove('show');
+        tileView.classList.add('show');
+        listBtn.classList.remove('active');
+        tileBtn.classList.add('active');
+        try { localStorage.setItem('hw.lockers.view', 'tile'); } catch (e) {}
+      } else {
+        tileView.classList.remove('show');
+        listView.classList.add('show');
+        tileBtn.classList.remove('active');
+        listBtn.classList.add('active');
+        try { localStorage.setItem('hw.lockers.view', 'list'); } catch (e) {}
+      }
+    }
+    listBtn.addEventListener('click', () => show('list'));
+    tileBtn.addEventListener('click', () => show('tile'));
+
+    // Restore preference
+    try {
+      const saved = localStorage.getItem('hw.lockers.view');
+      if (saved === 'tile') show('tile');
+    } catch (e) {}
+  </script>
+</body>
+</html>

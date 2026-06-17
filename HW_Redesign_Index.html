@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HonestWaves Dashboard Redesign · Index</title>
+  <style>
+    :root {
+      --c-surface: #FFFFFF;
+      --c-surface-2: #FAFAFB;
+      --c-surface-3: #F4F5F7;
+      --c-border: #E5E7EB;
+      --c-border-strong: #D1D5DB;
+      --c-divider: #EDF0F4;
+      --c-text: #0F172A;
+      --c-text-2: #475569;
+      --c-text-muted: #94A3B8;
+      --c-brand: #2563EB;
+      --c-brand-hover: #1D4ED8;
+      --c-brand-soft: #EFF6FF;
+      --c-brand-deep: #1E40AF;
+      --c-success: #10B981;
+      --c-success-soft: #ECFDF5;
+      --c-warning: #F59E0B;
+      --c-warning-soft: #FFFBEB;
+      --c-warning-text: #B45309;
+      --c-danger: #EF4444;
+      --c-danger-soft: #FEF2F2;
+      --c-info: #6366F1;
+      --c-info-soft: #EEF2FF;
+      --c-violet: #7C3AED;
+      --c-violet-soft: #F5F3FF;
+
+      --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      color: var(--c-text);
+      background: var(--c-surface-2);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+    svg { display: block; }
+
+    /* Top bar */
+    .topbar {
+      background: var(--c-surface);
+      border-bottom: 1px solid var(--c-border);
+      padding: 16px 24px;
+      display: flex; align-items: center; gap: 12px;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .logo-mark {
+      width: 28px; height: 28px;
+      border-radius: 7px;
+      background: linear-gradient(135deg, var(--c-brand) 0%, var(--c-brand-deep) 100%);
+      display: grid; place-items: center;
+      color: white; font-weight: 700; font-size: 14px;
+    }
+    .topbar-title {
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+    }
+    .topbar-sub {
+      color: var(--c-text-muted);
+      font-size: 12px;
+    }
+    .topbar-spacer { flex: 1; }
+    .nav-link {
+      font-size: 13px;
+      color: var(--c-text-2);
+      padding: 6px 10px;
+      border-radius: 6px;
+    }
+    .nav-link:hover { background: var(--c-surface-3); color: var(--c-text); }
+
+    /* Hero */
+    .hero {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 56px 24px 32px;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px;
+      background: var(--c-brand-soft);
+      color: var(--c-brand-deep);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: 40px;
+      letter-spacing: -0.025em;
+      font-weight: 700;
+      margin: 0 0 12px;
+      line-height: 1.1;
+    }
+    .hero p {
+      font-size: 16px;
+      color: var(--c-text-2);
+      max-width: 720px;
+      margin: 0 0 28px;
+    }
+    .hero-meta {
+      display: flex; flex-wrap: wrap; gap: 16px;
+      padding-top: 20px;
+      border-top: 1px solid var(--c-border);
+    }
+    .hero-meta-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px;
+      color: var(--c-text-2);
+    }
+    .hero-meta-item strong { color: var(--c-text); font-weight: 600; }
+
+    /* Section */
+    .section {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+    .section-head {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--c-text-muted);
+      margin: 0;
+    }
+    .section-count {
+      font-size: 12px;
+      color: var(--c-text-muted);
+    }
+
+    /* Prototype card grid */
+    .grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+    .card {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color .15s, box-shadow .15s, transform .15s;
+      display: flex; flex-direction: column;
+    }
+    .card:hover:not(.placeholder) {
+      border-color: var(--c-border-strong);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06), 0 2px 6px rgba(15, 23, 42, 0.04);
+      transform: translateY(-2px);
+    }
+    .card-thumb {
+      height: 160px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #EFF6FF 0%, #F5F3FF 50%, #ECFDF5 100%);
+      display: grid; place-items: center;
+      border-bottom: 1px solid var(--c-border);
+    }
+    .card-thumb-mark {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      color: var(--c-brand-deep);
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+    .card-thumb-num {
+      font-family: var(--font-mono);
+      font-size: 40px;
+      font-weight: 700;
+      color: var(--c-brand);
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .card-status {
+      position: absolute;
+      top: 12px; right: 12px;
+      padding: 3px 8px;
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: inline-flex; align-items: center; gap: 5px;
+    }
+    .card-status .dot { width: 6px; height: 6px; border-radius: 50%; }
+    .card-status.done { color: var(--c-success); }
+    .card-status.done .dot { background: var(--c-success); }
+    .card-status.next { color: var(--c-warning-text); background: var(--c-warning-soft); border-color: var(--c-warning-soft); }
+    .card-status.next .dot { background: var(--c-warning); }
+    .card-status.queued { color: var(--c-text-muted); }
+    .card-status.queued .dot { background: var(--c-text-muted); }
+
+    .card-body { padding: 18px 20px; flex: 1; display: flex; flex-direction: column; }
+    .card-eyebrow {
+      font-size: 10px;
+      color: var(--c-text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 8px;
+      letter-spacing: -0.01em;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: var(--c-text-2);
+      margin: 0 0 16px;
+      flex: 1;
+    }
+    .card-tags {
+      display: flex; flex-wrap: wrap; gap: 5px;
+      margin-bottom: 16px;
+    }
+    .tag {
+      padding: 2px 8px;
+      background: var(--c-surface-3);
+      color: var(--c-text-2);
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 500;
+    }
+    .tag.travis {
+      background: var(--c-info-soft);
+      color: var(--c-info);
+      font-weight: 600;
+    }
+    .card-cta {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 14px;
+      background: var(--c-brand);
+      color: white;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      align-self: flex-start;
+      transition: background .12s;
+    }
+    .card-cta:hover { background: var(--c-brand-hover); }
+    .card-cta-secondary {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 14px;
+      background: var(--c-surface);
+      color: var(--c-text);
+      border: 1px solid var(--c-border);
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      align-self: flex-start;
+    }
+
+    .card.placeholder {
+      border-style: dashed;
+      background: transparent;
+    }
+    .card.placeholder .card-thumb {
+      background: var(--c-surface-3);
+      border-bottom-color: transparent;
+    }
+    .card.placeholder .card-thumb-num,
+    .card.placeholder .card-thumb-mark { color: var(--c-text-muted); opacity: 0.5; }
+
+    /* Big "current" card */
+    .current-card {
+      grid-column: span 2;
+    }
+    .current-card .card-thumb {
+      background: linear-gradient(135deg, var(--c-brand) 0%, var(--c-brand-deep) 100%);
+    }
+    .current-card .card-thumb-mark,
+    .current-card .card-thumb-num {
+      color: white !important;
+      opacity: 1 !important;
+    }
+    .current-card .card-thumb-num { font-size: 56px; }
+
+    /* References strip */
+    .refs {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: 12px;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+    }
+    .ref-item h4 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 600;
+      color: var(--c-text-muted);
+      margin: 0 0 8px;
+    }
+    .ref-item-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 0 0 4px;
+    }
+    .ref-item p {
+      font-size: 13px;
+      color: var(--c-text-2);
+      margin: 0 0 8px;
+    }
+    .ref-item a {
+      color: var(--c-brand);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--c-border);
+      background: var(--c-surface);
+      padding: 24px;
+      margin-top: 60px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--c-text-muted);
+    }
+    footer strong { color: var(--c-text); }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 28px; }
+      .refs { grid-template-columns: 1fr; }
+      .current-card { grid-column: span 1; }
+      .current-card .card-thumb-num { font-size: 40px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="logo-mark">H</div>
+    <div>
+      <div class="topbar-title">HonestWaves · Dashboard Redesign</div>
+      <div class="topbar-sub">Prototypes &amp; design system</div>
+    </div>
+    <div class="topbar-spacer"></div>
+    <a class="nav-link" href="HonestWaves_Master_Hub.html">Original design hub</a>
+    <a class="nav-link" href="https://github.com/TeemuvsScout/honestwaves-design">GitHub repo</a>
+  </div>
+
+  <section class="hero">
+    <span class="hero-eyebrow">v2 · Modern enterprise</span>
+    <h1>HonestWaves dashboard redesign</h1>
+    <p>
+      A full UX + UI redesign of the HonestWaves dashboard for the operations
+      staff using it every day. Modern enterprise aesthetic (Linear / Stripe /
+      Vercel), compact density, ops-first information hierarchy. Buildable in
+      the existing PrimeVue + Tailwind stack.
+    </p>
+
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        <strong>3 of ~12</strong> prototypes done
+      </div>
+      <div class="hero-meta-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+        <strong>42-tab copy audit</strong> · 1,063 elements
+      </div>
+      <div class="hero-meta-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        <strong>Travis @ Corewell</strong> recommendations integrated
+      </div>
+      <div class="hero-meta-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/></svg>
+        Presentation deck · <strong>June 25</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2 class="section-title">Done · live prototypes</h2>
+      <span class="section-count">3 of ~12</span>
+    </div>
+
+    <div class="grid">
+
+      <!-- Prototype 03 — current/featured -->
+      <a class="card current-card" href="HW_Redesign_03_Lockers.html">
+        <div class="card-thumb">
+          <span class="card-status done"><span class="dot"></span>Latest</span>
+          <div class="card-thumb-mark">
+            <div class="card-thumb-num">03</div>
+            <div>Lockers</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-eyebrow">Prototype 03 · Manage</div>
+          <h3 class="card-title">Lockers — list &amp; tile</h3>
+          <p class="card-desc">
+            Locker fleet list with traffic-light health, Profile column, and a
+            bulk action toolbar (Edit / Sync / Apply profile / Delete). Tile
+            view with health stripe + mini bay grid as the alternate layout.
+            Includes most of Travis's P3–P4 fleet recommendations.
+          </p>
+          <div class="card-tags">
+            <span class="tag">List + tile view</span>
+            <span class="tag">Bulk actions</span>
+            <span class="tag">Profiles</span>
+            <span class="tag travis">Travis recs</span>
+          </div>
+          <span class="card-cta">Open prototype →</span>
+        </div>
+      </a>
+
+      <a class="card" href="HW_Redesign_01_Chrome_and_Dashboard.html">
+        <div class="card-thumb">
+          <span class="card-status done"><span class="dot"></span>Done</span>
+          <div class="card-thumb-mark">
+            <div class="card-thumb-num">01</div>
+            <div>Chrome &amp; Dashboard</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-eyebrow">Prototype 01 · Foundation</div>
+          <h3 class="card-title">Global chrome + Dashboard</h3>
+          <p class="card-desc">
+            New header (with ⌘K search), grouped sidebar (Monitor / Manage /
+            Investigate / System), and a 4-KPI strip + Bay status / Alarms / Inbox
+            layout on the dashboard. Includes the embedded design system reference.
+          </p>
+          <div class="card-tags">
+            <span class="tag">Chrome</span>
+            <span class="tag">Design system</span>
+            <span class="tag">KPI strip</span>
+          </div>
+          <span class="card-cta">Open prototype →</span>
+        </div>
+      </a>
+
+      <a class="card" href="HW_Redesign_02_Mission_Control.html">
+        <div class="card-thumb">
+          <span class="card-status done"><span class="dot"></span>Done</span>
+          <div class="card-thumb-mark">
+            <div class="card-thumb-num">02</div>
+            <div>Mission Control</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-eyebrow">Prototype 02 · Monitor</div>
+          <h3 class="card-title">Mission Control</h3>
+          <p class="card-desc">
+            Locker switcher tabs with health dots, compact bay grid, slide-in
+            detail drawer with plain-English telemetry, and a confirm-before-destructive
+            pattern for Reset. Pulse animation on Overdue + Lost pills.
+          </p>
+          <div class="card-tags">
+            <span class="tag">Live view</span>
+            <span class="tag">Slide drawer</span>
+            <span class="tag">Telemetry tooltips</span>
+          </div>
+          <span class="card-cta">Open prototype →</span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2 class="section-title">Up next · in queue</h2>
+      <span class="section-count">For the June 25 deck</span>
+    </div>
+
+    <div class="grid">
+
+      <div class="card placeholder">
+        <div class="card-thumb">
+          <span class="card-status next"><span class="dot"></span>Up next</span>
+          <div class="card-thumb-mark">
+            <div class="card-thumb-num">04</div>
+            <div>Devices</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-eyebrow">Prototype 04 · Manage</div>
+          <h3 class="card-title">Devices — list &amp; tile</h3>
+          <p class="card-desc">
+            Device inventory with list/tile views. Travis P5: device status
+            report columns (location · department · device · status · user ·
+            locker · bay · overdue · last update). New "Checked-in, not plugged
+            in" status. Replacement Cost field.
+          </p>
+          <div class="card-tags">
+            <span class="tag travis">P5</span>
+            <span class="tag travis">New status</span>
+            <span class="tag travis">Replacement cost</span>
+          </div>
+          <span class="card-cta-secondary">Queued</span>
+        </div>
+      </div>
+
+      <div class="card placeholder">
+        <div class="card-thumb">
+          <span class="card-status queued"><span class="dot"></span>Queued</span>
+          <div class="card-thumb-mark">
+            <div class="card-thumb-num">05</div>
+            <div>Users</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-eyebrow">Prototype 05 · Manage</div>
+          <h3 class="card-title">Users, Departments, Guests</h3>
+          <p class="card-desc">
+            Unified Users + Departments + Guests view with list/tile.
+            Travis P5: custom role groups scoped by function + location,
+            AD/SSO/SAML/SCIM integration, total unreturned devices column.
+          </p>
+          <div class="card-tags">
+            <span class="tag travis">P5</span>
+            <span class="tag travis">Custom roles</span>
+            <span class="tag">AD integration</span>
+          </div>
+          <span class="card-cta-secondary">Queued</span>
+        </div>
+      </div>
+
+      <div class="card placeholder">
+        <div class="card-thumb">
+          <span class="card-status queued"><span class="dot"></span>Queued</span>
+          <div class="card-thumb-mark">
+            <div class="card-thumb-num">06</div>
+            <div>Reports</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-eyebrow">Prototype 06 · Investigate</div>
+          <h3 class="card-title">Reports / Activity log</h3>
+          <p class="card-desc">
+            Better readability for ops scanning logs (per testing team feedback).
+            Sticky filter bar, denser rows, plain-English event titles from the
+            dev catalog, exportable + scheduled reports.
+          </p>
+          <div class="card-tags">
+            <span class="tag travis">P5</span>
+            <span class="tag travis">Scheduled</span>
+            <span class="tag">Catalog titles</span>
+          </div>
+          <span class="card-cta-secondary">Queued</span>
+        </div>
+      </div>
+
+      <div class="card placeholder">
+        <div class="card-thumb">
+          <span class="card-status queued"><span class="dot"></span>Queued</span>
+          <div class="card-thumb-mark">
+            <div class="card-thumb-num">07</div>
+            <div>Tracker</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-eyebrow">Prototype 07 · Investigate</div>
+          <h3 class="card-title">Tracker</h3>
+          <p class="card-desc">
+            Timeline view with proper Kind badges (per dev catalog), severity dots,
+            plain-English event titles, Order entity added to picker, 12-hour
+            local time format.
+          </p>
+          <div class="card-tags">
+            <span class="tag">Timeline</span>
+            <span class="tag">Catalog</span>
+            <span class="tag">Order entity</span>
+          </div>
+          <span class="card-cta-secondary">Queued</span>
+        </div>
+      </div>
+
+      <div class="card placeholder">
+        <div class="card-thumb">
+          <span class="card-status queued"><span class="dot"></span>Queued</span>
+          <div class="card-thumb-mark">
+            <div class="card-thumb-num">08</div>
+            <div>Notifications</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-eyebrow">Prototype 08 · Investigate</div>
+          <h3 class="card-title">Notifications — list &amp; tile</h3>
+          <p class="card-desc">
+            List/tile view (Travis P3), custom notification rules + destinations
+            (Travis P4), bell drawer with "All caught up" empty state, mark-all-read
+            that actually works.
+          </p>
+          <div class="card-tags">
+            <span class="tag travis">P3 list view</span>
+            <span class="tag travis">P4 custom rules</span>
+          </div>
+          <span class="card-cta-secondary">Queued</span>
+        </div>
+      </div>
+
+      <div class="card placeholder">
+        <div class="card-thumb">
+          <span class="card-status queued"><span class="dot"></span>Queued</span>
+          <div class="card-thumb-mark">
+            <div class="card-thumb-num">09</div>
+            <div>Access matrix</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-eyebrow">Prototype 09 · Manage</div>
+          <h3 class="card-title">Access matrix</h3>
+          <p class="card-desc">
+            By-locker / by-user / by-department / by-grant-path perspectives.
+            Inheritance source pills. Network graph view (existing toggle, redesigned).
+          </p>
+          <div class="card-tags">
+            <span class="tag">Pivoted view</span>
+            <span class="tag">Grant path</span>
+          </div>
+          <span class="card-cta-secondary">Queued</span>
+        </div>
+      </div>
+
+      <div class="card placeholder">
+        <div class="card-thumb">
+          <span class="card-status queued"><span class="dot"></span>Queued</span>
+          <div class="card-thumb-mark">
+            <div class="card-thumb-num">10</div>
+            <div>Software updates</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-eyebrow">Prototype 10 · System</div>
+          <h3 class="card-title">Software updates</h3>
+          <p class="card-desc">
+            Renamed from OTA Updates. Send-update wizard with confirm step.
+            Live update status (Travis P4): Not reported / Update queued /
+            Updating now / Up to date / Update failed.
+          </p>
+          <div class="card-tags">
+            <span class="tag travis">P4 firmware</span>
+            <span class="tag">Live status</span>
+          </div>
+          <span class="card-cta-secondary">Queued</span>
+        </div>
+      </div>
+
+      <div class="card placeholder">
+        <div class="card-thumb">
+          <span class="card-status queued"><span class="dot"></span>Queued</span>
+          <div class="card-thumb-mark">
+            <div class="card-thumb-num">11</div>
+            <div>Settings</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-eyebrow">Prototype 11 · System</div>
+          <h3 class="card-title">Settings + Branding</h3>
+          <p class="card-desc">
+            Account, branding, system config. Tenant brand + per-locker artwork.
+            Travis: auto-logout (P5), time zone (P3), force password change on
+            first login (P1), unified user management + settings (P1).
+          </p>
+          <div class="card-tags">
+            <span class="tag travis">P5 auto-logout</span>
+            <span class="tag travis">P1 first-login</span>
+          </div>
+          <span class="card-cta-secondary">Queued</span>
+        </div>
+      </div>
+
+      <div class="card placeholder">
+        <div class="card-thumb">
+          <span class="card-status queued"><span class="dot"></span>Queued</span>
+          <div class="card-thumb-mark">
+            <div class="card-thumb-num">12</div>
+            <div>Modals &amp; states</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-eyebrow">Prototype 12 · Cross-cutting</div>
+          <h3 class="card-title">Modals, confirmations &amp; states</h3>
+          <p class="card-desc">
+            Add modals (Add locker / device / user / etc.), destructive
+            confirmations, success / error toasts, empty states, error pages
+            (404 with Pixar, 403, 500, offline). Supervisor approval workflow
+            (Travis P5).
+          </p>
+          <div class="card-tags">
+            <span class="tag travis">P5 approval</span>
+            <span class="tag">Pixar 404</span>
+          </div>
+          <span class="card-cta-secondary">Queued</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2 class="section-title">Reference materials</h2>
+    </div>
+    <div class="refs">
+      <div class="ref-item">
+        <h4>Source of truth</h4>
+        <div class="ref-item-title">Copy audit · v2</div>
+        <p>
+          42 tabs covering every dashboard string — current text, suggested
+          enterprise rewrite, tooltip copy, gaps, and uniformity findings.
+          Now reconciled with the dev log catalog.
+        </p>
+        <a href="https://docs.google.com/spreadsheets/d/1Td9jglx6jwXKYlbQ1cExbQGuvtAzu1g_pmsOl2m25EM/edit">Open in Google Sheets →</a>
+      </div>
+      <div class="ref-item">
+        <h4>Customer input</h4>
+        <div class="ref-item-title">Travis @ Corewell · recommendations</div>
+        <p>
+          35 recommendations + 7 bugs (v1 dashboard). Highlights: list view
+          for Locker Fleet (P4), traffic-light Health column (P4), custom role
+          groups (P5), device status report (P5), Replacement Cost field (P1).
+        </p>
+        <span style="color: var(--c-text-muted); font-size: 12px;">Internal · `Honest Waves Recommendations and Bugs.xlsx`</span>
+      </div>
+      <div class="ref-item">
+        <h4>Original prototypes</h4>
+        <div class="ref-item-title">Asset Accounting + Tablet Admin</div>
+        <p>
+          Earlier prototypes covering the Asset Accounting module (loss /
+          damage / chargeback) and the on-locker tablet admin UI. Linked
+          from the master hub.
+        </p>
+        <a href="HonestWaves_Master_Hub.html">Open master hub →</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <strong>HonestWaves dashboard redesign</strong> · v2 · Built for ops staff first ·
+    PrimeVue + Tailwind buildable ·
+    <a href="https://github.com/TeemuvsScout/honestwaves-design" style="color: var(--c-brand); font-weight: 600;">GitHub</a>
+  </footer>
+
+</body>
+</html>
