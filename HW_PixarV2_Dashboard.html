@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="app-dark">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -250,7 +250,8 @@
     });
     try {
       const saved = localStorage.getItem('hw.theme');
-      if (saved === 'light') root.classList.remove('app-dark');
+      if (saved === 'dark') root.classList.add('app-dark');
+      else if (saved === 'light') root.classList.remove('app-dark');
     } catch (e) {}
     applyTheme();
   </script>
