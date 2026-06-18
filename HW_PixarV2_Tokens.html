@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixar v.2 · Design tokens</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/lara-light-blue/theme.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/primevue.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="pixarV2-tokens.css" />
+  <style>
+    .swatch-card { background: var(--c-surface); border: 1px solid var(--c-border); border-radius: var(--r-md); padding: var(--s-3); display: flex; align-items: center; gap: var(--s-3); }
+    .swatch-chip { width: 36px; height: 36px; border-radius: var(--r-md); flex-shrink: 0; border: 1px solid rgba(15,23,42,.06); }
+    .swatch-meta { font-size: var(--t-12); }
+    .swatch-meta .name { font-weight: 600; color: var(--c-text); }
+    .swatch-meta .hex { font-family: var(--font-mono); font-size: var(--t-11); color: var(--c-text-muted); text-transform: uppercase; }
+    .swatch-meta .var { font-family: var(--font-mono); font-size: var(--t-11); color: var(--c-text-2); }
+    .section { background: var(--c-surface); border: 1px solid var(--c-border); border-radius: var(--r-md); padding: var(--s-5); margin-bottom: var(--s-5); }
+    .section-title { font-size: var(--t-14); font-weight: 600; color: var(--c-text); margin: 0 0 4px; }
+    .section-sub { font-size: var(--t-12); color: var(--c-text-2); margin-bottom: var(--s-4); }
+    .type-row { display: flex; align-items: baseline; gap: var(--s-4); padding: var(--s-2) 0; border-bottom: 1px dashed var(--c-divider); }
+    .type-row:last-child { border-bottom: none; }
+    .type-label { width: 60px; font-family: var(--font-mono); font-size: var(--t-11); color: var(--c-text-muted); }
+    .radius-card { background: var(--c-surface); border: 1px solid var(--c-border); padding: var(--s-3); text-align: center; font-size: var(--t-11); color: var(--c-text-2); }
+    .shadow-card { background: var(--c-surface); padding: var(--s-4); border-radius: var(--r-md); text-align: center; font-size: var(--t-11); color: var(--c-text-2); }
+    .space-row { display: flex; align-items: center; gap: var(--s-3); font-size: var(--t-12); color: var(--c-text-2); padding: 4px 0; }
+    .space-bar { background: var(--c-brand); height: 12px; border-radius: 2px; }
+    code.mono { font-family: var(--font-mono); font-size: var(--t-11); background: var(--c-surface-3); padding: 2px 6px; border-radius: 4px; color: var(--c-text); }
+  </style>
+</head>
+<body>
+
+  <div class="annotation">
+    <span class="chip">Pixar v.2</span>
+    <strong>Design tokens.</strong>
+    <span>The complete palette, type scale, spacing, radii, shadows, and PrimeVue overrides — extracted from v.1 for dev hand-off.</span>
+    <span class="ml-auto"><a href="HW_PixarV2_Browse.html">← v.2 home</a></span>
+  </div>
+
+  <main class="max-w-7xl mx-auto px-6 py-6">
+
+    <header class="mb-5">
+      <h1 class="text-3xl font-bold" style="font-weight:700;">Pixar v.2 design tokens</h1>
+      <p class="text-base mt-1" style="color:var(--c-text-2);">Single source of truth. Drop <code class="mono">pixarV2-tokens.css</code> into your Vue app, load it after PrimeVue's Lara theme, and every prototype here will render with the same visual contract.</p>
+      <div class="flex gap-2 mt-3">
+        <a href="pixarV2-tokens.css" target="_blank" class="p-button p-button-sm"><i class="pi pi-download mr-2"></i>Download tokens.css</a>
+        <a href="HW_PixarV2_Hub.html" class="p-button p-button-outlined p-button-sm">Open connected hub →</a>
+      </div>
+    </header>
+
+    <!-- HOW TO USE -->
+    <div class="section">
+      <h2 class="section-title">How to use</h2>
+      <p class="section-sub">Load order matters — PrimeVue Lara CSS first, our token sheet after, then per-component overrides via <code class="mono">:pt</code>.</p>
+      <pre class="text-xs p-4 rounded" style="background:var(--c-text); color:#E2E8F0; font-family:var(--font-mono); overflow-x:auto; line-height:1.6;"><span style="color:#94A3B8;">// main.ts (Vue 3 + PrimeVue)</span>
+<span style="color:#7DD3FC;">import</span> { createApp } <span style="color:#7DD3FC;">from</span> <span style="color:#FCD34D;">'vue'</span>
+<span style="color:#7DD3FC;">import</span> PrimeVue <span style="color:#7DD3FC;">from</span> <span style="color:#FCD34D;">'primevue/config'</span>
+<span style="color:#7DD3FC;">import</span> <span style="color:#FCD34D;">'primevue/resources/themes/lara-light-blue/theme.css'</span>  <span style="color:#94A3B8;">// 1. Lara</span>
+<span style="color:#7DD3FC;">import</span> <span style="color:#FCD34D;">'primevue/resources/primevue.min.css'</span>
+<span style="color:#7DD3FC;">import</span> <span style="color:#FCD34D;">'primeicons/primeicons.css'</span>
+<span style="color:#7DD3FC;">import</span> <span style="color:#FCD34D;">'./assets/pixarV2-tokens.css'</span>                          <span style="color:#94A3B8;">// 2. our overrides</span>
+
+createApp(App).use(PrimeVue, { ripple: <span style="color:#FCA5A5;">true</span> }).mount(<span style="color:#FCD34D;">'#app'</span>)</pre>
+    </div>
+
+    <!-- SURFACES -->
+    <div class="section">
+      <h2 class="section-title">Surfaces</h2>
+      <p class="section-sub">Off-white page bg + pure white cards + slate-3 zebra. Borders carry the structure, not shadows.</p>
+      <div class="grid grid-cols-3 gap-3">
+        <div class="swatch-card"><div class="swatch-chip" style="background:#FFFFFF;"></div><div class="swatch-meta"><div class="name">Surface</div><div class="hex">#FFFFFF</div><div class="var">--c-surface</div></div></div>
+        <div class="swatch-card"><div class="swatch-chip" style="background:#FAFAFB;"></div><div class="swatch-meta"><div class="name">Surface 2 — page bg</div><div class="hex">#FAFAFB</div><div class="var">--c-surface-2</div></div></div>
+        <div class="swatch-card"><div class="swatch-chip" style="background:#F4F5F7;"></div><div class="swatch-meta"><div class="name">Surface 3 — zebra</div><div class="hex">#F4F5F7</div><div class="var">--c-surface-3</div></div></div>
+        <div class="swatch-card"><div class="swatch-chip" style="background:#EDF0F4;"></div><div class="swatch-meta"><div class="name">Divider</div><div class="hex">#EDF0F4</div><div class="var">--c-divider</div></div></div>
+        <div class="swatch-card"><div class="swatch-chip" style="background:#E5E7EB;"></div><div class="swatch-meta"><div class="name">Border</div><div class="hex">#E5E7EB</div><div class="var">--c-border</div></div></div>
+        <div class="swatch-card"><div class="swatch-chip" style="background:#D1D5DB;"></div><div class="swatch-meta"><div class="name">Border strong</div><div class="hex">#D1D5DB</div><div class="var">--c-border-strong</div></div></div>
+      </div>
+    </div>
+
+    <!-- TEXT -->
+    <div class="section">
+      <h2 class="section-title">Text</h2>
+      <p class="section-sub">Three weights of color carry the full hierarchy — no extra greys.</p>
+      <div class="grid grid-cols-4 gap-3">
+        <div class="swatch-card"><div class="swatch-chip" style="background:#0F172A;"></div><div class="swatch-meta"><div class="name">Primary</div><div class="hex">#0F172A</div><div class="var">--c-text</div></div></div>
+        <div class="swatch-card"><div class="swatch-chip" style="background:#475569;"></div><div class="swatch-meta"><div class="name">Secondary</div><div class="hex">#475569</div><div class="var">--c-text-2</div></div></div>
+        <div class="swatch-card"><div class="swatch-chip" style="background:#94A3B8;"></div><div class="swatch-meta"><div class="name">Muted</div><div class="hex">#94A3B8</div><div class="var">--c-text-muted</div></div></div>
+        <div class="swatch-card"><div class="swatch-chip" style="background:#FFFFFF; border-color:#E5E7EB;"></div><div class="swatch-meta"><div class="name">Inverse</div><div class="hex">#FFFFFF</div><div class="var">--c-text-inverse</div></div></div>
+      </div>
+    </div>
+
+    <!-- BRAND -->
+    <div class="section">
+      <h2 class="section-title">Brand</h2>
+      <p class="section-sub">Primary blue drives buttons, links, focus rings. Pair brand with brand-soft for selection/active states.</p>
+      <div class="grid grid-cols-4 gap-3">
+        <div class="swatch-card"><div class="swatch-chip" style="background:#2563EB;"></div><div class="swatch-meta"><div class="name">Brand</div><div class="hex">#2563EB</div><div class="var">--c-brand</div></div></div>
+        <div class="swatch-card"><div class="swatch-chip" style="background:#1D4ED8;"></div><div class="swatch-meta"><div class="name">Brand hover</div><div class="hex">#1D4ED8</div><div class="var">--c-brand-hover</div></div></div>
+        <div class="swatch-card"><div class="swatch-chip" style="background:#1E40AF;"></div><div class="swatch-meta"><div class="name">Brand deep</div><div class="hex">#1E40AF</div><div class="var">--c-brand-deep</div></div></div>
+        <div class="swatch-card"><div class="swatch-chip" style="background:#EFF6FF;"></div><div class="swatch-meta"><div class="name">Brand soft</div><div class="hex">#EFF6FF</div><div class="var">--c-brand-soft</div></div></div>
+      </div>
+    </div>
+
+    <!-- SEMANTIC -->
+    <div class="section">
+      <h2 class="section-title">Semantic</h2>
+      <p class="section-sub">Each state has a saturated value (icons / outlines) and a soft background (pills, banners).</p>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="swatch-card"><div class="swatch-chip" style="background:#10B981;"></div><div class="swatch-meta"><div class="name">Success</div><div class="hex">#10B981</div><div class="var">--c-success</div></div></div>
+          <div class="swatch-card"><div class="swatch-chip" style="background:#ECFDF5;"></div><div class="swatch-meta"><div class="name">Success soft</div><div class="hex">#ECFDF5</div><div class="var">--c-success-soft</div></div></div>
+          <div class="swatch-card"><div class="swatch-chip" style="background:#F59E0B;"></div><div class="swatch-meta"><div class="name">Warning</div><div class="hex">#F59E0B</div><div class="var">--c-warning</div></div></div>
+          <div class="swatch-card"><div class="swatch-chip" style="background:#FFFBEB;"></div><div class="swatch-meta"><div class="name">Warning soft</div><div class="hex">#FFFBEB</div><div class="var">--c-warning-soft</div></div></div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div class="swatch-card"><div class="swatch-chip" style="background:#EF4444;"></div><div class="swatch-meta"><div class="name">Danger</div><div class="hex">#EF4444</div><div class="var">--c-danger</div></div></div>
+          <div class="swatch-card"><div class="swatch-chip" style="background:#FEF2F2;"></div><div class="swatch-meta"><div class="name">Danger soft</div><div class="hex">#FEF2F2</div><div class="var">--c-danger-soft</div></div></div>
+          <div class="swatch-card"><div class="swatch-chip" style="background:#6366F1;"></div><div class="swatch-meta"><div class="name">Info</div><div class="hex">#6366F1</div><div class="var">--c-info</div></div></div>
+          <div class="swatch-card"><div class="swatch-chip" style="background:#EEF2FF;"></div><div class="swatch-meta"><div class="name">Info soft</div><div class="hex">#EEF2FF</div><div class="var">--c-info-soft</div></div></div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div class="swatch-card"><div class="swatch-chip" style="background:#7C3AED;"></div><div class="swatch-meta"><div class="name">Violet</div><div class="hex">#7C3AED</div><div class="var">--c-violet</div></div></div>
+          <div class="swatch-card"><div class="swatch-chip" style="background:#F5F3FF;"></div><div class="swatch-meta"><div class="name">Violet soft</div><div class="hex">#F5F3FF</div><div class="var">--c-violet-soft</div></div></div>
+          <div class="swatch-card"><div class="swatch-chip" style="background:#06B6D4;"></div><div class="swatch-meta"><div class="name">Cyan</div><div class="hex">#06B6D4</div><div class="var">--c-cyan</div></div></div>
+          <div class="swatch-card"><div class="swatch-chip" style="background:#ECFEFF;"></div><div class="swatch-meta"><div class="name">Cyan soft</div><div class="hex">#ECFEFF</div><div class="var">--c-cyan-soft</div></div></div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div class="swatch-card"><div class="swatch-chip" style="background:#F43F5E;"></div><div class="swatch-meta"><div class="name">Rose</div><div class="hex">#F43F5E</div><div class="var">--c-rose</div></div></div>
+          <div class="swatch-card"><div class="swatch-chip" style="background:#FFF1F2;"></div><div class="swatch-meta"><div class="name">Rose soft</div><div class="hex">#FFF1F2</div><div class="var">--c-rose-soft</div></div></div>
+          <div class="swatch-card"><div class="swatch-chip" style="background:#64748B;"></div><div class="swatch-meta"><div class="name">Slate</div><div class="hex">#64748B</div><div class="var">--c-slate</div></div></div>
+          <div class="swatch-card"><div class="swatch-chip" style="background:#F1F5F9;"></div><div class="swatch-meta"><div class="name">Slate soft</div><div class="hex">#F1F5F9</div><div class="var">--c-slate-soft</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TYPOGRAPHY -->
+    <div class="section">
+      <h2 class="section-title">Typography</h2>
+      <p class="section-sub">Inter for UI, JetBrains Mono for code/IDs. Body is <code class="mono">13px / 1.45</code>.</p>
+      <div class="grid grid-cols-2 gap-6">
+        <div>
+          <div class="type-row"><span class="type-label">--t-30</span><span style="font-size:30px;font-weight:700;line-height:1.1;">Aa 30 · semibold</span></div>
+          <div class="type-row"><span class="type-label">--t-24</span><span style="font-size:24px;font-weight:700;line-height:1.2;">Aa 24 · semibold</span></div>
+          <div class="type-row"><span class="type-label">--t-20</span><span style="font-size:20px;font-weight:600;">Aa 20 · semibold</span></div>
+          <div class="type-row"><span class="type-label">--t-16</span><span style="font-size:16px;font-weight:600;">Aa 16 · semibold</span></div>
+          <div class="type-row"><span class="type-label">--t-14</span><span style="font-size:14px;font-weight:500;">Aa 14 · medium</span></div>
+          <div class="type-row"><span class="type-label">--t-13</span><span style="font-size:13px;">Aa 13 · body default</span></div>
+          <div class="type-row"><span class="type-label">--t-12</span><span style="font-size:12px;color:var(--c-text-2);">Aa 12 · secondary / labels</span></div>
+          <div class="type-row"><span class="type-label">--t-11</span><span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--c-text-muted);">Aa 11 · uppercase</span></div>
+        </div>
+        <div>
+          <div class="type-row"><span class="type-label">sans</span><span class="text-base">The quick brown fox · Inter</span></div>
+          <div class="type-row"><span class="type-label">mono</span><span class="v1-mono">PHN-0017 · SN-A8F7-22135</span></div>
+          <div class="mt-5">
+            <div class="text-xs font-semibold uppercase mb-2" style="color:var(--c-text-muted);">Weights</div>
+            <div class="flex gap-3 text-base">
+              <span style="font-weight:400;">400 Regular</span>
+              <span style="font-weight:500;">500 Medium</span>
+              <span style="font-weight:600;">600 SemiBold</span>
+              <span style="font-weight:700;">700 Bold</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPACING -->
+    <div class="section">
+      <h2 class="section-title">Spacing scale</h2>
+      <p class="section-sub">4-based scale. Most layouts use 12 / 16 / 20 / 24. 8 = component-internal, 32 = section break.</p>
+      <div>
+        <div class="space-row"><span class="type-label v1-mono">--s-1</span><span style="width:50px;">4</span><div class="space-bar" style="width:4px;"></div></div>
+        <div class="space-row"><span class="type-label v1-mono">--s-2</span><span style="width:50px;">8</span><div class="space-bar" style="width:8px;"></div></div>
+        <div class="space-row"><span class="type-label v1-mono">--s-3</span><span style="width:50px;">12</span><div class="space-bar" style="width:12px;"></div></div>
+        <div class="space-row"><span class="type-label v1-mono">--s-4</span><span style="width:50px;">16</span><div class="space-bar" style="width:16px;"></div></div>
+        <div class="space-row"><span class="type-label v1-mono">--s-5</span><span style="width:50px;">20</span><div class="space-bar" style="width:20px;"></div></div>
+        <div class="space-row"><span class="type-label v1-mono">--s-6</span><span style="width:50px;">24</span><div class="space-bar" style="width:24px;"></div></div>
+        <div class="space-row"><span class="type-label v1-mono">--s-8</span><span style="width:50px;">32</span><div class="space-bar" style="width:32px;"></div></div>
+        <div class="space-row"><span class="type-label v1-mono">--s-10</span><span style="width:50px;">40</span><div class="space-bar" style="width:40px;"></div></div>
+      </div>
+    </div>
+
+    <!-- RADIUS -->
+    <div class="section">
+      <h2 class="section-title">Radius</h2>
+      <p class="section-sub">6px (<code class="mono">--r-md</code>) is the default — cards, buttons, inputs, tags. 999px for pills/avatars.</p>
+      <div class="grid grid-cols-5 gap-3">
+        <div class="radius-card" style="border-radius:4px;"><div style="background:var(--c-brand-soft);border:1px solid var(--c-brand);height:48px;border-radius:4px;margin-bottom:8px;"></div>r-sm · 4px</div>
+        <div class="radius-card" style="border-radius:6px;"><div style="background:var(--c-brand-soft);border:1px solid var(--c-brand);height:48px;border-radius:6px;margin-bottom:8px;"></div>r-md · 6px</div>
+        <div class="radius-card" style="border-radius:8px;"><div style="background:var(--c-brand-soft);border:1px solid var(--c-brand);height:48px;border-radius:8px;margin-bottom:8px;"></div>r-lg · 8px</div>
+        <div class="radius-card" style="border-radius:12px;"><div style="background:var(--c-brand-soft);border:1px solid var(--c-brand);height:48px;border-radius:12px;margin-bottom:8px;"></div>r-xl · 12px</div>
+        <div class="radius-card" style="border-radius:999px;"><div style="background:var(--c-brand-soft);border:1px solid var(--c-brand);height:48px;border-radius:999px;margin-bottom:8px;"></div>r-pill · 999px</div>
+      </div>
+    </div>
+
+    <!-- SHADOWS -->
+    <div class="section">
+      <h2 class="section-title">Shadows</h2>
+      <p class="section-sub">Almost invisible. Use border + sh-1 for resting cards. sh-popover for menus/tooltips. Never go heavier.</p>
+      <div class="grid grid-cols-4 gap-4" style="background:var(--c-surface-2); padding:24px; border-radius:6px;">
+        <div class="shadow-card" style="box-shadow: var(--sh-1);">sh-1 · resting</div>
+        <div class="shadow-card" style="box-shadow: var(--sh-2);">sh-2 · raised</div>
+        <div class="shadow-card" style="box-shadow: var(--sh-popover);">sh-popover · floating</div>
+        <div class="shadow-card" style="box-shadow: var(--sh-drawer);">sh-drawer · sidebar</div>
+      </div>
+    </div>
+
+    <!-- COMPONENT EXAMPLES -->
+    <div class="section">
+      <h2 class="section-title">Component examples — PrimeVue + v.2 tokens</h2>
+      <p class="section-sub">Same PrimeVue components your dev team imports, just wearing v.1's tokens.</p>
+
+      <div class="text-xs font-semibold uppercase mb-2 mt-4" style="color:var(--c-text-muted);">Buttons</div>
+      <div class="flex gap-2 flex-wrap items-center">
+        <button class="p-button"><span class="p-button-icon p-button-icon-left pi pi-plus"></span><span class="p-button-label">Primary</span></button>
+        <button class="p-button p-button-outlined">Outlined</button>
+        <button class="p-button p-button-text">Text</button>
+        <button class="p-button p-button-sm">Small</button>
+        <button class="p-button" disabled style="opacity:.5;">Disabled</button>
+      </div>
+
+      <div class="text-xs font-semibold uppercase mb-2 mt-5" style="color:var(--c-text-muted);">Pills / Tags</div>
+      <div class="flex gap-2 flex-wrap">
+        <span class="v1-pill v1-pill-success"><i class="pi pi-check text-[9px]"></i>Online</span>
+        <span class="v1-pill v1-pill-warning"><i class="pi pi-exclamation-triangle text-[9px]"></i>Near capacity</span>
+        <span class="v1-pill v1-pill-danger"><i class="pi pi-times text-[9px]"></i>Offline</span>
+        <span class="v1-pill v1-pill-info">Checked out</span>
+        <span class="v1-pill v1-pill-violet">NEW</span>
+        <span class="v1-pill v1-pill-brand">QA</span>
+        <span class="v1-pill v1-pill-slate">Draft</span>
+      </div>
+
+      <div class="text-xs font-semibold uppercase mb-2 mt-5" style="color:var(--c-text-muted);">KPI tile</div>
+      <div class="grid grid-cols-4 gap-3">
+        <div class="v1-kpi"><div class="v1-kpi-label">Bays in use</div><div class="v1-kpi-value">189</div><div class="v1-kpi-sub">56% utilization</div></div>
+        <div class="v1-kpi"><div class="v1-kpi-label">Devices lost</div><div class="v1-kpi-value" style="color:var(--c-danger);">11</div><div class="v1-kpi-sub">3 high-risk users</div></div>
+        <div class="v1-kpi"><div class="v1-kpi-label">Locker uptime</div><div class="v1-kpi-value" style="color:var(--c-success);">99.4%</div><div class="v1-kpi-sub">last 30 days</div></div>
+        <div class="v1-kpi"><div class="v1-kpi-label">Pending updates</div><div class="v1-kpi-value" style="color:var(--c-warning-text);">87</div><div class="v1-kpi-sub">scheduled tonight</div></div>
+      </div>
+
+      <div class="text-xs font-semibold uppercase mb-2 mt-5" style="color:var(--c-text-muted);">DataTable row</div>
+      <div class="p-datatable"><table class="w-full">
+        <thead><tr><th>Device</th><th>Holder</th><th>Battery</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>PHN-0001</strong> <span class="v1-mono v1-muted">SN-A8F7-22119</span></td><td>—</td><td>94%</td><td><span class="v1-pill v1-pill-success">In bay</span></td></tr>
+          <tr><td><strong>PHN-0002</strong> <span class="v1-mono v1-muted">SN-A8F7-22120</span></td><td>Crosby Smith</td><td>67%</td><td><span class="v1-pill v1-pill-info">Checked out</span></td></tr>
+          <tr><td><strong>PHN-0017</strong> <span class="v1-mono v1-muted">SN-A8F7-22135</span></td><td>Maria Reyes</td><td><span class="text-danger">—</span></td><td><span class="v1-pill v1-pill-danger">Lost · 14d</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <!-- WHAT CHANGED -->
+    <div class="section" style="border-left: 3px solid var(--c-brand);">
+      <h2 class="section-title">What changed from v.2 (pre-refresh)</h2>
+      <table class="w-full text-sm mt-3" style="border-collapse:collapse;">
+        <thead><tr style="border-bottom:1px solid var(--c-border);"><th class="text-left py-2 pr-4 text-xs uppercase" style="color:var(--c-text-muted);">Token</th><th class="text-left py-2 pr-4 text-xs uppercase" style="color:var(--c-text-muted);">Before</th><th class="text-left py-2 text-xs uppercase" style="color:var(--c-text-muted);">After (v.1)</th></tr></thead>
+        <tbody>
+          <tr style="border-bottom:1px dashed var(--c-divider);"><td class="py-2 pr-4 v1-mono">Body bg</td><td class="py-2 pr-4">#F8FAFC (slate-50, cool)</td><td class="py-2"><strong>#FAFAFB</strong> (warm off-white)</td></tr>
+          <tr style="border-bottom:1px dashed var(--c-divider);"><td class="py-2 pr-4 v1-mono">Body font size</td><td class="py-2 pr-4">16px</td><td class="py-2"><strong>13px / 1.45</strong></td></tr>
+          <tr style="border-bottom:1px dashed var(--c-divider);"><td class="py-2 pr-4 v1-mono">Default radius</td><td class="py-2 pr-4">8px–12px (rounded-lg)</td><td class="py-2"><strong>6px</strong> (r-md)</td></tr>
+          <tr style="border-bottom:1px dashed var(--c-divider);"><td class="py-2 pr-4 v1-mono">--c-danger</td><td class="py-2 pr-4">#DC2626</td><td class="py-2"><strong>#EF4444</strong> (less heavy)</td></tr>
+          <tr style="border-bottom:1px dashed var(--c-divider);"><td class="py-2 pr-4 v1-mono">--c-info</td><td class="py-2 pr-4">#0EA5E9 (sky)</td><td class="py-2"><strong>#6366F1</strong> (indigo)</td></tr>
+          <tr style="border-bottom:1px dashed var(--c-divider);"><td class="py-2 pr-4 v1-mono">Shadow density</td><td class="py-2 pr-4">PrimeVue default (medium)</td><td class="py-2"><strong>sh-1 · rgba(15,23,42,.04)</strong></td></tr>
+          <tr style="border-bottom:1px dashed var(--c-divider);"><td class="py-2 pr-4 v1-mono">Topbar height</td><td class="py-2 pr-4">56px</td><td class="py-2"><strong>52px</strong></td></tr>
+          <tr><td class="py-2 pr-4 v1-mono">Button height</td><td class="py-2 pr-4">36px default</td><td class="py-2"><strong>30px</strong> (sm: 28px)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="text-xs text-center mt-6 mb-4" style="color:var(--c-text-muted);">Token source · v.1 prototype <code class="mono">HW_Redesign_02_Mission_Control.html</code> · extracted 2026-06-17</div>
+  </main>
+</body>
+</html>

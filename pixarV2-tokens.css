@@ -1,0 +1,326 @@
+/* =====================================================================
+   Pixar v.2 — design tokens
+   Source: HonestWaves v.1 redesign (Linear/Stripe/Vercel-inspired)
+   Load AFTER PrimeVue Lara CSS so these overrides win.
+   Implementation contract: PrimeVue 3.x components + Tailwind utilities.
+   ===================================================================== */
+
+:root {
+  /* ---------- SURFACES ---------- */
+  --c-surface:        #FFFFFF;   /* cards, sidebar, topbar, dialog */
+  --c-surface-2:      #FAFAFB;   /* page background, off-white */
+  --c-surface-3:      #F4F5F7;   /* zebra rows, subtle wells */
+  --c-divider:        #EDF0F4;   /* table row dividers */
+  --c-border:         #E5E7EB;   /* default 1px line */
+  --c-border-strong:  #D1D5DB;   /* focused / active outlines */
+
+  /* ---------- TEXT ---------- */
+  --c-text:           #0F172A;   /* slate-900 · primary */
+  --c-text-2:         #475569;   /* slate-600 · secondary */
+  --c-text-muted:     #94A3B8;   /* slate-400 · muted */
+  --c-text-inverse:   #FFFFFF;
+
+  /* ---------- BRAND ---------- */
+  --c-brand:          #2563EB;
+  --c-brand-hover:    #1D4ED8;
+  --c-brand-deep:     #1E40AF;
+  --c-brand-soft:     #EFF6FF;
+
+  /* ---------- SEMANTIC ---------- */
+  --c-success:        #10B981;   --c-success-soft: #ECFDF5;
+  --c-warning:        #F59E0B;   --c-warning-soft: #FFFBEB;  --c-warning-text: #B45309;
+  --c-danger:         #EF4444;   --c-danger-soft:  #FEF2F2;
+  --c-info:           #6366F1;   --c-info-soft:    #EEF2FF;
+  --c-violet:         #7C3AED;   --c-violet-soft:  #F5F3FF;
+  --c-cyan:           #06B6D4;   --c-cyan-soft:    #ECFEFF;
+  --c-rose:           #F43F5E;   --c-rose-soft:    #FFF1F2;
+  --c-slate:          #64748B;   --c-slate-soft:   #F1F5F9;
+
+  /* ---------- TYPOGRAPHY ---------- */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --t-11: 11px; --t-12: 12px; --t-13: 13px; --t-14: 14px;
+  --t-16: 16px; --t-20: 20px; --t-24: 24px; --t-30: 30px;
+
+  /* ---------- SPACING ---------- */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;
+  --s-5: 20px; --s-6: 24px; --s-8: 32px; --s-10: 40px;
+
+  /* ---------- RADIUS ---------- */
+  --r-sm: 4px; --r-md: 6px; --r-lg: 8px; --r-xl: 12px; --r-pill: 999px;
+
+  /* ---------- SHADOWS (extremely subtle by design) ---------- */
+  --sh-1:        0 1px 2px rgba(15, 23, 42, .04);
+  --sh-2:        0 1px 3px rgba(15, 23, 42, .06), 0 1px 2px rgba(15, 23, 42, .04);
+  --sh-popover:  0 8px 24px rgba(15, 23, 42, .10), 0 2px 6px rgba(15, 23, 42, .06);
+  --sh-drawer:  -8px 0 24px rgba(15, 23, 42, .06);
+
+  /* ---------- LAYOUT ---------- */
+  --sidebar-w: 232px;
+  --topbar-h:  52px;
+  --drawer-w:  380px;
+
+  /* ---------- PRIMEVUE OVERRIDES ---------- */
+  --primary-color:           var(--c-brand);
+  --primary-color-text:       var(--c-text-inverse);
+  --highlight-bg:            var(--c-brand-soft);
+  --highlight-text-color:    var(--c-brand-deep);
+  --surface-a:               var(--c-surface);
+  --surface-b:               var(--c-surface-2);
+  --surface-c:               var(--c-surface-3);
+  --surface-d:               var(--c-border);
+  --surface-e:               var(--c-surface);
+  --surface-f:               var(--c-surface);
+  --surface-border:          var(--c-border);
+  --text-color:              var(--c-text);
+  --text-color-secondary:    var(--c-text-2);
+  --content-padding:          var(--s-4);
+}
+
+/* ---------- BASE TYPOGRAPHY (v.1 density) ---------- */
+html, body {
+  font-family: var(--font-sans);
+  font-size: var(--t-13);
+  line-height: 1.45;
+  color: var(--c-text);
+  background: var(--c-surface-2);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- PRIMEVUE COMPONENT RE-SKINS ---------- */
+/* Cards — flatter, tighter, 6px radius, subtle border instead of shadow */
+.p-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  box-shadow: var(--sh-1);
+}
+.p-card .p-card-body { padding: var(--s-4); }
+.p-card .p-card-title { font-size: var(--t-14); font-weight: 600; color: var(--c-text); }
+.p-card .p-card-content { padding: 0; font-size: var(--t-13); color: var(--c-text-2); }
+
+/* DataTable — tighter rows, hairline dividers */
+.p-datatable .p-datatable-thead > tr > th {
+  background: var(--c-surface-3);
+  border-bottom: 1px solid var(--c-border);
+  font-size: var(--t-11);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--c-text-2);
+  padding: var(--s-3) var(--s-4);
+}
+.p-datatable .p-datatable-tbody > tr > td {
+  border-bottom: 1px solid var(--c-divider);
+  font-size: var(--t-13);
+  padding: var(--s-3) var(--s-4);
+}
+.p-datatable .p-datatable-tbody > tr:hover { background: var(--c-surface-2); }
+
+/* Tags — pill, 11px caps, soft backgrounds */
+.p-tag {
+  border-radius: var(--r-pill);
+  font-size: var(--t-11);
+  font-weight: 600;
+  padding: 2px 8px;
+  letter-spacing: .02em;
+}
+.p-tag-success { background: var(--c-success-soft); color: var(--c-success); }
+.p-tag-warning { background: var(--c-warning-soft); color: var(--c-warning-text); }
+.p-tag-danger  { background: var(--c-danger-soft);  color: var(--c-danger); }
+.p-tag-info    { background: var(--c-info-soft);    color: var(--c-info); }
+
+/* Buttons — 30px height, restrained, 6px radius */
+.p-button {
+  height: 30px;
+  font-size: var(--t-12);
+  font-weight: 500;
+  border-radius: var(--r-md);
+  padding: 0 var(--s-3);
+  box-shadow: var(--sh-1);
+}
+.p-button.p-button-sm { height: 28px; font-size: var(--t-12); padding: 0 var(--s-3); }
+.p-button.p-button-lg { height: 36px; font-size: var(--t-13); padding: 0 var(--s-4); }
+.p-button.p-button-outlined {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  color: var(--c-text);
+  box-shadow: var(--sh-1);
+}
+.p-button.p-button-outlined:hover { background: var(--c-surface-2); border-color: var(--c-border-strong); }
+.p-button.p-button-text { box-shadow: none; color: var(--c-text-2); }
+.p-button.p-button-text:hover { background: var(--c-surface-3); }
+
+/* Inputs — 30px height, 13px, 6px radius */
+.p-inputtext {
+  height: 30px;
+  font-size: var(--t-13);
+  border-radius: var(--r-md);
+  border: 1px solid var(--c-border);
+  padding: 0 var(--s-3);
+  color: var(--c-text);
+  background: var(--c-surface);
+}
+.p-inputtext:focus { border-color: var(--c-brand); box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
+
+/* Avatars — slate ring */
+.p-avatar { font-size: var(--t-11); font-weight: 600; }
+
+/* Dialogs */
+.p-dialog .p-dialog-header { padding: var(--s-4); border-bottom: 1px solid var(--c-border); }
+.p-dialog .p-dialog-content { padding: var(--s-4); }
+.p-dialog .p-dialog-footer { padding: var(--s-3) var(--s-4); border-top: 1px solid var(--c-border); background: var(--c-surface-2); }
+
+/* TabView — v.1 underline style */
+.p-tabview .p-tabview-nav {
+  background: transparent;
+  border-bottom: 1px solid var(--c-border);
+  gap: 0;
+}
+.p-tabview .p-tabview-nav li .p-tabview-nav-link {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  color: var(--c-text-2);
+  font-size: var(--t-13);
+  font-weight: 500;
+  padding: var(--s-3) var(--s-4);
+  margin-bottom: -1px;
+}
+.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  background: transparent;
+  border-bottom-color: var(--c-brand);
+  color: var(--c-text);
+  font-weight: 600;
+}
+
+/* Sidebar/drawer */
+.p-sidebar { background: var(--c-surface); box-shadow: var(--sh-drawer); }
+.p-sidebar .p-sidebar-header { padding: var(--s-4); border-bottom: 1px solid var(--c-border); }
+.p-sidebar .p-sidebar-content { padding: var(--s-4); }
+
+/* ProgressBar */
+.p-progressbar { background: var(--c-surface-3); border-radius: var(--r-pill); height: 6px; }
+.p-progressbar .p-progressbar-value { background: var(--c-brand); border-radius: var(--r-pill); }
+
+/* ---------- TAILWIND BG/TEXT/BORDER UTILITIES (token-aliased) ---------- */
+/* These let existing Tailwind class usage map to v.1 tokens without rewriting markup. */
+.bg-brand        { background: var(--c-brand) !important; }
+.bg-brand-soft   { background: var(--c-brand-soft) !important; }
+.bg-success-soft { background: var(--c-success-soft) !important; }
+.bg-warning-soft { background: var(--c-warning-soft) !important; }
+.bg-danger-soft  { background: var(--c-danger-soft)  !important; }
+.bg-info-soft    { background: var(--c-info-soft)    !important; }
+.bg-pixar-soft   { background: var(--c-violet-soft)  !important; }
+.bg-pixar        { background: var(--c-violet)       !important; }
+.text-brand      { color: var(--c-brand)       !important; }
+.text-brand-deep { color: var(--c-brand-deep)  !important; }
+.text-success    { color: var(--c-success)    !important; }
+.text-warning    { color: var(--c-warning-text) !important; }
+.text-danger     { color: var(--c-danger)     !important; }
+.text-info       { color: var(--c-info)       !important; }
+.text-pixar      { color: var(--c-violet)     !important; }
+.border-brand    { border-color: var(--c-brand)   !important; }
+.border-success  { border-color: var(--c-success) !important; }
+.border-warning  { border-color: var(--c-warning) !important; }
+.border-danger   { border-color: var(--c-danger)  !important; }
+
+/* ---------- ANNOTATION STRIP (top of every prototype) ---------- */
+.annotation {
+  background: linear-gradient(90deg, #1E40AF, #7C3AED);
+  color: #fff;
+  padding: var(--s-2) var(--s-6);
+  font-size: var(--t-12);
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+.annotation .chip {
+  background: rgba(255,255,255,.18);
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  font-size: var(--t-11);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.annotation a { color: #fff; text-decoration: underline; }
+
+/* ---------- SHELL (matches v.1 grid) ---------- */
+.v1-shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  grid-template-rows: var(--topbar-h) 1fr;
+  grid-template-areas: "logo top" "side main";
+  min-height: calc(100vh - 30px);
+}
+.v1-logo { grid-area: logo; background: var(--c-surface); border-right: 1px solid var(--c-border); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 var(--s-4); gap: var(--s-2); }
+.v1-top  { grid-area: top;  background: var(--c-surface); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 var(--s-5); gap: var(--s-3); }
+.v1-side { grid-area: side; background: var(--c-surface); border-right: 1px solid var(--c-border); padding: var(--s-3) var(--s-2); overflow-y: auto; }
+.v1-main { grid-area: main; padding: var(--s-5); overflow-y: auto; background: var(--c-surface-2); }
+
+/* ---------- SIDEBAR NAV ---------- */
+.v1-nav-group {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--c-text-muted);
+  padding: var(--s-3) var(--s-3) var(--s-1);
+}
+.v1-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 6px var(--s-3);
+  border-radius: var(--r-md);
+  font-size: var(--t-13);
+  color: var(--c-text-2);
+  text-decoration: none;
+  position: relative;
+}
+.v1-nav-item:hover { background: var(--c-surface-3); color: var(--c-text); }
+.v1-nav-item.active { background: var(--c-brand-soft); color: var(--c-brand-deep); font-weight: 600; }
+.v1-nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: -2px; top: 6px; bottom: 6px; width: 2px;
+  background: var(--c-brand);
+  border-radius: 2px;
+}
+.v1-nav-item i { font-size: var(--t-13); width: 16px; text-align: center; }
+
+/* ---------- KPI / TILE ---------- */
+.v1-kpi {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  padding: var(--s-4);
+  box-shadow: var(--sh-1);
+}
+.v1-kpi-label { font-size: var(--t-11); text-transform: uppercase; letter-spacing: .04em; color: var(--c-text-muted); font-weight: 600; }
+.v1-kpi-value { font-size: var(--t-24); font-weight: 700; color: var(--c-text); margin-top: 2px; line-height: 1.1; }
+.v1-kpi-sub   { font-size: var(--t-11); color: var(--c-text-2); margin-top: var(--s-1); }
+
+/* ---------- PILL (v.1 status chip) ---------- */
+.v1-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: var(--t-11); font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  letter-spacing: .02em;
+}
+.v1-pill-success { background: var(--c-success-soft); color: var(--c-success); }
+.v1-pill-warning { background: var(--c-warning-soft); color: var(--c-warning-text); }
+.v1-pill-danger  { background: var(--c-danger-soft);  color: var(--c-danger); }
+.v1-pill-info    { background: var(--c-info-soft);    color: var(--c-info); }
+.v1-pill-violet  { background: var(--c-violet-soft);  color: var(--c-violet); }
+.v1-pill-slate   { background: var(--c-slate-soft);   color: var(--c-slate); }
+.v1-pill-brand   { background: var(--c-brand-soft);   color: var(--c-brand-deep); }
+
+/* ---------- MUTED HELPERS ---------- */
+.v1-muted { color: var(--c-text-muted); }
+.v1-secondary { color: var(--c-text-2); }
+.v1-mono { font-family: var(--font-mono); font-size: var(--t-11); }
