@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixar v.2 · Dashboard</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/lara-light-blue/theme.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/primevue.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'brand':   { DEFAULT: '#2563EB', deep: '#1E40AF', soft: '#EFF6FF' },
+            'pixar':   { DEFAULT: '#7C3AED', soft: '#EDE9FE' },
+            'success': { DEFAULT: '#10B981', soft: '#D1FAE5' },
+            'warning': { DEFAULT: '#F59E0B', soft: '#FEF3C7', text: '#B45309' },
+            'danger':  { DEFAULT: '#DC2626', soft: '#FEE2E2' },
+            'info':    { DEFAULT: '#0EA5E9', soft: '#E0F2FE' },
+            'navy':    { DEFAULT: '#0F172A' },
+            'ice':     '#CADCFC',
+          },
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        },
+      },
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    :root {
+      --primary-color: #2563EB;
+      --primary-color-text: #FFFFFF;
+      --highlight-bg: #EFF6FF;
+      --highlight-text-color: #1E40AF;
+    }
+    /* Annotation strip */
+    .annotation {
+      background: linear-gradient(90deg, #7C3AED, #1E40AF);
+      color: white; padding: 8px 24px;
+      font-size: 12px; display: flex; align-items: center; gap: 12px;
+    }
+    .annotation strong { color: white; }
+    .annotation .chip {
+      background: rgba(255,255,255,.2); color: white;
+      font-weight: 600; padding: 2px 7px; border-radius: 999px;
+      font-size: 10px; text-transform: uppercase; letter-spacing: .04em;
+    }
+    /* Mini bay tiles for the Bay Status widget */
+    .bay-tile { width: 24px; height: 24px; border-radius: 3px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+  <div class="annotation">
+    <span class="chip">Pixar v.2</span>
+    <strong>Dashboard.</strong>
+    <span>Built with PrimeVue Card / DataTable / Tag / Avatar / Button · Tailwind for layout · No custom button or pill CSS.</span>
+    <span class="ml-auto"><a href="HW_PixarV2_Browse.html" class="underline">← Back to v.2 home</a></span>
+  </div>
+
+  <!-- Shell: top bar + sidebar + main -->
+  <div class="grid" style="grid-template-columns: 232px 1fr; grid-template-rows: 56px 1fr; grid-template-areas: 'logo top' 'side main'; min-height: calc(100vh - 32px);">
+
+    <!-- Logo block -->
+    <div style="grid-area: logo;" class="bg-white border-r border-b border-slate-200 flex items-center px-4 gap-2">
+      <div class="w-7 h-7 rounded-md bg-brand grid place-items-center text-white font-bold text-sm">H</div>
+      <span class="font-semibold">HonestWaves</span>
+      <span class="ml-auto p-tag p-tag-info text-xs"><span class="p-tag-value">QA</span></span>
+    </div>
+
+    <!-- Topbar — PrimeVue Toolbar pattern -->
+    <div style="grid-area: top;" class="bg-white border-b border-slate-200 flex items-center px-5 gap-3">
+      <div class="text-sm text-slate-500 flex items-center gap-2">
+        <span>Monitor</span>
+        <i class="pi pi-angle-right text-xs"></i>
+        <strong class="text-slate-900">Dashboard</strong>
+      </div>
+      <div class="flex-1"></div>
+      <div class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input type="text" placeholder="Search lockers, devices, users…" class="p-inputtext p-component" style="width: 280px; padding-left: 32px;" />
+      </div>
+      <button class="p-button p-button-text p-button-rounded relative" type="button">
+        <i class="pi pi-bell"></i>
+        <span class="p-badge p-badge-danger absolute -top-1 -right-1" style="font-size:9px;">99+</span>
+      </button>
+      <button class="p-button p-button-text p-button-rounded" type="button">
+        <i class="pi pi-moon"></i>
+      </button>
+      <div class="flex items-center gap-2 pl-3 border-l border-slate-200">
+        <div class="p-avatar p-component p-avatar-circle" style="background:#2563EB;color:white;">
+          <span>AR</span>
+        </div>
+        <div class="text-sm">
+          <div class="font-semibold">Admin Rowe</div>
+          <div class="text-xs text-slate-500">admin@honestwaves.test</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar — PrimeVue PanelMenu style -->
+    <aside style="grid-area: side;" class="bg-white border-r border-slate-200 p-3 overflow-y-auto">
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-1">Monitor</div>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold bg-brand-soft text-brand-deep border-l-2 border-brand -ml-1">
+        <i class="pi pi-th-large text-base"></i>Dashboard
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100">
+        <i class="pi pi-eye text-base"></i>Mission Control
+      </a>
+
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-4">Manage</div>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100">
+        <i class="pi pi-server text-base"></i>Lockers
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100">
+        <i class="pi pi-mobile text-base"></i>Devices
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100">
+        <i class="pi pi-users text-base"></i>Users
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100">
+        <i class="pi pi-share-alt text-base"></i>Access matrix
+      </a>
+
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-4">Investigate</div>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100">
+        <i class="pi pi-bell text-base"></i>Notifications
+        <span class="ml-auto p-tag p-tag-danger text-[10px] py-0.5 px-1.5"><span class="p-tag-value">99+</span></span>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100">
+        <i class="pi pi-history text-base"></i>Tracker
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100">
+        <i class="pi pi-chart-bar text-base"></i>Reports
+      </a>
+
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-4">Finance</div>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100">
+        <i class="pi pi-dollar text-base"></i>Asset Accounting
+        <span class="ml-auto p-tag text-[10px] py-0.5 px-1.5" style="background:#EDE9FE;color:#7C3AED;"><span class="p-tag-value">NEW</span></span>
+      </a>
+
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-4">System</div>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100">
+        <i class="pi pi-cloud-upload text-base"></i>Software updates
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100">
+        <i class="pi pi-cog text-base"></i>Settings
+      </a>
+    </aside>
+
+    <!-- Main content -->
+    <main style="grid-area: main;" class="overflow-y-auto p-6 max-w-[1480px]">
+
+      <!-- Page header -->
+      <div class="flex items-end justify-between mb-5">
+        <div>
+          <h1 class="text-xl font-semibold tracking-tight">Dashboard</h1>
+          <p class="text-xs text-slate-500 mt-0.5">Live operational snapshot · 4 lockers · last sync 3 seconds ago</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <!-- PrimeVue SelectButton pattern -->
+          <div class="p-selectbutton p-component p-buttonset flex" role="group">
+            <button class="p-button p-component p-highlight" style="background:#EFF6FF;color:#1E40AF;border-color:#BFDBFE;"><span class="p-button-label">Live</span></button>
+            <button class="p-button p-component"><span class="p-button-label">24h</span></button>
+            <button class="p-button p-component"><span class="p-button-label">7d</span></button>
+            <button class="p-button p-component"><span class="p-button-label">30d</span></button>
+          </div>
+          <button class="p-button p-component p-button-outlined">
+            <span class="p-button-icon p-button-icon-left pi pi-cog"></span>
+            <span class="p-button-label">Customize</span>
+          </button>
+          <button class="p-button p-component">
+            <span class="p-button-icon p-button-icon-left pi pi-plus"></span>
+            <span class="p-button-label">Add widget</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI strip — Cards in a Tailwind grid -->
+      <div class="grid grid-cols-4 gap-3 mb-4">
+        <div class="p-card">
+          <div class="p-card-body">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5 mb-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-brand"></span>In use right now
+            </div>
+            <div class="text-3xl font-semibold tabular-nums tracking-tight">37</div>
+            <div class="text-xs text-slate-500 mt-0.5 tabular-nums flex items-center gap-2">
+              of 56 bays
+              <span class="p-tag p-tag-success text-[10px] py-0 px-1"><span class="p-tag-value">▲ 12</span></span>
+              vs 7-day avg
+            </div>
+          </div>
+        </div>
+        <div class="p-card">
+          <div class="p-card-body">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5 mb-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-success"></span>Available
+            </div>
+            <div class="text-3xl font-semibold tabular-nums tracking-tight text-success">23</div>
+            <div class="text-xs text-slate-500 mt-0.5 tabular-nums">41% of fleet · same vs 7-day avg</div>
+          </div>
+        </div>
+        <div class="p-card">
+          <div class="p-card-body">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5 mb-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-warning"></span>Overdue
+            </div>
+            <div class="text-3xl font-semibold tabular-nums tracking-tight text-warning-text">11</div>
+            <div class="text-xs text-slate-500 mt-0.5 tabular-nums flex items-center gap-2">
+              8 users
+              <span class="p-tag p-tag-warning text-[10px] py-0 px-1"><span class="p-tag-value">▲ 4</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="p-card">
+          <div class="p-card-body">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5 mb-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-danger"></span>Hardware faults
+            </div>
+            <div class="text-3xl font-semibold tabular-nums tracking-tight text-danger">3</div>
+            <div class="text-xs text-slate-500 mt-0.5 tabular-nums flex items-center gap-2">
+              Pink8 · 3 bays
+              <span class="p-tag p-tag-danger text-[10px] py-0 px-1"><span class="p-tag-value">▲ 3</span></span>
+              new today
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main content grid: bay status + alarms -->
+      <div class="grid gap-4" style="grid-template-columns: 1fr 360px;">
+
+        <!-- Bay Status — PrimeVue Card with custom bay tiles -->
+        <div class="p-card">
+          <div class="p-card-body">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="font-semibold text-base">Bay status</h3>
+                <p class="text-xs text-slate-500 mt-0.5">56 bays across 4 lockers</p>
+              </div>
+              <div class="p-selectbutton p-component p-buttonset flex" role="group">
+                <button class="p-button p-component p-highlight" style="background:#EFF6FF;color:#1E40AF;border-color:#BFDBFE;"><span class="p-button-label">All states</span></button>
+                <button class="p-button p-component"><span class="p-button-label">Needs attention</span></button>
+              </div>
+            </div>
+
+            <!-- Per-locker rows -->
+            <div class="space-y-4">
+              <!-- Pink8 -->
+              <div>
+                <div class="flex items-center gap-2 mb-2">
+                  <div class="font-semibold text-sm">Pink8</div>
+                  <span class="p-tag p-tag-warning text-[10px]"><span class="p-tag-value">3 hardware faults</span></span>
+                  <span class="text-xs text-slate-500 ml-auto">HonestWaves Orange County Office · 8 bays</span>
+                  <button class="p-button p-button-text p-button-sm text-xs">Open Mission Control <i class="pi pi-arrow-right text-[10px] ml-1"></i></button>
+                </div>
+                <div class="flex gap-1">
+                  <div class="bay-tile bg-warning grid place-items-center text-[10px] font-bold text-white">1</div>
+                  <div class="bay-tile bg-warning grid place-items-center text-[10px] font-bold text-white">2</div>
+                  <div class="bay-tile bg-danger grid place-items-center text-[10px] font-bold text-white">3</div>
+                  <div class="bay-tile bg-warning grid place-items-center text-[10px] font-bold text-white">4</div>
+                  <div class="bay-tile bg-warning grid place-items-center text-[10px] font-bold text-white">5</div>
+                  <div class="bay-tile bg-danger grid place-items-center text-[10px] font-bold text-white">6</div>
+                  <div class="bay-tile bg-danger grid place-items-center text-[10px] font-bold text-white">7</div>
+                  <div class="bay-tile bg-warning grid place-items-center text-[10px] font-bold text-white">8</div>
+                </div>
+              </div>
+
+              <!-- Blue34 -->
+              <div>
+                <div class="flex items-center gap-2 mb-2">
+                  <div class="font-semibold text-sm">Blue34</div>
+                  <span class="p-tag p-tag-success text-[10px]"><span class="p-tag-value">Healthy</span></span>
+                  <span class="text-xs text-slate-500 ml-auto">HonestWaves HQ · 32 bays</span>
+                </div>
+                <div class="grid grid-cols-16 gap-1" style="grid-template-columns: repeat(16, minmax(0, 1fr));">
+                  <div class="bay-tile bg-success"></div><div class="bay-tile bg-success"></div><div class="bay-tile bg-success"></div><div class="bay-tile bg-success"></div>
+                  <div class="bay-tile bg-success"></div><div class="bay-tile bg-success"></div><div class="bay-tile bg-success"></div><div class="bay-tile bg-success"></div>
+                  <div class="bay-tile bg-success"></div><div class="bay-tile bg-success"></div><div class="bay-tile bg-success"></div><div class="bay-tile bg-success"></div>
+                  <div class="bay-tile bg-success"></div><div class="bay-tile bg-success"></div><div class="bay-tile bg-success"></div><div class="bay-tile bg-success"></div>
+                  <div class="bay-tile bg-success"></div><div class="bay-tile bg-success"></div><div class="bay-tile bg-success"></div><div class="bay-tile bg-success"></div>
+                  <div class="bay-tile bg-success"></div><div class="bay-tile bg-success"></div><div class="bay-tile bg-slate-300"></div><div class="bay-tile bg-slate-300"></div>
+                  <div class="bay-tile bg-slate-300"></div><div class="bay-tile bg-slate-300"></div><div class="bay-tile bg-slate-300"></div><div class="bay-tile bg-slate-300"></div>
+                  <div class="bay-tile bg-slate-300"></div><div class="bay-tile bg-slate-300"></div><div class="bay-tile bg-slate-300"></div><div class="bay-tile bg-slate-300"></div>
+                </div>
+              </div>
+
+              <!-- Green8 -->
+              <div>
+                <div class="flex items-center gap-2 mb-2">
+                  <div class="font-semibold text-sm">Green8</div>
+                  <span class="p-tag p-tag-warning text-[10px]"><span class="p-tag-value">6 overdue</span></span>
+                  <span class="text-xs text-slate-500 ml-auto">HonestWaves Orange County Office · 8 bays</span>
+                </div>
+                <div class="flex gap-1">
+                  <div class="bay-tile bg-warning grid place-items-center text-[10px] font-bold text-white">1</div>
+                  <div class="bay-tile bg-warning grid place-items-center text-[10px] font-bold text-white">2</div>
+                  <div class="bay-tile bg-warning grid place-items-center text-[10px] font-bold text-white">3</div>
+                  <div class="bay-tile bg-success grid place-items-center text-[10px] font-bold text-white">4</div>
+                  <div class="bay-tile bg-warning grid place-items-center text-[10px] font-bold text-white">5</div>
+                  <div class="bay-tile bg-warning grid place-items-center text-[10px] font-bold text-white">6</div>
+                  <div class="bay-tile bg-warning grid place-items-center text-[10px] font-bold text-white">7</div>
+                  <div class="bay-tile bg-success grid place-items-center text-[10px] font-bold text-white">8</div>
+                </div>
+              </div>
+
+              <!-- Legend -->
+              <div class="border-t border-slate-100 pt-3 flex items-center gap-4 text-xs text-slate-500">
+                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-success"></span>Available 23</span>
+                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-brand"></span>In use 37</span>
+                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-warning"></span>Overdue 11</span>
+                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-danger"></span>Missing device 3</span>
+                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-slate-300"></span>Deactivated 23</span>
+                <span class="ml-auto italic">Hover a bay for detail · click to open Mission Control</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Side column: Alarms + Inbox -->
+        <div class="space-y-4">
+
+          <!-- Alarms — PrimeVue Card with list -->
+          <div class="p-card">
+            <div class="p-card-body">
+              <div class="flex items-center justify-between mb-3">
+                <div>
+                  <h3 class="font-semibold text-base">Alarms</h3>
+                  <p class="text-xs text-slate-500 mt-0.5">Last 24 hours</p>
+                </div>
+                <button class="p-button p-button-text p-button-sm text-xs">View all <i class="pi pi-arrow-right text-[10px] ml-1"></i></button>
+              </div>
+              <div class="space-y-3">
+                <div class="flex gap-3">
+                  <i class="pi pi-exclamation-triangle text-danger text-lg mt-0.5"></i>
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <div class="font-semibold text-sm">Hardware fault on Pink8</div>
+                      <span class="text-[10px] text-slate-400 tabular-nums">14h ago</span>
+                    </div>
+                    <div class="text-xs text-slate-500 mt-0.5">Bays 3, 6, 7 went unreachable</div>
+                  </div>
+                </div>
+                <div class="flex gap-3">
+                  <i class="pi pi-exclamation-circle text-warning text-lg mt-0.5"></i>
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <div class="font-semibold text-sm">Door left open on Pink8 bay 4</div>
+                      <span class="text-[10px] text-slate-400 tabular-nums">18h ago</span>
+                    </div>
+                    <div class="text-xs text-slate-500 mt-0.5">Stayed open for 8 minutes — past the 5-minute threshold</div>
+                  </div>
+                </div>
+                <div class="flex gap-3">
+                  <i class="pi pi-clock text-warning text-lg mt-0.5"></i>
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <div class="font-semibold text-sm">3 checkouts went overdue</div>
+                      <span class="text-[10px] text-slate-400 tabular-nums">22h ago</span>
+                    </div>
+                    <div class="text-xs text-slate-500 mt-0.5">Green8 bays 1, 2, 3 · Mark Rivera, Crosby Smith</div>
+                  </div>
+                </div>
+                <div class="flex gap-3">
+                  <i class="pi pi-check-circle text-success text-lg mt-0.5"></i>
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <div class="font-semibold text-sm">Bay 4 alarm cleared</div>
+                      <span class="text-[10px] text-slate-400 tabular-nums">1d ago</span>
+                    </div>
+                    <div class="text-xs text-slate-500 mt-0.5">Pink8 · auto-resolved by hardware self-check</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Inbox -->
+          <div class="p-card">
+            <div class="p-card-body">
+              <div class="flex items-center justify-between mb-3">
+                <div>
+                  <h3 class="font-semibold text-base">Inbox</h3>
+                  <p class="text-xs text-slate-500 mt-0.5">0 unread</p>
+                </div>
+                <button class="p-button p-button-text p-button-sm text-xs">View all <i class="pi pi-arrow-right text-[10px] ml-1"></i></button>
+              </div>
+              <div class="space-y-3">
+                <div class="flex gap-3 items-start">
+                  <div class="p-avatar p-component p-avatar-circle" style="background:#D1FAE5;color:#10B981;width:28px;height:28px;font-size:11px;">
+                    <i class="pi pi-user-plus" style="font-size:12px;"></i>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <div class="font-semibold text-sm">Guest registration approved</div>
+                      <span class="text-[10px] text-slate-400 tabular-nums">25d ago</span>
+                    </div>
+                    <div class="text-xs text-slate-500 mt-0.5">Mark Rivera · Corewell POC</div>
+                  </div>
+                </div>
+                <div class="flex gap-3 items-start">
+                  <div class="p-avatar p-component p-avatar-circle" style="background:#FEE2E2;color:#DC2626;width:28px;height:28px;font-size:11px;">
+                    <i class="pi pi-user-minus" style="font-size:12px;"></i>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <div class="font-semibold text-sm">Guest registration denied</div>
+                      <span class="text-[10px] text-slate-400 tabular-nums">18d ago</span>
+                    </div>
+                    <div class="text-xs text-slate-500 mt-0.5">Auto-rejected — duplicate badge</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Lost Devices widget — NEW · Pixar accent -->
+      <div class="mt-4 p-card border-2 border-pixar-soft">
+        <div class="p-card-body">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <h3 class="font-semibold text-base flex items-center gap-2">
+                <i class="pi pi-dollar text-pixar"></i>
+                Lost devices · accounting view
+                <span class="p-tag text-[10px]" style="background:#EDE9FE;color:#7C3AED;"><span class="p-tag-value">NEW</span></span>
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">This quarter · by department + by user · click to drill into Asset Accounting</p>
+            </div>
+            <a href="#" class="p-button p-button-text p-button-sm text-xs" style="color:#7C3AED;">Open Asset Accounting <i class="pi pi-arrow-right text-[10px] ml-1"></i></a>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3 mb-4">
+            <div>
+              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Total lost</div>
+              <div class="text-2xl font-semibold tabular-nums text-danger">$14,247</div>
+            </div>
+            <div>
+              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Recovered</div>
+              <div class="text-2xl font-semibold tabular-nums text-success">$3,124</div>
+            </div>
+            <div>
+              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Recovery rate</div>
+              <div class="text-2xl font-semibold tabular-nums">22%</div>
+            </div>
+          </div>
+
+          <!-- Top departments by loss — PrimeVue DataTable -->
+          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">Top departments by loss</div>
+          <div class="p-datatable p-component p-datatable-sm">
+            <div class="p-datatable-wrapper">
+              <table class="p-datatable-table w-full">
+                <thead class="p-datatable-thead">
+                  <tr>
+                    <th class="text-left text-xs font-semibold py-2 px-3 bg-slate-50 text-slate-600">Department</th>
+                    <th class="text-left text-xs font-semibold py-2 px-3 bg-slate-50 text-slate-600">Lost</th>
+                    <th class="text-right text-xs font-semibold py-2 px-3 bg-slate-50 text-slate-600">$ this Q</th>
+                  </tr>
+                </thead>
+                <tbody class="p-datatable-tbody">
+                  <tr class="cursor-pointer hover:bg-slate-50 border-b border-slate-100">
+                    <td class="py-2 px-3"><div class="font-semibold text-sm">Emergency Medicine</div><div class="text-[10px] text-slate-500">23 users · Troy Hospital</div></td>
+                    <td class="py-2 px-3 tabular-nums font-semibold text-sm">9</td>
+                    <td class="py-2 px-3 text-right font-semibold text-sm text-danger tabular-nums">$4,829</td>
+                  </tr>
+                  <tr class="cursor-pointer hover:bg-slate-50 border-b border-slate-100">
+                    <td class="py-2 px-3"><div class="font-semibold text-sm">Nursing</div><div class="text-[10px] text-slate-500">14 users · Troy Hospital</div></td>
+                    <td class="py-2 px-3 tabular-nums font-semibold text-sm">6</td>
+                    <td class="py-2 px-3 text-right font-semibold text-sm text-danger tabular-nums">$3,124</td>
+                  </tr>
+                  <tr class="cursor-pointer hover:bg-slate-50 border-b border-slate-100">
+                    <td class="py-2 px-3"><div class="font-semibold text-sm">Radiology</div><div class="text-[10px] text-slate-500">15 users · Royal Oak</div></td>
+                    <td class="py-2 px-3 tabular-nums font-semibold text-sm">4</td>
+                    <td class="py-2 px-3 text-right font-semibold text-sm text-warning-text tabular-nums">$1,847</td>
+                  </tr>
+                  <tr class="cursor-pointer hover:bg-slate-50 border-b border-slate-100">
+                    <td class="py-2 px-3"><div class="font-semibold text-sm">Security / Facilities</div><div class="text-[10px] text-slate-500">22 users · Troy Hospital</div></td>
+                    <td class="py-2 px-3 tabular-nums font-semibold text-sm">14</td>
+                    <td class="py-2 px-3 text-right font-semibold text-sm text-warning-text tabular-nums">$1,190</td>
+                  </tr>
+                  <tr class="cursor-pointer hover:bg-slate-50">
+                    <td class="py-2 px-3"><div class="font-semibold text-sm">Admin / HR</div><div class="text-[10px] text-slate-500">16 users · Beaumont</div></td>
+                    <td class="py-2 px-3 tabular-nums font-semibold text-sm">2</td>
+                    <td class="py-2 px-3 text-right font-semibold text-sm tabular-nums">$340</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer note -->
+      <div class="mt-6 p-3 bg-pixar-soft border border-pixar/20 rounded-md text-sm text-pixar">
+        <strong>Pixar v.2 implementation note:</strong> this page uses
+        <code class="bg-white px-1 rounded">&lt;Card&gt;</code>,
+        <code class="bg-white px-1 rounded">&lt;Tag&gt;</code>,
+        <code class="bg-white px-1 rounded">&lt;Avatar&gt;</code>,
+        <code class="bg-white px-1 rounded">&lt;Button&gt;</code>,
+        <code class="bg-white px-1 rounded">&lt;InputText&gt;</code>,
+        <code class="bg-white px-1 rounded">&lt;DataTable&gt;</code>, and
+        <code class="bg-white px-1 rounded">&lt;SelectButton&gt;</code> straight from PrimeVue.
+        Layout (grid + spacing + KPI labels) is Tailwind utilities.
+        Only the brand blue and Pixar violet are pinned via <code class="bg-white px-1 rounded">:root --primary-color</code>.
+      </div>
+
+    </main>
+
+  </div>
+
+</body>
+</html>

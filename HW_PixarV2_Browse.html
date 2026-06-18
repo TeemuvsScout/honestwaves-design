@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixar v.2 — PrimeVue + Tailwind</title>
+
+  <!-- PrimeVue Lara Light Blue theme + base CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/lara-light-blue/theme.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/primevue.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css" />
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'brand': { DEFAULT: '#2563EB', deep: '#1E40AF', soft: '#EFF6FF' },
+            'pixar': { DEFAULT: '#7C3AED', soft: '#EDE9FE' },
+            'success': { DEFAULT: '#10B981', soft: '#D1FAE5' },
+            'warning': { DEFAULT: '#F59E0B', soft: '#FEF3C7', text: '#B45309' },
+            'danger':  { DEFAULT: '#DC2626', soft: '#FEE2E2' },
+            'info':    { DEFAULT: '#0EA5E9', soft: '#E0F2FE' },
+            'navy':    { DEFAULT: '#0F172A', deep: '#020617' },
+            'ice':     '#CADCFC',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Font + small Pixar accent tweaks (do not override PrimeVue components) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    /* Override PrimeVue brand color via CSS variables (the only forced styling) */
+    :root {
+      --primary-color: #2563EB;
+      --primary-color-text: #FFFFFF;
+      --highlight-bg: #EFF6FF;
+      --highlight-text-color: #1E40AF;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+  <!-- Hero -->
+  <section class="bg-gradient-to-br from-navy via-navy-deep to-navy text-white relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-1/2 h-full opacity-30 bg-gradient-radial from-pixar to-transparent pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-6 py-16 relative">
+      <div class="flex items-center gap-3 mb-12">
+        <div class="w-9 h-9 rounded-lg bg-brand grid place-items-center text-white font-bold text-lg">H</div>
+        <span class="font-semibold text-lg">HonestWaves</span>
+        <span class="ml-auto px-3 py-1 bg-white/10 rounded-full text-xs font-semibold tracking-widest uppercase">Pixar v.2</span>
+      </div>
+
+      <div class="max-w-3xl">
+        <span class="inline-block bg-pixar px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase mb-4">PrimeVue + Tailwind</span>
+        <h1 class="text-5xl md:text-6xl font-bold tracking-tight mb-4">The dev team's Pixar.</h1>
+        <p class="text-xl text-ice italic mb-6">A rebuild that uses PrimeVue components directly and Tailwind for the rest. No custom HTML where a PrimeVue control will do.</p>
+        <p class="text-base text-ice/80 leading-relaxed mb-8">
+          Pixar v.1 was the design specification. <span class="font-semibold text-white">Pixar v.2 is the implementation reference</span>
+          — built with the exact stack your team is using: PrimeVue's component library + Tailwind for layout and spacing.
+          The visual language is PrimeVue's <a href="https://primevue.org/" class="underline">Lara theme</a>, with light brand customization (the Pixar violet accent + brand blue).
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <a href="HW_PixarV2_Dashboard.html" class="p-button p-component" style="background:#7C3AED;border-color:#7C3AED;">
+            <span class="p-button-icon p-button-icon-left pi pi-th-large"></span>
+            <span class="p-button-label">Open Dashboard demo</span>
+          </a>
+          <a href="HW_PixarV2_Components.html" class="p-button p-component p-button-outlined" style="color:white;border-color:white;">
+            <span class="p-button-icon p-button-icon-left pi pi-box"></span>
+            <span class="p-button-label">View Components</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What changes from v.1 -->
+  <section class="max-w-7xl mx-auto px-6 py-16">
+    <h2 class="text-2xl font-bold mb-2">What changes from Pixar v.1</h2>
+    <p class="text-slate-600 mb-8">Same identity. Less custom code. Built on the components you already license.</p>
+
+    <div class="grid md:grid-cols-3 gap-4">
+      <!-- Card 1 -->
+      <div class="p-card">
+        <div class="p-card-body">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="pi pi-box text-brand text-2xl"></span>
+            <h3 class="p-card-title text-base m-0">PrimeVue components</h3>
+          </div>
+          <p class="p-card-content text-sm text-slate-600">
+            Button, DataTable, Card, Tag, Dialog, Sidebar, TabView, Avatar, ToggleSwitch, AutoComplete, Toast — all PrimeVue.
+            We stopped building <code class="text-xs bg-slate-100 px-1 rounded">div.btn</code> when <code class="text-xs bg-slate-100 px-1 rounded">&lt;Button&gt;</code> works.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="p-card">
+        <div class="p-card-body">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="pi pi-palette text-pixar text-2xl"></span>
+            <h3 class="p-card-title text-base m-0">Tailwind for layout</h3>
+          </div>
+          <p class="p-card-content text-sm text-slate-600">
+            Grid, flex, spacing, typography — all Tailwind utilities. We use them around PrimeVue components, not inside them.
+            <code class="text-xs bg-slate-100 px-1 rounded">grid grid-cols-4 gap-3</code> instead of a custom <code class="text-xs bg-slate-100 px-1 rounded">.kpis</code> class.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="p-card">
+        <div class="p-card-body">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="pi pi-sliders-h text-success text-2xl"></span>
+            <h3 class="p-card-title text-base m-0">Light brand customization</h3>
+          </div>
+          <p class="p-card-content text-sm text-slate-600">
+            Only the brand blue and Pixar violet are pinned via CSS variables on <code class="text-xs bg-slate-100 px-1 rounded">:root</code>.
+            Spacing, radii, typography — we accept PrimeVue's defaults.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Component coverage -->
+  <section class="max-w-7xl mx-auto px-6 py-8">
+    <h2 class="text-2xl font-bold mb-2">Component coverage</h2>
+    <p class="text-slate-600 mb-8">Every Pixar v.1 pattern is now a PrimeVue component out of the box.</p>
+
+    <div class="p-card">
+      <div class="p-card-body p-0">
+        <table class="p-datatable-table w-full">
+          <thead class="p-datatable-thead">
+            <tr>
+              <th class="text-left p-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Pattern</th>
+              <th class="text-left p-3 text-xs font-semibold uppercase tracking-wider text-slate-500">PrimeVue</th>
+              <th class="text-left p-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Docs</th>
+            </tr>
+          </thead>
+          <tbody class="p-datatable-tbody">
+            <tr><td class="p-3 font-semibold">Button</td><td class="p-3 text-slate-600">&lt;Button&gt; (severity, outlined, text)</td><td class="p-3"><a href="https://primevue.org/button" class="text-brand text-sm">primevue.org/button</a></td></tr>
+            <tr><td class="p-3 font-semibold">Pill / status</td><td class="p-3 text-slate-600">&lt;Tag&gt; with severity</td><td class="p-3"><a href="https://primevue.org/tag" class="text-brand text-sm">primevue.org/tag</a></td></tr>
+            <tr><td class="p-3 font-semibold">Avatar (user mark)</td><td class="p-3 text-slate-600">&lt;Avatar&gt; with label / shape</td><td class="p-3"><a href="https://primevue.org/avatar" class="text-brand text-sm">primevue.org/avatar</a></td></tr>
+            <tr><td class="p-3 font-semibold">Data table</td><td class="p-3 text-slate-600">&lt;DataTable&gt; with sortable, filter, paginator</td><td class="p-3"><a href="https://primevue.org/datatable" class="text-brand text-sm">primevue.org/datatable</a></td></tr>
+            <tr><td class="p-3 font-semibold">Card</td><td class="p-3 text-slate-600">&lt;Card&gt; with title/content/footer slots</td><td class="p-3"><a href="https://primevue.org/card" class="text-brand text-sm">primevue.org/card</a></td></tr>
+            <tr><td class="p-3 font-semibold">Drawer / detail panel</td><td class="p-3 text-slate-600">&lt;Sidebar position="right"&gt;</td><td class="p-3"><a href="https://primevue.org/sidebar" class="text-brand text-sm">primevue.org/sidebar</a></td></tr>
+            <tr><td class="p-3 font-semibold">Modal</td><td class="p-3 text-slate-600">&lt;Dialog&gt; with modal=true</td><td class="p-3"><a href="https://primevue.org/dialog" class="text-brand text-sm">primevue.org/dialog</a></td></tr>
+            <tr><td class="p-3 font-semibold">Toggle</td><td class="p-3 text-slate-600">&lt;InputSwitch&gt;</td><td class="p-3"><a href="https://primevue.org/inputswitch" class="text-brand text-sm">primevue.org/inputswitch</a></td></tr>
+            <tr><td class="p-3 font-semibold">Sub-tabs</td><td class="p-3 text-slate-600">&lt;TabView&gt; / &lt;TabPanel&gt;</td><td class="p-3"><a href="https://primevue.org/tabview" class="text-brand text-sm">primevue.org/tabview</a></td></tr>
+            <tr><td class="p-3 font-semibold">Sidebar accordion</td><td class="p-3 text-slate-600">&lt;PanelMenu&gt; (multi-level supported)</td><td class="p-3"><a href="https://primevue.org/panelmenu" class="text-brand text-sm">primevue.org/panelmenu</a></td></tr>
+            <tr><td class="p-3 font-semibold">Filter search</td><td class="p-3 text-slate-600">&lt;IconField&gt; + &lt;InputText&gt; + &lt;Dropdown&gt;</td><td class="p-3"><a href="https://primevue.org/inputtext" class="text-brand text-sm">primevue.org/inputtext</a></td></tr>
+            <tr><td class="p-3 font-semibold">Tap-to-add search</td><td class="p-3 text-slate-600">&lt;AutoComplete&gt;</td><td class="p-3"><a href="https://primevue.org/autocomplete" class="text-brand text-sm">primevue.org/autocomplete</a></td></tr>
+            <tr><td class="p-3 font-semibold">Toasts</td><td class="p-3 text-slate-600">&lt;Toast&gt; via useToast()</td><td class="p-3"><a href="https://primevue.org/toast" class="text-brand text-sm">primevue.org/toast</a></td></tr>
+            <tr><td class="p-3 font-semibold">KPI tile</td><td class="p-3 text-slate-600">Custom wrapper around &lt;Card&gt; — see Dashboard demo</td><td class="p-3 text-slate-400 text-sm">No PrimeVue equivalent</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Design tokens still apply -->
+  <section class="max-w-7xl mx-auto px-6 py-8">
+    <h2 class="text-2xl font-bold mb-2">Tokens stay the same</h2>
+    <p class="text-slate-600 mb-6">The token system from Pixar v.1 powers the Tailwind config below. PrimeVue's CSS variables read from the same source.</p>
+
+    <!-- Color palette in PrimeVue Card -->
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="p-card">
+        <div class="p-card-body">
+          <h3 class="p-card-title text-base mb-3">Brand palette</h3>
+          <div class="grid grid-cols-4 gap-2">
+            <div><div class="h-12 bg-brand rounded"></div><div class="text-xs mt-1 font-semibold">brand</div><div class="text-xs text-slate-500 font-mono">#2563EB</div></div>
+            <div><div class="h-12 bg-brand-deep rounded"></div><div class="text-xs mt-1 font-semibold">brand-deep</div><div class="text-xs text-slate-500 font-mono">#1E40AF</div></div>
+            <div><div class="h-12 bg-pixar rounded"></div><div class="text-xs mt-1 font-semibold">pixar</div><div class="text-xs text-slate-500 font-mono">#7C3AED</div></div>
+            <div><div class="h-12 bg-pixar-soft rounded border border-slate-200"></div><div class="text-xs mt-1 font-semibold">pixar-soft</div><div class="text-xs text-slate-500 font-mono">#EDE9FE</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="p-card">
+        <div class="p-card-body">
+          <h3 class="p-card-title text-base mb-3">Semantic states</h3>
+          <div class="grid grid-cols-4 gap-2">
+            <div><div class="h-12 bg-success rounded"></div><div class="text-xs mt-1 font-semibold">success</div><div class="text-xs text-slate-500 font-mono">#10B981</div></div>
+            <div><div class="h-12 bg-warning rounded"></div><div class="text-xs mt-1 font-semibold">warning</div><div class="text-xs text-slate-500 font-mono">#F59E0B</div></div>
+            <div><div class="h-12 bg-danger rounded"></div><div class="text-xs mt-1 font-semibold">danger</div><div class="text-xs text-slate-500 font-mono">#DC2626</div></div>
+            <div><div class="h-12 bg-info rounded"></div><div class="text-xs mt-1 font-semibold">info</div><div class="text-xs text-slate-500 font-mono">#0EA5E9</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tailwind config quick view -->
+    <div class="mt-6 bg-navy text-ice p-5 rounded-lg overflow-x-auto">
+      <div class="text-xs text-ice/60 mb-3 font-mono">tailwind.config.js (Pixar v.2 theme.extend.colors)</div>
+      <pre class="text-xs font-mono leading-relaxed"><span class="text-blue-300">colors</span>: {
+  <span class="text-green-300">'brand'</span>: { <span class="text-blue-300">DEFAULT</span>: <span class="text-green-300">'#2563EB'</span>, <span class="text-blue-300">deep</span>: <span class="text-green-300">'#1E40AF'</span>, <span class="text-blue-300">soft</span>: <span class="text-green-300">'#EFF6FF'</span> },
+  <span class="text-green-300">'pixar'</span>: { <span class="text-blue-300">DEFAULT</span>: <span class="text-green-300">'#7C3AED'</span>, <span class="text-blue-300">soft</span>: <span class="text-green-300">'#EDE9FE'</span> },
+  <span class="text-green-300">'success'</span>: { <span class="text-blue-300">DEFAULT</span>: <span class="text-green-300">'#10B981'</span>, <span class="text-blue-300">soft</span>: <span class="text-green-300">'#D1FAE5'</span> },
+  <span class="text-green-300">'warning'</span>: { <span class="text-blue-300">DEFAULT</span>: <span class="text-green-300">'#F59E0B'</span>, <span class="text-blue-300">soft</span>: <span class="text-green-300">'#FEF3C7'</span>, <span class="text-blue-300">text</span>: <span class="text-green-300">'#B45309'</span> },
+  <span class="text-green-300">'danger'</span>:  { <span class="text-blue-300">DEFAULT</span>: <span class="text-green-300">'#DC2626'</span>, <span class="text-blue-300">soft</span>: <span class="text-green-300">'#FEE2E2'</span> },
+  <span class="text-green-300">'info'</span>:    { <span class="text-blue-300">DEFAULT</span>: <span class="text-green-300">'#0EA5E9'</span>, <span class="text-blue-300">soft</span>: <span class="text-green-300">'#E0F2FE'</span> },
+}</pre>
+    </div>
+  </section>
+
+  <!-- Demos -->
+  <section class="max-w-7xl mx-auto px-6 py-8">
+    <h2 class="text-2xl font-bold mb-6">Live demos</h2>
+    <div class="grid md:grid-cols-3 gap-4">
+      <a href="HW_PixarV2_Dashboard.html" class="p-card hover:shadow-lg transition-shadow block">
+        <div class="p-card-body">
+          <div class="flex items-center justify-between mb-3">
+            <span class="pi pi-th-large text-2xl text-brand"></span>
+            <span class="p-tag p-tag-success"><span class="p-tag-value">Ready</span></span>
+          </div>
+          <h3 class="p-card-title text-base">Dashboard</h3>
+          <p class="p-card-content text-sm text-slate-600 mt-2">Live operational snapshot with KPI tiles, fleet bay status, alarms panel, inbox.</p>
+        </div>
+      </a>
+      <a href="HW_PixarV2_Mission_Control.html" class="p-card hover:shadow-lg transition-shadow block">
+        <div class="p-card-body">
+          <div class="flex items-center justify-between mb-3">
+            <span class="pi pi-eye text-2xl text-brand"></span>
+            <span class="p-tag p-tag-success"><span class="p-tag-value">Ready</span></span>
+          </div>
+          <h3 class="p-card-title text-base">Mission Control</h3>
+          <p class="p-card-content text-sm text-slate-600 mt-2">Per-locker live bay state with holder + duration, drill drawer.</p>
+        </div>
+      </a>
+      <a href="HW_PixarV2_Reports.html" class="p-card hover:shadow-lg transition-shadow block">
+        <div class="p-card-body">
+          <div class="flex items-center justify-between mb-3">
+            <span class="pi pi-chart-bar text-2xl text-brand"></span>
+            <span class="p-tag p-tag-success"><span class="p-tag-value">Ready</span></span>
+          </div>
+          <h3 class="p-card-title text-base">Reports</h3>
+          <p class="p-card-content text-sm text-slate-600 mt-2">Activity log, device status, scheduled, custom report — TabView with DataTable.</p>
+        </div>
+      </a>
+      <a href="HW_PixarV2_Components.html" class="p-card hover:shadow-lg transition-shadow block">
+        <div class="p-card-body">
+          <div class="flex items-center justify-between mb-3">
+            <span class="pi pi-box text-2xl text-pixar"></span>
+            <span class="p-tag p-tag-info"><span class="p-tag-value">Reference</span></span>
+          </div>
+          <h3 class="p-card-title text-base">Components reference</h3>
+          <p class="p-card-content text-sm text-slate-600 mt-2">Every PrimeVue component the system uses, rendered with Tailwind + copy snippets.</p>
+        </div>
+      </a>
+      <a href="HW_Redesign_Browse.html" class="p-card hover:shadow-lg transition-shadow block opacity-75">
+        <div class="p-card-body">
+          <div class="flex items-center justify-between mb-3">
+            <span class="pi pi-arrow-left text-2xl text-slate-400"></span>
+            <span class="p-tag" style="background:#94A3B8;color:white;"><span class="p-tag-value">v.1</span></span>
+          </div>
+          <h3 class="p-card-title text-base">Pixar v.1 prototypes</h3>
+          <p class="p-card-content text-sm text-slate-600 mt-2">Back to the original 14 design prototypes (raw HTML/CSS reference).</p>
+        </div>
+      </a>
+      <a href="HW_Redesign_Design_System.md" class="p-card hover:shadow-lg transition-shadow block opacity-75">
+        <div class="p-card-body">
+          <div class="flex items-center justify-between mb-3">
+            <span class="pi pi-book text-2xl text-slate-400"></span>
+            <span class="p-tag" style="background:#94A3B8;color:white;"><span class="p-tag-value">Doc</span></span>
+          </div>
+          <h3 class="p-card-title text-base">Design System Reference</h3>
+          <p class="p-card-content text-sm text-slate-600 mt-2">Tokens, layout patterns, component anatomy, migration guide.</p>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <footer class="bg-navy text-ice/80 py-8 mt-16">
+    <div class="max-w-7xl mx-auto px-6 text-center text-sm">
+      <strong class="text-white">Pixar v.2</strong>  ·  Built on
+      <a href="https://primevue.org/" class="underline text-white">PrimeVue</a> +
+      <a href="https://tailwindcss.com/" class="underline text-white">Tailwind CSS</a>  ·
+      <a href="https://github.com/TeemuvsScout/honestwaves-design" class="underline text-white">View on GitHub</a>
+    </div>
+  </footer>
+
+</body>
+</html>
