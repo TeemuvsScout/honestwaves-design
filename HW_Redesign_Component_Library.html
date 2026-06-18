@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixar v.1 · Component Library</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* === Design tokens — identical to all prototypes === */
+    :root {
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+      --c-bg: #F8FAFC; --c-surface: #FFFFFF; --c-surface-2: #F8FAFC; --c-surface-3: #F1F5F9;
+      --c-border: #E2E8F0; --c-border-strong: #CBD5E1; --c-divider: #EDF1F6;
+      --c-text: #0F172A; --c-text-2: #475569; --c-text-muted: #94A3B8;
+
+      --c-brand: #2563EB; --c-brand-hover: #1D4ED8; --c-brand-deep: #1E40AF; --c-brand-soft: #EFF6FF;
+      --c-pixar: #7C3AED; --c-pixar-soft: #EDE9FE;
+      --c-success: #10B981; --c-success-soft: #D1FAE5;
+      --c-warning: #F59E0B; --c-warning-text: #B45309; --c-warning-soft: #FEF3C7;
+      --c-danger: #DC2626; --c-danger-soft: #FEE2E2;
+      --c-info: #0EA5E9; --c-info-soft: #E0F2FE;
+      --c-violet: #8B5CF6; --c-violet-soft: #EDE9FE;
+      --c-cyan: #06B6D4; --c-cyan-soft: #CFFAFE;
+      --c-slate: #64748B; --c-slate-soft: #F1F5F9;
+      --c-rose: #FB7185;
+      --c-navy: #0F172A; --c-navy-deep: #020617; --c-ice: #CADCFC;
+
+      --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 20px; --s-6: 24px; --s-7: 32px;
+      --r-sm: 4px; --r-md: 6px; --r-lg: 10px;
+      --t-11: 11px; --t-12: 12px; --t-13: 13px; --t-14: 14px; --t-16: 16px; --t-20: 20px; --t-22: 22px;
+      --sh-1: 0 1px 2px rgba(15,23,42,.04);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+    a { color: var(--c-brand); text-decoration: none; }
+    a:hover { color: var(--c-brand-hover); }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font-sans);
+      font-size: var(--t-13);
+      color: var(--c-text);
+      background: var(--c-bg);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+
+    /* === Page shell === */
+    .doc-shell { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+    .doc-side {
+      position: sticky; top: 0; align-self: start;
+      height: 100vh;
+      background: var(--c-surface);
+      border-right: 1px solid var(--c-border);
+      padding: var(--s-5) var(--s-4);
+      overflow-y: auto;
+    }
+    .doc-side-brand { display: flex; align-items: center; gap: 8px; margin-bottom: var(--s-5); }
+    .doc-side-mark {
+      width: 28px; height: 28px;
+      background: linear-gradient(135deg, var(--c-brand), var(--c-brand-deep));
+      border-radius: 6px;
+      display: grid; place-items: center;
+      color: white; font-weight: 700; font-size: 13px;
+    }
+    .doc-side-brand-name { font-weight: 600; font-size: 13px; }
+    .doc-side-brand-sub { font-size: 10px; color: var(--c-text-muted); letter-spacing: .04em; text-transform: uppercase; font-weight: 600; }
+    .doc-toc { display: flex; flex-direction: column; gap: 1px; }
+    .doc-toc-h {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      padding: var(--s-3) var(--s-2) var(--s-1);
+    }
+    .doc-toc a {
+      display: block;
+      padding: 5px var(--s-2);
+      font-size: 12px;
+      color: var(--c-text-2);
+      border-radius: var(--r-sm);
+    }
+    .doc-toc a:hover { background: var(--c-surface-3); color: var(--c-text); }
+
+    .doc-main { padding: var(--s-6); max-width: 1100px; }
+
+    .doc-hero {
+      background: linear-gradient(135deg, var(--c-navy) 0%, var(--c-navy-deep) 100%);
+      color: white;
+      border-radius: var(--r-lg);
+      padding: 40px;
+      margin-bottom: var(--s-6);
+      position: relative;
+      overflow: hidden;
+    }
+    .doc-hero::before {
+      content: ""; position: absolute; top: -50%; right: -10%;
+      width: 60%; height: 200%;
+      background: radial-gradient(closest-side, rgba(124, 58, 237, 0.25), transparent 70%);
+      pointer-events: none;
+    }
+    .doc-hero-tag {
+      display: inline-block;
+      background: var(--c-pixar);
+      color: white;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: var(--s-3);
+    }
+    .doc-hero h1 { font-size: 36px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 8px; }
+    .doc-hero p { font-size: 15px; color: var(--c-ice); font-style: italic; margin-bottom: 16px; max-width: 720px; }
+    .doc-hero-meta { display: flex; gap: var(--s-5); margin-top: 16px; }
+    .doc-hero-meta-item { font-size: 11px; color: var(--c-ice); }
+    .doc-hero-meta-item strong { display: block; font-size: 18px; color: white; font-weight: 600; margin-bottom: 2px; }
+
+    .section {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: var(--r-lg);
+      padding: var(--s-6);
+      margin-bottom: var(--s-5);
+    }
+    .section-head { margin-bottom: var(--s-5); }
+    .section-eyebrow {
+      font-size: 10px; font-weight: 700;
+      color: var(--c-pixar);
+      letter-spacing: .08em; text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .section-title {
+      font-size: 22px; font-weight: 700;
+      color: var(--c-text);
+      letter-spacing: -.01em;
+      margin-bottom: 4px;
+    }
+    .section-sub { font-size: 13px; color: var(--c-text-2); }
+
+    .demo-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-5);
+      align-items: start;
+      margin-top: var(--s-4);
+    }
+    .demo-row.stack { grid-template-columns: 1fr; }
+    .demo {
+      background: var(--c-surface-2);
+      border: 1px dashed var(--c-border);
+      border-radius: var(--r-md);
+      padding: var(--s-5);
+      display: flex; flex-wrap: wrap; gap: var(--s-3);
+      align-items: center;
+      min-height: 80px;
+    }
+    .demo.spread { justify-content: space-between; }
+    .demo.center { justify-content: center; }
+    .demo.column { flex-direction: column; align-items: stretch; }
+    .demo > .demo-label {
+      width: 100%;
+      font-size: 10px; font-weight: 600;
+      color: var(--c-text-muted);
+      letter-spacing: .06em; text-transform: uppercase;
+      margin-bottom: var(--s-2);
+    }
+
+    .code {
+      background: var(--c-navy);
+      color: var(--c-ice);
+      border-radius: var(--r-md);
+      padding: var(--s-4);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      line-height: 1.6;
+      overflow-x: auto;
+      position: relative;
+    }
+    .code .key { color: #93C5FD; }
+    .code .str { color: #86EFAC; }
+    .code .com { color: #94A3B8; font-style: italic; }
+    .code .copy {
+      position: absolute; top: 8px; right: 8px;
+      background: rgba(255,255,255,.06);
+      color: var(--c-ice);
+      padding: 3px 8px;
+      font-size: 9px; font-weight: 600;
+      letter-spacing: .04em; text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .code .copy:hover { background: rgba(255,255,255,.12); }
+    .code .copy.copied { background: var(--c-success); color: white; }
+
+    .notes {
+      background: var(--c-surface-3);
+      border-left: 3px solid var(--c-brand);
+      padding: var(--s-3) var(--s-4);
+      font-size: 12px;
+      color: var(--c-text-2);
+      margin-top: var(--s-4);
+      border-radius: 0 var(--r-md) var(--r-md) 0;
+    }
+    .notes strong { color: var(--c-text); }
+
+    .variant-grid {
+      display: grid;
+      grid-template-columns: auto auto 1fr;
+      gap: 0;
+      margin-top: var(--s-3);
+      border: 1px solid var(--c-divider);
+      border-radius: var(--r-md);
+      overflow: hidden;
+    }
+    .variant-grid > div {
+      padding: 8px 12px;
+      font-size: 12px;
+      border-bottom: 1px solid var(--c-divider);
+      display: flex; align-items: center;
+    }
+    .variant-grid > div:nth-last-child(-n+3) { border-bottom: 0; }
+    .variant-grid > div:nth-child(3n+1) { background: var(--c-surface-2); font-weight: 600; }
+    .variant-grid > div:nth-child(3n+3) { color: var(--c-text-2); font-size: 11px; font-family: var(--font-mono); }
+
+    /* === Atoms (lifted directly from prototypes — no changes) === */
+
+    /* btn */
+    .btn { display: inline-flex; align-items: center; gap: 6px;
+           height: 30px; padding: 0 var(--s-3);
+           font-size: var(--t-12); font-weight: 500;
+           color: var(--c-text); background: var(--c-surface);
+           border: 1px solid var(--c-border); border-radius: var(--r-md);
+           box-shadow: var(--sh-1); }
+    .btn:hover { background: var(--c-surface-3); border-color: var(--c-border-strong); }
+    .btn.primary { background: var(--c-brand); color: white; border-color: var(--c-brand); }
+    .btn.primary:hover { background: var(--c-brand-hover); border-color: var(--c-brand-hover); }
+    .btn.ghost { background: transparent; border-color: transparent; box-shadow: none; }
+    .btn.ghost:hover { background: var(--c-surface-3); }
+    .btn.danger { color: var(--c-danger); border-color: var(--c-border); }
+    .btn.danger:hover { background: var(--c-danger-soft); border-color: var(--c-danger); }
+
+    /* pill */
+    .pill { display: inline-flex; align-items: center; gap: 5px;
+            padding: 2px 8px; border-radius: 999px;
+            font-size: var(--t-11); font-weight: 600; }
+    .pill .pill-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .pill.success { background: var(--c-success-soft); color: var(--c-success); }
+    .pill.warning { background: var(--c-warning-soft); color: var(--c-warning-text); }
+    .pill.danger { background: var(--c-danger-soft); color: var(--c-danger); }
+    .pill.info { background: var(--c-info-soft); color: var(--c-info); }
+    .pill.muted { background: var(--c-surface-3); color: var(--c-text-2); }
+    .pill.violet { background: var(--c-violet-soft); color: var(--c-violet); }
+    .pill.cyan { background: var(--c-cyan-soft); color: var(--c-cyan); }
+    .pill.slate { background: var(--c-slate-soft); color: var(--c-slate); }
+
+    /* user-mark */
+    .user-mark {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 24px; height: 24px;
+      background: var(--c-brand-soft); color: var(--c-brand-deep);
+      font-size: 10px; font-weight: 600;
+      border-radius: 50%;
+    }
+    .user-mark.warn { background: var(--c-warning-soft); color: var(--c-warning-text); }
+    .user-mark.danger { background: var(--c-danger-soft); color: var(--c-danger); }
+
+    /* kpi */
+    .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-3); width: 100%; }
+    .kpi { background: var(--c-surface); border: 1px solid var(--c-border);
+           border-radius: var(--r-md); padding: var(--s-3) var(--s-4); }
+    .kpi-label { font-size: 10px; font-weight: 600;
+                 color: var(--c-text-muted);
+                 text-transform: uppercase; letter-spacing: .04em;
+                 display: flex; align-items: center; gap: 5px; margin-bottom: 4px; }
+    .kpi-label-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .kpi-value { font-size: 22px; font-weight: 600; letter-spacing: -.02em;
+                 line-height: 1.1; font-variant-numeric: tabular-nums; }
+    .kpi-sub { font-size: 10px; color: var(--c-text-muted);
+               margin-top: 2px; font-variant-numeric: tabular-nums; }
+    .kpi-value.danger { color: var(--c-danger); }
+    .kpi-value.warn { color: var(--c-warning-text); }
+    .kpi-value.success { color: var(--c-success); }
+
+    /* card */
+    .card { background: var(--c-surface); border: 1px solid var(--c-border);
+            border-radius: var(--r-md); box-shadow: var(--sh-1); overflow: hidden;
+            width: 100%; }
+    .card-head { padding: var(--s-3) var(--s-4); border-bottom: 1px solid var(--c-divider);
+                 display: flex; align-items: center; justify-content: space-between; }
+    .card-title { font-size: var(--t-14); font-weight: 600; margin: 0; }
+    .card-sub { font-size: var(--t-11); color: var(--c-text-2); margin-top: 2px; }
+    .card-body { padding: var(--s-3) var(--s-4); }
+    .card-foot { padding: var(--s-3) var(--s-4); background: var(--c-surface-2);
+                 border-top: 1px solid var(--c-divider);
+                 display: flex; justify-content: flex-end; gap: var(--s-2); }
+
+    /* data table */
+    .data-table-card { background: var(--c-surface); border: 1px solid var(--c-border);
+                       border-radius: var(--r-md); box-shadow: var(--sh-1);
+                       overflow: hidden; width: 100%; }
+    .data-table-card table { width: 100%; border-collapse: collapse; font-size: var(--t-13); }
+    .data-table-card thead { background: var(--c-surface-2); border-bottom: 1px solid var(--c-border); }
+    .data-table-card th { text-align: left; padding: 8px 12px;
+                          font-size: var(--t-11); font-weight: 600;
+                          color: var(--c-text-muted); text-transform: uppercase;
+                          letter-spacing: .04em; }
+    .data-table-card td { padding: 10px 12px; border-bottom: 1px solid var(--c-border);
+                          vertical-align: middle; }
+    .data-table-card tr:last-child td { border-bottom: none; }
+    .data-table-card tr:hover { background: var(--c-surface-2); cursor: pointer; }
+
+    /* subtabs */
+    .subtabs { display: flex; align-items: center; gap: 2px;
+               border-bottom: 1px solid var(--c-border);
+               margin-bottom: var(--s-5); width: 100%; }
+    .subtab { display: inline-flex; align-items: center; gap: 6px;
+              padding: 8px 12px;
+              font-size: var(--t-13); font-weight: 500; color: var(--c-text-2);
+              border-bottom: 2px solid transparent;
+              margin-bottom: -1px; cursor: pointer; }
+    .subtab:hover { color: var(--c-text); }
+    .subtab.active { color: var(--c-brand-deep); border-bottom-color: var(--c-brand);
+                     font-weight: 600; }
+    .subtab .count { font-size: 10px; font-weight: 600; padding: 1px 6px;
+                     border-radius: 999px; background: var(--c-surface-3);
+                     color: var(--c-text-2); }
+    .subtab.active .count { background: var(--c-brand-soft); color: var(--c-brand-deep); }
+
+    /* sub-nav (sidebar accordion) */
+    .sidebar-demo { width: 220px; background: var(--c-surface);
+                    border: 1px solid var(--c-border); border-radius: var(--r-md);
+                    padding: var(--s-3); }
+    .nav-item { display: flex; align-items: center; gap: 8px;
+                padding: 7px var(--s-3); border-radius: var(--r-md);
+                font-size: var(--t-13); color: var(--c-text-2);
+                position: relative; cursor: pointer; }
+    .nav-item:hover { background: var(--c-surface-3); color: var(--c-text); }
+    .nav-item.active { background: var(--c-brand-soft); color: var(--c-brand-deep);
+                       font-weight: 600; }
+    .nav-item.active::before { content: ""; position: absolute; left: -2px;
+                                top: 8px; bottom: 8px;
+                                width: 2px; background: var(--c-brand);
+                                border-radius: 2px; }
+
+    .sub-nav { margin: 2px 0 6px 0; padding-left: 0;
+               border-left: 1px solid var(--c-divider); margin-left: 18px; }
+    .sub-nav-item { display: flex; align-items: center; gap: 6px;
+                    padding: 5px 10px 5px 12px;
+                    font-size: 12px; color: var(--c-text-2);
+                    border-radius: 0 var(--r-sm) var(--r-sm) 0;
+                    cursor: pointer; position: relative;
+                    margin-left: -1px; border-left: 2px solid transparent; }
+    .sub-nav-item:hover { background: var(--c-surface-3); color: var(--c-text); }
+    .sub-nav-item.active { color: var(--c-brand-deep); font-weight: 600;
+                           border-left-color: var(--c-brand);
+                           background: var(--c-brand-soft); }
+    .chev { width: 10px; height: 10px; flex-shrink: 0;
+            color: var(--c-text-muted);
+            transition: transform .15s ease;
+            transform: rotate(-90deg); }
+    .sub-nav-group.expanded > .sub-nav-item > .chev { transform: rotate(0deg); }
+    .sub-nav-l3 { margin: 0 0 0 16px; padding-left: 0;
+                   border-left: 1px solid var(--c-divider);
+                   display: none; }
+    .sub-nav-group.expanded > .sub-nav-l3 { display: block; }
+    .sub-nav-item-l3 { display: flex; align-items: center; gap: 6px;
+                        padding: 4px 10px;
+                        font-size: 11px; color: var(--c-text-2);
+                        border-radius: 0 var(--r-sm) var(--r-sm) 0;
+                        cursor: pointer; margin-left: -1px;
+                        border-left: 2px solid transparent; }
+    .sub-nav-item-l3:hover { background: var(--c-surface-3); color: var(--c-text); }
+    .sub-nav-item-l3 .l3-count { margin-left: auto; font-size: 9px;
+                                  font-weight: 600; color: var(--c-text-muted); }
+    .sub-nav-item .sub-count { margin-left: auto; font-size: 9px;
+                                font-weight: 600; padding: 1px 5px;
+                                border-radius: 999px;
+                                background: var(--c-surface-3);
+                                color: var(--c-text-2); }
+    .sub-nav-item.active .sub-count { background: var(--c-brand-soft);
+                                       color: var(--c-brand-deep); }
+
+    /* toggle */
+    .toggle { position: relative; display: inline-block;
+              width: 36px; height: 20px; cursor: pointer; vertical-align: middle; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; inset: 0;
+                     background: var(--c-border-strong);
+                     border-radius: 999px; transition: .2s; }
+    .toggle-slider::before { content: ""; position: absolute;
+                              height: 14px; width: 14px;
+                              left: 3px; top: 3px;
+                              background: white; border-radius: 50%;
+                              transition: .2s;
+                              box-shadow: 0 1px 2px rgba(0,0,0,.15); }
+    .toggle input:checked + .toggle-slider { background: var(--c-brand); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(16px); }
+
+    /* filter bar */
+    .filter-bar { display: flex; align-items: center; gap: var(--s-2);
+                   padding: var(--s-3); background: var(--c-surface);
+                   border: 1px solid var(--c-border); border-radius: var(--r-md);
+                   flex-wrap: wrap; width: 100%; }
+    .filter-search { flex: 1; min-width: 240px;
+                      display: flex; align-items: center; gap: var(--s-2);
+                      height: 32px; padding: 0 var(--s-3);
+                      background: var(--c-surface-2);
+                      border: 1px solid var(--c-border);
+                      border-radius: var(--r-md);
+                      color: var(--c-text); font-size: var(--t-13); }
+    .filter-search input { border: 0; outline: 0; background: transparent;
+                            flex: 1; color: inherit; font: inherit; }
+    .filter-select { height: 32px; padding: 0 28px 0 var(--s-3);
+                      font-size: var(--t-12); background: var(--c-surface);
+                      border: 1px solid var(--c-border);
+                      border-radius: var(--r-md); color: var(--c-text);
+                      appearance: none;
+                      background-image: linear-gradient(45deg, transparent 50%, var(--c-text-2) 50%),
+                                        linear-gradient(135deg, var(--c-text-2) 50%, transparent 50%);
+                      background-position: calc(100% - 14px) 50%, calc(100% - 9px) 50%;
+                      background-size: 5px 5px, 5px 5px;
+                      background-repeat: no-repeat; }
+
+    /* drawer + modal: stubs only */
+    .drawer-mini { width: 280px; background: var(--c-surface);
+                    border: 1px solid var(--c-border);
+                    border-radius: var(--r-md);
+                    box-shadow: -4px 0 24px rgba(15,23,42,.08);
+                    overflow: hidden; }
+    .drawer-mini .drawer-head {
+      padding: var(--s-4) var(--s-5) var(--s-3);
+      border-bottom: 1px solid var(--c-border);
+    }
+    .drawer-mini .drawer-title { font-size: var(--t-16); font-weight: 600; margin: 4px 0; }
+    .drawer-mini .drawer-sub { font-size: var(--t-12); color: var(--c-text-2); }
+    .drawer-mini .drawer-section { padding: var(--s-3) var(--s-5); }
+    .drawer-mini .drawer-h { font-size: 10px; font-weight: 600;
+                              letter-spacing: .04em; text-transform: uppercase;
+                              color: var(--c-text-muted); margin-bottom: 6px; }
+
+    .modal-mini { width: 360px;
+                   background: var(--c-surface);
+                   border: 1px solid var(--c-border);
+                   border-radius: var(--r-lg);
+                   box-shadow: 0 24px 48px rgba(15,23,42,.18);
+                   overflow: hidden; }
+    .modal-mini .modal-head { padding: var(--s-3) var(--s-5);
+                               border-bottom: 1px solid var(--c-border); }
+    .modal-mini .modal-head h2 { font-size: var(--t-16); font-weight: 600; }
+    .modal-mini .modal-head p { font-size: var(--t-12); color: var(--c-text-2); margin-top: 2px; }
+    .modal-mini .modal-body { padding: var(--s-3) var(--s-5); }
+    .modal-mini .modal-foot { padding: var(--s-3) var(--s-5);
+                               background: var(--c-surface-2);
+                               border-top: 1px solid var(--c-border);
+                               display: flex; justify-content: flex-end; gap: var(--s-2); }
+
+    .setting-row { display: flex; align-items: center; justify-content: space-between;
+                    padding: var(--s-3) 0;
+                    border-top: 1px dashed var(--c-border); }
+    .setting-row:first-child { border-top: none; padding-top: 0; }
+    .setting-row-title { font-weight: 600; font-size: var(--t-13); color: var(--c-text); }
+    .setting-row-desc { font-size: var(--t-12); color: var(--c-text-2); margin-top: 2px; }
+
+    /* === Token swatches === */
+    .swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-3); }
+    .swatch { background: var(--c-surface); border: 1px solid var(--c-border);
+              border-radius: var(--r-md); padding: var(--s-3); display: flex; align-items: center; gap: var(--s-3); }
+    .swatch-block { width: 32px; height: 32px; border-radius: var(--r-sm);
+                     border: 1px solid var(--c-border); flex-shrink: 0; }
+    .swatch-meta { font-size: 11px; line-height: 1.3; }
+    .swatch-name { font-weight: 600; color: var(--c-text); }
+    .swatch-hex { font-family: var(--font-mono); color: var(--c-text-muted); font-size: 10px; }
+
+    /* anchor offset for sticky scroll */
+    [id] { scroll-margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+<div class="doc-shell">
+
+  <aside class="doc-side">
+    <div class="doc-side-brand">
+      <div class="doc-side-mark">H</div>
+      <div>
+        <div class="doc-side-brand-name">HonestWaves</div>
+        <div class="doc-side-brand-sub">Pixar v.1 · Components</div>
+      </div>
+    </div>
+
+    <nav class="doc-toc">
+      <p class="doc-toc-h">Foundations</p>
+      <a href="#tokens-color">Color tokens</a>
+      <a href="#tokens-space">Spacing</a>
+      <a href="#tokens-type">Typography</a>
+      <a href="#tokens-radius">Radius &amp; elevation</a>
+
+      <p class="doc-toc-h">Atoms</p>
+      <a href="#btn">Button</a>
+      <a href="#pill">Pill</a>
+      <a href="#user-mark">User mark</a>
+      <a href="#toggle">Toggle</a>
+
+      <p class="doc-toc-h">Patterns</p>
+      <a href="#kpi">KPI tile + strip</a>
+      <a href="#table">Data table</a>
+      <a href="#card">Card</a>
+      <a href="#filter-bar">Filter bar</a>
+      <a href="#subtabs">Sub-tabs</a>
+      <a href="#sub-nav">Sub-nav (accordion)</a>
+
+      <p class="doc-toc-h">Surfaces</p>
+      <a href="#drawer">Drawer</a>
+      <a href="#modal">Modal</a>
+
+      <p class="doc-toc-h">Reference</p>
+      <a href="HW_Redesign_Design_System.md">↗ Design System Reference (md)</a>
+      <a href="HW_Redesign_Browse.html">↗ Live prototypes</a>
+    </nav>
+  </aside>
+
+  <main class="doc-main">
+
+    <!-- HERO -->
+    <div class="doc-hero">
+      <div class="doc-hero-tag">Pixar v.1 · Component Library</div>
+      <h1>Every atom, every pattern</h1>
+      <p>This is the live playground for the Pixar v.1 design system. Every component below is the real CSS pulled from the prototypes — copy the HTML, lift the CSS, ship it.</p>
+      <div class="doc-hero-meta">
+        <div class="doc-hero-meta-item">
+          <strong>12</strong>Reusable components
+        </div>
+        <div class="doc-hero-meta-item">
+          <strong>50+</strong>Design tokens
+        </div>
+        <div class="doc-hero-meta-item">
+          <strong>0</strong>External dependencies
+        </div>
+        <div class="doc-hero-meta-item">
+          <strong>14</strong>Production prototypes
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- COLOR TOKENS -->
+    <!-- ========================================== -->
+    <section class="section" id="tokens-color">
+      <div class="section-head">
+        <div class="section-eyebrow">Foundations · 01</div>
+        <h2 class="section-title">Color tokens</h2>
+        <p class="section-sub">Every prototype declares this token block on <code>:root</code>. Copy verbatim into your global stylesheet.</p>
+      </div>
+
+      <h3 style="font-size:13px;font-weight:600;margin:0 0 12px;color:var(--c-text-2);">Surface scale</h3>
+      <div class="swatches">
+        <div class="swatch"><div class="swatch-block" style="background:var(--c-bg)"></div><div class="swatch-meta"><div class="swatch-name">--c-bg</div><div class="swatch-hex">#F8FAFC</div></div></div>
+        <div class="swatch"><div class="swatch-block" style="background:var(--c-surface)"></div><div class="swatch-meta"><div class="swatch-name">--c-surface</div><div class="swatch-hex">#FFFFFF</div></div></div>
+        <div class="swatch"><div class="swatch-block" style="background:var(--c-surface-2)"></div><div class="swatch-meta"><div class="swatch-name">--c-surface-2</div><div class="swatch-hex">#F8FAFC</div></div></div>
+        <div class="swatch"><div class="swatch-block" style="background:var(--c-surface-3)"></div><div class="swatch-meta"><div class="swatch-name">--c-surface-3</div><div class="swatch-hex">#F1F5F9</div></div></div>
+      </div>
+
+      <h3 style="font-size:13px;font-weight:600;margin:20px 0 12px;color:var(--c-text-2);">Brand &amp; Pixar accent</h3>
+      <div class="swatches">
+        <div class="swatch"><div class="swatch-block" style="background:var(--c-brand)"></div><div class="swatch-meta"><div class="swatch-name">--c-brand</div><div class="swatch-hex">#2563EB</div></div></div>
+        <div class="swatch"><div class="swatch-block" style="background:var(--c-brand-soft)"></div><div class="swatch-meta"><div class="swatch-name">--c-brand-soft</div><div class="swatch-hex">#EFF6FF</div></div></div>
+        <div class="swatch"><div class="swatch-block" style="background:var(--c-pixar)"></div><div class="swatch-meta"><div class="swatch-name">--c-pixar</div><div class="swatch-hex">#7C3AED</div></div></div>
+        <div class="swatch"><div class="swatch-block" style="background:var(--c-pixar-soft)"></div><div class="swatch-meta"><div class="swatch-name">--c-pixar-soft</div><div class="swatch-hex">#EDE9FE</div></div></div>
+      </div>
+
+      <h3 style="font-size:13px;font-weight:600;margin:20px 0 12px;color:var(--c-text-2);">Semantic states</h3>
+      <div class="swatches">
+        <div class="swatch"><div class="swatch-block" style="background:var(--c-success)"></div><div class="swatch-meta"><div class="swatch-name">--c-success</div><div class="swatch-hex">#10B981</div></div></div>
+        <div class="swatch"><div class="swatch-block" style="background:var(--c-warning)"></div><div class="swatch-meta"><div class="swatch-name">--c-warning</div><div class="swatch-hex">#F59E0B</div></div></div>
+        <div class="swatch"><div class="swatch-block" style="background:var(--c-danger)"></div><div class="swatch-meta"><div class="swatch-name">--c-danger</div><div class="swatch-hex">#DC2626</div></div></div>
+        <div class="swatch"><div class="swatch-block" style="background:var(--c-info)"></div><div class="swatch-meta"><div class="swatch-name">--c-info</div><div class="swatch-hex">#0EA5E9</div></div></div>
+      </div>
+
+      <div class="notes">
+        <strong>Naming rule:</strong> <code>--c-{role}</code> is the saturated base, <code>--c-{role}-soft</code> is the tinted variant for backgrounds, and <code>--c-{role}-text</code> (where it exists) is the accessible text-on-soft color. Pills always pair <code>{role}-soft</code> bg with <code>{role}</code> text.
+      </div>
+    </section>
+
+    <!-- SPACING -->
+    <section class="section" id="tokens-space">
+      <div class="section-head">
+        <div class="section-eyebrow">Foundations · 02</div>
+        <h2 class="section-title">Spacing scale</h2>
+        <p class="section-sub">4px base unit. Matches Tailwind's default scale.</p>
+      </div>
+      <div class="variant-grid">
+        <div>--s-1</div><div>4px</div><div>Inline gap, tight icon margin</div>
+        <div>--s-2</div><div>8px</div><div>Pill / button gap, list-item gap</div>
+        <div>--s-3</div><div>12px</div><div>Card padding, KPI strip gap</div>
+        <div>--s-4</div><div>16px</div><div>Card body padding, section margin</div>
+        <div>--s-5</div><div>20px</div><div>Main padding-y, modal padding-x</div>
+        <div>--s-6</div><div>24px</div><div>Main padding-x, section padding</div>
+        <div>--s-7</div><div>32px</div><div>Hero spacing, large gaps</div>
+      </div>
+    </section>
+
+    <!-- TYPE -->
+    <section class="section" id="tokens-type">
+      <div class="section-head">
+        <div class="section-eyebrow">Foundations · 03</div>
+        <h2 class="section-title">Typography</h2>
+        <p class="section-sub">Inter for UI · JetBrains Mono for IDs and code · numeric values use <code>tabular-nums</code>.</p>
+      </div>
+      <div class="variant-grid">
+        <div>Page title</div><div style="font-size:20px;font-weight:600;color:var(--c-text)">Dashboard</div><div>20px / 600 / -0.01em</div>
+        <div>Card title</div><div style="font-size:14px;font-weight:600;color:var(--c-text)">Top departments</div><div>14px / 600</div>
+        <div>Body</div><div style="font-size:13px;color:var(--c-text)">Default body text</div><div>13px / 400</div>
+        <div>KPI value</div><div style="font-size:22px;font-weight:600;color:var(--c-brand);font-variant-numeric:tabular-nums">$56,685</div><div>22px / 600 / tabular</div>
+        <div>KPI label</div><div style="font-size:10px;font-weight:600;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:.04em">ASSETS IN LOCKERS</div><div>10px / 600 / caps</div>
+        <div>Pill</div><div><span class="pill success"><span class="pill-dot"></span>Available</span></div><div>11px / 600</div>
+        <div>Mono ID</div><div style="font-family:var(--font-mono);font-size:11px;color:var(--c-text-muted)">badge:e1f2-9c41-44b7-…</div><div>11px mono / 500</div>
+      </div>
+    </section>
+
+    <!-- RADIUS + ELEVATION -->
+    <section class="section" id="tokens-radius">
+      <div class="section-head">
+        <div class="section-eyebrow">Foundations · 04</div>
+        <h2 class="section-title">Radius &amp; elevation</h2>
+      </div>
+      <div class="variant-grid">
+        <div>--r-sm</div><div>4px</div><div>Small tiles, inline tags</div>
+        <div>--r-md</div><div>6px</div><div>Default — buttons, pills, cards</div>
+        <div>--r-lg</div><div>10px</div><div>Modals, hero cards</div>
+        <div>--sh-1</div><div>subtle</div><div><code>0 1px 2px rgba(15,23,42,.04)</code> — single elevation token</div>
+      </div>
+      <div class="notes"><strong>One elevation, one radius family.</strong> Flat-by-default look. Modals are the only place a heavier shadow (<code>0 24px 48px rgba(15,23,42,.18)</code>) is used, declared inline.</div>
+    </section>
+
+    <!-- BUTTON -->
+    <section class="section" id="btn">
+      <div class="section-head">
+        <div class="section-eyebrow">Atom · 01</div>
+        <h2 class="section-title">Button</h2>
+        <p class="section-sub">30px height · 12px text · single optional SVG icon · 4 variants.</p>
+      </div>
+      <div class="demo-row">
+        <div class="demo">
+          <div class="demo-label">All variants</div>
+          <button class="btn">Default</button>
+          <button class="btn primary">Primary</button>
+          <button class="btn ghost">Ghost</button>
+          <button class="btn danger">Danger</button>
+        </div>
+        <div class="code">
+<span class="copy" data-copy="1">Copy</span><pre>&lt;button class=<span class="str">"btn"</span>&gt;Default&lt;/button&gt;
+&lt;button class=<span class="str">"btn primary"</span>&gt;Primary&lt;/button&gt;
+&lt;button class=<span class="str">"btn ghost"</span>&gt;Ghost&lt;/button&gt;
+&lt;button class=<span class="str">"btn danger"</span>&gt;Danger&lt;/button&gt;</pre>
+        </div>
+      </div>
+      <div class="notes">
+        <strong>Icon slot:</strong> drop an <code>&lt;svg width="13" height="13"&gt;</code> before the label text. The CSS uses <code>display: inline-flex; gap: 6px</code> — no extra wrapper needed.
+      </div>
+    </section>
+
+    <!-- PILL -->
+    <section class="section" id="pill">
+      <div class="section-head">
+        <div class="section-eyebrow">Atom · 02</div>
+        <h2 class="section-title">Pill</h2>
+        <p class="section-sub">11px / 600 weight · <code>{role}-soft</code> background + <code>{role}</code> text · optional dot indicator.</p>
+      </div>
+      <div class="demo-row">
+        <div class="demo">
+          <div class="demo-label">All semantic variants</div>
+          <span class="pill success"><span class="pill-dot"></span>Available</span>
+          <span class="pill warning"><span class="pill-dot"></span>Overdue</span>
+          <span class="pill danger"><span class="pill-dot"></span>Lost</span>
+          <span class="pill info"><span class="pill-dot"></span>In use</span>
+          <span class="pill muted"><span class="pill-dot"></span>Deactivated</span>
+          <span class="pill violet"><span class="pill-dot"></span>Reserved</span>
+          <span class="pill cyan"><span class="pill-dot"></span>Cleaning</span>
+          <span class="pill slate"><span class="pill-dot"></span>Maintenance</span>
+        </div>
+        <div class="code">
+<span class="copy" data-copy="1">Copy</span><pre>&lt;span class=<span class="str">"pill success"</span>&gt;
+  &lt;span class=<span class="str">"pill-dot"</span>&gt;&lt;/span&gt;Available
+&lt;/span&gt;
+
+<span class="com">// Variants:</span>
+.success / .warning / .danger / .info
+.muted / .violet / .cyan / .slate</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- USER MARK -->
+    <section class="section" id="user-mark">
+      <div class="section-head">
+        <div class="section-eyebrow">Atom · 03</div>
+        <h2 class="section-title">User mark</h2>
+        <p class="section-sub">24×24 circle · 10px bold initials · 3 status variants. Inline-friendly in table rows.</p>
+      </div>
+      <div class="demo-row">
+        <div class="demo">
+          <div class="demo-label">Default · Warn · Danger</div>
+          <span class="user-mark">CS</span>
+          <span class="user-mark warn">LD</span>
+          <span class="user-mark danger">JS</span>
+        </div>
+        <div class="code">
+<span class="copy" data-copy="1">Copy</span><pre>&lt;span class=<span class="str">"user-mark"</span>&gt;CS&lt;/span&gt;
+&lt;span class=<span class="str">"user-mark warn"</span>&gt;LD&lt;/span&gt;
+&lt;span class=<span class="str">"user-mark danger"</span>&gt;JS&lt;/span&gt;</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOGGLE -->
+    <section class="section" id="toggle">
+      <div class="section-head">
+        <div class="section-eyebrow">Atom · 04</div>
+        <h2 class="section-title">Toggle switch</h2>
+        <p class="section-sub">Native checkbox styled as a slider. 36×20px. Used in Settings + Edit Guest Registration modal.</p>
+      </div>
+      <div class="demo-row">
+        <div class="demo">
+          <div class="demo-label">Off · On</div>
+          <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
+          <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+        </div>
+        <div class="code">
+<span class="copy" data-copy="1">Copy</span><pre>&lt;label class=<span class="str">"toggle"</span>&gt;
+  &lt;input type=<span class="str">"checkbox"</span> checked /&gt;
+  &lt;span class=<span class="str">"toggle-slider"</span>&gt;&lt;/span&gt;
+&lt;/label&gt;</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPI -->
+    <section class="section" id="kpi">
+      <div class="section-head">
+        <div class="section-eyebrow">Pattern · 01</div>
+        <h2 class="section-title">KPI tile &amp; strip</h2>
+        <p class="section-sub">22px tabular value · 10px caps label with optional color dot · 10px muted subtext. Default grid is 4-up.</p>
+      </div>
+      <div class="demo-row stack">
+        <div class="demo column" style="padding: 32px;">
+          <div class="kpis">
+            <div class="kpi">
+              <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-brand);"></span>In use right now</div>
+              <div class="kpi-value">37</div>
+              <div class="kpi-sub">of 56 bays · ▲12 vs avg</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-success);"></span>Available</div>
+              <div class="kpi-value success">23</div>
+              <div class="kpi-sub">41% of fleet · same</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-warning);"></span>Overdue</div>
+              <div class="kpi-value warn">11</div>
+              <div class="kpi-sub">8 users · ▲4 vs avg</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-danger);"></span>Hardware faults</div>
+              <div class="kpi-value danger">3</div>
+              <div class="kpi-sub">Pink8 · 3 bays · ▲3 today</div>
+            </div>
+          </div>
+        </div>
+        <div class="code">
+<span class="copy" data-copy="1">Copy</span><pre>&lt;div class=<span class="str">"kpis"</span>&gt;
+  &lt;div class=<span class="str">"kpi"</span>&gt;
+    &lt;div class=<span class="str">"kpi-label"</span>&gt;
+      &lt;span class=<span class="str">"kpi-label-dot"</span>
+            style=<span class="str">"background:var(--c-brand)"</span>&gt;&lt;/span&gt;
+      In use right now
+    &lt;/div&gt;
+    &lt;div class=<span class="str">"kpi-value"</span>&gt;37&lt;/div&gt;
+    &lt;div class=<span class="str">"kpi-sub"</span>&gt;of 56 bays · ▲12 vs avg&lt;/div&gt;
+  &lt;/div&gt;
+  <span class="com">&lt;!-- repeat for additional KPIs --&gt;</span>
+&lt;/div&gt;</pre>
+        </div>
+      </div>
+      <div class="notes">
+        Override <code>grid-template-columns</code> inline (or with a utility class) to render 2-up, 3-up, or 5-up. Add <code>.danger</code>, <code>.warn</code>, or <code>.success</code> to <code>.kpi-value</code> for semantic coloring.
+      </div>
+    </section>
+
+    <!-- TABLE -->
+    <section class="section" id="table">
+      <div class="section-head">
+        <div class="section-eyebrow">Pattern · 02</div>
+        <h2 class="section-title">Data table</h2>
+        <p class="section-sub">Card-wrapped table · sticky tinted header · 10px-padded cells · row hover state · cells pair with pills and user-marks.</p>
+      </div>
+      <div class="demo-row stack">
+        <div class="demo column">
+          <div class="data-table-card">
+            <table>
+              <thead>
+                <tr><th>Device</th><th>Status</th><th>User</th><th>Bay</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>iPhone15</strong></td><td><span class="pill warning"><span class="pill-dot"></span>Overdue</span></td><td><span class="user-mark danger" style="margin-right:6px;">CS</span>Crosby Smith</td><td>Pink8 · Bay 1</td></tr>
+                <tr><td><strong>iPhone08</strong></td><td><span class="pill warning"><span class="pill-dot"></span>Overdue</span></td><td><span class="user-mark warn" style="margin-right:6px;">JJ</span>John Johnson</td><td>Pink8 · Bay 2</td></tr>
+                <tr><td><strong>iPhone12</strong></td><td><span class="pill danger"><span class="pill-dot"></span>No device</span></td><td style="color:var(--c-text-muted)">—</td><td>Pink8 · Bay 3</td></tr>
+                <tr><td><strong>iPhone21</strong></td><td><span class="pill success"><span class="pill-dot"></span>Available</span></td><td style="color:var(--c-text-muted)">—</td><td>Blue34 · Bay 1</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="code">
+<span class="copy" data-copy="1">Copy</span><pre>&lt;div class=<span class="str">"data-table-card"</span>&gt;
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Device&lt;/th&gt;&lt;th&gt;Status&lt;/th&gt;
+        &lt;th&gt;User&lt;/th&gt;&lt;th&gt;Bay&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;td&gt;&lt;strong&gt;iPhone15&lt;/strong&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;span class=<span class="str">"pill warning"</span>&gt;…&lt;/span&gt;&lt;/td&gt;
+        &lt;td&gt;Crosby Smith&lt;/td&gt;&lt;td&gt;Pink8 · Bay 1&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/div&gt;</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARD -->
+    <section class="section" id="card">
+      <div class="section-head">
+        <div class="section-eyebrow">Pattern · 03</div>
+        <h2 class="section-title">Card</h2>
+        <p class="section-sub">Optional head + body + foot. Used as the universal content wrapper.</p>
+      </div>
+      <div class="demo-row stack">
+        <div class="demo column">
+          <div class="card" style="max-width:540px;">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Top departments by loss</h3>
+                <p class="card-sub">This quarter — click row to drill</p>
+              </div>
+              <button class="btn ghost">View all</button>
+            </div>
+            <div class="card-body">
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--c-divider)">
+                <span style="font-weight:600;">Emergency Medicine</span>
+                <span style="color:var(--c-danger);font-weight:600;">$4,829</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;">
+                <span style="font-weight:600;">Nursing</span>
+                <span style="color:var(--c-danger);font-weight:600;">$3,124</span>
+              </div>
+            </div>
+            <div class="card-foot">
+              <button class="btn ghost">Export</button>
+              <button class="btn primary">Drill down</button>
+            </div>
+          </div>
+        </div>
+        <div class="code">
+<span class="copy" data-copy="1">Copy</span><pre>&lt;div class=<span class="str">"card"</span>&gt;
+  &lt;div class=<span class="str">"card-head"</span>&gt;
+    &lt;div&gt;
+      &lt;h3 class=<span class="str">"card-title"</span>&gt;Title&lt;/h3&gt;
+      &lt;p class=<span class="str">"card-sub"</span>&gt;Subtitle&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;button class=<span class="str">"btn ghost"</span>&gt;Action&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class=<span class="str">"card-body"</span>&gt;Content…&lt;/div&gt;
+  &lt;div class=<span class="str">"card-foot"</span>&gt;Footer actions&lt;/div&gt;
+&lt;/div&gt;</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- FILTER BAR -->
+    <section class="section" id="filter-bar">
+      <div class="section-head">
+        <div class="section-eyebrow">Pattern · 04</div>
+        <h2 class="section-title">Filter bar</h2>
+        <p class="section-sub">Search + select chips above any table.</p>
+      </div>
+      <div class="demo-row stack">
+        <div class="demo column">
+          <div class="filter-bar">
+            <div class="filter-search">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <input placeholder="Search devices…" />
+            </div>
+            <select class="filter-select">
+              <option>All locations</option>
+              <option>Troy Hospital</option>
+              <option>Royal Oak Campus</option>
+            </select>
+            <select class="filter-select">
+              <option>All statuses</option>
+              <option>Available</option>
+              <option>Overdue</option>
+            </select>
+          </div>
+        </div>
+        <div class="code">
+<span class="copy" data-copy="1">Copy</span><pre>&lt;div class=<span class="str">"filter-bar"</span>&gt;
+  &lt;div class=<span class="str">"filter-search"</span>&gt;
+    &lt;svg&gt;…&lt;/svg&gt;
+    &lt;input placeholder=<span class="str">"Search…"</span> /&gt;
+  &lt;/div&gt;
+  &lt;select class=<span class="str">"filter-select"</span>&gt;…&lt;/select&gt;
+  &lt;select class=<span class="str">"filter-select"</span>&gt;…&lt;/select&gt;
+&lt;/div&gt;</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUBTABS -->
+    <section class="section" id="subtabs">
+      <div class="section-head">
+        <div class="section-eyebrow">Pattern · 05</div>
+        <h2 class="section-title">Sub-tabs (page-level)</h2>
+        <p class="section-sub">Bound by <code>data-pane="X"</code>. The matching pane ID gets <code>.active</code> on click.</p>
+      </div>
+      <div class="demo-row stack">
+        <div class="demo column">
+          <div class="subtabs" id="demo-subtabs">
+            <div class="subtab active" data-pane="activity">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Activity log <span class="count">109</span>
+            </div>
+            <div class="subtab" data-pane="status">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
+              Device status
+            </div>
+            <div class="subtab" data-pane="scheduled">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>
+              Scheduled <span class="count">3</span>
+            </div>
+            <div class="subtab" data-pane="custom">Custom report</div>
+          </div>
+          <div id="demo-pane-output" style="font-size:12px;color:var(--c-text-2);font-style:italic;">Active pane: <strong style="color:var(--c-text);">activity</strong></div>
+        </div>
+        <div class="code">
+<span class="copy" data-copy="1">Copy</span><pre>&lt;div class=<span class="str">"subtabs"</span>&gt;
+  &lt;div class=<span class="str">"subtab active"</span> data-pane=<span class="str">"activity"</span>&gt;
+    Activity log &lt;span class=<span class="str">"count"</span>&gt;109&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class=<span class="str">"subtab"</span> data-pane=<span class="str">"status"</span>&gt;
+    Device status
+  &lt;/div&gt;
+  <span class="com">&lt;!-- ... --&gt;</span>
+&lt;/div&gt;
+
+<span class="com">// JS pattern:</span>
+<span class="key">const</span> tabs = document.querySelectorAll(<span class="str">'.subtab[data-pane]'</span>);
+tabs.forEach(t =&gt; t.addEventListener(<span class="str">'click'</span>, () =&gt; {
+  tabs.forEach(x =&gt; x.classList.toggle(
+    <span class="str">'active'</span>, x === t
+  ));
+  <span class="com">// + show matching pane</span>
+}));</pre>
+        </div>
+      </div>
+      <div class="notes">
+        <strong>Sync pattern:</strong> a single query (<code>[data-pane]</code>) matches both top tabs and sidebar accordion items. One <code>showPane()</code> call updates both surfaces.
+      </div>
+    </section>
+
+    <!-- SUB-NAV -->
+    <section class="section" id="sub-nav">
+      <div class="section-head">
+        <div class="section-eyebrow">Pattern · 06</div>
+        <h2 class="section-title">Sub-nav (sidebar accordion)</h2>
+        <p class="section-sub">Multi-level. L2 chevrons toggle <code>.expanded</code> on the parent group. L3 supports its own chevron + nested L4 list.</p>
+      </div>
+      <div class="demo-row">
+        <div class="demo center">
+          <div class="sidebar-demo">
+            <a class="nav-item active">Lockers</a>
+            <div class="sub-nav">
+              <div class="sub-nav-group expanded" id="demo-group">
+                <div class="sub-nav-item active" data-pane="lockers">
+                  <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" onclick="event.stopPropagation();this.closest('.sub-nav-group').classList.toggle('expanded');"><polyline points="6 9 12 15 18 9"/></svg>
+                  Lockers <span class="sub-count">12</span>
+                </div>
+                <div class="sub-nav-l3">
+                  <div class="sub-nav-item-l3">Pink8 <span class="l3-count">8 bays</span></div>
+                  <div class="sub-nav-item-l3">Green1 <span class="l3-count">8 bays</span></div>
+                  <div class="sub-nav-item-l3">Blue3 <span class="l3-count">32 bays</span></div>
+                </div>
+              </div>
+              <div class="sub-nav-group">
+                <div class="sub-nav-item" data-pane="locations">
+                  <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" onclick="event.stopPropagation();this.closest('.sub-nav-group').classList.toggle('expanded');"><polyline points="6 9 12 15 18 9"/></svg>
+                  Locations <span class="sub-count">6</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="code">
+<span class="copy" data-copy="1">Copy</span><pre>&lt;a class=<span class="str">"nav-item active"</span>&gt;Lockers&lt;/a&gt;
+&lt;div class=<span class="str">"sub-nav"</span>&gt;
+  &lt;div class=<span class="str">"sub-nav-group expanded"</span>&gt;
+    &lt;div class=<span class="str">"sub-nav-item active"</span> data-pane=<span class="str">"lockers"</span>&gt;
+      &lt;svg class=<span class="str">"chev"</span>
+           onclick=<span class="str">"event.stopPropagation();
+                    this.closest('.sub-nav-group')
+                        .classList.toggle('expanded');"</span>&gt;…&lt;/svg&gt;
+      Lockers &lt;span class=<span class="str">"sub-count"</span>&gt;12&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class=<span class="str">"sub-nav-l3"</span>&gt;
+      &lt;div class=<span class="str">"sub-nav-item-l3"</span>&gt;Pink8&lt;/div&gt;
+      &lt;div class=<span class="str">"sub-nav-item-l3"</span>&gt;Green1&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+        </div>
+      </div>
+      <div class="notes">
+        <strong>Click the chevron above</strong> to expand/collapse the Lockers group. The chevron uses <code>event.stopPropagation()</code> so it doesn't trigger the parent item's navigation action.
+      </div>
+    </section>
+
+    <!-- DRAWER -->
+    <section class="section" id="drawer">
+      <div class="section-head">
+        <div class="section-eyebrow">Surface · 01</div>
+        <h2 class="section-title">Drawer (right slide-in)</h2>
+        <p class="section-sub">380px wide (420px for forms). Slide animation via <code>transform: translateX</code>. Esc closes.</p>
+      </div>
+      <div class="demo-row">
+        <div class="demo center">
+          <div class="drawer-mini">
+            <div class="drawer-head">
+              <span class="pill warning"><span class="pill-dot"></span>Overdue</span>
+              <h2 class="drawer-title">Bay 1 · Pink8</h2>
+              <div class="drawer-sub">since 2 hours ago</div>
+            </div>
+            <div class="drawer-section">
+              <p class="drawer-h">Currently checked out by</p>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span class="user-mark danger">CS</span>
+                <div>
+                  <div style="font-weight:600;font-size:13px;">Crosby Smith</div>
+                  <div style="font-size:11px;color:var(--c-text-muted);">Manager · Corewell POC</div>
+                </div>
+              </div>
+            </div>
+            <div class="drawer-section">
+              <p class="drawer-h">Devices assigned</p>
+              <div style="font-size:12px;">iPhone 16e #71</div>
+            </div>
+          </div>
+        </div>
+        <div class="code">
+<span class="copy" data-copy="1">Copy</span><pre>&lt;aside class=<span class="str">"drawer-side open"</span>&gt;
+  &lt;div class=<span class="str">"drawer-head"</span>&gt;
+    &lt;span class=<span class="str">"pill warning"</span>&gt;Overdue&lt;/span&gt;
+    &lt;h2 class=<span class="str">"drawer-title"</span>&gt;Bay 1 · Pink8&lt;/h2&gt;
+    &lt;div class=<span class="str">"drawer-sub"</span>&gt;since 2 hours ago&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=<span class="str">"drawer-section"</span>&gt;
+    &lt;p class=<span class="str">"drawer-h"</span>&gt;Currently checked out by&lt;/p&gt;
+    &lt;div&gt;Crosby Smith&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/aside&gt;
+
+<span class="com">// JS</span>
+drawer.classList.add(<span class="str">'open'</span>);  <span class="com">// to open</span>
+drawer.classList.remove(<span class="str">'open'</span>); <span class="com">// to close</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODAL -->
+    <section class="section" id="modal">
+      <div class="section-head">
+        <div class="section-eyebrow">Surface · 02</div>
+        <h2 class="section-title">Modal</h2>
+        <p class="section-sub">540px max-width · backdrop with 2px blur · head / body / foot structure · backdrop-click + Esc to close.</p>
+      </div>
+      <div class="demo-row">
+        <div class="demo center">
+          <div class="modal-mini">
+            <header class="modal-head">
+              <h2>Edit Guest registration</h2>
+              <p>How locker self-registrations are handled for this tenant.</p>
+            </header>
+            <div class="modal-body">
+              <div class="setting-row">
+                <div>
+                  <div class="setting-row-title">Auto-approve</div>
+                  <div class="setting-row-desc">New self-registrations skip the queue.</div>
+                </div>
+                <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+              </div>
+              <div class="setting-row">
+                <div>
+                  <div class="setting-row-title">Default department</div>
+                  <div class="setting-row-desc">Auto-approved users join this department.</div>
+                </div>
+                <select class="filter-select" style="min-width:160px;"><option>Corewell POC</option></select>
+              </div>
+            </div>
+            <footer class="modal-foot">
+              <button class="btn ghost">Cancel</button>
+              <button class="btn primary">Save</button>
+            </footer>
+          </div>
+        </div>
+        <div class="code">
+<span class="copy" data-copy="1">Copy</span><pre>&lt;div class=<span class="str">"modal-backdrop open"</span>&gt;
+  &lt;div class=<span class="str">"modal"</span>&gt;
+    &lt;header class=<span class="str">"modal-head"</span>&gt;
+      &lt;h2&gt;Edit Guest registration&lt;/h2&gt;
+      &lt;p&gt;Description text…&lt;/p&gt;
+    &lt;/header&gt;
+    &lt;div class=<span class="str">"modal-body"</span>&gt;
+      &lt;div class=<span class="str">"setting-row"</span>&gt;
+        &lt;div&gt;
+          &lt;div class=<span class="str">"setting-row-title"</span>&gt;Auto-approve&lt;/div&gt;
+          &lt;div class=<span class="str">"setting-row-desc"</span>&gt;Description&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;label class=<span class="str">"toggle"</span>&gt;…&lt;/label&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;footer class=<span class="str">"modal-foot"</span>&gt;
+      &lt;button class=<span class="str">"btn ghost"</span>&gt;Cancel&lt;/button&gt;
+      &lt;button class=<span class="str">"btn primary"</span>&gt;Save&lt;/button&gt;
+    &lt;/footer&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div style="padding: var(--s-5) 0; color: var(--c-text-muted); font-size: 11px;">
+      This component library is the live companion to <a href="HW_Redesign_Design_System.md"><code>HW_Redesign_Design_System.md</code></a> — the formal reference doc. Together they cover everything the dev team needs to port Pixar v.1 into the production dashboard without breaking existing surfaces.
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // Copy-to-clipboard for code snippets
+  document.querySelectorAll('.code .copy').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const pre = btn.parentElement.querySelector('pre');
+      const text = pre.innerText.replace(/^\n+/, '');
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copied';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1200);
+      });
+    });
+  });
+
+  // Subtab demo
+  const demoTabs = document.querySelectorAll('#demo-subtabs .subtab');
+  const demoOut = document.getElementById('demo-pane-output');
+  demoTabs.forEach(t => {
+    t.addEventListener('click', () => {
+      demoTabs.forEach(x => x.classList.toggle('active', x === t));
+      demoOut.innerHTML = 'Active pane: <strong style="color:var(--c-text);">' + t.dataset.pane + '</strong>';
+    });
+  });
+</script>
+
+</body>
+</html>
