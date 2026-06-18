@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixar v.2 · Mission Control</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/lara-light-blue/theme.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/primevue.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: {
+      colors: {
+        'brand': { DEFAULT: '#2563EB', deep: '#1E40AF', soft: '#EFF6FF' },
+        'pixar': { DEFAULT: '#7C3AED', soft: '#EDE9FE' },
+        'success': { DEFAULT: '#10B981', soft: '#D1FAE5' },
+        'warning': { DEFAULT: '#F59E0B', soft: '#FEF3C7', text: '#B45309' },
+        'danger':  { DEFAULT: '#DC2626', soft: '#FEE2E2' },
+        'info':    { DEFAULT: '#0EA5E9', soft: '#E0F2FE' },
+        'navy':    { DEFAULT: '#0F172A' },
+        'ice':     '#CADCFC',
+      },
+      fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+    } } };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    :root { --primary-color: #2563EB; --primary-color-text: #FFFFFF; --highlight-bg: #EFF6FF; --highlight-text-color: #1E40AF; }
+    .annotation { background: linear-gradient(90deg, #7C3AED, #1E40AF); color: white; padding: 8px 24px; font-size: 12px; display: flex; align-items: center; gap: 12px; }
+    .annotation .chip { background: rgba(255,255,255,.2); color: white; font-weight: 600; padding: 2px 7px; border-radius: 999px; font-size: 10px; text-transform: uppercase; letter-spacing: .04em; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+  <div class="annotation">
+    <span class="chip">Pixar v.2</span>
+    <strong>Mission Control.</strong>
+    <span>Built with PrimeVue Card / Tag / Avatar / Sidebar / SelectButton / Button · Tailwind for the bay grid.</span>
+    <span class="ml-auto"><a href="HW_PixarV2_Browse.html" class="underline">← v.2 home</a></span>
+  </div>
+
+  <div class="grid" style="grid-template-columns: 232px 1fr; grid-template-rows: 56px 1fr; grid-template-areas: 'logo top' 'side main'; min-height: calc(100vh - 32px);">
+
+    <!-- Logo -->
+    <div style="grid-area: logo;" class="bg-white border-r border-b border-slate-200 flex items-center px-4 gap-2">
+      <div class="w-7 h-7 rounded-md bg-brand grid place-items-center text-white font-bold text-sm">H</div>
+      <span class="font-semibold">HonestWaves</span>
+      <span class="ml-auto p-tag p-tag-info text-xs"><span class="p-tag-value">QA</span></span>
+    </div>
+
+    <!-- Topbar -->
+    <div style="grid-area: top;" class="bg-white border-b border-slate-200 flex items-center px-5 gap-3">
+      <div class="text-sm text-slate-500 flex items-center gap-2">
+        <span>Monitor</span>
+        <i class="pi pi-angle-right text-xs"></i>
+        <strong class="text-slate-900">Mission Control</strong>
+      </div>
+      <div class="flex-1"></div>
+      <span class="p-tag p-tag-success"><span class="p-tag-value"><i class="pi pi-circle-fill text-[8px] mr-1"></i>Live</span></span>
+      <span class="text-xs text-slate-500">Last sync 3 seconds ago</span>
+      <button class="p-button p-component p-button-outlined p-button-sm">
+        <span class="p-button-icon p-button-icon-left pi pi-refresh"></span>
+        <span class="p-button-label">Sync now</span>
+      </button>
+      <button class="p-button p-component p-button-sm">
+        <span class="p-button-icon p-button-icon-left pi pi-cog"></span>
+        <span class="p-button-label">Locker settings</span>
+      </button>
+    </div>
+
+    <!-- Sidebar -->
+    <aside style="grid-area: side;" class="bg-white border-r border-slate-200 p-3 overflow-y-auto">
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-1">Monitor</div>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-th-large text-base"></i>Dashboard</a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold bg-brand-soft text-brand-deep border-l-2 border-brand -ml-1"><i class="pi pi-eye text-base"></i>Mission Control</a>
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-4">Manage</div>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-server text-base"></i>Lockers</a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-mobile text-base"></i>Devices</a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-users text-base"></i>Users</a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-share-alt text-base"></i>Access matrix</a>
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-4">Investigate</div>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-bell text-base"></i>Notifications<span class="ml-auto p-tag p-tag-danger text-[10px] py-0.5 px-1.5"><span class="p-tag-value">99+</span></span></a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-history text-base"></i>Tracker</a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-chart-bar text-base"></i>Reports</a>
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-4">Finance</div>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-dollar text-base"></i>Asset Accounting<span class="ml-auto p-tag text-[10px] py-0.5 px-1.5" style="background:#EDE9FE;color:#7C3AED;"><span class="p-tag-value">NEW</span></span></a>
+    </aside>
+
+    <!-- Main -->
+    <main style="grid-area: main;" class="overflow-y-auto p-6 max-w-[1480px]">
+
+      <!-- Locker tabs row (SelectButton pattern) -->
+      <div class="mb-4">
+        <div class="p-selectbutton p-component p-buttonset flex w-fit" role="group">
+          <button class="p-button p-component"><span class="p-button-label">All lockers</span><span class="ml-2 p-tag p-tag-info text-[10px]"><span class="p-tag-value">56 bays</span></span></button>
+          <button class="p-button p-component p-highlight" style="background:#EFF6FF;color:#1E40AF;border-color:#BFDBFE;"><span class="p-button-label">● Pink8</span><span class="ml-2 p-tag p-tag-warning text-[10px]"><span class="p-tag-value">3 issues</span></span></button>
+          <button class="p-button p-component"><span class="p-button-label">Blue34</span><span class="ml-2 p-tag p-tag-success text-[10px]"><span class="p-tag-value">32 bays</span></span></button>
+          <button class="p-button p-component"><span class="p-button-label">Green8</span><span class="ml-2 p-tag p-tag-warning text-[10px]"><span class="p-tag-value">6 overdue</span></span></button>
+          <button class="p-button p-component"><span class="p-button-label">Adrian Local Test</span></button>
+        </div>
+      </div>
+
+      <!-- Locker meta header -->
+      <div class="p-card mb-4">
+        <div class="p-card-body py-3 flex items-center gap-4">
+          <div>
+            <div class="font-semibold text-base">Pink8</div>
+            <div class="text-xs text-slate-500">HonestWaves Orange County Office · Serial 5c00…b221d</div>
+          </div>
+          <span class="p-tag p-tag-success"><span class="p-tag-value">● Online</span></span>
+          <div class="flex-1"></div>
+          <div class="flex items-center gap-6 text-sm">
+            <div><div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Available</div><div class="font-semibold tabular-nums text-success">0</div></div>
+            <div><div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Overdue</div><div class="font-semibold tabular-nums text-warning-text">5</div></div>
+            <div><div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">No device</div><div class="font-semibold tabular-nums text-danger">3</div></div>
+            <div><div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Avg voltage</div><div class="font-semibold tabular-nums">0.78 V</div></div>
+          </div>
+          <button class="p-button p-component p-button-outlined p-button-sm">
+            <span class="p-button-icon p-button-icon-left pi pi-unlock"></span>
+            <span class="p-button-label">Open all bays</span>
+          </button>
+          <button class="p-button p-component p-button-text p-button-sm">
+            <span class="p-button-icon p-button-icon-left pi pi-chart-line"></span>
+            <span class="p-button-label">Reports</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bay grid -->
+      <div class="grid grid-cols-4 gap-3">
+
+        <!-- Bay 1 — OVERDUE (selected) -->
+        <div class="p-card cursor-pointer" style="border: 2px solid #2563EB;" onclick="document.getElementById('bay-drawer').style.transform='translateX(0)'">
+          <div class="p-card-body">
+            <div class="flex items-center justify-between mb-2">
+              <div>
+                <div class="font-semibold text-base">Bay 1</div>
+                <div class="text-[10px] text-slate-400 tabular-nums">SLOT 71</div>
+              </div>
+              <span class="p-tag p-tag-warning"><span class="p-tag-value">Overdue</span></span>
+            </div>
+            <div class="flex items-center gap-2 mb-1">
+              <div class="p-avatar p-component p-avatar-circle" style="background:#FEE2E2;color:#DC2626;width:24px;height:24px;font-size:10px;"><span>CS</span></div>
+              <div class="font-semibold text-sm">Crosby Smith</div>
+            </div>
+            <div class="text-xs text-warning-text font-semibold mb-1">▲ Out 2h · overdue 2h</div>
+            <div class="text-xs text-slate-500">iPhone 16e 71</div>
+            <div class="mt-2 pt-2 border-t border-slate-100 flex items-center gap-3 text-[10px] text-slate-500">
+              <span class="flex items-center gap-1"><i class="pi pi-lock text-success text-[10px]"></i>Door</span>
+              <span class="flex items-center gap-1"><i class="pi pi-sun text-slate-400 text-[10px]"></i>UVC</span>
+              <span class="flex items-center gap-1"><i class="pi pi-power-off text-slate-400 text-[10px]"></i>USB</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bay 2 — OVERDUE -->
+        <div class="p-card cursor-pointer hover:shadow-md transition-shadow">
+          <div class="p-card-body">
+            <div class="flex items-center justify-between mb-2">
+              <div><div class="font-semibold text-base">Bay 2</div><div class="text-[10px] text-slate-400 tabular-nums">SLOT 72</div></div>
+              <span class="p-tag p-tag-warning"><span class="p-tag-value">Overdue</span></span>
+            </div>
+            <div class="flex items-center gap-2 mb-1">
+              <div class="p-avatar p-component p-avatar-circle" style="background:#FEF3C7;color:#B45309;width:24px;height:24px;font-size:10px;"><span>JJ</span></div>
+              <div class="font-semibold text-sm">John Johnson</div>
+            </div>
+            <div class="text-xs text-warning-text font-semibold mb-1">▲ Out 18h · overdue 10h</div>
+            <div class="text-xs text-slate-500">iPhone 16e 72</div>
+            <div class="mt-2 pt-2 border-t border-slate-100 flex items-center gap-3 text-[10px] text-slate-500">
+              <span class="flex items-center gap-1"><i class="pi pi-lock text-success text-[10px]"></i>Door</span>
+              <span class="flex items-center gap-1"><i class="pi pi-sun text-slate-400 text-[10px]"></i>UVC</span>
+              <span class="flex items-center gap-1"><i class="pi pi-power-off text-slate-400 text-[10px]"></i>USB</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bay 3 — NO DEVICE -->
+        <div class="p-card cursor-pointer hover:shadow-md transition-shadow" style="background:#FEF2F2;border:1px solid #FECACA;">
+          <div class="p-card-body">
+            <div class="flex items-center justify-between mb-2">
+              <div><div class="font-semibold text-base">Bay 3</div><div class="text-[10px] text-slate-400 tabular-nums">SLOT 73</div></div>
+              <span class="p-tag p-tag-danger"><span class="p-tag-value">No device</span></span>
+            </div>
+            <div class="text-xs text-slate-500 italic mb-1">Last scan: 14 hours ago</div>
+            <div class="text-xs text-slate-500">Expected: iPhone 16e 73</div>
+            <div class="mt-2 pt-2 border-t border-red-100 flex items-center gap-3 text-[10px] text-slate-500">
+              <span class="flex items-center gap-1"><i class="pi pi-lock text-success text-[10px]"></i>Door</span>
+              <span class="flex items-center gap-1"><i class="pi pi-sun text-slate-400 text-[10px]"></i>UVC</span>
+              <span class="flex items-center gap-1"><i class="pi pi-power-off text-slate-400 text-[10px]"></i>USB</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bay 4 — OVERDUE -->
+        <div class="p-card cursor-pointer hover:shadow-md transition-shadow">
+          <div class="p-card-body">
+            <div class="flex items-center justify-between mb-2">
+              <div><div class="font-semibold text-base">Bay 4</div><div class="text-[10px] text-slate-400 tabular-nums">SLOT 74</div></div>
+              <span class="p-tag p-tag-warning"><span class="p-tag-value">Overdue</span></span>
+            </div>
+            <div class="flex items-center gap-2 mb-1">
+              <div class="p-avatar p-component p-avatar-circle" style="background:#FEF3C7;color:#B45309;width:24px;height:24px;font-size:10px;"><span>NV</span></div>
+              <div class="font-semibold text-sm">Natashalee Vargas</div>
+            </div>
+            <div class="text-xs text-warning-text font-semibold mb-1">▲ Out 14h · overdue 6h</div>
+            <div class="text-xs text-slate-500">iPhone 16e 74</div>
+            <div class="mt-2 pt-2 border-t border-slate-100 flex items-center gap-3 text-[10px] text-slate-500">
+              <span class="flex items-center gap-1"><i class="pi pi-lock text-success text-[10px]"></i>Door</span>
+              <span class="flex items-center gap-1"><i class="pi pi-sun text-slate-400 text-[10px]"></i>UVC</span>
+              <span class="flex items-center gap-1"><i class="pi pi-power-off text-slate-400 text-[10px]"></i>USB</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bay 5 — OVERDUE -->
+        <div class="p-card cursor-pointer hover:shadow-md transition-shadow">
+          <div class="p-card-body">
+            <div class="flex items-center justify-between mb-2">
+              <div><div class="font-semibold text-base">Bay 5</div><div class="text-[10px] text-slate-400 tabular-nums">SLOT 75</div></div>
+              <span class="p-tag p-tag-warning"><span class="p-tag-value">Overdue</span></span>
+            </div>
+            <div class="flex items-center gap-2 mb-1">
+              <div class="p-avatar p-component p-avatar-circle" style="background:#FEF3C7;color:#B45309;width:24px;height:24px;font-size:10px;"><span>CH</span></div>
+              <div class="font-semibold text-sm">Corewell Health</div>
+            </div>
+            <div class="text-xs text-warning-text font-semibold mb-1">▲ Out 1d 4h · overdue 20h</div>
+            <div class="text-xs text-slate-500">iPhone 16e 75</div>
+            <div class="mt-2 pt-2 border-t border-slate-100 flex items-center gap-3 text-[10px] text-slate-500">
+              <span class="flex items-center gap-1"><i class="pi pi-lock text-success text-[10px]"></i>Door</span>
+              <span class="flex items-center gap-1"><i class="pi pi-sun text-slate-400 text-[10px]"></i>UVC</span>
+              <span class="flex items-center gap-1"><i class="pi pi-power-off text-slate-400 text-[10px]"></i>USB</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bay 6 — NO DEVICE -->
+        <div class="p-card cursor-pointer hover:shadow-md transition-shadow" style="background:#FEF2F2;border:1px solid #FECACA;">
+          <div class="p-card-body">
+            <div class="flex items-center justify-between mb-2">
+              <div><div class="font-semibold text-base">Bay 6</div><div class="text-[10px] text-slate-400 tabular-nums">SLOT 76</div></div>
+              <span class="p-tag p-tag-danger"><span class="p-tag-value">No device</span></span>
+            </div>
+            <div class="text-xs text-slate-500 italic mb-1">Last scan: 1 day ago</div>
+            <div class="text-xs text-slate-500">Expected: iPhone 16e 76</div>
+            <div class="mt-2 pt-2 border-t border-red-100 flex items-center gap-3 text-[10px] text-slate-500">
+              <span class="flex items-center gap-1"><i class="pi pi-lock text-success text-[10px]"></i>Door</span>
+              <span class="flex items-center gap-1"><i class="pi pi-sun text-slate-400 text-[10px]"></i>UVC</span>
+              <span class="flex items-center gap-1"><i class="pi pi-power-off text-slate-400 text-[10px]"></i>USB</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bay 7 — NO DEVICE -->
+        <div class="p-card cursor-pointer hover:shadow-md transition-shadow" style="background:#FEF2F2;border:1px solid #FECACA;">
+          <div class="p-card-body">
+            <div class="flex items-center justify-between mb-2">
+              <div><div class="font-semibold text-base">Bay 7</div><div class="text-[10px] text-slate-400 tabular-nums">SLOT 77</div></div>
+              <span class="p-tag p-tag-danger"><span class="p-tag-value">No device</span></span>
+            </div>
+            <div class="text-xs text-slate-500 italic mb-1">Last scan: 14 hours ago</div>
+            <div class="text-xs text-slate-500">Expected: iPhone 16e 77</div>
+            <div class="mt-2 pt-2 border-t border-red-100 flex items-center gap-3 text-[10px] text-slate-500">
+              <span class="flex items-center gap-1"><i class="pi pi-lock text-success text-[10px]"></i>Door</span>
+              <span class="flex items-center gap-1"><i class="pi pi-sun text-slate-400 text-[10px]"></i>UVC</span>
+              <span class="flex items-center gap-1"><i class="pi pi-power-off text-slate-400 text-[10px]"></i>USB</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bay 8 — OVERDUE -->
+        <div class="p-card cursor-pointer hover:shadow-md transition-shadow">
+          <div class="p-card-body">
+            <div class="flex items-center justify-between mb-2">
+              <div><div class="font-semibold text-base">Bay 8</div><div class="text-[10px] text-slate-400 tabular-nums">SLOT 78</div></div>
+              <span class="p-tag p-tag-warning"><span class="p-tag-value">Overdue</span></span>
+            </div>
+            <div class="flex items-center gap-2 mb-1">
+              <div class="p-avatar p-component p-avatar-circle" style="background:#FEF3C7;color:#B45309;width:24px;height:24px;font-size:10px;"><span>LD</span></div>
+              <div class="font-semibold text-sm">Lauren Davis</div>
+            </div>
+            <div class="text-xs text-warning-text font-semibold mb-1">▲ Out 22h · overdue 14h</div>
+            <div class="text-xs text-slate-500">iPhone 16e 78</div>
+            <div class="mt-2 pt-2 border-t border-slate-100 flex items-center gap-3 text-[10px] text-slate-500">
+              <span class="flex items-center gap-1"><i class="pi pi-lock text-success text-[10px]"></i>Door</span>
+              <span class="flex items-center gap-1"><i class="pi pi-sun text-slate-400 text-[10px]"></i>UVC</span>
+              <span class="flex items-center gap-1"><i class="pi pi-power-off text-slate-400 text-[10px]"></i>USB</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Implementation note -->
+      <div class="mt-6 p-3 bg-pixar-soft border border-pixar/20 rounded-md text-sm text-pixar">
+        <strong>Implementation:</strong> bay cards are PrimeVue <code class="bg-white px-1 rounded">&lt;Card&gt;</code> with <code class="bg-white px-1 rounded">@click</code> handlers. Status pills are <code class="bg-white px-1 rounded">&lt;Tag&gt;</code>. Avatars are <code class="bg-white px-1 rounded">&lt;Avatar&gt;</code>. Locker tabs are <code class="bg-white px-1 rounded">&lt;SelectButton&gt;</code>. The right drawer uses <code class="bg-white px-1 rounded">&lt;Sidebar position="right"&gt;</code>. Click Bay 1 to see the drawer.
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- Drawer (PrimeVue Sidebar) — for Bay 1 detail -->
+  <div id="bay-drawer" class="fixed top-0 right-0 w-[400px] h-full bg-white border-l border-slate-200 shadow-2xl overflow-y-auto z-50 transition-transform" style="transform:translateX(100%);">
+    <div class="p-5 border-b border-slate-200">
+      <div class="flex items-start justify-between mb-2">
+        <div>
+          <span class="p-tag p-tag-warning mb-2 inline-block"><span class="p-tag-value">Overdue</span></span>
+          <h2 class="text-lg font-semibold">Bay 1 · Pink8</h2>
+          <div class="text-xs text-slate-500">Slot 71 · iPhone 16e</div>
+        </div>
+        <button class="p-button p-button-text p-button-rounded p-button-sm" onclick="document.getElementById('bay-drawer').style.transform='translateX(100%)'">
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+      <div class="text-sm text-slate-700 mt-3">since <strong>2 hours ago</strong></div>
+      <div class="text-xs text-slate-500 mt-1">Expected return was at <strong>2:00 PM today</strong>. The system flagged this checkout as overdue at <strong>4:00 PM</strong>.</div>
+    </div>
+
+    <div class="p-5 border-b border-slate-200">
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-3">Currently checked out by</div>
+      <div class="flex items-center gap-3">
+        <div class="p-avatar p-component p-avatar-circle p-avatar-lg" style="background:#FEE2E2;color:#DC2626;"><span>CS</span></div>
+        <div>
+          <div class="font-semibold">Crosby Smith</div>
+          <div class="text-xs text-slate-500">Manager · Corewell POC</div>
+        </div>
+      </div>
+      <div class="mt-3 grid grid-cols-2 gap-2 text-xs">
+        <div><div class="text-slate-500">Employee ID</div><div class="font-mono">0521</div></div>
+        <div><div class="text-slate-500">Badge ID</div><div class="font-mono">3446034170</div></div>
+        <div><div class="text-slate-500">Order #</div><div class="font-mono">187</div></div>
+      </div>
+    </div>
+
+    <div class="p-5 border-b border-slate-200">
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-3">Devices assigned</div>
+      <div class="p-card mb-2">
+        <div class="p-card-body py-2 px-3 flex items-center gap-3">
+          <i class="pi pi-mobile text-lg text-slate-400"></i>
+          <div class="flex-1">
+            <div class="font-semibold text-sm">iPhone 16e 71</div>
+            <div class="text-xs text-slate-500">Serial 87179 · iPhone 16e</div>
+          </div>
+        </div>
+      </div>
+      <div class="p-card">
+        <div class="p-card-body py-2 px-3 flex items-center gap-3">
+          <i class="pi pi-id-card text-lg text-slate-400"></i>
+          <div class="flex-1">
+            <div class="font-semibold text-sm">AiRista badge 71</div>
+            <div class="text-xs text-slate-500">Serial AR-71-d2886 · AiRista badge</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-5 border-b border-slate-200">
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-3">Hardware</div>
+      <div class="space-y-2 text-sm">
+        <div class="flex items-center justify-between"><span class="text-slate-500">Door</span><span class="font-semibold">● Closed</span></div>
+        <div class="flex items-center justify-between"><span class="text-slate-500">UVC sanitization lamp</span><span class="text-slate-400">Off</span></div>
+        <div class="flex items-center justify-between"><span class="text-slate-500">USB charging power</span><span class="text-slate-400">Off</span></div>
+        <div class="flex items-center justify-between"><span class="text-slate-500">Voltage</span><span class="font-mono">0.78 V</span></div>
+      </div>
+    </div>
+
+    <div class="p-5 flex flex-col gap-2">
+      <button class="p-button p-component">
+        <span class="p-button-icon p-button-icon-left pi pi-unlock"></span>
+        <span class="p-button-label">Unlock bay</span>
+      </button>
+      <button class="p-button p-component p-button-outlined">
+        <span class="p-button-icon p-button-icon-left pi pi-comment"></span>
+        <span class="p-button-label">Contact Crosby Smith</span>
+      </button>
+      <button class="p-button p-component p-button-text p-button-danger">
+        <span class="p-button-icon p-button-icon-left pi pi-undo"></span>
+        <span class="p-button-label">Reset bay (mark returned)</span>
+      </button>
+    </div>
+  </div>
+
+</body>
+</html>

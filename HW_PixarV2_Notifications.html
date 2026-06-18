@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixar v.2 · Notifications</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/lara-light-blue/theme.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/primevue.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: {
+      colors: {
+        'brand': { DEFAULT: '#2563EB', deep: '#1E40AF', soft: '#EFF6FF' },
+        'pixar': { DEFAULT: '#7C3AED', soft: '#EDE9FE' },
+        'success': { DEFAULT: '#10B981', soft: '#D1FAE5' },
+        'warning': { DEFAULT: '#F59E0B', soft: '#FEF3C7', text: '#B45309' },
+        'danger':  { DEFAULT: '#DC2626', soft: '#FEE2E2' },
+        'info':    { DEFAULT: '#0EA5E9', soft: '#E0F2FE' },
+      },
+      fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+    } } };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    :root { --primary-color: #2563EB; --primary-color-text: #FFFFFF; --highlight-bg: #EFF6FF; --highlight-text-color: #1E40AF; }
+    .annotation { background: linear-gradient(90deg, #7C3AED, #1E40AF); color: white; padding: 8px 24px; font-size: 12px; display: flex; align-items: center; gap: 12px; }
+    .annotation .chip { background: rgba(255,255,255,.2); color: white; font-weight: 600; padding: 2px 7px; border-radius: 999px; font-size: 10px; text-transform: uppercase; letter-spacing: .04em; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+  <div class="annotation">
+    <span class="chip">Pixar v.2</span>
+    <strong>Notifications.</strong>
+    <span>Built with PrimeVue TabView + Card + Tag + Badge + InputSwitch + Button. List view + Custom rules pane (Corewell P4).</span>
+    <span class="ml-auto"><a href="HW_PixarV2_Browse.html" class="underline">← v.2 home</a></span>
+  </div>
+
+  <div class="grid" style="grid-template-columns: 232px 1fr; grid-template-rows: 56px 1fr; grid-template-areas: 'logo top' 'side main'; min-height: calc(100vh - 32px);">
+
+    <div style="grid-area: logo;" class="bg-white border-r border-b border-slate-200 flex items-center px-4 gap-2">
+      <div class="w-7 h-7 rounded-md bg-brand grid place-items-center text-white font-bold text-sm">H</div>
+      <span class="font-semibold">HonestWaves</span>
+      <span class="ml-auto p-tag p-tag-info text-xs"><span class="p-tag-value">QA</span></span>
+    </div>
+
+    <div style="grid-area: top;" class="bg-white border-b border-slate-200 flex items-center px-5 gap-3">
+      <div class="text-sm text-slate-500 flex items-center gap-2"><span>Investigate</span><i class="pi pi-angle-right text-xs"></i><strong class="text-slate-900">Notifications</strong></div>
+      <div class="flex-1"></div>
+      <button class="p-button p-component p-button-outlined p-button-sm">
+        <span class="p-button-icon p-button-icon-left pi pi-check"></span>
+        <span class="p-button-label">Mark all read</span>
+      </button>
+    </div>
+
+    <aside style="grid-area: side;" class="bg-white border-r border-slate-200 p-3 overflow-y-auto">
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2">Investigate</div>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold bg-brand-soft text-brand-deep border-l-2 border-brand -ml-1"><i class="pi pi-bell text-base"></i>Notifications<span class="ml-auto p-tag p-tag-danger text-[10px] py-0.5 px-1.5"><span class="p-tag-value">99+</span></span></a>
+      <div class="ml-6 border-l border-slate-200 pl-2 mt-1 space-y-0.5">
+        <a class="flex items-center px-2 py-1 rounded text-xs font-semibold text-brand-deep bg-brand-soft border-l-2 border-brand -ml-0.5">All<span class="ml-auto text-[10px] text-brand-deep font-semibold">197</span></a>
+        <a class="flex items-center px-2 py-1 rounded text-xs text-slate-600 hover:bg-slate-100">Unread<span class="ml-auto text-[10px] text-slate-400">42</span></a>
+        <a class="flex items-center px-2 py-1 rounded text-xs text-slate-600 hover:bg-slate-100">Critical<span class="ml-auto text-[10px] text-danger font-semibold">3</span></a>
+        <a class="flex items-center px-2 py-1 rounded text-xs text-slate-600 hover:bg-slate-100">Custom rules<span class="ml-auto text-[10px] text-slate-400">8</span></a>
+      </div>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100 mt-2"><i class="pi pi-history text-base"></i>Tracker</a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-chart-bar text-base"></i>Reports</a>
+    </aside>
+
+    <main style="grid-area: main;" class="overflow-y-auto p-6 max-w-[1480px]">
+
+      <div class="mb-4">
+        <h1 class="text-xl font-semibold tracking-tight">Notifications</h1>
+        <p class="text-xs text-slate-500 mt-0.5">99+ unread · 3 critical · last update 3s ago</p>
+      </div>
+
+      <!-- TabView -->
+      <div class="p-tabview p-component bg-white border border-slate-200 rounded-lg overflow-hidden">
+        <div class="p-tabview-nav-container">
+          <ul class="p-tabview-nav flex bg-slate-50 border-b border-slate-200">
+            <li><a class="p-tabview-nav-link flex items-center gap-2" style="padding: 12px 18px; color: #475569; font-size: 13px;"><i class="pi pi-list"></i>All notifications<span class="ml-1 p-tag p-tag-info text-[10px]"><span class="p-tag-value">197</span></span></a></li>
+            <li class="p-tabview-selected"><a class="p-tabview-nav-link flex items-center gap-2" style="padding: 12px 18px; border-bottom: 2px solid #2563EB; color: #1E40AF; font-weight: 600; font-size: 13px;"><i class="pi pi-circle-fill text-[10px]"></i>Unread<span class="ml-1 p-tag p-tag-info text-[10px]"><span class="p-tag-value">42</span></span></a></li>
+            <li><a class="p-tabview-nav-link flex items-center gap-2" style="padding: 12px 18px; color: #475569; font-size: 13px;"><i class="pi pi-exclamation-triangle"></i>Critical<span class="ml-1 p-tag p-tag-danger text-[10px]"><span class="p-tag-value">3</span></span></a></li>
+            <li><a class="p-tabview-nav-link flex items-center gap-2" style="padding: 12px 18px; color: #475569; font-size: 13px;"><i class="pi pi-cog"></i>Custom rules<span class="ml-1 p-tag text-[10px]" style="background:#EDE9FE;color:#7C3AED;"><span class="p-tag-value">8</span></span></a></li>
+          </ul>
+        </div>
+
+        <div class="p-tabview-panels p-5">
+
+          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-3">Today · 3 critical</div>
+
+          <div class="space-y-2 mb-6">
+            <!-- Critical notification -->
+            <div class="p-card border-l-4 border-l-danger cursor-pointer hover:shadow-md transition-shadow">
+              <div class="p-card-body py-3 flex items-start gap-3">
+                <i class="pi pi-exclamation-triangle text-danger text-xl mt-0.5"></i>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between">
+                    <div class="font-semibold">Hardware fault on Pink8</div>
+                    <span class="text-xs text-slate-400 tabular-nums">14h ago</span>
+                  </div>
+                  <div class="text-sm text-slate-600 mt-0.5">Bays 3, 6, 7 went unreachable — solenoid driver board</div>
+                  <div class="flex items-center gap-2 mt-2">
+                    <span class="p-tag p-tag-danger text-[10px]"><span class="p-tag-value">Critical</span></span>
+                    <span class="p-tag text-[10px]" style="background:#F1F5F9;color:#475569;"><span class="p-tag-value">Hardware fault</span></span>
+                    <span class="p-tag text-[10px]" style="background:#F1F5F9;color:#475569;"><span class="p-tag-value">Pink8</span></span>
+                    <span class="ml-auto p-tag p-tag-success text-[10px]"><span class="p-tag-value">● Unread</span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Warning notification -->
+            <div class="p-card border-l-4 border-l-warning cursor-pointer hover:shadow-md transition-shadow">
+              <div class="p-card-body py-3 flex items-start gap-3">
+                <i class="pi pi-clock text-warning text-xl mt-0.5"></i>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between">
+                    <div class="font-semibold">Door left open · Pink8 bay 4</div>
+                    <span class="text-xs text-slate-400 tabular-nums">18h ago</span>
+                  </div>
+                  <div class="text-sm text-slate-600 mt-0.5">Stayed open 8 minutes — past 5-minute threshold</div>
+                  <div class="flex items-center gap-2 mt-2">
+                    <span class="p-tag p-tag-warning text-[10px]"><span class="p-tag-value">Warning</span></span>
+                    <span class="p-tag text-[10px]" style="background:#F1F5F9;color:#475569;"><span class="p-tag-value">Door timeout</span></span>
+                    <span class="p-tag text-[10px]" style="background:#F1F5F9;color:#475569;"><span class="p-tag-value">Pink8 · Bay 4</span></span>
+                    <span class="ml-auto p-tag p-tag-success text-[10px]"><span class="p-tag-value">● Unread</span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Routine notification -->
+            <div class="p-card border-l-4 border-l-warning cursor-pointer hover:shadow-md transition-shadow">
+              <div class="p-card-body py-3 flex items-start gap-3">
+                <i class="pi pi-stopwatch text-warning text-xl mt-0.5"></i>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between">
+                    <div class="font-semibold">3 checkouts went overdue</div>
+                    <span class="text-xs text-slate-400 tabular-nums">22h ago</span>
+                  </div>
+                  <div class="text-sm text-slate-600 mt-0.5">Green8 bays 1, 2, 3 · Mark Rivera, Crosby Smith</div>
+                  <div class="flex items-center gap-2 mt-2">
+                    <span class="p-tag p-tag-warning text-[10px]"><span class="p-tag-value">Routine</span></span>
+                    <span class="p-tag text-[10px]" style="background:#F1F5F9;color:#475569;"><span class="p-tag-value">Overdue</span></span>
+                    <span class="ml-auto p-tag p-tag-success text-[10px]"><span class="p-tag-value">● Unread</span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-3">Yesterday</div>
+
+          <div class="space-y-2">
+            <div class="p-card cursor-pointer hover:shadow-md transition-shadow">
+              <div class="p-card-body py-3 flex items-start gap-3">
+                <i class="pi pi-check-circle text-success text-xl mt-0.5"></i>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between">
+                    <div class="font-semibold">Bay 4 alarm cleared</div>
+                    <span class="text-xs text-slate-400 tabular-nums">1d ago</span>
+                  </div>
+                  <div class="text-sm text-slate-600 mt-0.5">Pink8 · auto-resolved by hardware self-check</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-card cursor-pointer hover:shadow-md transition-shadow">
+              <div class="p-card-body py-3 flex items-start gap-3">
+                <i class="pi pi-mobile text-brand text-xl mt-0.5"></i>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between">
+                    <div class="font-semibold">Software update queued · v2.4.1</div>
+                    <span class="text-xs text-slate-400 tabular-nums">2d ago</span>
+                  </div>
+                  <div class="text-sm text-slate-600 mt-0.5">Canary 5% · 48 lockers targeted · health-check gate after stage</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Custom Rules preview (visible since it's the highlighted feature) -->
+          <div class="mt-8">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <h2 class="font-semibold text-base">Custom notification rules <span class="p-tag text-[10px] ml-2" style="background:#EDE9FE;color:#7C3AED;"><span class="p-tag-value">Corewell P4</span></span></h2>
+                <p class="text-xs text-slate-500 mt-0.5">Define triggers, destinations, and quiet hours · 8 active rules</p>
+              </div>
+              <button class="p-button p-component p-button-sm" style="background:#7C3AED;border-color:#7C3AED;">
+                <span class="p-button-icon p-button-icon-left pi pi-plus"></span>
+                <span class="p-button-label">New rule</span>
+              </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <!-- Rule 1 -->
+              <div class="p-card border-l-4 border-l-pixar">
+                <div class="p-card-body py-3">
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="font-semibold text-sm">Block at 3 lost devices</div>
+                    <div class="p-inputswitch p-component p-highlight"><div class="p-inputswitch-slider"></div></div>
+                  </div>
+                  <div class="text-xs text-slate-600 mb-2">User cannot check out new devices until a supervisor signs in.</div>
+                  <div class="text-[11px] text-slate-500 flex flex-wrap gap-x-3 gap-y-1">
+                    <span><strong class="text-danger">1 blocked</strong></span>
+                    <span><strong class="text-warning-text">4 warning</strong></span>
+                    <span>Threshold 3</span>
+                    <span>Window 90 days</span>
+                  </div>
+                  <div class="mt-2 pt-2 border-t border-slate-100 flex items-center gap-2 text-[11px] text-slate-500">
+                    <i class="pi pi-envelope"></i>User + Supervisor
+                    <i class="pi pi-slack ml-2"></i>#ops-locker-alarms
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rule 2 -->
+              <div class="p-card border-l-4 border-l-pixar">
+                <div class="p-card-body py-3">
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="font-semibold text-sm">Dept loss > $3K quarterly</div>
+                    <div class="p-inputswitch p-component p-highlight"><div class="p-inputswitch-slider"></div></div>
+                  </div>
+                  <div class="text-xs text-slate-600 mb-2">Digest email with top loss-prone users + recent incidents.</div>
+                  <div class="text-[11px] text-slate-500 flex flex-wrap gap-x-3 gap-y-1">
+                    <span><strong class="text-warning-text">2 depts triggered</strong></span>
+                    <span>Threshold $3,000</span>
+                    <span>Quarterly</span>
+                  </div>
+                  <div class="mt-2 pt-2 border-t border-slate-100 flex items-center gap-2 text-[11px] text-slate-500">
+                    <i class="pi pi-envelope"></i>Dept head
+                    <i class="pi pi-slack ml-2"></i>#finance-alerts
+                    <i class="pi pi-link ml-2"></i>SAP
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rule 3 -->
+              <div class="p-card border-l-4 border-l-pixar">
+                <div class="p-card-body py-3">
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="font-semibold text-sm">Hardware fault → Slack</div>
+                    <div class="p-inputswitch p-component p-highlight"><div class="p-inputswitch-slider"></div></div>
+                  </div>
+                  <div class="text-xs text-slate-600 mb-2">Send Slack + email when any bay reports a hardware fault.</div>
+                  <div class="text-[11px] text-slate-500 flex flex-wrap gap-x-3 gap-y-1">
+                    <span>4 fires this month</span>
+                    <span>Real-time</span>
+                  </div>
+                  <div class="mt-2 pt-2 border-t border-slate-100 flex items-center gap-2 text-[11px] text-slate-500">
+                    <i class="pi pi-envelope"></i>Marcus Chen
+                    <i class="pi pi-slack ml-2"></i>#ops-locker-alarms
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rule 4 -->
+              <div class="p-card border-l-4 border-l-pixar">
+                <div class="p-card-body py-3">
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="font-semibold text-sm">Overdue 24h → dept head</div>
+                    <div class="p-inputswitch p-component p-highlight"><div class="p-inputswitch-slider"></div></div>
+                  </div>
+                  <div class="text-xs text-slate-600 mb-2">Escalate overdue checkouts to the user's department head after 24h.</div>
+                  <div class="text-[11px] text-slate-500 flex flex-wrap gap-x-3 gap-y-1">
+                    <span>3 fires this week</span>
+                    <span>24h delay</span>
+                  </div>
+                  <div class="mt-2 pt-2 border-t border-slate-100 flex items-center gap-2 text-[11px] text-slate-500">
+                    <i class="pi pi-envelope"></i>Auto-resolved via Workday SCIM
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rule 5 - paused -->
+              <div class="p-card opacity-60 border-l-4 border-l-slate-300">
+                <div class="p-card-body py-3">
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="font-semibold text-sm">Door open > 5 min</div>
+                    <div class="p-inputswitch p-component"><div class="p-inputswitch-slider"></div></div>
+                  </div>
+                  <div class="text-xs text-slate-600 mb-2">Paused while Pink8 is being serviced.</div>
+                  <div class="text-[11px] text-slate-500">
+                    <span class="p-tag p-tag-warning text-[10px]"><span class="p-tag-value">Paused until Jun 20</span></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rule 6 -->
+              <div class="p-card border-l-4 border-l-pixar">
+                <div class="p-card-body py-3">
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="font-semibold text-sm">Guest denied → Security group</div>
+                    <div class="p-inputswitch p-component p-highlight"><div class="p-inputswitch-slider"></div></div>
+                  </div>
+                  <div class="text-xs text-slate-600 mb-2">In-app + email to Security when any self-registration is denied.</div>
+                  <div class="text-[11px] text-slate-500">
+                    <span>2 fires this month</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="mt-6 p-3 bg-pixar-soft border border-pixar/20 rounded-md text-sm text-pixar">
+        <strong>Implementation:</strong> 4 tabs via <code class="bg-white px-1 rounded">&lt;TabView&gt;</code>. List rows are <code class="bg-white px-1 rounded">&lt;Card&gt;</code> with <code class="bg-white px-1 rounded">border-l-4</code> Tailwind for severity color. Severity icons are <code class="bg-white px-1 rounded">&lt;pi pi-*&gt;</code>. Rule toggles use <code class="bg-white px-1 rounded">&lt;InputSwitch&gt;</code>. Tags / chips are <code class="bg-white px-1 rounded">&lt;Tag&gt;</code>.
+      </div>
+
+    </main>
+
+  </div>
+</body>
+</html>
