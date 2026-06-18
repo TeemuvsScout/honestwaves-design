@@ -219,6 +219,15 @@
           { id: "404", title: "404 · Pixar", file: "HW_Redesign_404_Pixar.html",
             desc: "Page-not-found brand moment" }
         ]
+      },
+      {
+        group: "Dev reference",
+        items: [
+          { id: "DS", title: "Component library", file: "HW_Redesign_Component_Library.html",
+            desc: "Live playground · every atom · copy-paste HTML", tag: "new" },
+          { id: "MD", title: "Design System Reference", file: "HW_Redesign_Design_System.md",
+            desc: "Tokens · components · interaction patterns · migration guide", tag: "new" }
+        ]
       }
     ];
 
@@ -271,6 +280,12 @@
     function loadProto(id) {
       const item = findItem(id);
       if (!item) return;
+      // Markdown files: open in a new tab via GitHub's rendered view (iframe shows raw text)
+      if (item.file.endsWith(".md")) {
+        const url = "https://github.com/TeemuvsScout/honestwaves-design/blob/main/" + item.file;
+        window.open(url, "_blank", "noopener");
+        return;
+      }
       const frame = document.getElementById("frame");
       const empty = document.getElementById("empty");
       frame.src = item.file;
