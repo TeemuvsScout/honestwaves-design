@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixar v.2 · HonestWaves Redesign Hub</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/lara-light-blue/theme.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/primevue.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: {
+      colors: {
+        'brand':   { DEFAULT: '#2563EB', deep: '#1E40AF', soft: '#EFF6FF' },
+        'pixar':   { DEFAULT: '#7C3AED', soft: '#EDE9FE' },
+        'success': { DEFAULT: '#10B981', soft: '#D1FAE5' },
+        'warning': { DEFAULT: '#F59E0B', soft: '#FEF3C7', text: '#B45309' },
+        'danger':  { DEFAULT: '#DC2626', soft: '#FEE2E2' },
+        'info':    { DEFAULT: '#0EA5E9', soft: '#E0F2FE' },
+        'navy':    { DEFAULT: '#0F172A', deep: '#020617' },
+        'ice':     '#CADCFC',
+      },
+      fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+    } } };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; margin: 0; }
+    :root {
+      --primary-color: #2563EB;
+      --primary-color-text: #FFFFFF;
+      --highlight-bg: #EFF6FF;
+      --highlight-text-color: #1E40AF;
+    }
+
+    /* Hub shell */
+    .hub-shell {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      grid-template-rows: 48px 1fr;
+      grid-template-areas: 'logo top' 'side main';
+      height: 100vh;
+      overflow: hidden;
+    }
+    .hub-logo {
+      grid-area: logo;
+      background: #0F172A;
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 10px;
+      border-bottom: 1px solid #1E293B;
+    }
+    .hub-top {
+      grid-area: top;
+      background: white;
+      border-bottom: 1px solid #E2E8F0;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 12px;
+    }
+    .hub-side {
+      grid-area: side;
+      background: #F8FAFC;
+      border-right: 1px solid #E2E8F0;
+      overflow-y: auto;
+      padding: 12px;
+    }
+    .hub-main {
+      grid-area: main;
+      background: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .hub-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+    .hub-empty {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      padding: 40px;
+    }
+    .hub-empty.show { display: flex; }
+    .hub-frame.hidden { display: none; }
+
+    /* Nav groups */
+    .nav-group-header {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #94A3B8;
+      padding: 12px 8px 4px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #475569;
+      cursor: pointer;
+      position: relative;
+      text-decoration: none;
+      transition: background .1s, color .1s;
+    }
+    .nav-item:hover { background: #F1F5F9; color: #0F172A; }
+    .nav-item.active {
+      background: #EFF6FF;
+      color: #1E40AF;
+      font-weight: 600;
+    }
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: -1px; top: 8px; bottom: 8px;
+      width: 3px;
+      border-radius: 2px;
+      background: #2563EB;
+    }
+    .nav-item .nav-id {
+      font-size: 10px;
+      color: #94A3B8;
+      font-family: 'JetBrains Mono', monospace;
+      margin-left: auto;
+    }
+    .nav-item.active .nav-id { color: #1E40AF; }
+
+    /* Search */
+    .hub-search { width: 280px; }
+    .hub-search input { padding-left: 32px !important; height: 32px !important; font-size: 12px !important; }
+  </style>
+</head>
+<body class="bg-slate-50">
+
+  <div class="hub-shell">
+
+    <!-- Logo -->
+    <div class="hub-logo">
+      <div class="w-7 h-7 rounded-md bg-brand grid place-items-center text-white font-bold text-sm">H</div>
+      <div class="flex-1">
+        <div class="font-semibold text-sm leading-tight">HonestWaves</div>
+        <div class="text-[10px] text-ice/80 leading-tight">Pixar v.2 · Connected hub</div>
+      </div>
+    </div>
+
+    <!-- Topbar -->
+    <div class="hub-top">
+      <div class="text-xs text-slate-500 flex items-center gap-2">
+        <a href="HW_PixarV2_Browse.html" class="hover:text-slate-900">v.2 home</a>
+        <i class="pi pi-angle-right text-[10px]"></i>
+        <strong id="crumb-title" class="text-slate-900">Open a prototype</strong>
+      </div>
+      <div class="flex-1"></div>
+      <span class="p-tag p-tag-info text-[10px]" id="crumb-stack"><span class="p-tag-value">PrimeVue + Tailwind</span></span>
+      <span class="hub-search p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input id="search" type="text" placeholder="Find a page…" class="p-inputtext p-component" />
+      </span>
+      <button class="p-button p-component p-button-text p-button-sm" id="open-new-tab" title="Open in new tab">
+        <i class="pi pi-external-link"></i>
+      </button>
+      <a href="https://github.com/TeemuvsScout/honestwaves-design" target="_blank" class="p-button p-component p-button-outlined p-button-sm">
+        <span class="p-button-icon p-button-icon-left pi pi-github"></span>
+        <span class="p-button-label">GitHub</span>
+      </a>
+    </div>
+
+    <!-- Sidebar nav -->
+    <aside class="hub-side" id="nav-rail">
+      <!-- Filled by JS -->
+    </aside>
+
+    <!-- Main: iframe + empty state -->
+    <main class="hub-main">
+      <iframe id="frame" class="hub-frame hidden" title="Active prototype"></iframe>
+      <div id="empty" class="hub-empty show">
+        <div class="w-16 h-16 rounded-full bg-pixar-soft grid place-items-center">
+          <i class="pi pi-th-large text-pixar text-3xl"></i>
+        </div>
+        <div class="text-center max-w-md">
+          <div class="text-xl font-semibold mb-2">Open any page on the left.</div>
+          <div class="text-sm text-slate-500">All five Pixar v.2 prototypes are wired up here. They use PrimeVue components (Card, Tag, DataTable, TabView, Sidebar, Avatar) and Tailwind for layout.</div>
+        </div>
+        <div class="flex gap-2 mt-2">
+          <button class="p-button p-component" onclick="loadProto('dashboard')">
+            <span class="p-button-icon p-button-icon-left pi pi-th-large"></span>
+            <span class="p-button-label">Open Dashboard</span>
+          </button>
+          <button class="p-button p-component p-button-outlined" onclick="loadProto('asset-accounting')" style="color:#7C3AED;border-color:#7C3AED;">
+            <span class="p-button-icon p-button-icon-left pi pi-dollar"></span>
+            <span class="p-button-label">Open Asset Accounting (NEW)</span>
+          </button>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <script>
+    // ============================================================
+    // Prototype catalog
+    // ============================================================
+    const CATALOG = [
+      {
+        group: 'Monitor',
+        items: [
+          { id: 'dashboard',       title: 'Dashboard',       file: 'HW_PixarV2_Dashboard.html',       icon: 'pi pi-th-large',  desc: 'Live operational snapshot · KPIs · alarms · NEW Lost Devices widget' },
+          { id: 'mission-control', title: 'Mission Control', file: 'HW_PixarV2_Mission_Control.html', icon: 'pi pi-eye',       desc: 'Per-locker live bay state with holder + duration · drill drawer' },
+        ]
+      },
+      {
+        group: 'Investigate',
+        items: [
+          { id: 'notifications',   title: 'Notifications',   file: 'HW_PixarV2_Notifications.html',   icon: 'pi pi-bell',      desc: '4 tabs (All / Unread / Critical / Custom rules) + 8 active rules' },
+          { id: 'reports',         title: 'Reports',         file: 'HW_PixarV2_Reports.html',         icon: 'pi pi-chart-bar', desc: 'TabView + DataTable for activity log, device status, scheduled, custom' },
+        ]
+      },
+      {
+        group: 'Finance',
+        items: [
+          { id: 'asset-accounting', title: 'Asset Accounting', file: 'HW_PixarV2_Asset_Accounting.html', icon: 'pi pi-dollar', tag: 'NEW', desc: '5 sub-views · KPI strip · departments + high-risk users · activity feed' },
+        ]
+      },
+      {
+        group: 'Reference',
+        items: [
+          { id: 'components', title: 'Component reference', file: 'HW_PixarV2_Components.html', icon: 'pi pi-box', desc: 'Every PrimeVue component used · Vue/PrimeVue + Tailwind snippets' },
+          { id: 'browse',     title: 'v.2 home (landing)',  file: 'HW_PixarV2_Browse.html',     icon: 'pi pi-home', desc: 'Marketing landing · why we rebuilt · token palette · framework links' },
+        ]
+      },
+      {
+        group: 'Back to v.1',
+        items: [
+          { id: 'v1-hub',     title: 'Pixar v.1 prototypes', file: 'HW_Redesign_Browse.html',         icon: 'pi pi-arrow-left', desc: 'Original 14 design prototypes (raw HTML/CSS reference)' },
+          { id: 'v1-library', title: 'v.1 Component Library', file: 'HW_Redesign_Component_Library.html', icon: 'pi pi-book', desc: 'v.1 atoms with copy-paste raw CSS classes' },
+        ]
+      },
+    ];
+
+    function flatItems() {
+      const all = [];
+      CATALOG.forEach(g => g.items.forEach(i => all.push(i)));
+      return all;
+    }
+
+    function findItem(id) {
+      return flatItems().find(i => i.id === id);
+    }
+
+    // ============================================================
+    // Render the left rail
+    // ============================================================
+    function renderRail(filterText = '') {
+      const rail = document.getElementById('nav-rail');
+      const q = filterText.trim().toLowerCase();
+      const html = CATALOG.map(group => {
+        const matching = group.items.filter(it =>
+          !q || it.title.toLowerCase().includes(q) || (it.desc || '').toLowerCase().includes(q)
+        );
+        if (matching.length === 0) return '';
+        return `
+          <div class="nav-group-header">${group.group}</div>
+          ${matching.map(it => `
+            <a class="nav-item" data-id="${it.id}" href="#${it.id}" title="${it.desc || ''}">
+              <i class="${it.icon} text-base"></i>
+              <span class="flex-1">${it.title}</span>
+              ${it.tag ? `<span class="p-tag text-[9px] py-0 px-1.5" style="background:#EDE9FE;color:#7C3AED;"><span class="p-tag-value">${it.tag}</span></span>` : ''}
+            </a>
+          `).join('')}
+        `;
+      }).join('');
+      rail.innerHTML = html;
+
+      // Wire click handlers
+      rail.querySelectorAll('.nav-item').forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          loadProto(el.dataset.id);
+        });
+      });
+
+      // Refresh active state
+      const currentId = currentIdFromHash();
+      if (currentId) setActive(currentId);
+    }
+
+    function setActive(id) {
+      document.querySelectorAll('.nav-item').forEach(el => {
+        el.classList.toggle('active', el.dataset.id === id);
+      });
+    }
+
+    // ============================================================
+    // Load prototype into iframe
+    // ============================================================
+    function loadProto(id) {
+      const item = findItem(id);
+      if (!item) return;
+      const frame = document.getElementById('frame');
+      const empty = document.getElementById('empty');
+
+      frame.src = item.file;
+      frame.classList.remove('hidden');
+      empty.classList.remove('show');
+
+      document.getElementById('crumb-title').textContent = item.title;
+      document.title = `${item.title} · Pixar v.2 hub`;
+      setActive(id);
+
+      // Update hash without scroll
+      const newHash = '#' + id;
+      if (location.hash !== newHash) {
+        history.replaceState(null, '', newHash);
+      }
+
+      try { localStorage.setItem('hw.pixarV2.lastId', id); } catch (e) {}
+
+      // Wire up "open in new tab" button to current page
+      const openBtn = document.getElementById('open-new-tab');
+      openBtn.onclick = () => window.open(item.file, '_blank', 'noopener');
+    }
+
+    function currentIdFromHash() {
+      const h = location.hash.replace(/^#/, '');
+      return h || null;
+    }
+
+    // ============================================================
+    // Boot
+    // ============================================================
+    renderRail();
+
+    // Restore from hash, then localStorage
+    const hashId = currentIdFromHash();
+    let restoreId = hashId;
+    if (!restoreId) {
+      try { restoreId = localStorage.getItem('hw.pixarV2.lastId'); } catch (e) {}
+    }
+    if (restoreId && findItem(restoreId)) {
+      loadProto(restoreId);
+    }
+
+    // Hash change listener (back/forward + manual edits)
+    window.addEventListener('hashchange', () => {
+      const id = currentIdFromHash();
+      if (id && findItem(id)) loadProto(id);
+    });
+
+    // Search
+    document.getElementById('search').addEventListener('input', (e) => {
+      renderRail(e.target.value);
+    });
+
+    // Keyboard shortcut: / focuses search
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+        e.preventDefault();
+        document.getElementById('search').focus();
+      }
+      if (e.key === 'Escape' && document.activeElement.id === 'search') {
+        document.activeElement.blur();
+      }
+    });
+  </script>
+
+</body>
+</html>

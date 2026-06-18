@@ -71,14 +71,18 @@
           The visual language is PrimeVue's <a href="https://primevue.org/" class="underline">Lara theme</a>, with light brand customization (the Pixar violet accent + brand blue).
         </p>
         <div class="flex flex-wrap gap-3">
-          <a href="HW_PixarV2_Dashboard.html" class="p-button p-component" style="background:#7C3AED;border-color:#7C3AED;">
+          <a href="HW_PixarV2_Hub.html" class="p-button p-component p-button-lg" style="background:#7C3AED;border-color:#7C3AED;">
             <span class="p-button-icon p-button-icon-left pi pi-th-large"></span>
-            <span class="p-button-label">Open Dashboard demo</span>
+            <span class="p-button-label">Open the connected hub →</span>
           </a>
-          <a href="HW_PixarV2_Components.html" class="p-button p-component p-button-outlined" style="color:white;border-color:white;">
+          <a href="HW_PixarV2_Components.html" class="p-button p-component p-button-outlined p-button-lg" style="color:white;border-color:white;">
             <span class="p-button-icon p-button-icon-left pi pi-box"></span>
-            <span class="p-button-label">View Components</span>
+            <span class="p-button-label">View Components reference</span>
           </a>
+        </div>
+        <div class="mt-3 text-xs text-ice/70">
+          <i class="pi pi-info-circle mr-1"></i>
+          The Hub puts all 5 prototypes + the component reference in one connected window with deep-linking (e.g. <code class="bg-white/10 px-1.5 py-0.5 rounded">#dashboard</code>, <code class="bg-white/10 px-1.5 py-0.5 rounded">#asset-accounting</code>).
         </div>
       </div>
     </div>
@@ -217,7 +221,21 @@
 
   <!-- Demos -->
   <section class="max-w-7xl mx-auto px-6 py-8">
-    <h2 class="text-2xl font-bold mb-6">Live demos</h2>
+    <!-- Hub callout banner -->
+    <a href="HW_PixarV2_Hub.html" class="block mb-6 p-5 bg-gradient-to-r from-pixar to-brand text-white rounded-lg hover:shadow-xl transition-shadow">
+      <div class="flex items-center gap-4">
+        <div class="w-14 h-14 rounded-xl bg-white/15 grid place-items-center">
+          <i class="pi pi-th-large text-3xl"></i>
+        </div>
+        <div class="flex-1">
+          <div class="font-bold text-lg">Open the connected hub →</div>
+          <div class="text-sm text-ice/90 mt-0.5">All 5 prototypes + component reference in one URL · sidebar nav · hash deep-links · search · keyboard shortcut <kbd class="bg-white/15 px-1.5 py-0.5 rounded text-xs">/</kbd></div>
+        </div>
+        <i class="pi pi-arrow-right text-2xl"></i>
+      </div>
+    </a>
+
+    <h2 class="text-2xl font-bold mb-6">Or open individually</h2>
     <div class="grid md:grid-cols-3 gap-4">
       <a href="HW_PixarV2_Dashboard.html" class="p-card hover:shadow-lg transition-shadow block">
         <div class="p-card-body">
