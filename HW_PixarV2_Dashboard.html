@@ -4,328 +4,392 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pixar v.2 · Dashboard</title>
+
+  <!-- Inter Variable + JetBrains Mono — same fonts dev's SCSS imports via @fontsource -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;510;590;680&family=JetBrains+Mono&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@4.4.1/resources/themes/aura-light-blue/theme.css">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="hw-theme.css">
-  <style>
-    /* Layout grid only — no component styling. All chrome composes from --theme-* + .p-* classes. */
-    .shell { display: grid; grid-template-columns: 232px 1fr; grid-template-rows: 52px 1fr; grid-template-areas: "logo top" "side main"; height: 100vh; }
-    .logo-area { grid-area: logo; }
-    .top-area  { grid-area: top; }
-    .side-area { grid-area: side; }
-    .main-area { grid-area: main; overflow-y: auto; }
-    .kbd { font-family: var(--theme-font-mono); font-size: 10px; padding: 1px 5px; border: 1px solid var(--theme-border); background: var(--theme-surface); color: var(--theme-text-tertiary); border-radius: 3px; }
-    .bay { width: 36px; height: 36px; border-radius: 5px; display: grid; place-items: center; font-size: 11px; font-weight: var(--theme-weight-semibold); cursor: pointer; }
-    .bay.ok    { background: rgb(220 252 231); color: rgb(21 128 61); }
-    .bay.warn  { background: rgb(254 215 170); color: rgb(154 52 18); }
-    .bay.crit  { background: rgb(254 202 202); color: rgb(153 27 27); }
-    .bay.off   { background: var(--theme-surface-active); color: var(--theme-text-tertiary); }
-    .bullet { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
-    .spark { stroke-width: 1.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-    .seg-btn { padding: 4px 10px; font-size: 12px; font-weight: var(--theme-weight-medium); color: var(--theme-text-secondary); cursor: pointer; border-radius: 4px; }
-    .seg-btn.active { background: var(--theme-surface-elevated); color: var(--theme-text-primary); box-shadow: 0 1px 2px rgba(15,23,42,.05); font-weight: var(--theme-weight-semibold); }
-    .nav-item { display: flex; align-items: center; gap: 10px; padding: 7px 12px; border-radius: 6px; font-size: 13px; color: var(--theme-text-secondary); cursor: pointer; position: relative; }
-    .nav-item:hover { background: var(--theme-surface-hover); color: var(--theme-text-primary); }
-    .nav-item.active { background: var(--theme-accent-100); color: var(--theme-accent-text); font-weight: var(--theme-weight-semibold); }
-    .nav-item.active::before { content: ""; position: absolute; left: -2px; top: 8px; bottom: 8px; width: 2px; background: var(--theme-accent); border-radius: 2px; }
-    .nav-group { font-size: 10px; font-weight: var(--theme-weight-semibold); letter-spacing: .06em; text-transform: uppercase; color: var(--theme-text-tertiary); padding: 14px 12px 4px; }
-    .nav-badge { margin-left: auto; font-size: 9px; font-weight: var(--theme-weight-bold); padding: 1px 5px; border-radius: 999px; background: var(--theme-status-danger-soft); color: var(--theme-status-danger); }
-  </style>
-</head>
-<body>
 
-  <div class="shell">
+  <!-- PrimeIcons (PrimeVue's icon font) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css">
+
+  <!-- PrimeVue Aura preset (dev team's chosen preset) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@4.4.1/resources/themes/aura-light-blue/theme.css">
+
+  <!-- Tailwind utilities -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind config — utility classes read --theme-* vars so dev tokens drive everything -->
+  <script>
+    tailwind.config = {
+      darkMode: ['class', '.app-dark'],
+      theme: {
+        extend: {
+          colors: {
+            canvas: 'var(--theme-canvas)',
+            surface: {
+              DEFAULT: 'var(--theme-surface)',
+              elevated: 'var(--theme-surface-elevated)',
+              hover: 'var(--theme-surface-hover)',
+              active: 'var(--theme-surface-active)',
+            },
+            border: {
+              DEFAULT: 'var(--theme-border)',
+              strong: 'var(--theme-border-strong)',
+            },
+            primary: 'var(--theme-text-primary)',
+            secondary: 'var(--theme-text-secondary)',
+            tertiary: 'var(--theme-text-tertiary)',
+            accent: {
+              DEFAULT: 'var(--theme-accent)',
+              text: 'var(--theme-accent-text)',
+              100: 'var(--theme-accent-100)',
+              200: 'var(--theme-accent-200)',
+            },
+            success: { DEFAULT: 'var(--theme-status-success)', soft: 'var(--theme-status-success-soft)' },
+            warning: { DEFAULT: 'var(--theme-status-warning)', soft: 'var(--theme-status-warning-soft)' },
+            danger:  { DEFAULT: 'var(--theme-status-danger)',  soft: 'var(--theme-status-danger-soft)' },
+            info:    { DEFAULT: 'var(--theme-status-info)',    soft: 'var(--theme-status-info-soft)' },
+          },
+          fontFamily: { sans: 'var(--theme-font-sans)', mono: 'var(--theme-font-mono)' },
+          borderRadius: { DEFAULT: 'var(--theme-radius-md)', sm: 'var(--theme-radius-sm)', md: 'var(--theme-radius-md)', lg: 'var(--theme-radius-lg)' },
+        },
+      },
+    };
+  </script>
+
+  <!-- Dev SCSS compiled to CSS — theme tokens + glass overlays + .app-* component classes -->
+  <link rel="stylesheet" href="hw-theme.css">
+</head>
+<body class="app-flat">
+
+  <div class="app-shell">
 
     <!-- Logo block -->
-    <div class="logo-area flex items-center px-4 gap-2" style="background: var(--theme-surface); border-right: 1px solid var(--theme-border); border-bottom: 1px solid var(--theme-border);">
-      <div class="grid place-items-center text-white" style="width: 28px; height: 28px; background: linear-gradient(135deg, var(--theme-accent), var(--theme-accent-hover)); border-radius: 6px; font-weight: var(--theme-weight-bold); font-size: 13px;">H</div>
-      <span style="font-weight: var(--theme-weight-semibold); font-size: 13px;">HonestWaves</span>
-      <span class="ml-auto" style="font-size: 10px; font-family: var(--theme-font-mono); background: var(--theme-surface-hover); color: var(--theme-text-tertiary); padding: 2px 6px; border-radius: 4px;">QA</span>
+    <div class="app-shell-logo flex items-center px-4 gap-2 bg-surface border-r border-b border-border">
+      <div class="grid place-items-center text-white font-bold w-7 h-7 rounded bg-accent text-xs">H</div>
+      <span class="font-semibold text-sm">HonestWaves</span>
+      <span class="app-kbd ml-auto">QA</span>
     </div>
 
     <!-- Topbar -->
-    <div class="top-area flex items-center px-5 gap-3" style="background: var(--theme-surface); border-bottom: 1px solid var(--theme-border);">
+    <div class="app-shell-top flex items-center px-5 gap-3 bg-surface border-b border-border">
       <div class="flex-1"></div>
-      <div class="flex items-center gap-2 px-3" style="width: 380px; height: 32px; background: var(--theme-surface-hover); border: 1px solid var(--theme-border); border-radius: 6px;">
-        <i class="pi pi-search" style="color: var(--theme-text-tertiary); font-size: 12px;"></i>
-        <input type="text" placeholder="Search lockers, devices, users…" style="flex: 1; background: transparent; border: 0; outline: none; font: inherit; color: var(--theme-text-primary); font-size: 13px;">
-        <span class="kbd">⌘K</span>
-      </div>
-      <button class="grid place-items-center relative" style="width: 32px; height: 32px; border-radius: 6px; color: var(--theme-text-secondary);" onmouseover="this.style.background='var(--theme-surface-hover)'" onmouseout="this.style.background='transparent'">
+      <label class="flex items-center gap-2 px-3 w-96 h-8 bg-surface-hover border border-border rounded">
+        <i class="pi pi-search text-tertiary text-xs"></i>
+        <input type="text" placeholder="Search lockers, devices, users…" class="flex-1 bg-transparent border-0 outline-none text-primary text-sm placeholder:text-tertiary">
+        <span class="app-kbd">⌘K</span>
+      </label>
+      <button class="p-button p-button-text p-button-rounded relative" aria-label="Notifications">
         <i class="pi pi-bell"></i>
-        <span style="position: absolute; top: 2px; right: 0; min-width: 18px; height: 16px; padding: 0 4px; background: var(--theme-status-danger); color: white; border: 2px solid var(--theme-surface); border-radius: 999px; font-size: 9px; font-weight: var(--theme-weight-bold); display: grid; place-items: center;">99+</span>
+        <span class="p-badge p-badge-danger absolute -top-1 -right-1 text-[9px] min-w-[18px] h-4 leading-none">99+</span>
       </button>
-      <button class="grid place-items-center" id="theme-toggle" style="width: 32px; height: 32px; border-radius: 6px; color: var(--theme-text-secondary);" onmouseover="this.style.background='var(--theme-surface-hover)'" onmouseout="this.style.background='transparent'">
-        <i class="pi pi-moon" id="theme-icon"></i>
+      <button id="theme-toggle" class="p-button p-button-text p-button-rounded" aria-label="Theme toggle">
+        <i id="theme-icon" class="pi pi-moon"></i>
       </button>
-      <button class="flex items-center gap-2 pr-2 pl-1 py-1" style="border-radius: 6px;" onmouseover="this.style.background='var(--theme-surface-hover)'" onmouseout="this.style.background='transparent'">
-        <div class="p-avatar p-avatar-circle" style="background: linear-gradient(135deg, #6366F1, var(--theme-accent)); color: white; width: 26px; height: 26px; font-size: 11px; font-weight: var(--theme-weight-semibold);">AR</div>
-        <div style="line-height: 1.1; text-align: left;">
-          <div style="font-size: 12px; font-weight: var(--theme-weight-semibold); color: var(--theme-text-primary);">Admin Rowe</div>
-          <div style="font-size: 11px; color: var(--theme-text-tertiary);">admin@honestwaves.test</div>
-        </div>
-        <i class="pi pi-chevron-down" style="color: var(--theme-text-tertiary); font-size: 10px;"></i>
+      <button class="p-button p-button-text flex items-center gap-2 pr-2 pl-1">
+        <span class="p-avatar p-avatar-circle bg-accent text-white text-xs font-semibold w-7 h-7">AR</span>
+        <span class="text-left leading-tight">
+          <span class="block text-xs font-semibold text-primary">Admin Rowe</span>
+          <span class="block text-[11px] text-tertiary">admin@honestwaves.test</span>
+        </span>
+        <i class="pi pi-chevron-down text-tertiary text-[10px]"></i>
       </button>
     </div>
 
     <!-- Sidebar -->
-    <aside class="side-area overflow-y-auto" style="background: var(--theme-surface); border-right: 1px solid var(--theme-border); padding: 8px 6px; display: flex; flex-direction: column;">
-      <div class="nav-group">Monitor</div>
-      <a class="nav-item active"><i class="pi pi-th-large" style="font-size: 14px;"></i>Dashboard</a>
-      <a class="nav-item"><i class="pi pi-eye" style="font-size: 14px;"></i>Mission Control</a>
+    <aside class="app-shell-side overflow-y-auto bg-surface border-r border-border px-2 py-2 flex flex-col">
+      <div class="app-nav-group-label">Monitor</div>
+      <a class="app-nav-item is-active"><i class="pi pi-th-large app-nav-icon"></i>Dashboard</a>
+      <a class="app-nav-item"><i class="pi pi-eye app-nav-icon"></i>Mission Control</a>
 
-      <div class="nav-group">Manage</div>
-      <a class="nav-item"><i class="pi pi-server" style="font-size: 14px;"></i>Lockers</a>
-      <a class="nav-item"><i class="pi pi-mobile" style="font-size: 14px;"></i>Devices</a>
-      <a class="nav-item"><i class="pi pi-users" style="font-size: 14px;"></i>Users</a>
-      <a class="nav-item"><i class="pi pi-key" style="font-size: 14px;"></i>Access matrix</a>
+      <div class="app-nav-group-label">Manage</div>
+      <a class="app-nav-item"><i class="pi pi-server app-nav-icon"></i>Lockers</a>
+      <a class="app-nav-item"><i class="pi pi-mobile app-nav-icon"></i>Devices</a>
+      <a class="app-nav-item"><i class="pi pi-users app-nav-icon"></i>Users</a>
+      <a class="app-nav-item"><i class="pi pi-key app-nav-icon"></i>Access matrix</a>
 
-      <div class="nav-group">Investigate</div>
-      <a class="nav-item"><i class="pi pi-bell" style="font-size: 14px;"></i>Notifications <span class="nav-badge">99+</span></a>
-      <a class="nav-item"><i class="pi pi-map-marker" style="font-size: 14px;"></i>Tracker</a>
-      <a class="nav-item"><i class="pi pi-chart-line" style="font-size: 14px;"></i>Reports</a>
+      <div class="app-nav-group-label">Investigate</div>
+      <a class="app-nav-item"><i class="pi pi-bell app-nav-icon"></i>Notifications<span class="app-nav-badge">99+</span></a>
+      <a class="app-nav-item"><i class="pi pi-map-marker app-nav-icon"></i>Tracker</a>
+      <a class="app-nav-item"><i class="pi pi-chart-line app-nav-icon"></i>Reports</a>
 
-      <div class="nav-group">System</div>
-      <a class="nav-item"><i class="pi pi-cloud-download" style="font-size: 14px;"></i>Software updates</a>
-      <a class="nav-item"><i class="pi pi-cog" style="font-size: 14px;"></i>Settings</a>
+      <div class="app-nav-group-label">System</div>
+      <a class="app-nav-item"><i class="pi pi-cloud-download app-nav-icon"></i>Software updates</a>
+      <a class="app-nav-item"><i class="pi pi-cog app-nav-icon"></i>Settings</a>
 
-      <div style="margin-top: auto; padding: 12px; font-family: var(--theme-font-mono); font-size: 10px; color: var(--theme-text-tertiary);">v2.0.0 · Pixar pilot</div>
+      <div class="mt-auto px-3 py-3 text-tertiary text-[10px] font-mono">v2.0.0 · Pixar pilot</div>
     </aside>
 
     <!-- Main -->
-    <main class="main-area" style="background: var(--theme-canvas);">
+    <main class="app-shell-main bg-canvas">
 
-      <!-- Page title row -->
-      <div class="px-6 py-5 flex items-end gap-4" style="border-bottom: 1px solid var(--theme-border);">
+      <!-- Page header — open, breathing, no clutter -->
+      <header class="px-8 py-7 flex items-end gap-4 border-b border-border">
         <div class="flex-1">
-          <h1 style="font-size: 28px; font-weight: var(--theme-weight-semibold); letter-spacing: -.02em; margin: 0; line-height: 1.1;">Dashboard</h1>
-          <div style="font-size: 13px; color: var(--theme-text-secondary); margin-top: 4px;">Live operational snapshot · 4 lockers · last sync <strong style="color: var(--theme-text-primary); font-weight: var(--theme-weight-medium);">3 seconds ago</strong></div>
+          <h1 class="app-page-title">Dashboard</h1>
+          <p class="app-page-subtitle">Live operational snapshot · 4 lockers · last sync <strong>3 seconds ago</strong></p>
         </div>
-        <div class="flex items-center gap-2 p-1" style="background: var(--theme-surface-hover); border-radius: 6px;">
-          <span class="seg-btn active">Live</span>
-          <span class="seg-btn">24h</span>
-          <span class="seg-btn">7d</span>
-          <span class="seg-btn">30d</span>
+        <div class="app-segment">
+          <button class="app-segment-btn is-active">Live</button>
+          <button class="app-segment-btn">24h</button>
+          <button class="app-segment-btn">7d</button>
+          <button class="app-segment-btn">30d</button>
         </div>
-        <button class="p-button p-button-outlined p-button-sm">
-          <i class="pi pi-sliders-h mr-2"></i>Customize
+        <button class="p-button p-button-outlined">
+          <i class="pi pi-sliders-h mr-2"></i><span>Customize</span>
         </button>
-        <button class="p-button p-button-sm">
-          <i class="pi pi-plus mr-2"></i>Add widget
-        </button>
-      </div>
+      </header>
 
-      <!-- Content area -->
-      <div class="px-6 py-6 space-y-5">
+      <!-- Page content — generous spacing, flatter cards -->
+      <div class="px-8 py-8 space-y-8">
 
-        <!-- KPI strip — 4 cards with sparklines -->
-        <div class="grid grid-cols-4 gap-4">
-          <!-- IN USE RIGHT NOW -->
-          <div class="p-card"><div class="p-card-body" style="padding: 16px; position: relative;">
-            <div class="flex items-center gap-2 mb-2"><span class="bullet" style="background: #7C3AED;"></span><span style="font-size: 11px; text-transform: uppercase; letter-spacing: .04em; font-weight: var(--theme-weight-semibold); color: var(--theme-text-tertiary);">In use right now</span></div>
-            <div style="font-size: 32px; font-weight: var(--theme-weight-bold); line-height: 1; color: var(--theme-text-primary);">37</div>
-            <div class="flex items-center gap-2" style="font-size: 11px; color: var(--theme-text-secondary); margin-top: 6px;">
-              <span>of 56 bays</span><span style="color: var(--theme-text-tertiary);">·</span>
-              <span style="color: var(--theme-status-success); font-weight: var(--theme-weight-semibold);">▲ 12</span>
-              <span style="color: var(--theme-text-tertiary);">vs 7-day avg</span>
+        <!-- Headline metric strip — large, simple, no widget chrome -->
+        <section class="grid grid-cols-4 gap-6">
+          <div class="p-card"><div class="p-card-body p-6">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="app-bullet bg-accent"></span>
+              <span class="text-[11px] uppercase tracking-wider font-semibold text-tertiary">In use right now</span>
             </div>
-            <svg viewBox="0 0 100 28" style="position: absolute; right: 12px; bottom: 10px; width: 80px; height: 28px;">
-              <path class="spark" stroke="#7C3AED" d="M0,18 L12,15 L24,17 L36,12 L48,14 L60,10 L72,11 L84,8 L100,6" />
-            </svg>
-          </div></div>
-
-          <!-- AVAILABLE -->
-          <div class="p-card"><div class="p-card-body" style="padding: 16px; position: relative;">
-            <div class="flex items-center gap-2 mb-2"><span class="bullet" style="background: var(--theme-status-success);"></span><span style="font-size: 11px; text-transform: uppercase; letter-spacing: .04em; font-weight: var(--theme-weight-semibold); color: var(--theme-text-tertiary);">Available</span></div>
-            <div style="font-size: 32px; font-weight: var(--theme-weight-bold); line-height: 1; color: var(--theme-text-primary);">23</div>
-            <div class="flex items-center gap-2" style="font-size: 11px; color: var(--theme-text-secondary); margin-top: 6px;">
-              <span>41% of fleet</span><span style="color: var(--theme-text-tertiary);">·</span>
-              <span style="color: var(--theme-text-tertiary); font-weight: var(--theme-weight-semibold);">— same</span>
-              <span style="color: var(--theme-text-tertiary);">vs 7-day avg</span>
-            </div>
-            <svg viewBox="0 0 100 28" style="position: absolute; right: 12px; bottom: 10px; width: 80px; height: 28px;">
-              <path class="spark" stroke="var(--theme-status-success)" d="M0,14 L12,15 L24,13 L36,14 L48,15 L60,14 L72,13 L84,14 L100,14" />
-            </svg>
-          </div></div>
-
-          <!-- OVERDUE -->
-          <div class="p-card"><div class="p-card-body" style="padding: 16px; position: relative;">
-            <div class="flex items-center gap-2 mb-2"><span class="bullet" style="background: var(--theme-status-warning);"></span><span style="font-size: 11px; text-transform: uppercase; letter-spacing: .04em; font-weight: var(--theme-weight-semibold); color: var(--theme-text-tertiary);">Overdue</span></div>
-            <div style="font-size: 32px; font-weight: var(--theme-weight-bold); line-height: 1; color: var(--theme-text-primary);">11</div>
-            <div class="flex items-center gap-2" style="font-size: 11px; color: var(--theme-text-secondary); margin-top: 6px;">
-              <span>8 users</span><span style="color: var(--theme-text-tertiary);">·</span>
-              <span style="color: var(--theme-status-danger); font-weight: var(--theme-weight-semibold);">▲ 4</span>
-              <span style="color: var(--theme-text-tertiary);">vs 7-day avg</span>
-            </div>
-            <svg viewBox="0 0 100 28" style="position: absolute; right: 12px; bottom: 10px; width: 80px; height: 28px;">
-              <path class="spark" stroke="var(--theme-status-warning)" d="M0,20 L12,18 L24,17 L36,16 L48,14 L60,15 L72,12 L84,10 L100,8" />
-            </svg>
-          </div></div>
-
-          <!-- HARDWARE FAULTS -->
-          <div class="p-card"><div class="p-card-body" style="padding: 16px; position: relative;">
-            <div class="flex items-center gap-2 mb-2"><span class="bullet" style="background: var(--theme-status-danger);"></span><span style="font-size: 11px; text-transform: uppercase; letter-spacing: .04em; font-weight: var(--theme-weight-semibold); color: var(--theme-text-tertiary);">Hardware faults</span></div>
-            <div style="font-size: 32px; font-weight: var(--theme-weight-bold); line-height: 1; color: var(--theme-text-primary);">3</div>
-            <div class="flex items-center gap-2" style="font-size: 11px; color: var(--theme-text-secondary); margin-top: 6px;">
-              <span>Pink8 · 3 bays</span><span style="color: var(--theme-text-tertiary);">·</span>
-              <span style="color: var(--theme-status-danger); font-weight: var(--theme-weight-semibold);">▲ 3</span>
-              <span style="color: var(--theme-text-tertiary);">new today</span>
-            </div>
-            <svg viewBox="0 0 100 28" style="position: absolute; right: 12px; bottom: 10px; width: 80px; height: 28px;">
-              <path class="spark" stroke="var(--theme-status-danger)" d="M0,22 L12,22 L24,21 L36,21 L48,20 L60,18 L72,16 L84,12 L100,6" />
-            </svg>
-          </div></div>
-        </div>
-
-        <!-- Mid row: Bay status (2/3) + Alarms+Inbox (1/3) -->
-        <div class="grid gap-4" style="grid-template-columns: 2fr 1fr;">
-
-          <!-- BAY STATUS -->
-          <div class="p-card"><div class="p-card-body" style="padding: 0;">
-            <div class="px-5 py-4 flex items-center gap-3" style="border-bottom: 1px solid var(--theme-border);">
-              <i class="pi pi-th-large" style="color: var(--theme-text-tertiary); font-size: 14px;"></i>
-              <strong style="font-size: 14px;">Bay status</strong>
-              <span style="font-size: 12px; color: var(--theme-text-tertiary);">· 56 bays across 4 lockers</span>
-              <div class="ml-auto flex items-center gap-1 p-0.5" style="background: var(--theme-surface-hover); border-radius: 6px;">
-                <span class="seg-btn active" style="font-size: 11px; padding: 3px 10px;">All states</span>
-                <span class="seg-btn" style="font-size: 11px; padding: 3px 10px;">Needs attention</span>
-              </div>
-            </div>
-
-            <!-- Pink8 -->
-            <div class="px-5 py-4" style="border-bottom: 1px solid var(--theme-border);">
-              <div class="flex items-center gap-2 mb-2">
-                <strong style="font-size: 13px;">Pink8</strong>
-                <span class="p-tag p-tag-danger" style="font-size: 10px; padding: 1px 7px;"><span class="p-tag-value">3 hardware faults</span></span>
-                <span style="font-size: 11px; color: var(--theme-text-tertiary); margin-left: 4px;">HonestWaves Orange County Office · 8 bays</span>
-                <a class="ml-auto" style="font-size: 12px; color: var(--theme-accent-text); font-weight: var(--theme-weight-medium); cursor: pointer;">Open Mission Control →</a>
-              </div>
-              <div class="flex gap-1.5">
-                <div class="bay warn">1</div>
-                <div class="bay warn">2</div>
-                <div class="bay crit">3</div>
-                <div class="bay warn">4</div>
-                <div class="bay warn">5</div>
-                <div class="bay crit">6</div>
-                <div class="bay warn">7</div>
-                <div class="bay warn">8</div>
-              </div>
-            </div>
-
-            <!-- Blue34 -->
-            <div class="px-5 py-4" style="border-bottom: 1px solid var(--theme-border);">
-              <div class="flex items-center gap-2 mb-2">
-                <strong style="font-size: 13px;">Blue34</strong>
-                <span class="p-tag p-tag-success" style="font-size: 10px; padding: 1px 7px;"><span class="p-tag-value">Healthy</span></span>
-                <span style="font-size: 11px; color: var(--theme-text-tertiary); margin-left: 4px;">HonestWaves HQ · 32 bays</span>
-                <a class="ml-auto" style="font-size: 12px; color: var(--theme-accent-text); font-weight: var(--theme-weight-medium); cursor: pointer;">Open Mission Control →</a>
-              </div>
-              <div class="grid gap-1.5" style="grid-template-columns: repeat(16, minmax(0, 1fr));">
-                <div class="bay ok">1</div><div class="bay ok">2</div><div class="bay ok">3</div><div class="bay ok">4</div><div class="bay ok">5</div><div class="bay ok">6</div><div class="bay ok">7</div><div class="bay ok">8</div><div class="bay ok">9</div><div class="bay ok">10</div><div class="bay ok">11</div><div class="bay ok">12</div><div class="bay ok">13</div><div class="bay ok">14</div><div class="bay ok">15</div><div class="bay ok">16</div>
-                <div class="bay ok">17</div><div class="bay ok">18</div><div class="bay ok">19</div><div class="bay ok">20</div><div class="bay ok">21</div><div class="bay ok">22</div><div class="bay off">23</div><div class="bay off">24</div><div class="bay off">25</div><div class="bay off">26</div><div class="bay off">27</div><div class="bay off">28</div><div class="bay off">29</div><div class="bay off">30</div><div class="bay off">31</div><div class="bay off">32</div>
-              </div>
-            </div>
-
-            <!-- Green8 -->
-            <div class="px-5 py-4" style="border-bottom: 1px solid var(--theme-border);">
-              <div class="flex items-center gap-2 mb-2">
-                <strong style="font-size: 13px;">Green8</strong>
-                <span class="p-tag p-tag-warning" style="font-size: 10px; padding: 1px 7px;"><span class="p-tag-value">6 overdue</span></span>
-                <span style="font-size: 11px; color: var(--theme-text-tertiary); margin-left: 4px;">HonestWaves Orange County Office · 8 bays</span>
-                <a class="ml-auto" style="font-size: 12px; color: var(--theme-accent-text); font-weight: var(--theme-weight-medium); cursor: pointer;">Open Mission Control →</a>
-              </div>
-              <div class="flex gap-1.5">
-                <div class="bay warn">1</div>
-                <div class="bay warn">2</div>
-                <div class="bay warn">3</div>
-                <div class="bay ok">4</div>
-                <div class="bay ok">5</div>
-                <div class="bay warn">6</div>
-                <div class="bay ok">7</div>
-                <div class="bay warn">8</div>
-              </div>
-            </div>
-
-            <!-- Adrian Local Test -->
-            <div class="px-5 py-4">
-              <div class="flex items-center gap-2 mb-2">
-                <strong style="font-size: 13px;">Adrian Local Test</strong>
-                <span class="p-tag" style="background: var(--theme-surface-active); color: var(--theme-text-secondary); font-size: 10px; padding: 1px 7px;"><span class="p-tag-value">Mostly deactivated</span></span>
-                <a class="ml-auto" style="font-size: 12px; color: var(--theme-accent-text); font-weight: var(--theme-weight-medium); cursor: pointer;">Open Mission Control →</a>
-              </div>
+            <div class="text-5xl font-bold text-primary leading-none">37</div>
+            <div class="text-xs text-secondary mt-3 flex items-center gap-1.5">
+              <span>of 56 bays</span>
+              <span class="text-tertiary">·</span>
+              <span class="text-success font-semibold">▲ 12</span>
+              <span class="text-tertiary">vs 7-day</span>
             </div>
           </div></div>
 
-          <!-- Right rail: Alarms + Inbox -->
-          <div class="space-y-4">
-            <!-- Alarms -->
-            <div class="p-card"><div class="p-card-body" style="padding: 0;">
-              <div class="px-5 py-4 flex items-center" style="border-bottom: 1px solid var(--theme-border);">
-                <i class="pi pi-exclamation-triangle mr-2" style="color: var(--theme-status-danger); font-size: 14px;"></i>
-                <strong style="font-size: 14px;">Alarms</strong>
-                <span style="font-size: 11px; color: var(--theme-text-tertiary); margin-left: 6px;">· last 24 hours</span>
-                <a class="ml-auto" style="font-size: 12px; color: var(--theme-accent-text); font-weight: var(--theme-weight-medium); cursor: pointer;">View all →</a>
-              </div>
-              <div class="divide-y" style="border-color: var(--theme-border);">
-                <div class="px-5 py-3 flex items-start gap-3" style="border-bottom: 1px solid var(--theme-border);">
-                  <div class="grid place-items-center mt-0.5" style="width: 22px; height: 22px; border-radius: 50%; background: var(--theme-status-danger-soft); flex-shrink: 0;"><i class="pi pi-exclamation-circle" style="font-size: 11px; color: var(--theme-status-danger);"></i></div>
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-start gap-2"><div style="font-size: 13px; font-weight: var(--theme-weight-semibold); flex: 1;">Hardware fault on Pink8</div><div style="font-size: 11px; color: var(--theme-text-tertiary); flex-shrink: 0;">14h ago</div></div>
-                    <div style="font-size: 11px; color: var(--theme-text-secondary); margin-top: 2px;">Bays 3, 6, 7 went unreachable</div>
-                  </div>
-                </div>
-                <div class="px-5 py-3 flex items-start gap-3" style="border-bottom: 1px solid var(--theme-border);">
-                  <div class="grid place-items-center mt-0.5" style="width: 22px; height: 22px; border-radius: 50%; background: var(--theme-status-warning-soft); flex-shrink: 0;"><i class="pi pi-clock" style="font-size: 11px; color: var(--theme-status-warning);"></i></div>
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-start gap-2"><div style="font-size: 13px; font-weight: var(--theme-weight-semibold); flex: 1;">Door left open on Pink8 bay 4</div><div style="font-size: 11px; color: var(--theme-text-tertiary); flex-shrink: 0;">18h ago</div></div>
-                    <div style="font-size: 11px; color: var(--theme-text-secondary); margin-top: 2px;">Stayed open for 8 minutes — past the 5-minute threshold</div>
-                  </div>
-                </div>
-                <div class="px-5 py-3 flex items-start gap-3" style="border-bottom: 1px solid var(--theme-border);">
-                  <div class="grid place-items-center mt-0.5" style="width: 22px; height: 22px; border-radius: 50%; background: var(--theme-status-warning-soft); flex-shrink: 0;"><i class="pi pi-clock" style="font-size: 11px; color: var(--theme-status-warning);"></i></div>
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-start gap-2"><div style="font-size: 13px; font-weight: var(--theme-weight-semibold); flex: 1;">3 checkouts went overdue</div><div style="font-size: 11px; color: var(--theme-text-tertiary); flex-shrink: 0;">22h ago</div></div>
-                    <div style="font-size: 11px; color: var(--theme-text-secondary); margin-top: 2px;">Green8 bays 1, 2, 3 · Mark Rivera, Crosby Smith</div>
-                  </div>
-                </div>
-                <div class="px-5 py-3 flex items-start gap-3">
-                  <div class="grid place-items-center mt-0.5" style="width: 22px; height: 22px; border-radius: 50%; background: var(--theme-status-success-soft); flex-shrink: 0;"><i class="pi pi-check" style="font-size: 11px; color: var(--theme-status-success);"></i></div>
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-start gap-2"><div style="font-size: 13px; font-weight: var(--theme-weight-semibold); flex: 1;">Bay 4 alarm cleared</div><div style="font-size: 11px; color: var(--theme-text-tertiary); flex-shrink: 0;">1d ago</div></div>
-                    <div style="font-size: 11px; color: var(--theme-text-secondary); margin-top: 2px;">Pink8 · auto-resolved by hardware self-check</div>
-                  </div>
-                </div>
-              </div>
-            </div></div>
+          <div class="p-card"><div class="p-card-body p-6">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="app-bullet bg-success"></span>
+              <span class="text-[11px] uppercase tracking-wider font-semibold text-tertiary">Available</span>
+            </div>
+            <div class="text-5xl font-bold text-primary leading-none">23</div>
+            <div class="text-xs text-secondary mt-3 flex items-center gap-1.5">
+              <span>41% of fleet</span>
+              <span class="text-tertiary">·</span>
+              <span class="text-tertiary font-semibold">— same</span>
+              <span class="text-tertiary">vs 7-day</span>
+            </div>
+          </div></div>
 
-            <!-- Inbox -->
-            <div class="p-card"><div class="p-card-body" style="padding: 0;">
-              <div class="px-5 py-4 flex items-center">
-                <i class="pi pi-inbox mr-2" style="color: var(--theme-text-tertiary); font-size: 14px;"></i>
-                <strong style="font-size: 14px;">Inbox</strong>
-                <span style="font-size: 11px; color: var(--theme-text-tertiary); margin-left: 6px;">· 0 unread</span>
-                <a class="ml-auto" style="font-size: 12px; color: var(--theme-accent-text); font-weight: var(--theme-weight-medium); cursor: pointer;">View all →</a>
-              </div>
-            </div></div>
+          <div class="p-card"><div class="p-card-body p-6">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="app-bullet bg-warning"></span>
+              <span class="text-[11px] uppercase tracking-wider font-semibold text-tertiary">Overdue</span>
+            </div>
+            <div class="text-5xl font-bold text-primary leading-none">11</div>
+            <div class="text-xs text-secondary mt-3 flex items-center gap-1.5">
+              <span>8 users</span>
+              <span class="text-tertiary">·</span>
+              <span class="text-danger font-semibold">▲ 4</span>
+              <span class="text-tertiary">vs 7-day</span>
+            </div>
+          </div></div>
+
+          <div class="p-card"><div class="p-card-body p-6">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="app-bullet bg-danger"></span>
+              <span class="text-[11px] uppercase tracking-wider font-semibold text-tertiary">Hardware faults</span>
+            </div>
+            <div class="text-5xl font-bold text-primary leading-none">3</div>
+            <div class="text-xs text-secondary mt-3 flex items-center gap-1.5">
+              <span>Pink8 · 3 bays</span>
+              <span class="text-tertiary">·</span>
+              <span class="text-danger font-semibold">▲ 3</span>
+              <span class="text-tertiary">new today</span>
+            </div>
+          </div></div>
+        </section>
+
+        <!-- MAIN OPERATIONAL TABLE — the focal point per user spec -->
+        <section class="p-card"><div class="p-card-body p-0">
+          <header class="px-6 py-4 flex items-center gap-3 border-b border-border">
+            <h2 class="text-base font-semibold">Action items</h2>
+            <span class="p-tag p-tag-danger"><span class="p-tag-value">11 overdue</span></span>
+            <span class="p-tag p-tag-warning"><span class="p-tag-value">3 hardware</span></span>
+            <button class="p-button p-button-text p-button-sm ml-auto">
+              <span class="text-accent-text">View all 14 →</span>
+            </button>
+          </header>
+
+          <div class="p-datatable p-datatable-sm">
+            <table class="w-full">
+              <thead>
+                <tr class="text-left text-[11px] uppercase tracking-wider text-tertiary border-b border-border">
+                  <th class="px-6 py-3 font-semibold">Type</th>
+                  <th class="px-6 py-3 font-semibold">Subject</th>
+                  <th class="px-6 py-3 font-semibold">Holder / location</th>
+                  <th class="px-6 py-3 font-semibold">Age</th>
+                  <th class="px-6 py-3 font-semibold">Priority</th>
+                  <th class="px-6 py-3 w-12"></th>
+                </tr>
+              </thead>
+              <tbody class="text-sm">
+                <tr class="border-b border-border hover:bg-surface-hover cursor-pointer">
+                  <td class="px-6 py-4"><span class="p-tag p-tag-danger"><span class="p-tag-value">Hardware</span></span></td>
+                  <td class="px-6 py-4 font-semibold">Pink8 · Bays 3, 6 unreachable</td>
+                  <td class="px-6 py-4 text-secondary">Orange County Office</td>
+                  <td class="px-6 py-4 font-mono text-secondary">14h</td>
+                  <td class="px-6 py-4"><span class="text-danger font-semibold">High</span></td>
+                  <td class="px-6 py-4 text-tertiary"><i class="pi pi-chevron-right text-xs"></i></td>
+                </tr>
+                <tr class="border-b border-border hover:bg-surface-hover cursor-pointer">
+                  <td class="px-6 py-4"><span class="p-tag p-tag-danger"><span class="p-tag-value">Overdue</span></span></td>
+                  <td class="px-6 py-4 font-semibold">PHN-0017 not returned</td>
+                  <td class="px-6 py-4 text-secondary">Maria Reyes · ICU 5N</td>
+                  <td class="px-6 py-4 font-mono text-secondary">14d</td>
+                  <td class="px-6 py-4"><span class="text-danger font-semibold">High</span></td>
+                  <td class="px-6 py-4 text-tertiary"><i class="pi pi-chevron-right text-xs"></i></td>
+                </tr>
+                <tr class="border-b border-border hover:bg-surface-hover cursor-pointer">
+                  <td class="px-6 py-4"><span class="p-tag p-tag-warning"><span class="p-tag-value">Overdue</span></span></td>
+                  <td class="px-6 py-4 font-semibold">Green8 · 3 checkouts past due</td>
+                  <td class="px-6 py-4 text-secondary">Mark Rivera, Crosby Smith</td>
+                  <td class="px-6 py-4 font-mono text-secondary">22h</td>
+                  <td class="px-6 py-4"><span class="text-warning font-semibold">Med</span></td>
+                  <td class="px-6 py-4 text-tertiary"><i class="pi pi-chevron-right text-xs"></i></td>
+                </tr>
+                <tr class="border-b border-border hover:bg-surface-hover cursor-pointer">
+                  <td class="px-6 py-4"><span class="p-tag p-tag-warning"><span class="p-tag-value">Alert</span></span></td>
+                  <td class="px-6 py-4 font-semibold">Door open on Pink8 · Bay 4</td>
+                  <td class="px-6 py-4 text-secondary">Auto-flagged · 8min over threshold</td>
+                  <td class="px-6 py-4 font-mono text-secondary">18h</td>
+                  <td class="px-6 py-4"><span class="text-warning font-semibold">Med</span></td>
+                  <td class="px-6 py-4 text-tertiary"><i class="pi pi-chevron-right text-xs"></i></td>
+                </tr>
+                <tr class="hover:bg-surface-hover cursor-pointer">
+                  <td class="px-6 py-4"><span class="p-tag p-tag-warning"><span class="p-tag-value">Overdue</span></span></td>
+                  <td class="px-6 py-4 font-semibold">SCN-0008 not returned</td>
+                  <td class="px-6 py-4 text-secondary">Tony Mendez · ER North</td>
+                  <td class="px-6 py-4 font-mono text-secondary">7d</td>
+                  <td class="px-6 py-4"><span class="text-warning font-semibold">Med</span></td>
+                  <td class="px-6 py-4 text-tertiary"><i class="pi pi-chevron-right text-xs"></i></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-        </div>
+        </div></section>
+
+        <!-- BAY STATUS — compact summary, no longer dominates -->
+        <section class="p-card"><div class="p-card-body p-0">
+          <header class="px-6 py-4 flex items-center gap-3 border-b border-border">
+            <h2 class="text-base font-semibold">Bay status</h2>
+            <span class="text-xs text-tertiary">· 56 bays across 4 lockers</span>
+            <button class="p-button p-button-text p-button-sm ml-auto">
+              <span class="text-accent-text">Open Mission Control →</span>
+            </button>
+          </header>
+          <div class="divide-y divide-border">
+
+            <div class="px-6 py-4 flex items-center gap-4">
+              <div class="w-32 flex-shrink-0">
+                <div class="font-semibold text-sm">Pink8</div>
+                <div class="text-[11px] text-tertiary">8 bays · Orange County</div>
+              </div>
+              <div class="flex gap-1.5 flex-1">
+                <span class="app-bay app-bay-warn">1</span>
+                <span class="app-bay app-bay-warn">2</span>
+                <span class="app-bay app-bay-crit">3</span>
+                <span class="app-bay app-bay-warn">4</span>
+                <span class="app-bay app-bay-warn">5</span>
+                <span class="app-bay app-bay-crit">6</span>
+                <span class="app-bay app-bay-warn">7</span>
+                <span class="app-bay app-bay-warn">8</span>
+              </div>
+              <span class="p-tag p-tag-danger"><span class="p-tag-value">3 faults</span></span>
+            </div>
+
+            <div class="px-6 py-4 flex items-center gap-4">
+              <div class="w-32 flex-shrink-0">
+                <div class="font-semibold text-sm">Blue34</div>
+                <div class="text-[11px] text-tertiary">32 bays · HonestWaves HQ</div>
+              </div>
+              <div class="flex-1 flex items-center gap-3">
+                <div class="flex gap-1">
+                  <span class="w-2 h-7 rounded-sm bg-success"></span>
+                  <span class="w-2 h-7 rounded-sm bg-success"></span>
+                  <span class="w-2 h-7 rounded-sm bg-success"></span>
+                  <span class="w-2 h-7 rounded-sm bg-success"></span>
+                  <span class="w-2 h-7 rounded-sm bg-success"></span>
+                  <span class="w-2 h-7 rounded-sm bg-success"></span>
+                  <span class="w-2 h-7 rounded-sm bg-success"></span>
+                  <span class="w-2 h-7 rounded-sm bg-success"></span>
+                  <span class="w-2 h-7 rounded-sm bg-success"></span>
+                  <span class="w-2 h-7 rounded-sm bg-success"></span>
+                  <span class="w-2 h-7 rounded-sm bg-success"></span>
+                  <span class="w-2 h-7 rounded-sm bg-success"></span>
+                  <span class="w-2 h-7 rounded-sm bg-success"></span>
+                  <span class="w-2 h-7 rounded-sm bg-success"></span>
+                  <span class="w-2 h-7 rounded-sm bg-success"></span>
+                  <span class="w-2 h-7 rounded-sm bg-success"></span>
+                  <span class="w-2 h-7 rounded-sm bg-success"></span>
+                  <span class="w-2 h-7 rounded-sm bg-success"></span>
+                  <span class="w-2 h-7 rounded-sm bg-success"></span>
+                  <span class="w-2 h-7 rounded-sm bg-success"></span>
+                  <span class="w-2 h-7 rounded-sm bg-success"></span>
+                  <span class="w-2 h-7 rounded-sm bg-success"></span>
+                  <span class="w-2 h-7 rounded-sm bg-border"></span>
+                  <span class="w-2 h-7 rounded-sm bg-border"></span>
+                  <span class="w-2 h-7 rounded-sm bg-border"></span>
+                  <span class="w-2 h-7 rounded-sm bg-border"></span>
+                  <span class="w-2 h-7 rounded-sm bg-border"></span>
+                  <span class="w-2 h-7 rounded-sm bg-border"></span>
+                  <span class="w-2 h-7 rounded-sm bg-border"></span>
+                  <span class="w-2 h-7 rounded-sm bg-border"></span>
+                  <span class="w-2 h-7 rounded-sm bg-border"></span>
+                  <span class="w-2 h-7 rounded-sm bg-border"></span>
+                </div>
+                <span class="text-xs text-tertiary">22 in use · 10 free</span>
+              </div>
+              <span class="p-tag p-tag-success"><span class="p-tag-value">Healthy</span></span>
+            </div>
+
+            <div class="px-6 py-4 flex items-center gap-4">
+              <div class="w-32 flex-shrink-0">
+                <div class="font-semibold text-sm">Green8</div>
+                <div class="text-[11px] text-tertiary">8 bays · Orange County</div>
+              </div>
+              <div class="flex gap-1.5 flex-1">
+                <span class="app-bay app-bay-warn">1</span>
+                <span class="app-bay app-bay-warn">2</span>
+                <span class="app-bay app-bay-warn">3</span>
+                <span class="app-bay app-bay-ok">4</span>
+                <span class="app-bay app-bay-ok">5</span>
+                <span class="app-bay app-bay-warn">6</span>
+                <span class="app-bay app-bay-ok">7</span>
+                <span class="app-bay app-bay-warn">8</span>
+              </div>
+              <span class="p-tag p-tag-warning"><span class="p-tag-value">6 overdue</span></span>
+            </div>
+
+            <div class="px-6 py-4 flex items-center gap-4">
+              <div class="w-32 flex-shrink-0">
+                <div class="font-semibold text-sm">Adrian Local Test</div>
+                <div class="text-[11px] text-tertiary">8 bays · staging</div>
+              </div>
+              <div class="flex-1 text-xs text-tertiary">Mostly deactivated · 1 bay reserved for QA</div>
+              <span class="p-tag p-tag-secondary"><span class="p-tag-value">Deactivated</span></span>
+            </div>
+
+          </div>
+        </div></section>
 
       </div>
+
     </main>
+
   </div>
 
   <script>
-    // Theme toggle — flips html.app-dark
+    // Theme toggle — flips html.app-dark per dev SCSS spec
     const root = document.documentElement;
     const tog = document.getElementById('theme-toggle');
     const icon = document.getElementById('theme-icon');
     function apply() {
-      const isDark = root.classList.contains('app-dark');
-      icon.className = isDark ? 'pi pi-sun' : 'pi pi-moon';
+      const dark = root.classList.contains('app-dark');
+      icon.className = dark ? 'pi pi-sun' : 'pi pi-moon';
     }
     tog.addEventListener('click', () => {
       root.classList.toggle('app-dark');
@@ -339,12 +403,13 @@
     } catch(e){}
     apply();
 
-    // Segmented control toggles
-    document.querySelectorAll('.seg-btn').forEach(btn => {
-      btn.addEventListener('click', e => {
-        const group = btn.parentElement;
-        group.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+    // Segment toggle (Live/24h/7d/30d)
+    document.querySelectorAll('.app-segment').forEach(group => {
+      group.querySelectorAll('.app-segment-btn').forEach(b => {
+        b.addEventListener('click', () => {
+          group.querySelectorAll('.app-segment-btn').forEach(x => x.classList.remove('is-active'));
+          b.classList.add('is-active');
+        });
       });
     });
   </script>
