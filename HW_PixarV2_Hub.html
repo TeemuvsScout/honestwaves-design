@@ -194,7 +194,7 @@
         </div>
         <div class="text-center max-w-md">
           <div class="text-xl font-semibold mb-2">Open any page on the left.</div>
-          <div class="text-sm text-slate-500">All five Pixar v.2 prototypes are wired up here. They use PrimeVue components (Card, Tag, DataTable, TabView, Sidebar, Avatar) and Tailwind for layout.</div>
+          <div class="text-sm text-slate-500">All 14 Pixar v.2 prototypes are wired up here — Monitor, Manage, Investigate, Finance, System, plus a Reference shelf. They use PrimeVue components (Card, Tag, DataTable, TabView, Sidebar, Avatar) and Tailwind for layout.</div>
         </div>
         <div class="flex gap-2 mt-2">
           <button class="p-button p-component" onclick="loadProto('dashboard')">
@@ -224,10 +224,20 @@
         ]
       },
       {
+        group: 'Manage',
+        items: [
+          { id: 'lockers',       title: 'Lockers',       file: 'HW_PixarV2_Lockers.html',       icon: 'pi pi-server', desc: 'Locker list with KPIs, utilization bars, locations, templates' },
+          { id: 'devices',       title: 'Devices',       file: 'HW_PixarV2_Devices.html',       icon: 'pi pi-mobile', desc: 'Device inventory · battery, holder, model filters · manage models tab' },
+          { id: 'users',         title: 'Users',         file: 'HW_PixarV2_Users.html',         icon: 'pi pi-users',  desc: 'Users + Departments + Guests sub-tabs · avatar list · locked accounts' },
+          { id: 'access-matrix', title: 'Access Matrix', file: 'HW_PixarV2_Access_Matrix.html', icon: 'pi pi-key',    desc: 'Perspective switcher (Locker→Bay, User, Dept, Grant path) · grant resolution' },
+        ]
+      },
+      {
         group: 'Investigate',
         items: [
-          { id: 'notifications',   title: 'Notifications',   file: 'HW_PixarV2_Notifications.html',   icon: 'pi pi-bell',      desc: '4 tabs (All / Unread / Critical / Custom rules) + 8 active rules' },
-          { id: 'reports',         title: 'Reports',         file: 'HW_PixarV2_Reports.html',         icon: 'pi pi-chart-bar', desc: 'TabView + DataTable for activity log, device status, scheduled, custom' },
+          { id: 'notifications',   title: 'Notifications',   file: 'HW_PixarV2_Notifications.html',   icon: 'pi pi-bell',         desc: '4 tabs (All / Unread / Critical / Custom rules) + 8 active rules' },
+          { id: 'tracker',         title: 'Tracker',         file: 'HW_PixarV2_Tracker.html',         icon: 'pi pi-map-marker',   desc: 'Entity timeline · checkin/checkout/alert/lost events · grant path' },
+          { id: 'reports',         title: 'Reports',         file: 'HW_PixarV2_Reports.html',         icon: 'pi pi-chart-bar',    desc: 'TabView + DataTable for activity log, device status, scheduled, custom' },
         ]
       },
       {
@@ -237,10 +247,19 @@
         ]
       },
       {
+        group: 'System',
+        items: [
+          { id: 'software-updates', title: 'Software Updates', file: 'HW_PixarV2_Software_Updates.html', icon: 'pi pi-cloud-download', desc: 'Firmware + APK rollouts · phased progress · failed device queue' },
+          { id: 'settings',         title: 'Settings',         file: 'HW_PixarV2_Settings.html',         icon: 'pi pi-cog',            desc: 'Branding · self-registration · master keys · profile · integrations' },
+        ]
+      },
+      {
         group: 'Reference',
         items: [
-          { id: 'components', title: 'Component reference', file: 'HW_PixarV2_Components.html', icon: 'pi pi-box', desc: 'Every PrimeVue component used · Vue/PrimeVue + Tailwind snippets' },
-          { id: 'browse',     title: 'v.2 home (landing)',  file: 'HW_PixarV2_Browse.html',     icon: 'pi pi-home', desc: 'Marketing landing · why we rebuilt · token palette · framework links' },
+          { id: 'components',     title: 'Component reference', file: 'HW_PixarV2_Components.html',     icon: 'pi pi-box',           desc: 'Every PrimeVue component used · Vue/PrimeVue + Tailwind snippets' },
+          { id: 'modals-states',  title: 'Modals & States',     file: 'HW_PixarV2_Modals_States.html',  icon: 'pi pi-window-maximize', desc: 'Dialogs · drawers · confirms · toasts · empty / error / loading patterns' },
+          { id: 'four-oh-four',   title: '404 — Bay not found', file: 'HW_PixarV2_404.html',            icon: 'pi pi-times-circle',   desc: 'Brand-consistent error page with bay-grid metaphor' },
+          { id: 'browse',         title: 'v.2 home (landing)',  file: 'HW_PixarV2_Browse.html',         icon: 'pi pi-home',          desc: 'Marketing landing · why we rebuilt · token palette · framework links' },
         ]
       },
       {

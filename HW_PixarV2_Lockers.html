@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixar v.2 · Lockers</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/lara-light-blue/theme.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/primevue.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'brand':{DEFAULT:'#2563EB',deep:'#1E40AF',soft:'#EFF6FF'},
+      'pixar':{DEFAULT:'#7C3AED',soft:'#EDE9FE'},
+      'success':{DEFAULT:'#10B981',soft:'#D1FAE5'},
+      'warning':{DEFAULT:'#F59E0B',soft:'#FEF3C7',text:'#B45309'},
+      'danger':{DEFAULT:'#DC2626',soft:'#FEE2E2'},
+      'info':{DEFAULT:'#0EA5E9',soft:'#E0F2FE'},
+    }, fontFamily:{sans:['Inter','system-ui','sans-serif']} } } };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body{font-family:'Inter',system-ui,sans-serif;}
+    :root{--primary-color:#2563EB;--primary-color-text:#fff;--highlight-bg:#EFF6FF;--highlight-text-color:#1E40AF;}
+    .annotation{background:linear-gradient(90deg,#7C3AED,#1E40AF);color:#fff;padding:8px 24px;font-size:12px;display:flex;align-items:center;gap:12px;}
+    .annotation .chip{background:rgba(255,255,255,.2);font-weight:600;padding:2px 7px;border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.04em;}
+    .bay-tile{aspect-ratio:1;border-radius:6px;display:grid;place-items:center;font-size:11px;font-weight:600;}
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+  <div class="annotation">
+    <span class="chip">Pixar v.2</span>
+    <strong>Lockers.</strong>
+    <span>PrimeVue TabView · DataTable · SelectButton · Tag · Card · Sidebar (drawer) · Tailwind grids.</span>
+    <span class="ml-auto"><a href="HW_PixarV2_Browse.html" class="underline">← v.2 home</a></span>
+  </div>
+
+  <div class="grid" style="grid-template-columns:232px 1fr;grid-template-rows:56px 1fr;grid-template-areas:'logo top' 'side main';min-height:calc(100vh - 32px);">
+
+    <div style="grid-area:logo;" class="bg-white border-r border-b border-slate-200 flex items-center px-4 gap-2">
+      <div class="w-7 h-7 rounded-md bg-brand grid place-items-center text-white font-bold text-sm">H</div>
+      <span class="font-semibold">HonestWaves</span>
+      <span class="ml-auto p-tag p-tag-info text-xs"><span class="p-tag-value">QA</span></span>
+    </div>
+
+    <div style="grid-area:top;" class="bg-white border-b border-slate-200 flex items-center px-5 gap-3">
+      <div class="text-sm text-slate-500 flex items-center gap-2">
+        <span>Manage</span><i class="pi pi-angle-right text-xs"></i>
+        <strong class="text-slate-900">Lockers</strong>
+      </div>
+      <div class="flex-1"></div>
+      <button class="p-button p-button-outlined p-button-sm"><i class="pi pi-download mr-2"></i>Export CSV</button>
+      <button class="p-button p-button-sm"><i class="pi pi-plus mr-2"></i>Add Locker</button>
+      <div class="p-avatar p-component p-avatar-circle ml-2" style="background:#2563EB;color:#fff;"><span>AR</span></div>
+    </div>
+
+    <aside style="grid-area:side;" class="bg-white border-r border-slate-200 p-3 overflow-y-auto">
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-1">Monitor</div>
+      <a href="HW_PixarV2_Dashboard.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-th-large"></i>Dashboard</a>
+      <a href="HW_PixarV2_Mission_Control.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-eye"></i>Mission Control</a>
+
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-4">Manage</div>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold bg-brand-soft text-brand-deep border-l-2 border-brand -ml-1"><i class="pi pi-server"></i>Lockers</a>
+      <div class="ml-7 mt-1 mb-1 text-xs space-y-1">
+        <a class="block text-brand-deep font-semibold py-1">› Lockers</a>
+        <a class="block text-slate-500 hover:text-slate-900 py-1">Locations</a>
+        <a class="block text-slate-500 hover:text-slate-900 py-1">Templates</a>
+      </div>
+      <a href="HW_PixarV2_Devices.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-mobile"></i>Devices</a>
+      <a href="HW_PixarV2_Users.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-users"></i>Users</a>
+      <a href="HW_PixarV2_Access_Matrix.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-key"></i>Access Matrix</a>
+
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-4">Investigate</div>
+      <a href="HW_PixarV2_Notifications.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-bell"></i>Notifications</a>
+      <a href="HW_PixarV2_Tracker.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-map-marker"></i>Tracker</a>
+      <a href="HW_PixarV2_Reports.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-chart-line"></i>Reports</a>
+
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-4">System</div>
+      <a href="HW_PixarV2_Software_Updates.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-cloud-download"></i>Software Updates</a>
+      <a href="HW_PixarV2_Settings.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-cog"></i>Settings</a>
+    </aside>
+
+    <main style="grid-area:main;" class="p-6 overflow-y-auto space-y-5">
+
+      <!-- KPI strip -->
+      <div class="grid grid-cols-4 gap-4">
+        <div class="p-card"><div class="p-card-body">
+          <div class="text-xs text-slate-500 uppercase tracking-wide">Lockers</div>
+          <div class="text-2xl font-bold mt-1">14</div>
+          <div class="text-xs text-success mt-1"><i class="pi pi-circle-fill text-[8px]"></i> All online</div>
+        </div></div>
+        <div class="p-card"><div class="p-card-body">
+          <div class="text-xs text-slate-500 uppercase tracking-wide">Bays total</div>
+          <div class="text-2xl font-bold mt-1">336</div>
+          <div class="text-xs text-slate-500 mt-1">avg 24 per locker</div>
+        </div></div>
+        <div class="p-card"><div class="p-card-body">
+          <div class="text-xs text-slate-500 uppercase tracking-wide">Bays in use</div>
+          <div class="text-2xl font-bold mt-1">189 <span class="text-base font-medium text-slate-400">/ 336</span></div>
+          <div class="text-xs text-info mt-1">56% utilization</div>
+        </div></div>
+        <div class="p-card"><div class="p-card-body">
+          <div class="text-xs text-slate-500 uppercase tracking-wide">Locations</div>
+          <div class="text-2xl font-bold mt-1">6</div>
+          <div class="text-xs text-slate-500 mt-1">Grand Rapids · Detroit · Lansing · +3</div>
+        </div></div>
+      </div>
+
+      <!-- Tab strip -->
+      <div class="p-tabview">
+        <div class="p-tabview-nav-container"><div class="p-tabview-nav-content"><ul class="p-tabview-nav" role="tablist">
+          <li class="p-tabview-selected p-highlight"><a class="p-tabview-nav-link"><span>Lockers <span class="p-badge p-badge-info ml-2">14</span></span></a></li>
+          <li><a class="p-tabview-nav-link"><span>Locations <span class="p-badge ml-2 bg-slate-200 text-slate-700">6</span></span></a></li>
+          <li><a class="p-tabview-nav-link"><span>Templates <span class="p-badge ml-2 bg-slate-200 text-slate-700">8</span></span></a></li>
+        </ul></div></div>
+      </div>
+
+      <!-- View toggle + filters -->
+      <div class="flex items-center gap-3">
+        <div class="p-selectbutton p-buttonset">
+          <button class="p-button p-highlight"><i class="pi pi-list mr-2"></i>List</button>
+          <button class="p-button p-button-text"><i class="pi pi-th-large mr-2"></i>Tile</button>
+        </div>
+        <div class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input class="p-inputtext p-component" placeholder="Search lockers…" style="padding-left:32px;width:260px;" />
+        </div>
+        <span class="p-tag" style="background:#EFF6FF;color:#1E40AF;">Location: All</span>
+        <span class="p-tag" style="background:#EDE9FE;color:#5B21B6;">Status: All</span>
+        <span class="p-tag" style="background:#FEF3C7;color:#B45309;">3 alerts</span>
+      </div>
+
+      <!-- Lockers DataTable -->
+      <div class="p-datatable p-component p-datatable-sm">
+        <div class="p-datatable-wrapper">
+          <table class="w-full bg-white rounded-lg shadow-sm overflow-hidden">
+            <thead class="p-datatable-thead">
+              <tr class="text-left text-xs uppercase tracking-wide text-slate-500 bg-slate-50">
+                <th class="px-4 py-3 w-10"><input type="checkbox" class="p-checkbox-box" /></th>
+                <th class="px-4 py-3">Locker</th>
+                <th class="px-4 py-3">Location</th>
+                <th class="px-4 py-3">Bays</th>
+                <th class="px-4 py-3">Utilization</th>
+                <th class="px-4 py-3">Status</th>
+                <th class="px-4 py-3">Last sync</th>
+                <th class="px-4 py-3 w-8"></th>
+              </tr>
+            </thead>
+            <tbody class="text-sm divide-y divide-slate-100">
+              <tr class="hover:bg-slate-50">
+                <td class="px-4 py-3"><input type="checkbox" /></td>
+                <td class="px-4 py-3 font-semibold">L-GR-001 <span class="text-slate-400 font-normal">Helen DeVos Lobby</span></td>
+                <td class="px-4 py-3">Grand Rapids</td>
+                <td class="px-4 py-3">24</td>
+                <td class="px-4 py-3"><div class="flex items-center gap-2"><div class="p-progressbar w-24 h-2 bg-slate-100 rounded-full"><div class="bg-brand h-full rounded-full" style="width:67%"></div></div><span class="text-xs font-medium">67%</span></div></td>
+                <td class="px-4 py-3"><span class="p-tag p-tag-success">Online</span></td>
+                <td class="px-4 py-3 text-slate-500">2m ago</td>
+                <td class="px-4 py-3"><i class="pi pi-ellipsis-v text-slate-400 cursor-pointer"></i></td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="px-4 py-3"><input type="checkbox" /></td>
+                <td class="px-4 py-3 font-semibold">L-GR-002 <span class="text-slate-400 font-normal">5th Floor ICU</span></td>
+                <td class="px-4 py-3">Grand Rapids</td>
+                <td class="px-4 py-3">24</td>
+                <td class="px-4 py-3"><div class="flex items-center gap-2"><div class="p-progressbar w-24 h-2 bg-slate-100 rounded-full"><div class="bg-brand h-full rounded-full" style="width:92%"></div></div><span class="text-xs font-medium">92%</span></div></td>
+                <td class="px-4 py-3"><span class="p-tag p-tag-warning">Near capacity</span></td>
+                <td class="px-4 py-3 text-slate-500">just now</td>
+                <td class="px-4 py-3"><i class="pi pi-ellipsis-v text-slate-400 cursor-pointer"></i></td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="px-4 py-3"><input type="checkbox" /></td>
+                <td class="px-4 py-3 font-semibold">L-DET-001 <span class="text-slate-400 font-normal">Beaumont Royal Oak</span></td>
+                <td class="px-4 py-3">Detroit</td>
+                <td class="px-4 py-3">36</td>
+                <td class="px-4 py-3"><div class="flex items-center gap-2"><div class="p-progressbar w-24 h-2 bg-slate-100 rounded-full"><div class="bg-brand h-full rounded-full" style="width:44%"></div></div><span class="text-xs font-medium">44%</span></div></td>
+                <td class="px-4 py-3"><span class="p-tag p-tag-success">Online</span></td>
+                <td class="px-4 py-3 text-slate-500">5m ago</td>
+                <td class="px-4 py-3"><i class="pi pi-ellipsis-v text-slate-400 cursor-pointer"></i></td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="px-4 py-3"><input type="checkbox" /></td>
+                <td class="px-4 py-3 font-semibold">L-DET-002 <span class="text-slate-400 font-normal">ER North</span></td>
+                <td class="px-4 py-3">Detroit</td>
+                <td class="px-4 py-3">24</td>
+                <td class="px-4 py-3"><div class="flex items-center gap-2"><div class="p-progressbar w-24 h-2 bg-slate-100 rounded-full"><div class="bg-danger h-full rounded-full" style="width:0%"></div></div><span class="text-xs font-medium text-danger">Offline</span></div></td>
+                <td class="px-4 py-3"><span class="p-tag p-tag-danger">Offline</span></td>
+                <td class="px-4 py-3 text-slate-500">3h ago</td>
+                <td class="px-4 py-3"><i class="pi pi-ellipsis-v text-slate-400 cursor-pointer"></i></td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="px-4 py-3"><input type="checkbox" /></td>
+                <td class="px-4 py-3 font-semibold">L-LAN-001 <span class="text-slate-400 font-normal">Sparrow Main</span></td>
+                <td class="px-4 py-3">Lansing</td>
+                <td class="px-4 py-3">24</td>
+                <td class="px-4 py-3"><div class="flex items-center gap-2"><div class="p-progressbar w-24 h-2 bg-slate-100 rounded-full"><div class="bg-brand h-full rounded-full" style="width:58%"></div></div><span class="text-xs font-medium">58%</span></div></td>
+                <td class="px-4 py-3"><span class="p-tag p-tag-success">Online</span></td>
+                <td class="px-4 py-3 text-slate-500">1m ago</td>
+                <td class="px-4 py-3"><i class="pi pi-ellipsis-v text-slate-400 cursor-pointer"></i></td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="px-4 py-3"><input type="checkbox" /></td>
+                <td class="px-4 py-3 font-semibold">L-LAN-002 <span class="text-slate-400 font-normal">Rehab Pavilion</span></td>
+                <td class="px-4 py-3">Lansing</td>
+                <td class="px-4 py-3">24</td>
+                <td class="px-4 py-3"><div class="flex items-center gap-2"><div class="p-progressbar w-24 h-2 bg-slate-100 rounded-full"><div class="bg-brand h-full rounded-full" style="width:71%"></div></div><span class="text-xs font-medium">71%</span></div></td>
+                <td class="px-4 py-3"><span class="p-tag p-tag-success">Online</span></td>
+                <td class="px-4 py-3 text-slate-500">just now</td>
+                <td class="px-4 py-3"><i class="pi pi-ellipsis-v text-slate-400 cursor-pointer"></i></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="p-paginator p-component p-paginator-bottom bg-white border-t border-slate-200 px-4 py-3 flex items-center justify-between text-sm">
+          <span class="text-slate-500">Showing 1–6 of 14 lockers</span>
+          <div class="flex items-center gap-2">
+            <button class="p-paginator-prev p-paginator-element p-button p-button-text"><i class="pi pi-angle-left"></i></button>
+            <button class="p-paginator-page p-paginator-element p-highlight">1</button>
+            <button class="p-paginator-page p-paginator-element">2</button>
+            <button class="p-paginator-page p-paginator-element">3</button>
+            <button class="p-paginator-next p-paginator-element p-button p-button-text"><i class="pi pi-angle-right"></i></button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pixar v.2 · Software Updates</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/lara-light-blue/theme.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/primevue.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config={theme:{extend:{colors:{
+      'brand':{DEFAULT:'#2563EB',deep:'#1E40AF',soft:'#EFF6FF'},'pixar':{DEFAULT:'#7C3AED',soft:'#EDE9FE'},
+      'success':{DEFAULT:'#10B981',soft:'#D1FAE5'},'warning':{DEFAULT:'#F59E0B',soft:'#FEF3C7',text:'#B45309'},
+      'danger':{DEFAULT:'#DC2626',soft:'#FEE2E2'},'info':{DEFAULT:'#0EA5E9',soft:'#E0F2FE'},
+    },fontFamily:{sans:['Inter','system-ui','sans-serif']}}}};
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body{font-family:'Inter',system-ui,sans-serif;}
+    :root{--primary-color:#2563EB;--primary-color-text:#fff;--highlight-bg:#EFF6FF;--highlight-text-color:#1E40AF;}
+    .annotation{background:linear-gradient(90deg,#7C3AED,#1E40AF);color:#fff;padding:8px 24px;font-size:12px;display:flex;align-items:center;gap:12px;}
+    .annotation .chip{background:rgba(255,255,255,.2);font-weight:600;padding:2px 7px;border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.04em;}
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+  <div class="annotation">
+    <span class="chip">Pixar v.2</span>
+    <strong>Software Updates.</strong>
+    <span>PrimeVue TabView (Firmware · App · Schedule) · DataTable · ProgressBar · Tag · Dialog for rollout.</span>
+    <span class="ml-auto"><a href="HW_PixarV2_Browse.html" class="underline">← v.2 home</a></span>
+  </div>
+
+  <div class="grid" style="grid-template-columns:232px 1fr;grid-template-rows:56px 1fr;grid-template-areas:'logo top' 'side main';min-height:calc(100vh - 32px);">
+
+    <div style="grid-area:logo;" class="bg-white border-r border-b border-slate-200 flex items-center px-4 gap-2">
+      <div class="w-7 h-7 rounded-md bg-brand grid place-items-center text-white font-bold text-sm">H</div>
+      <span class="font-semibold">HonestWaves</span>
+      <span class="ml-auto p-tag p-tag-info text-xs"><span class="p-tag-value">QA</span></span>
+    </div>
+
+    <div style="grid-area:top;" class="bg-white border-b border-slate-200 flex items-center px-5 gap-3">
+      <div class="text-sm text-slate-500 flex items-center gap-2"><span>System</span><i class="pi pi-angle-right text-xs"></i><strong class="text-slate-900">Software Updates</strong></div>
+      <div class="flex-1"></div>
+      <button class="p-button p-button-outlined p-button-sm"><i class="pi pi-history mr-2"></i>History</button>
+      <button class="p-button p-button-sm"><i class="pi pi-cloud-upload mr-2"></i>Push Update</button>
+      <div class="p-avatar p-component p-avatar-circle ml-2" style="background:#2563EB;color:#fff;"><span>AR</span></div>
+    </div>
+
+    <aside style="grid-area:side;" class="bg-white border-r border-slate-200 p-3 overflow-y-auto">
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-1">Monitor</div>
+      <a href="HW_PixarV2_Dashboard.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-th-large"></i>Dashboard</a>
+      <a href="HW_PixarV2_Mission_Control.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-eye"></i>Mission Control</a>
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-4">Manage</div>
+      <a href="HW_PixarV2_Lockers.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-server"></i>Lockers</a>
+      <a href="HW_PixarV2_Devices.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-mobile"></i>Devices</a>
+      <a href="HW_PixarV2_Users.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-users"></i>Users</a>
+      <a href="HW_PixarV2_Access_Matrix.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-key"></i>Access Matrix</a>
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-4">Investigate</div>
+      <a href="HW_PixarV2_Notifications.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-bell"></i>Notifications</a>
+      <a href="HW_PixarV2_Tracker.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-map-marker"></i>Tracker</a>
+      <a href="HW_PixarV2_Reports.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-chart-line"></i>Reports</a>
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-4">System</div>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold bg-brand-soft text-brand-deep border-l-2 border-brand -ml-1"><i class="pi pi-cloud-download"></i>Software Updates</a>
+      <a href="HW_PixarV2_Settings.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-cog"></i>Settings</a>
+    </aside>
+
+    <main style="grid-area:main;" class="p-6 overflow-y-auto space-y-5">
+
+      <!-- Live rollout banner -->
+      <div class="rounded-xl p-4 flex items-center gap-4 border-l-4 border-brand bg-brand-soft">
+        <i class="pi pi-cloud-download text-3xl text-brand-deep"></i>
+        <div class="flex-1">
+          <div class="font-semibold text-brand-deep">Rolling out: Locker firmware 4.12.2 → 4.13.0</div>
+          <div class="text-xs text-slate-600 mt-0.5">Phased rollout · Grand Rapids first · QA approved May 28 by James Tan</div>
+          <div class="p-progressbar h-2 bg-white rounded-full mt-2 overflow-hidden">
+            <div class="bg-brand h-full" style="width:64%"></div>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-sm font-bold">9 of 14</div>
+          <div class="text-xs text-slate-500">lockers complete</div>
+        </div>
+        <button class="p-button p-button-outlined p-button-sm">View detail</button>
+      </div>
+
+      <!-- KPI strip -->
+      <div class="grid grid-cols-4 gap-4">
+        <div class="p-card"><div class="p-card-body"><div class="text-xs text-slate-500 uppercase">Pending</div><div class="text-2xl font-bold mt-1 text-warning">87</div><div class="text-xs text-slate-500 mt-1">devices awaiting APK</div></div></div>
+        <div class="p-card"><div class="p-card-body"><div class="text-xs text-slate-500 uppercase">In progress</div><div class="text-2xl font-bold mt-1 text-info">12</div><div class="text-xs text-slate-500 mt-1">currently updating</div></div></div>
+        <div class="p-card"><div class="p-card-body"><div class="text-xs text-slate-500 uppercase">Failed (24h)</div><div class="text-2xl font-bold mt-1 text-danger">3</div><div class="text-xs text-slate-500 mt-1">needs investigation</div></div></div>
+        <div class="p-card"><div class="p-card-body"><div class="text-xs text-slate-500 uppercase">Up to date</div><div class="text-2xl font-bold mt-1 text-success">1,145</div><div class="text-xs text-slate-500 mt-1">92% of fleet</div></div></div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="p-tabview">
+        <div class="p-tabview-nav-container"><div class="p-tabview-nav-content"><ul class="p-tabview-nav">
+          <li class="p-tabview-selected p-highlight"><a class="p-tabview-nav-link"><span>Locker firmware</span></a></li>
+          <li><a class="p-tabview-nav-link"><span>Device APK</span></a></li>
+          <li><a class="p-tabview-nav-link"><span>Scheduled rollouts</span></a></li>
+          <li><a class="p-tabview-nav-link"><span>Release notes</span></a></li>
+        </ul></div></div>
+      </div>
+
+      <div class="p-datatable p-datatable-sm">
+        <table class="w-full bg-white rounded-lg shadow-sm overflow-hidden">
+          <thead>
+            <tr class="text-left text-xs uppercase tracking-wide text-slate-500 bg-slate-50">
+              <th class="px-4 py-3">Locker</th>
+              <th class="px-4 py-3">Location</th>
+              <th class="px-4 py-3">Current FW</th>
+              <th class="px-4 py-3">Target</th>
+              <th class="px-4 py-3">Progress</th>
+              <th class="px-4 py-3">Status</th>
+              <th class="px-4 py-3">Started</th>
+              <th class="px-4 py-3 w-8"></th>
+            </tr>
+          </thead>
+          <tbody class="text-sm divide-y divide-slate-100">
+            <tr class="hover:bg-slate-50"><td class="px-4 py-3 font-semibold">L-GR-001</td><td class="px-4 py-3">Grand Rapids</td><td class="px-4 py-3 font-mono text-xs">4.13.0</td><td class="px-4 py-3 font-mono text-xs">4.13.0</td><td class="px-4 py-3"><div class="p-progressbar w-32 h-2 bg-slate-100 rounded-full"><div class="bg-success h-full rounded-full" style="width:100%"></div></div></td><td class="px-4 py-3"><span class="p-tag p-tag-success">Complete</span></td><td class="px-4 py-3 text-slate-500">2h ago</td><td class="px-4 py-3"><i class="pi pi-ellipsis-v text-slate-400"></i></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-4 py-3 font-semibold">L-GR-002</td><td class="px-4 py-3">Grand Rapids</td><td class="px-4 py-3 font-mono text-xs">4.12.2 → <span class="text-brand">4.13.0</span></td><td class="px-4 py-3 font-mono text-xs">4.13.0</td><td class="px-4 py-3"><div class="p-progressbar w-32 h-2 bg-slate-100 rounded-full"><div class="bg-brand h-full rounded-full" style="width:68%"></div></div></td><td class="px-4 py-3"><span class="p-tag" style="background:#E0F2FE;color:#0369A1;">Installing · 68%</span></td><td class="px-4 py-3 text-slate-500">6m ago</td><td class="px-4 py-3"><i class="pi pi-ellipsis-v text-slate-400"></i></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-4 py-3 font-semibold">L-DET-001</td><td class="px-4 py-3">Detroit</td><td class="px-4 py-3 font-mono text-xs">4.12.2</td><td class="px-4 py-3 font-mono text-xs">4.13.0</td><td class="px-4 py-3"><div class="p-progressbar w-32 h-2 bg-slate-100 rounded-full"><div class="bg-warning h-full rounded-full" style="width:0%"></div></div></td><td class="px-4 py-3"><span class="p-tag p-tag-warning">Queued · Jun 18 02:00</span></td><td class="px-4 py-3 text-slate-500">—</td><td class="px-4 py-3"><i class="pi pi-ellipsis-v text-slate-400"></i></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-4 py-3 font-semibold">L-DET-002</td><td class="px-4 py-3">Detroit</td><td class="px-4 py-3 font-mono text-xs">4.11.0</td><td class="px-4 py-3 font-mono text-xs">4.13.0</td><td class="px-4 py-3"><div class="p-progressbar w-32 h-2 bg-slate-100 rounded-full"><div class="bg-danger h-full rounded-full" style="width:32%"></div></div></td><td class="px-4 py-3"><span class="p-tag p-tag-danger">Failed · Locker offline</span></td><td class="px-4 py-3 text-slate-500">3h ago</td><td class="px-4 py-3"><i class="pi pi-ellipsis-v text-slate-400"></i></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-4 py-3 font-semibold">L-LAN-001</td><td class="px-4 py-3">Lansing</td><td class="px-4 py-3 font-mono text-xs">4.13.0</td><td class="px-4 py-3 font-mono text-xs">4.13.0</td><td class="px-4 py-3"><div class="p-progressbar w-32 h-2 bg-slate-100 rounded-full"><div class="bg-success h-full rounded-full" style="width:100%"></div></div></td><td class="px-4 py-3"><span class="p-tag p-tag-success">Complete</span></td><td class="px-4 py-3 text-slate-500">yesterday</td><td class="px-4 py-3"><i class="pi pi-ellipsis-v text-slate-400"></i></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-4 py-3 font-semibold">L-LAN-002</td><td class="px-4 py-3">Lansing</td><td class="px-4 py-3 font-mono text-xs">4.12.2</td><td class="px-4 py-3 font-mono text-xs">4.13.0</td><td class="px-4 py-3"><div class="p-progressbar w-32 h-2 bg-slate-100 rounded-full"><div class="bg-slate-300 h-full rounded-full" style="width:0%"></div></div></td><td class="px-4 py-3"><span class="p-tag" style="background:#F1F5F9;color:#475569;">Scheduled · Jun 19</span></td><td class="px-4 py-3 text-slate-500">—</td><td class="px-4 py-3"><i class="pi pi-ellipsis-v text-slate-400"></i></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </main>
+  </div>
+</body>
+</html>

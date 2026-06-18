@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pixar v.2 · Modals &amp; States</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/lara-light-blue/theme.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/primevue.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config={theme:{extend:{colors:{
+      'brand':{DEFAULT:'#2563EB',deep:'#1E40AF',soft:'#EFF6FF'},'pixar':{DEFAULT:'#7C3AED',soft:'#EDE9FE'},
+      'success':{DEFAULT:'#10B981',soft:'#D1FAE5'},'warning':{DEFAULT:'#F59E0B',soft:'#FEF3C7',text:'#B45309'},
+      'danger':{DEFAULT:'#DC2626',soft:'#FEE2E2'},'info':{DEFAULT:'#0EA5E9',soft:'#E0F2FE'},
+    },fontFamily:{sans:['Inter','system-ui','sans-serif']}}}};
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body{font-family:'Inter',system-ui,sans-serif;}
+    :root{--primary-color:#2563EB;--primary-color-text:#fff;--highlight-bg:#EFF6FF;--highlight-text-color:#1E40AF;}
+    .annotation{background:linear-gradient(90deg,#7C3AED,#1E40AF);color:#fff;padding:8px 24px;font-size:12px;display:flex;align-items:center;gap:12px;}
+    .annotation .chip{background:rgba(255,255,255,.2);font-weight:600;padding:2px 7px;border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.04em;}
+    .preview{background:white;border:1px solid #E2E8F0;border-radius:12px;padding:20px;box-shadow:0 4px 12px rgba(15,23,42,.06);}
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+  <div class="annotation">
+    <span class="chip">Pixar v.2</span>
+    <strong>Modals &amp; States.</strong>
+    <span>PrimeVue Dialog · ConfirmDialog · Sidebar (drawer) · Toast · Skeleton · plus error/empty patterns.</span>
+    <span class="ml-auto"><a href="HW_PixarV2_Browse.html" class="underline">← v.2 home</a></span>
+  </div>
+
+  <div class="grid" style="grid-template-columns:232px 1fr;grid-template-rows:56px 1fr;grid-template-areas:'logo top' 'side main';min-height:calc(100vh - 32px);">
+
+    <div style="grid-area:logo;" class="bg-white border-r border-b border-slate-200 flex items-center px-4 gap-2">
+      <div class="w-7 h-7 rounded-md bg-brand grid place-items-center text-white font-bold text-sm">H</div>
+      <span class="font-semibold">HonestWaves</span>
+      <span class="ml-auto p-tag p-tag-info text-xs"><span class="p-tag-value">QA</span></span>
+    </div>
+
+    <div style="grid-area:top;" class="bg-white border-b border-slate-200 flex items-center px-5 gap-3">
+      <div class="text-sm text-slate-500 flex items-center gap-2"><span>Reference</span><i class="pi pi-angle-right text-xs"></i><strong class="text-slate-900">Modals &amp; States</strong></div>
+      <div class="flex-1"></div>
+      <a href="HW_PixarV2_Components.html" class="p-button p-button-outlined p-button-sm"><i class="pi pi-th-large mr-2"></i>Component reference</a>
+      <div class="p-avatar p-component p-avatar-circle ml-2" style="background:#2563EB;color:#fff;"><span>AR</span></div>
+    </div>
+
+    <aside style="grid-area:side;" class="bg-white border-r border-slate-200 p-3 overflow-y-auto">
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-1">Patterns</div>
+      <a href="#dialogs" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold bg-brand-soft text-brand-deep"><i class="pi pi-window-maximize"></i>Dialogs</a>
+      <a href="#drawers" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-arrow-right"></i>Drawers</a>
+      <a href="#confirm" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-question-circle"></i>Confirms</a>
+      <a href="#toasts" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-bell"></i>Toasts</a>
+      <a href="#empty" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-inbox"></i>Empty states</a>
+      <a href="#error" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-exclamation-triangle"></i>Error states</a>
+      <a href="#loading" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-spinner"></i>Loading</a>
+      <div class="border-t border-slate-100 mt-4 pt-4">
+        <a href="HW_PixarV2_Browse.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-home"></i>v.2 home</a>
+      </div>
+    </aside>
+
+    <main style="grid-area:main;" class="p-6 overflow-y-auto space-y-8 max-w-5xl">
+
+      <section id="dialogs">
+        <h2 class="text-lg font-bold mb-3">Dialogs</h2>
+        <div class="grid grid-cols-2 gap-5">
+          <div class="preview">
+            <div class="text-xs text-slate-500 uppercase font-bold mb-3">Edit user · medium</div>
+            <div class="p-dialog p-component p-dialog-default" style="position:relative;width:auto;">
+              <div class="p-dialog-header bg-white border-b border-slate-200 px-4 py-3 flex items-center"><span class="p-dialog-title font-semibold">Edit user · Crosby Smith</span><button class="ml-auto p-dialog-header-close"><i class="pi pi-times text-slate-400"></i></button></div>
+              <div class="p-dialog-content p-4 space-y-3 text-sm">
+                <div><label class="text-xs font-semibold uppercase text-slate-500">Display name</label><input class="p-inputtext p-component w-full mt-1" value="Crosby Smith" /></div>
+                <div><label class="text-xs font-semibold uppercase text-slate-500">Department</label><div class="p-dropdown w-full mt-1 bg-slate-50 border rounded px-3 py-2 flex justify-between cursor-pointer"><span>ER North</span><i class="pi pi-angle-down text-slate-400"></i></div></div>
+                <div class="flex items-center justify-between pt-2"><span class="text-sm">Lock account</span><span class="p-inputswitch p-inputswitch-checked"><span class="p-inputswitch-slider"></span></span></div>
+              </div>
+              <div class="p-dialog-footer bg-slate-50 border-t border-slate-200 px-4 py-3 flex gap-2 justify-end"><button class="p-button p-button-text">Cancel</button><button class="p-button">Save</button></div>
+            </div>
+          </div>
+          <div class="preview">
+            <div class="text-xs text-slate-500 uppercase font-bold mb-3">Bulk action · slim</div>
+            <div class="p-dialog p-component p-dialog-default" style="position:relative;width:auto;">
+              <div class="p-dialog-header bg-white border-b border-slate-200 px-4 py-3 flex items-center"><i class="pi pi-info-circle text-info mr-2"></i><span class="p-dialog-title font-semibold">Send 47 reminders</span><button class="ml-auto p-dialog-header-close"><i class="pi pi-times text-slate-400"></i></button></div>
+              <div class="p-dialog-content p-4 text-sm text-slate-700">Notify all 47 users whose devices are overdue. They'll receive an email + in-app banner. This action is logged.</div>
+              <div class="p-dialog-footer bg-slate-50 border-t border-slate-200 px-4 py-3 flex gap-2 justify-end"><button class="p-button p-button-text">Cancel</button><button class="p-button">Send</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="drawers">
+        <h2 class="text-lg font-bold mb-3">Drawers (Sidebar)</h2>
+        <div class="preview">
+          <div class="text-xs text-slate-500 uppercase font-bold mb-3">Right-side drawer · device detail</div>
+          <div class="bg-slate-100 rounded-lg p-4 relative overflow-hidden" style="height:340px;">
+            <div class="absolute top-0 right-0 h-full w-[380px] bg-white border-l border-slate-200 shadow-2xl p-5 overflow-y-auto">
+              <div class="flex items-center"><span class="p-tag p-tag-danger">Lost</span><button class="ml-auto"><i class="pi pi-times text-slate-400"></i></button></div>
+              <h3 class="text-xl font-bold mt-3">PHN-0017</h3>
+              <div class="text-xs text-slate-500">Zebra TC52 · SN-A8F7-22135</div>
+              <div class="border-t border-slate-100 my-4"></div>
+              <div class="text-xs font-semibold uppercase text-slate-500 mb-2">Holder</div>
+              <div class="flex items-center gap-2 mb-3"><div class="p-avatar p-avatar-circle" style="background:#DC2626;color:white;font-size:11px;">MR</div><div><div class="text-sm font-semibold">Maria Reyes</div><div class="text-xs text-slate-500">ICU 5N · 14 days</div></div></div>
+              <div class="text-xs font-semibold uppercase text-slate-500 mb-2">Recent events</div>
+              <ul class="text-xs space-y-1 text-slate-600"><li>Jun 17 09:14 · Marked lost</li><li>Jun 10 06:00 · 7-day warning sent</li><li>Jun 3 18:42 · Checked out · Bay 17</li></ul>
+              <div class="flex gap-2 mt-4"><button class="p-button p-button-sm flex-1"><i class="pi pi-flag mr-2"></i>Reassign</button><button class="p-button p-button-outlined p-button-sm flex-1">Open trail</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="confirm">
+        <h2 class="text-lg font-bold mb-3">Confirm dialogs</h2>
+        <div class="grid grid-cols-2 gap-5">
+          <div class="preview">
+            <div class="text-xs text-slate-500 uppercase font-bold mb-3">Destructive</div>
+            <div class="p-dialog p-component" style="position:relative;">
+              <div class="p-dialog-content p-5 flex gap-4">
+                <i class="pi pi-exclamation-triangle text-2xl text-danger"></i>
+                <div><div class="font-semibold">Delete Maria Reyes?</div><div class="text-sm text-slate-500 mt-1">This will revoke all device grants and remove audit access. This cannot be undone.</div></div>
+              </div>
+              <div class="p-dialog-footer bg-slate-50 border-t px-4 py-3 flex gap-2 justify-end"><button class="p-button p-button-text">Cancel</button><button class="p-button p-button-danger">Delete</button></div>
+            </div>
+          </div>
+          <div class="preview">
+            <div class="text-xs text-slate-500 uppercase font-bold mb-3">Informational</div>
+            <div class="p-dialog p-component" style="position:relative;">
+              <div class="p-dialog-content p-5 flex gap-4">
+                <i class="pi pi-info-circle text-2xl text-info"></i>
+                <div><div class="font-semibold">Push firmware 4.13.0?</div><div class="text-sm text-slate-500 mt-1">Phased rollout across 14 lockers. Estimated 2h. Lockers will be offline ~6 min each.</div></div>
+              </div>
+              <div class="p-dialog-footer bg-slate-50 border-t px-4 py-3 flex gap-2 justify-end"><button class="p-button p-button-text">Cancel</button><button class="p-button">Push</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="toasts">
+        <h2 class="text-lg font-bold mb-3">Toasts</h2>
+        <div class="space-y-3 max-w-md">
+          <div class="rounded-lg border-l-4 border-success bg-white shadow p-3 flex items-center gap-3"><i class="pi pi-check-circle text-success"></i><div class="flex-1"><div class="text-sm font-semibold">Saved</div><div class="text-xs text-slate-500">Branding changes published.</div></div><i class="pi pi-times text-slate-300 cursor-pointer"></i></div>
+          <div class="rounded-lg border-l-4 border-warning bg-white shadow p-3 flex items-center gap-3"><i class="pi pi-exclamation-circle text-warning"></i><div class="flex-1"><div class="text-sm font-semibold">3 lockers still need approval</div><div class="text-xs text-slate-500">Detroit batch — Jun 18 02:00.</div></div><i class="pi pi-times text-slate-300 cursor-pointer"></i></div>
+          <div class="rounded-lg border-l-4 border-danger bg-white shadow p-3 flex items-center gap-3"><i class="pi pi-times-circle text-danger"></i><div class="flex-1"><div class="text-sm font-semibold">L-DET-002 firmware push failed</div><div class="text-xs text-slate-500">Locker offline · auto-retry in 1h.</div></div><i class="pi pi-times text-slate-300 cursor-pointer"></i></div>
+          <div class="rounded-lg border-l-4 border-info bg-white shadow p-3 flex items-center gap-3"><i class="pi pi-info-circle text-info"></i><div class="flex-1"><div class="text-sm font-semibold">Maintenance window in 1h</div><div class="text-xs text-slate-500">All kiosks will reboot at 02:00 ET.</div></div><i class="pi pi-times text-slate-300 cursor-pointer"></i></div>
+        </div>
+      </section>
+
+      <section id="empty">
+        <h2 class="text-lg font-bold mb-3">Empty states</h2>
+        <div class="grid grid-cols-2 gap-5">
+          <div class="preview text-center py-10">
+            <div class="w-16 h-16 rounded-full bg-brand-soft grid place-items-center mx-auto"><i class="pi pi-search text-2xl text-brand"></i></div>
+            <div class="font-semibold mt-3">No devices match</div>
+            <div class="text-sm text-slate-500 mt-1">Try clearing filters or searching by serial.</div>
+            <button class="p-button p-button-outlined p-button-sm mt-4"><i class="pi pi-filter-slash mr-2"></i>Clear filters</button>
+          </div>
+          <div class="preview text-center py-10">
+            <div class="w-16 h-16 rounded-full bg-pixar-soft grid place-items-center mx-auto"><i class="pi pi-users text-2xl text-pixar"></i></div>
+            <div class="font-semibold mt-3">No users yet</div>
+            <div class="text-sm text-slate-500 mt-1">Invite your first team member or import from CSV.</div>
+            <div class="flex gap-2 justify-center mt-4"><button class="p-button p-button-sm"><i class="pi pi-user-plus mr-2"></i>Invite</button><button class="p-button p-button-outlined p-button-sm"><i class="pi pi-upload mr-2"></i>Import CSV</button></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="error">
+        <h2 class="text-lg font-bold mb-3">Error states</h2>
+        <div class="grid grid-cols-2 gap-5">
+          <div class="preview text-center py-10">
+            <div class="w-16 h-16 rounded-full bg-danger-soft grid place-items-center mx-auto"><i class="pi pi-times-circle text-2xl text-danger"></i></div>
+            <div class="font-semibold mt-3">Couldn't reach the locker</div>
+            <div class="text-sm text-slate-500 mt-1">L-DET-002 hasn't checked in for 3h.</div>
+            <button class="p-button p-button-sm mt-4"><i class="pi pi-refresh mr-2"></i>Retry</button>
+          </div>
+          <div class="preview text-center py-10">
+            <div class="w-16 h-16 rounded-full bg-slate-100 grid place-items-center mx-auto"><i class="pi pi-lock text-2xl text-slate-400"></i></div>
+            <div class="font-semibold mt-3">Permission denied</div>
+            <div class="text-sm text-slate-500 mt-1">Your role doesn't include access to Master Keys.</div>
+            <button class="p-button p-button-outlined p-button-sm mt-4">Request access</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="loading">
+        <h2 class="text-lg font-bold mb-3">Loading (Skeleton)</h2>
+        <div class="preview">
+          <div class="space-y-3">
+            <div class="p-skeleton bg-slate-100 rounded-md h-4 w-2/3 animate-pulse"></div>
+            <div class="p-skeleton bg-slate-100 rounded-md h-4 w-1/2 animate-pulse"></div>
+            <div class="p-skeleton bg-slate-100 rounded-md h-4 w-3/4 animate-pulse"></div>
+            <div class="grid grid-cols-3 gap-3 mt-4">
+              <div class="p-skeleton bg-slate-100 rounded-md h-24 animate-pulse"></div>
+              <div class="p-skeleton bg-slate-100 rounded-md h-24 animate-pulse"></div>
+              <div class="p-skeleton bg-slate-100 rounded-md h-24 animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</body>
+</html>
