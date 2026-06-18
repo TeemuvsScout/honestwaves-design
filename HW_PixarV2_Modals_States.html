@@ -1,205 +1,660 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Pixar v.2 · Modals &amp; States</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/lara-light-blue/theme.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/primevue.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config={theme:{extend:{colors:{
-      'brand':{DEFAULT:'#2563EB',deep:'#1E40AF',soft:'#EFF6FF'},'pixar':{DEFAULT:'#7C3AED',soft:'#EDE9FE'},
-      'success':{DEFAULT:'#10B981',soft:'#D1FAE5'},'warning':{DEFAULT:'#F59E0B',soft:'#FEF3C7',text:'#B45309'},
-      'danger':{DEFAULT:'#DC2626',soft:'#FEE2E2'},'info':{DEFAULT:'#0EA5E9',soft:'#E0F2FE'},
-    },fontFamily:{sans:['Inter','system-ui','sans-serif']}}}};
-  </script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HonestWaves redesign · 12 · Modals &amp; states</title>
   <style>
-    body{font-family:'Inter',system-ui,sans-serif;}
-    :root{--primary-color:#2563EB;--primary-color-text:#fff;--highlight-bg:#EFF6FF;--highlight-text-color:#1E40AF;}
-    .annotation{background:linear-gradient(90deg,#7C3AED,#1E40AF);color:#fff;padding:8px 24px;font-size:12px;display:flex;align-items:center;gap:12px;}
-    .annotation .chip{background:rgba(255,255,255,.2);font-weight:600;padding:2px 7px;border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.04em;}
-    .preview{background:white;border:1px solid #E2E8F0;border-radius:12px;padding:20px;box-shadow:0 4px 12px rgba(15,23,42,.06);}
+    :root{
+      --c-surface:#FFFFFF; --c-surface-2:#FAFAFB; --c-surface-3:#F4F5F7;
+      --c-border:#E5E7EB; --c-border-strong:#D1D5DB; --c-divider:#EDF0F4;
+      --c-text:#0F172A; --c-text-2:#475569; --c-text-muted:#94A3B8;
+      --c-brand:#2563EB; --c-brand-hover:#1D4ED8; --c-brand-soft:#EFF6FF; --c-brand-deep:#1E40AF;
+      --c-success:#10B981; --c-success-soft:#ECFDF5;
+      --c-warning:#F59E0B; --c-warning-soft:#FFFBEB; --c-warning-text:#B45309;
+      --c-danger:#EF4444; --c-danger-soft:#FEF2F2;
+      --c-info:#6366F1; --c-info-soft:#EEF2FF;
+      --c-violet:#7C3AED; --c-violet-soft:#F5F3FF;
+      --c-cyan:#06B6D4; --c-cyan-soft:#ECFEFF;
+      --c-slate:#64748B; --c-slate-soft:#F1F5F9;
+      --font-sans:"Inter",-apple-system,sans-serif;
+      --font-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+      --t-10:10px; --t-11:11px; --t-12:12px; --t-13:13px; --t-14:14px; --t-16:16px; --t-20:20px;
+      --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:20px; --s-6:24px; --s-8:32px;
+      --r-sm:4px; --r-md:6px; --r-lg:8px;
+      --sh-1:0 1px 2px rgba(15,23,42,.04);
+      --sh-modal:0 16px 48px rgba(15,23,42,.20),0 2px 8px rgba(15,23,42,.08);
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    body{margin:0;font-family:var(--font-sans);font-size:var(--t-13);line-height:1.5;color:var(--c-text);background:var(--c-surface-2);-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+    svg{display:block}
+
+    /* Top banner */
+    .topbanner{background:linear-gradient(90deg,var(--c-brand-soft),#F0F7FF);border-bottom:1px solid #DBEAFE;padding:8px 24px;font-size:var(--t-12);color:var(--c-brand-deep);display:flex;align-items:center;gap:12px}
+    .topbanner strong{color:var(--c-brand-deep)}
+    .topbanner .chip{background:var(--c-brand);color:white;font-weight:600;padding:2px 7px;border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.04em}
+
+    /* Page header */
+    .page{max-width:1280px;margin:0 auto;padding:48px 24px 96px}
+    .page-eyebrow{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--c-brand-soft);color:var(--c-brand-deep);border-radius:999px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:20px}
+    .page-h{font-size:32px;letter-spacing:-.02em;font-weight:700;margin:0 0 12px;line-height:1.1}
+    .page-lede{font-size:16px;color:var(--c-text-2);max-width:680px;margin:0 0 48px}
+
+    /* Section */
+    .section{margin-bottom:64px}
+    .section-h{display:flex;align-items:baseline;gap:12px;margin-bottom:8px}
+    .section-num{font-family:var(--font-mono);font-size:13px;color:var(--c-text-muted);font-weight:600}
+    .section-title{font-size:22px;font-weight:600;letter-spacing:-.015em;margin:0}
+    .section-sub{font-size:14px;color:var(--c-text-2);margin:0 0 24px;max-width:600px}
+
+    /* Pattern card */
+    .pattern{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:16px}
+    .pattern-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;border-bottom:1px solid var(--c-divider);background:var(--c-surface-2)}
+    .pattern-title{font-size:var(--t-13);font-weight:600;margin:0}
+    .pattern-meta{font-size:var(--t-11);color:var(--c-text-muted);font-family:var(--font-mono)}
+    .pattern-body{padding:32px 20px;display:flex;align-items:center;justify-content:center;min-height:120px;background:var(--c-surface-3);position:relative}
+    .pattern-body.tight{padding:20px;min-height:80px}
+
+    /* Buttons (reused everywhere) */
+    .btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 14px;font-size:var(--t-12);font-weight:600;color:var(--c-text);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);box-shadow:var(--sh-1)}
+    .btn:hover{background:var(--c-surface-3);border-color:var(--c-border-strong)}
+    .btn.primary{background:var(--c-brand);color:white;border-color:var(--c-brand)}
+    .btn.primary:hover{background:var(--c-brand-hover);border-color:var(--c-brand-hover)}
+    .btn.danger{background:var(--c-danger);color:white;border-color:var(--c-danger)}
+    .btn.danger:hover{background:#DC2626;border-color:#DC2626}
+    .btn.ghost{background:transparent;border-color:transparent;box-shadow:none}
+
+    /* ============================================================
+       MODAL pattern
+       ============================================================ */
+    .modal{width:480px;background:var(--c-surface);border-radius:var(--r-lg);box-shadow:var(--sh-modal);overflow:hidden}
+    .modal-head{padding:24px 24px 0;display:flex;align-items:flex-start;gap:16px}
+    .modal-icon{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex-shrink:0}
+    .modal-icon.danger{background:var(--c-danger-soft);color:var(--c-danger)}
+    .modal-icon.warn{background:var(--c-warning-soft);color:var(--c-warning-text)}
+    .modal-icon.brand{background:var(--c-brand-soft);color:var(--c-brand)}
+    .modal-icon.violet{background:var(--c-violet-soft);color:var(--c-violet)}
+    .modal-title{font-size:var(--t-16);font-weight:600;margin:0 0 6px;letter-spacing:-.005em}
+    .modal-body{padding:0 24px 24px 80px;font-size:var(--t-13);color:var(--c-text-2);line-height:1.55}
+    .modal-body strong{color:var(--c-text);font-weight:600}
+    .modal-foot{padding:14px 24px;background:var(--c-surface-2);border-top:1px solid var(--c-border);display:flex;justify-content:flex-end;gap:8px}
+    .modal-foot.has-secondary{justify-content:space-between}
+
+    /* Add-locker modal — taller with form */
+    .modal.form{width:520px}
+    .modal.form .modal-body{padding:0 24px 24px;margin-top:8px;color:var(--c-text)}
+    .modal.form .modal-body p{font-size:var(--t-12);color:var(--c-text-2);margin:0 0 16px}
+    .modal-field{margin-bottom:14px}
+    .modal-field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .modal-field label{display:block;font-size:var(--t-12);font-weight:600;margin-bottom:5px}
+    .modal-field label .req{color:var(--c-danger);margin-left:2px}
+    .modal-field .input{display:flex;align-items:center;height:34px;padding:0 10px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);font-size:var(--t-13)}
+    .modal-field .input.error{border-color:var(--c-danger);box-shadow:0 0 0 3px var(--c-danger-soft)}
+    .modal-field input{flex:1;height:100%;border:0;background:transparent;outline:none;font:inherit;color:inherit}
+    .modal-field .help{font-size:var(--t-11);color:var(--c-text-muted);margin-top:5px}
+    .modal-field .help.error{color:var(--c-danger)}
+
+    /* Hardware confirm — press-and-hold */
+    .ph-btn{height:36px;padding:0 16px;background:var(--c-danger);color:white;border-radius:var(--r-md);font-weight:600;font-size:var(--t-12);position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:6px}
+    .ph-btn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:30%;background:rgba(255,255,255,.2);transition:width .15s}
+    .ph-btn:active::before{width:100%;transition-duration:1.5s}
+
+    /* ============================================================
+       TOAST pattern
+       ============================================================ */
+    .toast{display:inline-flex;align-items:center;gap:12px;background:var(--c-text);color:white;padding:10px 14px 10px 12px;border-radius:var(--r-md);box-shadow:0 8px 24px rgba(15,23,42,.18);min-width:280px;max-width:420px}
+    .toast-icon{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;flex-shrink:0}
+    .toast-icon.success{background:rgba(16,185,129,.2);color:#6EE7B7}
+    .toast-icon.danger{background:rgba(239,68,68,.2);color:#FCA5A5}
+    .toast-icon.info{background:rgba(99,102,241,.2);color:#A5B4FC}
+    .toast-icon.loading{background:rgba(99,102,241,.2);color:#A5B4FC}
+    .toast-icon.loading::after{content:"";display:block;width:12px;height:12px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .toast-text{flex:1;font-size:var(--t-12);font-weight:500;line-height:1.4}
+    .toast-text strong{font-weight:600}
+    .toast-action{color:#93C5FD;font-weight:600;font-size:var(--t-12);padding:4px 8px;border-radius:var(--r-sm)}
+    .toast-action:hover{background:rgba(255,255,255,.1)}
+    .toast-close{color:rgba(255,255,255,.5);width:20px;height:20px;display:grid;place-items:center;border-radius:4px}
+    .toast-close:hover{color:white;background:rgba(255,255,255,.1)}
+
+    /* ============================================================
+       EMPTY STATE pattern
+       ============================================================ */
+    .empty{display:flex;flex-direction:column;align-items:center;text-align:center;padding:32px 24px;max-width:420px}
+    .empty-art{width:64px;height:64px;border-radius:50%;background:var(--c-surface-3);color:var(--c-text-muted);display:grid;place-items:center;margin-bottom:14px}
+    .empty-title{font-size:var(--t-16);font-weight:600;margin:0 0 6px;letter-spacing:-.005em}
+    .empty-sub{font-size:var(--t-12);color:var(--c-text-2);margin:0 0 16px;line-height:1.55}
+    .empty-cta{display:flex;gap:8px}
+
+    /* ============================================================
+       ERROR PAGE pattern
+       ============================================================ */
+    .err{display:flex;flex-direction:column;align-items:center;text-align:center;padding:40px 24px}
+    .err-code{font-family:var(--font-mono);font-size:13px;color:var(--c-text-muted);font-weight:600;margin-bottom:8px;letter-spacing:.06em;text-transform:uppercase}
+    .err-h{font-size:24px;font-weight:700;letter-spacing:-.015em;margin:0 0 8px}
+    .err-sub{font-size:14px;color:var(--c-text-2);max-width:420px;margin:0 0 20px;line-height:1.55}
+    .err-meta{display:inline-block;font-family:var(--font-mono);font-size:11px;color:var(--c-text-muted);background:var(--c-surface-3);padding:3px 8px;border-radius:4px;margin-top:14px}
+
+    /* ============================================================
+       FORM VALIDATION inline
+       ============================================================ */
+    .validation-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:680px;width:100%}
+    .vfield{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);padding:14px}
+    .vfield label{display:block;font-size:var(--t-12);font-weight:600;margin-bottom:6px}
+    .vfield .input{display:flex;align-items:center;height:34px;padding:0 10px;background:var(--c-surface);border:1.5px solid var(--c-border);border-radius:var(--r-md);font-size:var(--t-13)}
+    .vfield .input.error{border-color:var(--c-danger);box-shadow:0 0 0 3px var(--c-danger-soft)}
+    .vfield .input.success{border-color:var(--c-success);box-shadow:0 0 0 3px var(--c-success-soft)}
+    .vfield input{flex:1;height:100%;border:0;background:transparent;outline:none;font:inherit;color:inherit}
+    .vfield .msg{display:flex;align-items:flex-start;gap:5px;font-size:var(--t-11);margin-top:6px;line-height:1.4}
+    .vfield .msg.error{color:var(--c-danger)}
+    .vfield .msg.success{color:var(--c-success)}
+    .vfield .msg svg{flex-shrink:0;margin-top:1px;width:11px;height:11px}
+
+    /* ============================================================
+       LOADING skeleton
+       ============================================================ */
+    .skeleton{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);padding:16px;width:100%;max-width:520px}
+    .sk-line{height:11px;background:linear-gradient(90deg,var(--c-surface-3) 0%,var(--c-border) 50%,var(--c-surface-3) 100%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:4px;margin-bottom:8px}
+    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+    .sk-line.short{width:40%}
+    .sk-line.medium{width:70%}
+    .sk-line.long{width:90%}
+    .sk-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--c-divider)}
+    .sk-row:last-child{border-bottom:0}
+    .sk-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(90deg,var(--c-surface-3) 0%,var(--c-border) 50%,var(--c-surface-3) 100%);background-size:200% 100%;animation:shimmer 1.4s infinite;flex-shrink:0}
+    .sk-row .lines{flex:1}
+
+    /* Tooltip / "what" label */
+    .label-callout{font-size:var(--t-11);color:var(--c-text-muted);background:var(--c-surface);border:1px solid var(--c-border);padding:6px 10px;border-radius:6px;position:absolute;bottom:8px;left:8px;font-family:var(--font-mono)}
+
+    .legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+    .legend-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:999px;font-size:var(--t-11);font-weight:600;color:var(--c-text-2)}
+    .legend-chip .sw{width:10px;height:10px;border-radius:3px}
   </style>
-  <link rel="stylesheet" href="pixarV2-tokens.css" />
+<link rel="stylesheet" href="pixarV2-tokens.css" />
 </head>
-<body class="bg-slate-50 text-slate-900">
+<body>
+<div style="background:linear-gradient(90deg,#1E40AF,#7C3AED);color:#fff;padding:8px 24px;font-size:12px;display:flex;align-items:center;gap:12px;font-family:Inter,system-ui,sans-serif;">
+  <span style="background:rgba(255,255,255,.18);font-weight:600;padding:2px 8px;border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.04em;">Pixar v.2</span>
+  <strong style="color:#fff;">Forked from v.1 — same markup, same interactions.</strong>
+  <span>Dev: bind .btn → &lt;Button&gt;, .pill → &lt;Tag&gt;, .card → &lt;Card&gt;, .drawer → &lt;Sidebar&gt;, .modal → &lt;Dialog&gt;, tabs → &lt;TabView&gt;.</span>
+  <span style="margin-left:auto;"><a href="HW_PixarV2_Hub.html" style="color:#fff;text-decoration:underline;">← Hub</a> · <a href="HW_PixarV2_Tokens.html" style="color:#fff;text-decoration:underline;">Tokens</a></span>
+</div>
 
-  <div class="annotation">
-    <span class="chip">Pixar v.2</span>
-    <strong>Modals &amp; States.</strong>
-    <span>PrimeVue Dialog · ConfirmDialog · Sidebar (drawer) · Toast · Skeleton · plus error/empty patterns.</span>
-    <span class="ml-auto"><a href="HW_PixarV2_Browse.html" class="underline">← v.2 home</a></span>
+  <div class="topbanner">
+    <span class="chip">Prototype 12</span>
+    <strong>Modals, confirmations &amp; cross-cutting states.</strong>
+    <span>Every reusable pattern in one place — for the dev team to lift verbatim.</span>
   </div>
 
-  <div class="grid" style="grid-template-columns:232px 1fr;grid-template-rows:56px 1fr;grid-template-areas:'logo top' 'side main';min-height:calc(100vh - 32px);">
+  <div class="page">
 
-    <div style="grid-area:logo;" class="bg-white border-r border-b border-slate-200 flex items-center px-4 gap-2">
-      <div class="w-7 h-7 rounded-md bg-brand grid place-items-center text-white font-bold text-sm">H</div>
-      <span class="font-semibold">HonestWaves</span>
-      <span class="ml-auto p-tag p-tag-info text-xs"><span class="p-tag-value">QA</span></span>
-    </div>
+    <span class="page-eyebrow">Pattern library</span>
+    <h1 class="page-h">Modals, confirmations &amp; states</h1>
+    <p class="page-lede">
+      The reusable building blocks every page calls. Add modals · destructive confirmations · hardware-safety confirmations · toast notifications · empty states · error pages · form validation · loading skeletons. Same tokens as the rest of the redesign.
+    </p>
 
-    <div style="grid-area:top;" class="bg-white border-b border-slate-200 flex items-center px-5 gap-3">
-      <div class="text-sm text-slate-500 flex items-center gap-2"><span>Reference</span><i class="pi pi-angle-right text-xs"></i><strong class="text-slate-900">Modals &amp; States</strong></div>
-      <div class="flex-1"></div>
-      <a href="HW_PixarV2_Components.html" class="p-button p-button-outlined p-button-sm"><i class="pi pi-th-large mr-2"></i>Component reference</a>
-      <div class="p-avatar p-component p-avatar-circle ml-2" style="background:#2563EB;color:#fff;"><span>AR</span></div>
-    </div>
-
-    <aside style="grid-area:side;" class="bg-white border-r border-slate-200 p-3 overflow-y-auto">
-      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-1">Patterns</div>
-      <a href="#dialogs" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold bg-brand-soft text-brand-deep"><i class="pi pi-window-maximize"></i>Dialogs</a>
-      <a href="#drawers" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-arrow-right"></i>Drawers</a>
-      <a href="#confirm" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-question-circle"></i>Confirms</a>
-      <a href="#toasts" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-bell"></i>Toasts</a>
-      <a href="#empty" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-inbox"></i>Empty states</a>
-      <a href="#error" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-exclamation-triangle"></i>Error states</a>
-      <a href="#loading" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-spinner"></i>Loading</a>
-      <div class="border-t border-slate-100 mt-4 pt-4">
-        <a href="HW_PixarV2_Browse.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-home"></i>v.2 home</a>
+    <!-- ====================================
+         A. MODALS — Add forms
+         ==================================== -->
+    <section class="section">
+      <div class="section-h">
+        <span class="section-num">A · 01</span>
+        <h2 class="section-title">Add modals</h2>
       </div>
-    </aside>
+      <p class="section-sub">Same shape across Add locker · Add device · Add user · Add department · Add location · Add template · Add device model. Inline validation. Primary action labeled with the noun.</p>
 
-    <main style="grid-area:main;" class="p-6 overflow-y-auto space-y-8 max-w-5xl">
-
-      <section id="dialogs">
-        <h2 class="text-lg font-bold mb-3">Dialogs</h2>
-        <div class="grid grid-cols-2 gap-5">
-          <div class="preview">
-            <div class="text-xs text-slate-500 uppercase font-bold mb-3">Edit user · medium</div>
-            <div class="p-dialog p-component p-dialog-default" style="position:relative;width:auto;">
-              <div class="p-dialog-header bg-white border-b border-slate-200 px-4 py-3 flex items-center"><span class="p-dialog-title font-semibold">Edit user · Crosby Smith</span><button class="ml-auto p-dialog-header-close"><i class="pi pi-times text-slate-400"></i></button></div>
-              <div class="p-dialog-content p-4 space-y-3 text-sm">
-                <div><label class="text-xs font-semibold uppercase text-slate-500">Display name</label><input class="p-inputtext p-component w-full mt-1" value="Crosby Smith" /></div>
-                <div><label class="text-xs font-semibold uppercase text-slate-500">Department</label><div class="p-dropdown w-full mt-1 bg-slate-50 border rounded px-3 py-2 flex justify-between cursor-pointer"><span>ER North</span><i class="pi pi-angle-down text-slate-400"></i></div></div>
-                <div class="flex items-center justify-between pt-2"><span class="text-sm">Lock account</span><span class="p-inputswitch p-inputswitch-checked"><span class="p-inputswitch-slider"></span></span></div>
+      <div class="pattern">
+        <div class="pattern-head">
+          <h3 class="pattern-title">Add locker</h3>
+          <span class="pattern-meta">/lockers · primary action</span>
+        </div>
+        <div class="pattern-body">
+          <div class="modal form">
+            <div class="modal-head">
+              <div class="modal-icon brand"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg></div>
+              <div><h3 class="modal-title">Add locker</h3></div>
+            </div>
+            <div class="modal-body">
+              <p>Register a new physical locker. You can adjust its configuration after it appears in the list.</p>
+              <div class="modal-field"><label>Serial number<span class="req">*</span></label><div class="input"><input type="text" placeholder="Permanently assigned at manufacture"></div></div>
+              <div class="modal-field"><label>Display name</label><div class="input"><input type="text" placeholder="Friendly name shown to operators and customers"></div></div>
+              <div class="modal-field-row">
+                <div class="modal-field"><label>Bay count<span class="req">*</span></label><div class="input"><input type="text" placeholder="Min 8"></div></div>
+                <div class="modal-field"><label>Location</label><div class="input"><input type="text" placeholder="Pick a location…"></div></div>
               </div>
-              <div class="p-dialog-footer bg-slate-50 border-t border-slate-200 px-4 py-3 flex gap-2 justify-end"><button class="p-button p-button-text">Cancel</button><button class="p-button">Save</button></div>
+              <div class="modal-field"><label>Start from template</label><div class="input"><input type="text" placeholder="Optional — copy a template's settings"></div></div>
             </div>
-          </div>
-          <div class="preview">
-            <div class="text-xs text-slate-500 uppercase font-bold mb-3">Bulk action · slim</div>
-            <div class="p-dialog p-component p-dialog-default" style="position:relative;width:auto;">
-              <div class="p-dialog-header bg-white border-b border-slate-200 px-4 py-3 flex items-center"><i class="pi pi-info-circle text-info mr-2"></i><span class="p-dialog-title font-semibold">Send 47 reminders</span><button class="ml-auto p-dialog-header-close"><i class="pi pi-times text-slate-400"></i></button></div>
-              <div class="p-dialog-content p-4 text-sm text-slate-700">Notify all 47 users whose devices are overdue. They'll receive an email + in-app banner. This action is logged.</div>
-              <div class="p-dialog-footer bg-slate-50 border-t border-slate-200 px-4 py-3 flex gap-2 justify-end"><button class="p-button p-button-text">Cancel</button><button class="p-button">Send</button></div>
+            <div class="modal-foot">
+              <button class="btn">Cancel</button>
+              <button class="btn primary"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>Add locker</button>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section id="drawers">
-        <h2 class="text-lg font-bold mb-3">Drawers (Sidebar)</h2>
-        <div class="preview">
-          <div class="text-xs text-slate-500 uppercase font-bold mb-3">Right-side drawer · device detail</div>
-          <div class="bg-slate-100 rounded-lg p-4 relative overflow-hidden" style="height:340px;">
-            <div class="absolute top-0 right-0 h-full w-[380px] bg-white border-l border-slate-200 shadow-2xl p-5 overflow-y-auto">
-              <div class="flex items-center"><span class="p-tag p-tag-danger">Lost</span><button class="ml-auto"><i class="pi pi-times text-slate-400"></i></button></div>
-              <h3 class="text-xl font-bold mt-3">PHN-0017</h3>
-              <div class="text-xs text-slate-500">Zebra TC52 · SN-A8F7-22135</div>
-              <div class="border-t border-slate-100 my-4"></div>
-              <div class="text-xs font-semibold uppercase text-slate-500 mb-2">Holder</div>
-              <div class="flex items-center gap-2 mb-3"><div class="p-avatar p-avatar-circle" style="background:#DC2626;color:white;font-size:11px;">MR</div><div><div class="text-sm font-semibold">Maria Reyes</div><div class="text-xs text-slate-500">ICU 5N · 14 days</div></div></div>
-              <div class="text-xs font-semibold uppercase text-slate-500 mb-2">Recent events</div>
-              <ul class="text-xs space-y-1 text-slate-600"><li>Jun 17 09:14 · Marked lost</li><li>Jun 10 06:00 · 7-day warning sent</li><li>Jun 3 18:42 · Checked out · Bay 17</li></ul>
-              <div class="flex gap-2 mt-4"><button class="p-button p-button-sm flex-1"><i class="pi pi-flag mr-2"></i>Reassign</button><button class="p-button p-button-outlined p-button-sm flex-1">Open trail</button></div>
+    <!-- ====================================
+         B. DESTRUCTIVE confirmation
+         ==================================== -->
+    <section class="section">
+      <div class="section-h">
+        <span class="section-num">B · 02</span>
+        <h2 class="section-title">Destructive confirmation</h2>
+      </div>
+      <p class="section-sub">Name the thing. Spell out side-effects. Destructive button in red, on the right. Cancel always on the left.</p>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <h3 class="pattern-title">Delete locker</h3>
+          <span class="pattern-meta">irreversible · cascade visible</span>
+        </div>
+        <div class="pattern-body">
+          <div class="modal">
+            <div class="modal-head">
+              <div class="modal-icon danger"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
+              <div><h3 class="modal-title">Delete Pink8?</h3></div>
+            </div>
+            <div class="modal-body">
+              This will remove <strong>Pink8</strong> and its <strong>8 bay assignments</strong>. Audit history is preserved.
+              <br><br>
+              <strong>This can't be undone.</strong>
+            </div>
+            <div class="modal-foot">
+              <button class="btn">Cancel</button>
+              <button class="btn danger"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/></svg>Delete locker</button>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <section id="confirm">
-        <h2 class="text-lg font-bold mb-3">Confirm dialogs</h2>
-        <div class="grid grid-cols-2 gap-5">
-          <div class="preview">
-            <div class="text-xs text-slate-500 uppercase font-bold mb-3">Destructive</div>
-            <div class="p-dialog p-component" style="position:relative;">
-              <div class="p-dialog-content p-5 flex gap-4">
-                <i class="pi pi-exclamation-triangle text-2xl text-danger"></i>
-                <div><div class="font-semibold">Delete Maria Reyes?</div><div class="text-sm text-slate-500 mt-1">This will revoke all device grants and remove audit access. This cannot be undone.</div></div>
-              </div>
-              <div class="p-dialog-footer bg-slate-50 border-t px-4 py-3 flex gap-2 justify-end"><button class="p-button p-button-text">Cancel</button><button class="p-button p-button-danger">Delete</button></div>
+      <div class="pattern">
+        <div class="pattern-head">
+          <h3 class="pattern-title">Delete department · surface dependency count</h3>
+          <span class="pattern-meta">cascade-aware</span>
+        </div>
+        <div class="pattern-body">
+          <div class="modal">
+            <div class="modal-head">
+              <div class="modal-icon danger"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/></svg></div>
+              <div><h3 class="modal-title">Delete Corewell POC?</h3></div>
             </div>
-          </div>
-          <div class="preview">
-            <div class="text-xs text-slate-500 uppercase font-bold mb-3">Informational</div>
-            <div class="p-dialog p-component" style="position:relative;">
-              <div class="p-dialog-content p-5 flex gap-4">
-                <i class="pi pi-info-circle text-2xl text-info"></i>
-                <div><div class="font-semibold">Push firmware 4.13.0?</div><div class="text-sm text-slate-500 mt-1">Phased rollout across 14 lockers. Estimated 2h. Lockers will be offline ~6 min each.</div></div>
-              </div>
-              <div class="p-dialog-footer bg-slate-50 border-t px-4 py-3 flex gap-2 justify-end"><button class="p-button p-button-text">Cancel</button><button class="p-button">Push</button></div>
+            <div class="modal-body">
+              <strong>27 users</strong> are in this department. They'll lose any access this department granted unless they have other grants.
+              <br><br>
+              <strong>Continue?</strong>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="toasts">
-        <h2 class="text-lg font-bold mb-3">Toasts</h2>
-        <div class="space-y-3 max-w-md">
-          <div class="rounded-lg border-l-4 border-success bg-white shadow p-3 flex items-center gap-3"><i class="pi pi-check-circle text-success"></i><div class="flex-1"><div class="text-sm font-semibold">Saved</div><div class="text-xs text-slate-500">Branding changes published.</div></div><i class="pi pi-times text-slate-300 cursor-pointer"></i></div>
-          <div class="rounded-lg border-l-4 border-warning bg-white shadow p-3 flex items-center gap-3"><i class="pi pi-exclamation-circle text-warning"></i><div class="flex-1"><div class="text-sm font-semibold">3 lockers still need approval</div><div class="text-xs text-slate-500">Detroit batch — Jun 18 02:00.</div></div><i class="pi pi-times text-slate-300 cursor-pointer"></i></div>
-          <div class="rounded-lg border-l-4 border-danger bg-white shadow p-3 flex items-center gap-3"><i class="pi pi-times-circle text-danger"></i><div class="flex-1"><div class="text-sm font-semibold">L-DET-002 firmware push failed</div><div class="text-xs text-slate-500">Locker offline · auto-retry in 1h.</div></div><i class="pi pi-times text-slate-300 cursor-pointer"></i></div>
-          <div class="rounded-lg border-l-4 border-info bg-white shadow p-3 flex items-center gap-3"><i class="pi pi-info-circle text-info"></i><div class="flex-1"><div class="text-sm font-semibold">Maintenance window in 1h</div><div class="text-xs text-slate-500">All kiosks will reboot at 02:00 ET.</div></div><i class="pi pi-times text-slate-300 cursor-pointer"></i></div>
-        </div>
-      </section>
-
-      <section id="empty">
-        <h2 class="text-lg font-bold mb-3">Empty states</h2>
-        <div class="grid grid-cols-2 gap-5">
-          <div class="preview text-center py-10">
-            <div class="w-16 h-16 rounded-full bg-brand-soft grid place-items-center mx-auto"><i class="pi pi-search text-2xl text-brand"></i></div>
-            <div class="font-semibold mt-3">No devices match</div>
-            <div class="text-sm text-slate-500 mt-1">Try clearing filters or searching by serial.</div>
-            <button class="p-button p-button-outlined p-button-sm mt-4"><i class="pi pi-filter-slash mr-2"></i>Clear filters</button>
-          </div>
-          <div class="preview text-center py-10">
-            <div class="w-16 h-16 rounded-full bg-pixar-soft grid place-items-center mx-auto"><i class="pi pi-users text-2xl text-pixar"></i></div>
-            <div class="font-semibold mt-3">No users yet</div>
-            <div class="text-sm text-slate-500 mt-1">Invite your first team member or import from CSV.</div>
-            <div class="flex gap-2 justify-center mt-4"><button class="p-button p-button-sm"><i class="pi pi-user-plus mr-2"></i>Invite</button><button class="p-button p-button-outlined p-button-sm"><i class="pi pi-upload mr-2"></i>Import CSV</button></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="error">
-        <h2 class="text-lg font-bold mb-3">Error states</h2>
-        <div class="grid grid-cols-2 gap-5">
-          <div class="preview text-center py-10">
-            <div class="w-16 h-16 rounded-full bg-danger-soft grid place-items-center mx-auto"><i class="pi pi-times-circle text-2xl text-danger"></i></div>
-            <div class="font-semibold mt-3">Couldn't reach the locker</div>
-            <div class="text-sm text-slate-500 mt-1">L-DET-002 hasn't checked in for 3h.</div>
-            <button class="p-button p-button-sm mt-4"><i class="pi pi-refresh mr-2"></i>Retry</button>
-          </div>
-          <div class="preview text-center py-10">
-            <div class="w-16 h-16 rounded-full bg-slate-100 grid place-items-center mx-auto"><i class="pi pi-lock text-2xl text-slate-400"></i></div>
-            <div class="font-semibold mt-3">Permission denied</div>
-            <div class="text-sm text-slate-500 mt-1">Your role doesn't include access to Master Keys.</div>
-            <button class="p-button p-button-outlined p-button-sm mt-4">Request access</button>
-          </div>
-        </div>
-      </section>
-
-      <section id="loading">
-        <h2 class="text-lg font-bold mb-3">Loading (Skeleton)</h2>
-        <div class="preview">
-          <div class="space-y-3">
-            <div class="p-skeleton bg-slate-100 rounded-md h-4 w-2/3 animate-pulse"></div>
-            <div class="p-skeleton bg-slate-100 rounded-md h-4 w-1/2 animate-pulse"></div>
-            <div class="p-skeleton bg-slate-100 rounded-md h-4 w-3/4 animate-pulse"></div>
-            <div class="grid grid-cols-3 gap-3 mt-4">
-              <div class="p-skeleton bg-slate-100 rounded-md h-24 animate-pulse"></div>
-              <div class="p-skeleton bg-slate-100 rounded-md h-24 animate-pulse"></div>
-              <div class="p-skeleton bg-slate-100 rounded-md h-24 animate-pulse"></div>
+            <div class="modal-foot">
+              <button class="btn">Cancel</button>
+              <button class="btn danger">Delete department</button>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-    </main>
+    <!-- ====================================
+         C. HARDWARE SAFETY — press &amp; hold
+         ==================================== -->
+    <section class="section">
+      <div class="section-h">
+        <span class="section-num">C · 03</span>
+        <h2 class="section-title">Hardware safety confirmations</h2>
+      </div>
+      <p class="section-sub">For actions with physical consequences. Open All Bays → explicit notice. UVC on → press-and-hold to confirm. Both lift Travis's "Open All Bays placement" risk (P1).</p>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <h3 class="pattern-title">Open all bays · all-bay unlock warning</h3>
+          <span class="pattern-meta">notify-on-site recommended</span>
+        </div>
+        <div class="pattern-body">
+          <div class="modal">
+            <div class="modal-head">
+              <div class="modal-icon warn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+              <div><h3 class="modal-title">Open all bays on Pink8?</h3></div>
+            </div>
+            <div class="modal-body">
+              This will <strong>unlock every bay</strong> on Pink8 immediately. Use this only for diagnostics or maintenance.
+              <br><br>
+              <strong>Notify staff on-site before continuing.</strong>
+            </div>
+            <div class="modal-foot">
+              <button class="btn">Cancel</button>
+              <button class="btn" style="background:var(--c-warning);color:white;border-color:var(--c-warning);">Unlock all bays</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <h3 class="pattern-title">UVC on · press-and-hold to confirm</h3>
+          <span class="pattern-meta">eye-safety hazard · 1.5s hold</span>
+        </div>
+        <div class="pattern-body">
+          <div class="modal">
+            <div class="modal-head">
+              <div class="modal-icon danger"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" x2="12" y1="1" y2="3"/><line x1="12" x2="12" y1="21" y2="23"/><line x1="4.22" x2="5.64" y1="4.22" y2="5.64"/><line x1="18.36" x2="19.78" y1="18.36" y2="19.78"/><line x1="1" x2="3" y1="12" y2="12"/><line x1="21" x2="23" y1="12" y2="12"/><line x1="4.22" x2="5.64" y1="19.78" y2="18.36"/><line x1="18.36" x2="19.78" y1="5.64" y2="4.22"/></svg></div>
+              <div><h3 class="modal-title">Turn on UV-C light?</h3></div>
+            </div>
+            <div class="modal-body">
+              <strong>UV-C light may cause injury to skin and eyes.</strong> Make sure the bay is fully closed and no one is looking inside before continuing.
+              <br><br>
+              <span style="color:var(--c-danger);font-weight:600;">Press and hold the button below for 1.5 seconds to confirm.</span>
+            </div>
+            <div class="modal-foot">
+              <button class="btn">Cancel</button>
+              <button class="ph-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/></svg>Hold to turn on UV-C</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================
+         D. TOASTS
+         ==================================== -->
+    <section class="section">
+      <div class="section-h">
+        <span class="section-num">D · 04</span>
+        <h2 class="section-title">Toast notifications</h2>
+      </div>
+      <p class="section-sub">Past tense for success · present for in-progress · specific noun. Undo within 10 seconds for non-destructive deletes. Auto-dismiss in 4s unless the action requires acknowledgment.</p>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <h3 class="pattern-title">Success · Locker added</h3>
+          <span class="pattern-meta">auto-dismiss 4s</span>
+        </div>
+        <div class="pattern-body" style="background:#0F172A;">
+          <div class="toast">
+            <div class="toast-icon success"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="toast-text"><strong>Locker added</strong> · Pink8 is ready to configure</div>
+            <button class="toast-close"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <h3 class="pattern-title">Success with Undo · Locker deleted</h3>
+          <span class="pattern-meta">Undo window 10s</span>
+        </div>
+        <div class="pattern-body" style="background:#0F172A;">
+          <div class="toast">
+            <div class="toast-icon success"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="toast-text"><strong>Pink8 deleted</strong></div>
+            <button class="toast-action">Undo</button>
+            <button class="toast-close"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <h3 class="pattern-title">In-progress · Update sending</h3>
+          <span class="pattern-meta">stays until done</span>
+        </div>
+        <div class="pattern-body" style="background:#0F172A;">
+          <div class="toast">
+            <div class="toast-icon loading"></div>
+            <div class="toast-text"><strong>Sending update to 4 lockers…</strong></div>
+            <button class="toast-close"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <h3 class="pattern-title">Bulk · 12 of 12 users imported, 0 errors</h3>
+          <span class="pattern-meta">counts shown together</span>
+        </div>
+        <div class="pattern-body" style="background:#0F172A;">
+          <div class="toast">
+            <div class="toast-icon success"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="toast-text"><strong>12 of 12 users imported</strong> · 0 errors</div>
+            <button class="toast-close"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <h3 class="pattern-title">Error · Failed to save</h3>
+          <span class="pattern-meta">actionable + retry</span>
+        </div>
+        <div class="pattern-body" style="background:#0F172A;">
+          <div class="toast">
+            <div class="toast-icon danger"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg></div>
+            <div class="toast-text"><strong>Failed to save</strong> · Lost connection. We'll retry automatically.</div>
+            <button class="toast-action">Retry now</button>
+            <button class="toast-close"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================
+         E. EMPTY STATES
+         ==================================== -->
+    <section class="section">
+      <div class="section-h">
+        <span class="section-num">E · 05</span>
+        <h2 class="section-title">Empty states</h2>
+      </div>
+      <p class="section-sub">Title (4–6 words) + 1-sentence helper + one or two CTAs. Tell the user what to do next.</p>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <h3 class="pattern-title">No lockers yet · first-run</h3>
+          <span class="pattern-meta">/lockers</span>
+        </div>
+        <div class="pattern-body">
+          <div class="empty">
+            <div class="empty-art"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg></div>
+            <h3 class="empty-title">No lockers yet</h3>
+            <p class="empty-sub">Register your first locker to get started. You can import many at once if you have a CSV.</p>
+            <div class="empty-cta">
+              <button class="btn primary"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>Add locker</button>
+              <button class="btn">Import from CSV</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <h3 class="pattern-title">No matches · filtered</h3>
+          <span class="pattern-meta">filter dead-end</span>
+        </div>
+        <div class="pattern-body">
+          <div class="empty">
+            <div class="empty-art"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg></div>
+            <h3 class="empty-title">No lockers match these filters</h3>
+            <p class="empty-sub">Try clearing filters or broadening your search.</p>
+            <div class="empty-cta"><button class="btn">Clear filters</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <h3 class="pattern-title">All caught up · Notifications</h3>
+          <span class="pattern-meta">positive empty</span>
+        </div>
+        <div class="pattern-body">
+          <div class="empty">
+            <div class="empty-art" style="background:var(--c-success-soft);color:var(--c-success);"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <h3 class="empty-title">All caught up</h3>
+            <p class="empty-sub">No new notifications. Critical alerts will appear here as they happen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================
+         F. ERROR PAGES
+         ==================================== -->
+    <section class="section">
+      <div class="section-h">
+        <span class="section-num">F · 06</span>
+        <h2 class="section-title">Error pages</h2>
+      </div>
+      <p class="section-sub">404 has the Pixar treatment (prototype 404). The other three are the matching set.</p>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <h3 class="pattern-title">403 · Permission denied</h3>
+          <span class="pattern-meta">role gating</span>
+        </div>
+        <div class="pattern-body" style="background:var(--c-surface);">
+          <div class="err">
+            <div class="empty-art" style="width:56px;height:56px;background:var(--c-warning-soft);color:var(--c-warning-text);"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+            <span class="err-code">HTTP 403</span>
+            <h2 class="err-h">You don't have access to this page</h2>
+            <p class="err-sub">Ask your tenant admin to update your role. The page exists, but your account doesn't have permission to view it.</p>
+            <div class="empty-cta"><button class="btn primary">Back to dashboard</button><button class="btn">Contact admin</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <h3 class="pattern-title">500 · Something went wrong on our end</h3>
+          <span class="pattern-meta">include reference ID</span>
+        </div>
+        <div class="pattern-body" style="background:var(--c-surface);">
+          <div class="err">
+            <div class="empty-art" style="width:56px;height:56px;background:var(--c-danger-soft);color:var(--c-danger);"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg></div>
+            <span class="err-code">HTTP 500</span>
+            <h2 class="err-h">Something went wrong on our end</h2>
+            <p class="err-sub">Refresh the page, or contact support if it keeps happening. We've logged this and will investigate.</p>
+            <div class="empty-cta"><button class="btn primary">Refresh</button><button class="btn">Contact support</button></div>
+            <div class="err-meta">Reference req_8f4c2a1e · 3:21 PM</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <h3 class="pattern-title">Offline · connection lost</h3>
+          <span class="pattern-meta">banner + retry</span>
+        </div>
+        <div class="pattern-body" style="background:var(--c-surface);">
+          <div class="err">
+            <div class="empty-art" style="width:56px;height:56px;background:var(--c-slate-soft);color:var(--c-slate);"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" x2="23" y1="1" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.58 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" x2="12.01" y1="20" y2="20"/></svg></div>
+            <span class="err-code">Offline</span>
+            <h2 class="err-h">You're offline</h2>
+            <p class="err-sub">Reconnect to load the latest data. The dashboard is showing what it had cached last.</p>
+            <div class="empty-cta"><button class="btn primary">Reconnect</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================
+         G. FORM VALIDATION
+         ==================================== -->
+    <section class="section">
+      <div class="section-h">
+        <span class="section-num">G · 07</span>
+        <h2 class="section-title">Form validation</h2>
+      </div>
+      <p class="section-sub">Inline, on-blur. Tell the user the rule before they fail it, not after.</p>
+
+      <div class="pattern">
+        <div class="pattern-body" style="background:var(--c-surface);">
+          <div class="validation-grid">
+
+            <div class="vfield">
+              <label>Work email</label>
+              <div class="input error"><input type="text" value="user@example"></div>
+              <div class="msg error"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>Enter a valid work email — for example, name@company.com</div>
+            </div>
+
+            <div class="vfield">
+              <label>Serial number</label>
+              <div class="input error"><input type="text" value="SN-2087"></div>
+              <div class="msg error"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>A device with serial SN-2087 already exists. <a href="#" style="color:inherit;font-weight:700;text-decoration:underline;">View it →</a></div>
+            </div>
+
+            <div class="vfield">
+              <label>New password</label>
+              <div class="input"><input type="password" value="••••••••••••"></div>
+              <div class="msg success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Strong — 12 characters with numbers and symbols</div>
+            </div>
+
+            <div class="vfield">
+              <label>Bay count</label>
+              <div class="input error"><input type="text" value="4"></div>
+              <div class="msg error"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>Minimum 8 bays. Increase the count to add this locker.</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================
+         H. LOADING SKELETONS
+         ==================================== -->
+    <section class="section">
+      <div class="section-h">
+        <span class="section-num">H · 08</span>
+        <h2 class="section-title">Loading skeletons</h2>
+      </div>
+      <p class="section-sub">Replace the spinning red circles that show on the dashboard today. Match the shape of the content that's loading.</p>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <h3 class="pattern-title">List skeleton</h3>
+          <span class="pattern-meta">Devices · Users · Reports</span>
+        </div>
+        <div class="pattern-body" style="background:var(--c-surface);">
+          <div class="skeleton">
+            <div class="sk-row">
+              <div class="sk-avatar"></div>
+              <div class="lines"><div class="sk-line long"></div><div class="sk-line short"></div></div>
+            </div>
+            <div class="sk-row">
+              <div class="sk-avatar"></div>
+              <div class="lines"><div class="sk-line medium"></div><div class="sk-line short"></div></div>
+            </div>
+            <div class="sk-row">
+              <div class="sk-avatar"></div>
+              <div class="lines"><div class="sk-line long"></div><div class="sk-line medium"></div></div>
+            </div>
+            <div class="sk-row">
+              <div class="sk-avatar"></div>
+              <div class="lines"><div class="sk-line medium"></div><div class="sk-line short"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Legend -->
+    <section class="section" style="margin-bottom:0;">
+      <div class="section-h">
+        <span class="section-num">·</span>
+        <h2 class="section-title">Severity legend</h2>
+      </div>
+      <p class="section-sub">Every state in the redesign uses one of these six paired colors. Soft background + solid accent.</p>
+      <div class="legend">
+        <span class="legend-chip"><span class="sw" style="background:var(--c-success);"></span>Success · Available</span>
+        <span class="legend-chip"><span class="sw" style="background:var(--c-info);"></span>Info · In use</span>
+        <span class="legend-chip"><span class="sw" style="background:var(--c-warning);"></span>Warning · Overdue · Has issues</span>
+        <span class="legend-chip"><span class="sw" style="background:var(--c-danger);"></span>Danger · Fault · Lost</span>
+        <span class="legend-chip"><span class="sw" style="background:var(--c-violet);"></span>Violet · Charging · Admin</span>
+        <span class="legend-chip"><span class="sw" style="background:var(--c-slate);"></span>Slate · Deactivated · Disabled</span>
+      </div>
+    </section>
+
   </div>
-  <script src="pixarV2-interactivity.js"></script>
+<script src="pixarV2-interactivity.js"></script>
 </body>
 </html>

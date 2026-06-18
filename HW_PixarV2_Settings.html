@@ -1,184 +1,717 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Pixar v.2 · Settings</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/lara-light-blue/theme.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/primevue.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config={theme:{extend:{colors:{
-      'brand':{DEFAULT:'#2563EB',deep:'#1E40AF',soft:'#EFF6FF'},'pixar':{DEFAULT:'#7C3AED',soft:'#EDE9FE'},
-      'success':{DEFAULT:'#10B981',soft:'#D1FAE5'},'warning':{DEFAULT:'#F59E0B',soft:'#FEF3C7',text:'#B45309'},
-      'danger':{DEFAULT:'#DC2626',soft:'#FEE2E2'},'info':{DEFAULT:'#0EA5E9',soft:'#E0F2FE'},
-    },fontFamily:{sans:['Inter','system-ui','sans-serif']}}}};
-  </script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1440">
+  <title>HonestWaves redesign · 11 · Settings</title>
   <style>
-    body{font-family:'Inter',system-ui,sans-serif;}
-    :root{--primary-color:#2563EB;--primary-color-text:#fff;--highlight-bg:#EFF6FF;--highlight-text-color:#1E40AF;}
-    .annotation{background:linear-gradient(90deg,#7C3AED,#1E40AF);color:#fff;padding:8px 24px;font-size:12px;display:flex;align-items:center;gap:12px;}
-    .annotation .chip{background:rgba(255,255,255,.2);font-weight:600;padding:2px 7px;border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.04em;}
-  </style>
-  <link rel="stylesheet" href="pixarV2-tokens.css" />
-</head>
-<body class="bg-slate-50 text-slate-900">
+    :root{
+      --c-surface:#FFFFFF; --c-surface-2:#FAFAFB; --c-surface-3:#F4F5F7;
+      --c-border:#E5E7EB; --c-border-strong:#D1D5DB; --c-divider:#EDF0F4;
+      --c-text:#0F172A; --c-text-2:#475569; --c-text-muted:#94A3B8;
+      --c-brand:#2563EB; --c-brand-hover:#1D4ED8; --c-brand-soft:#EFF6FF; --c-brand-deep:#1E40AF;
+      --c-success:#10B981; --c-success-soft:#ECFDF5;
+      --c-warning:#F59E0B; --c-warning-soft:#FFFBEB; --c-warning-text:#B45309;
+      --c-danger:#EF4444; --c-danger-soft:#FEF2F2;
+      --c-info:#6366F1; --c-info-soft:#EEF2FF;
+      --c-violet:#7C3AED; --c-violet-soft:#F5F3FF;
+      --c-cyan:#06B6D4; --c-cyan-soft:#ECFEFF;
+      --font-sans:"Inter",-apple-system,sans-serif;
+      --font-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+      --t-10:10px; --t-11:11px; --t-12:12px; --t-13:13px; --t-14:14px; --t-16:16px; --t-20:20px;
+      --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:20px; --s-6:24px;
+      --r-sm:4px; --r-md:6px; --r-lg:8px;
+      --sh-1:0 1px 2px rgba(15,23,42,.04);
+      --sidebar-w:232px; --topbar-h:52px; --settings-w:220px;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:var(--font-sans);font-size:var(--t-13);line-height:1.45;color:var(--c-text);background:var(--c-surface-2);-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+    svg{display:block}
+    .shell{display:grid;grid-template-columns:var(--sidebar-w) 1fr;grid-template-rows:var(--topbar-h) 1fr;grid-template-areas:"logo topbar" "side main";min-height:100vh}
+    .logo{grid-area:logo;background:var(--c-surface);border-right:1px solid var(--c-border);border-bottom:1px solid var(--c-border);display:flex;align-items:center;gap:10px;padding:0 var(--s-4);font-weight:600;font-size:var(--t-14)}
+    .logo-mark{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--c-brand),var(--c-brand-deep));display:grid;place-items:center;color:white;font-weight:700;font-size:13px}
+    .logo-tenant{margin-left:auto;font-size:var(--t-11);color:var(--c-text-muted);background:var(--c-surface-3);padding:2px 6px;border-radius:var(--r-sm);font-weight:500}
+    .topbar{grid-area:topbar;background:var(--c-surface);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 var(--s-5);gap:var(--s-3)}
+    .breadcrumb{display:flex;align-items:center;gap:var(--s-2);color:var(--c-text-2);font-size:var(--t-13)}
+    .breadcrumb strong{color:var(--c-text);font-weight:600}
+    .topbar-spacer{flex:1}
+    .search{display:flex;align-items:center;gap:var(--s-2);width:340px;height:32px;padding:0 var(--s-3);background:var(--c-surface-2);border:1px solid var(--c-border);border-radius:var(--r-md);color:var(--c-text-muted);font-size:var(--t-13)}
+    .search-kbd{margin-left:auto;padding:1px 5px;font-family:var(--font-mono);font-size:10px;color:var(--c-text-2);background:var(--c-surface);border:1px solid var(--c-border);border-radius:3px}
+    .icon-btn{width:32px;height:32px;display:grid;place-items:center;border-radius:var(--r-md);color:var(--c-text-2);position:relative}
+    .icon-btn:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .icon-btn .badge{position:absolute;top:2px;right:2px;min-width:16px;height:16px;padding:0 4px;background:var(--c-danger);color:white;border:2px solid var(--c-surface);border-radius:999px;font-size:9px;font-weight:700;display:grid;place-items:center}
+    .avatar-btn{display:flex;align-items:center;gap:var(--s-2);padding:4px 8px 4px 4px;border-radius:var(--r-md)}
+    .avatar-btn:hover{background:var(--c-surface-3)}
+    .avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#6366F1,#2563EB);color:white;font-size:11px;font-weight:600;display:grid;place-items:center}
+    .avatar-meta{line-height:1.1;text-align:left}
+    .avatar-name{font-size:var(--t-12);font-weight:600}
+    .avatar-email{font-size:var(--t-11);color:var(--c-text-muted)}
+    .sidebar{grid-area:side;background:var(--c-surface);border-right:1px solid var(--c-border);padding:var(--s-3) var(--s-2);overflow-y:auto}
+    .nav-group{margin-bottom:var(--s-4)}
+    .nav-group-label{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--c-text-muted);padding:0 var(--s-3);margin:0 0 4px}
+    .nav-item{display:flex;align-items:center;gap:var(--s-3);padding:7px var(--s-3);border-radius:var(--r-md);font-size:var(--t-13);color:var(--c-text-2);position:relative}
+    .nav-item:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .nav-item.active{background:var(--c-brand-soft);color:var(--c-brand-deep);font-weight:600}
+    .nav-item.active::before{content:"";position:absolute;left:-2px;top:8px;bottom:8px;width:2px;background:var(--c-brand);border-radius:2px}
+    .nav-icon{width:16px;height:16px;flex-shrink:0;opacity:.85}
+    .nav-item.active .nav-icon{opacity:1}
 
-  <div class="annotation">
-    <span class="chip">Pixar v.2</span>
+    /* Sidebar accordion sub-nav */
+    .sub-nav{margin:2px 0 6px 0;padding-left:0;border-left:1px solid var(--c-divider);margin-left:18px}
+    .sub-nav-item-side{display:flex;align-items:center;gap:8px;padding:5px 10px 5px 14px;font-size:12px;color:var(--c-text-2);border-radius:0 var(--r-sm) var(--r-sm) 0;cursor:pointer;position:relative;margin-left:-1px;border-left:2px solid transparent}
+    .sub-nav-item-side:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .sub-nav-item-side.active{color:var(--c-brand-deep);font-weight:600;border-left-color:var(--c-brand);background:var(--c-brand-soft)}
+    .sub-nav-icon{width:12px;height:12px;flex-shrink:0;opacity:.7}
+    .sub-nav-item-side.active .sub-nav-icon{opacity:1}
+    .sub-nav-item-side .new-tag{margin-left:auto;font-size:8px;font-weight:700;padding:1px 4px;border-radius:3px;background:var(--c-violet-soft);color:var(--c-violet);text-transform:uppercase;letter-spacing:.04em}
+    .nav-badge{margin-left:auto;font-size:10px;font-weight:600;padding:1px 6px;border-radius:999px;background:var(--c-danger-soft);color:var(--c-danger)}
+
+    /* Main split — settings side nav + content */
+    .main{grid-area:main;overflow-y:auto;display:grid;grid-template-columns:var(--settings-w) 1fr;min-height:calc(100vh - var(--topbar-h))}
+    .settings-nav{background:var(--c-surface);border-right:1px solid var(--c-border);padding:var(--s-5) var(--s-3);overflow-y:auto}
+    .settings-nav-h{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--c-text-muted);padding:0 var(--s-2);margin:0 0 var(--s-2)}
+    .settings-nav-h:not(:first-child){margin-top:var(--s-4)}
+    .s-nav-item{display:flex;align-items:center;gap:8px;padding:6px var(--s-2);border-radius:var(--r-md);font-size:var(--t-12);color:var(--c-text-2);cursor:pointer}
+    .s-nav-item:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .s-nav-item.active{background:var(--c-brand-soft);color:var(--c-brand-deep);font-weight:600}
+    .s-nav-item .s-nav-icon{width:14px;height:14px;flex-shrink:0;opacity:.85}
+    .s-nav-item.active .s-nav-icon{opacity:1}
+    .s-nav-item .new-tag{margin-left:auto;font-size:8px;font-weight:700;padding:1px 4px;border-radius:3px;background:var(--c-violet-soft);color:var(--c-violet);text-transform:uppercase;letter-spacing:.04em}
+
+    .content{padding:var(--s-5) var(--s-6);max-width:840px}
+    .settings-section{display:none}
+    .settings-section.active{display:block}
+    .empty-stub{padding:var(--s-5);text-align:center;color:var(--c-text-2);background:var(--c-surface-2);border:1px dashed var(--c-border);border-radius:var(--r-md)}
+    .empty-stub strong{display:block;color:var(--c-text);margin-bottom:4px}
+    .page-head{margin-bottom:var(--s-5)}
+    .page-title{font-size:var(--t-20);font-weight:600;letter-spacing:-.01em;margin:0 0 4px}
+    .page-sub{font-size:var(--t-12);color:var(--c-text-2);margin:0}
+
+    /* Section card */
+    .card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-lg);margin-bottom:var(--s-4)}
+    .card-head{padding:var(--s-4) var(--s-5);border-bottom:1px solid var(--c-divider);display:flex;align-items:center;justify-content:space-between}
+    .card-title{font-size:var(--t-14);font-weight:600;margin:0;letter-spacing:-.005em}
+    .card-sub{font-size:var(--t-11);color:var(--c-text-2);margin-top:3px}
+    .card-body{padding:var(--s-4) var(--s-5)}
+    .card-foot{padding:var(--s-3) var(--s-5);background:var(--c-surface-2);border-top:1px solid var(--c-divider);display:flex;justify-content:flex-end;gap:var(--s-2);border-radius:0 0 var(--r-lg) var(--r-lg)}
+
+    /* Fields */
+    .field{margin-bottom:var(--s-4)}
+    .field:last-child{margin-bottom:0}
+    .field-label{display:block;font-size:var(--t-12);font-weight:600;color:var(--c-text);margin-bottom:6px}
+    .field-label .required{color:var(--c-danger);margin-left:2px}
+    .field-input{display:flex;align-items:center;gap:var(--s-2);height:36px;padding:0 var(--s-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);font-size:var(--t-13);color:var(--c-text)}
+    .field-input:focus-within{border-color:var(--c-brand);box-shadow:0 0 0 3px var(--c-brand-soft)}
+    .field-input input{flex:1;height:100%;border:0;background:transparent;outline:none;font:inherit;color:inherit}
+    .field-input input::placeholder{color:var(--c-text-muted)}
+    .field-help{font-size:var(--t-11);color:var(--c-text-muted);margin-top:5px}
+    .field-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-3)}
+    .field.mono input{font-family:var(--font-mono);font-size:var(--t-12)}
+
+    /* Toggle */
+    .toggle-row{display:flex;align-items:flex-start;gap:var(--s-3);padding:var(--s-3) 0;border-bottom:1px solid var(--c-divider)}
+    .toggle-row:last-child{border-bottom:0}
+    .toggle-row:first-child{padding-top:0}
+    .toggle-meta{flex:1}
+    .toggle-label{font-size:var(--t-13);font-weight:600;color:var(--c-text)}
+    .toggle-sub{font-size:var(--t-11);color:var(--c-text-2);margin-top:3px;line-height:1.5}
+    .toggle{width:36px;height:20px;border-radius:999px;background:var(--c-border-strong);position:relative;flex-shrink:0;cursor:pointer;transition:background .12s;margin-top:2px}
+    .toggle::before{content:"";position:absolute;left:2px;top:2px;width:16px;height:16px;border-radius:50%;background:white;box-shadow:0 1px 2px rgba(0,0,0,.1);transition:left .12s}
+    .toggle.on{background:var(--c-brand)}
+    .toggle.on::before{left:18px}
+
+    /* Branding asset grid */
+    .asset-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-3)}
+    .asset-card{border:1px solid var(--c-border);border-radius:var(--r-md);overflow:hidden;background:var(--c-surface);transition:border-color .12s,box-shadow .12s;cursor:pointer}
+    .asset-card:hover{border-color:var(--c-brand);box-shadow:0 4px 12px rgba(37,99,235,.08)}
+    .asset-preview{aspect-ratio:1;background:var(--c-surface-3);display:grid;place-items:center;position:relative;border-bottom:1px solid var(--c-divider)}
+    .asset-preview .placeholder{color:var(--c-text-muted);font-size:22px}
+    .asset-preview .uploaded{background:linear-gradient(135deg,#3B82F6 0%,#1E40AF 100%);width:100%;height:100%;display:grid;place-items:center;color:white;font-weight:700;font-size:14px;letter-spacing:.04em}
+    .asset-meta{padding:8px 10px}
+    .asset-label{font-size:var(--t-11);font-weight:600;color:var(--c-text)}
+    .asset-state{font-size:10px;color:var(--c-text-muted);margin-top:2px;display:flex;align-items:center;gap:4px}
+    .asset-state.uploaded{color:var(--c-success)}
+    .asset-state .dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+
+    /* Identity provider strip */
+    .id-strip{display:flex;align-items:center;gap:var(--s-3);padding:var(--s-4) var(--s-5);background:linear-gradient(90deg,var(--c-violet-soft),#FAF5FF);border:1px solid #E9D5FF;border-radius:var(--r-md);margin-bottom:var(--s-4)}
+    .id-icon{width:36px;height:36px;border-radius:var(--r-md);background:var(--c-violet);color:white;display:grid;place-items:center;flex-shrink:0}
+    .id-meta{flex:1;line-height:1.3}
+    .id-title{font-weight:600;font-size:var(--t-13);color:var(--c-violet)}
+    .id-sub{font-size:var(--t-11);color:var(--c-text-2)}
+    .id-status{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;background:var(--c-success-soft);color:var(--c-success);border-radius:999px;font-size:var(--t-11);font-weight:600}
+    .id-status .dot{width:6px;height:6px;border-radius:50%;background:var(--c-success)}
+
+    .btn{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 var(--s-3);font-size:var(--t-12);font-weight:500;color:var(--c-text);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);box-shadow:var(--sh-1)}
+    .btn:hover{background:var(--c-surface-3);border-color:var(--c-border-strong)}
+    .btn.primary{background:var(--c-brand);color:white;border-color:var(--c-brand)}
+    .btn.primary:hover{background:var(--c-brand-hover);border-color:var(--c-brand-hover)}
+    .btn.ghost{background:transparent;border-color:transparent;box-shadow:none}
+    .btn.danger{color:var(--c-danger);border-color:var(--c-border)}
+    .btn.danger:hover{background:var(--c-danger-soft);border-color:var(--c-danger)}
+
+    .annotation-strip{background:linear-gradient(90deg,var(--c-brand-soft),#F0F7FF);border-bottom:1px solid #DBEAFE;padding:8px 24px;font-size:var(--t-12);color:var(--c-brand-deep);display:flex;align-items:center;gap:12px}
+    .annotation-strip strong{color:var(--c-brand-deep)}
+    .annotation-strip .chip{background:var(--c-brand);color:white;font-weight:600;padding:2px 7px;border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.04em}
+    .anno-pill{background:rgba(255,255,255,.6);color:var(--c-brand-deep);padding:2px 7px;border-radius:999px;font-size:11px}
+
+    .travis-credit{margin-top:var(--s-5);padding:var(--s-3) var(--s-4);background:var(--c-surface);border:1px dashed var(--c-border);border-radius:var(--r-md);font-size:var(--t-11);color:var(--c-text-2)}
+    .travis-credit strong{color:var(--c-text)}
+    .travis-credit .rec-tag{display:inline-block;background:var(--c-info-soft);color:var(--c-info);padding:1px 6px;border-radius:4px;font-size:10px;margin-right:4px;font-weight:600}
+  </style>
+<link rel="stylesheet" href="pixarV2-tokens.css" />
+</head>
+<body>
+<div style="background:linear-gradient(90deg,#1E40AF,#7C3AED);color:#fff;padding:8px 24px;font-size:12px;display:flex;align-items:center;gap:12px;font-family:Inter,system-ui,sans-serif;">
+  <span style="background:rgba(255,255,255,.18);font-weight:600;padding:2px 8px;border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.04em;">Pixar v.2</span>
+  <strong style="color:#fff;">Forked from v.1 — same markup, same interactions.</strong>
+  <span>Dev: bind .btn → &lt;Button&gt;, .pill → &lt;Tag&gt;, .card → &lt;Card&gt;, .drawer → &lt;Sidebar&gt;, .modal → &lt;Dialog&gt;, tabs → &lt;TabView&gt;.</span>
+  <span style="margin-left:auto;"><a href="HW_PixarV2_Hub.html" style="color:#fff;text-decoration:underline;">← Hub</a> · <a href="HW_PixarV2_Tokens.html" style="color:#fff;text-decoration:underline;">Tokens</a></span>
+</div>
+
+  <div class="annotation-strip">
+    <span class="chip">Prototype 11</span>
     <strong>Settings.</strong>
-    <span>PrimeVue PanelMenu (sub-nav) · Card · InputText · InputSwitch · ColorPicker · FileUpload · Dropdown · Divider.</span>
-    <span class="ml-auto"><a href="HW_PixarV2_Browse.html" class="underline">← v.2 home</a></span>
+    <span>Unified left rail · Profile / Branding / Identity / Security / System / API · current password required · auto-logout · timezone.</span>
+    <span class="anno-pill">5 Travis recs</span>
   </div>
 
-  <div class="grid" style="grid-template-columns:232px 1fr;grid-template-rows:56px 1fr;grid-template-areas:'logo top' 'side main';min-height:calc(100vh - 32px);">
-
-    <div style="grid-area:logo;" class="bg-white border-r border-b border-slate-200 flex items-center px-4 gap-2">
-      <div class="w-7 h-7 rounded-md bg-brand grid place-items-center text-white font-bold text-sm">H</div>
-      <span class="font-semibold">HonestWaves</span>
-      <span class="ml-auto p-tag p-tag-info text-xs"><span class="p-tag-value">QA</span></span>
+  <div class="shell">
+    <div class="logo">
+      <div class="logo-mark">H</div>
+      <div>HonestWaves</div>
+      <span class="logo-tenant">QA</span>
     </div>
 
-    <div style="grid-area:top;" class="bg-white border-b border-slate-200 flex items-center px-5 gap-3">
-      <div class="text-sm text-slate-500 flex items-center gap-2"><span>System</span><i class="pi pi-angle-right text-xs"></i><strong class="text-slate-900">Settings</strong><i class="pi pi-angle-right text-xs"></i><span>Branding</span></div>
-      <div class="flex-1"></div>
-      <button class="p-button p-button-text p-button-sm">Cancel</button>
-      <button class="p-button p-button-sm"><i class="pi pi-save mr-2"></i>Save changes</button>
-      <div class="p-avatar p-component p-avatar-circle ml-2" style="background:#2563EB;color:#fff;"><span>AR</span></div>
+    <div class="topbar">
+      <div class="breadcrumb">
+        <span style="color:var(--c-text-2);">System</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--c-text-muted);"><polyline points="9 18 15 12 9 6"/></svg>
+        <strong>Settings</strong>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+        <span>Search lockers, devices, users…</span>
+        <span class="search-kbd">⌘K</span>
+      </div>
+      <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="badge">99+</span></button>
+      <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+      <button class="avatar-btn"><div class="avatar">AR</div><div class="avatar-meta"><div class="avatar-name">Admin Rowe</div><div class="avatar-email">admin@honestwaves.test</div></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
     </div>
 
-    <aside style="grid-area:side;" class="bg-white border-r border-slate-200 p-3 overflow-y-auto">
-      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-1">Monitor</div>
-      <a href="HW_PixarV2_Dashboard.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-th-large"></i>Dashboard</a>
-      <a href="HW_PixarV2_Mission_Control.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-eye"></i>Mission Control</a>
-      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-4">Manage</div>
-      <a href="HW_PixarV2_Lockers.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-server"></i>Lockers</a>
-      <a href="HW_PixarV2_Devices.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-mobile"></i>Devices</a>
-      <a href="HW_PixarV2_Users.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-users"></i>Users</a>
-      <a href="HW_PixarV2_Access_Matrix.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-key"></i>Access Matrix</a>
-      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-4">Investigate</div>
-      <a href="HW_PixarV2_Notifications.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-bell"></i>Notifications</a>
-      <a href="HW_PixarV2_Tracker.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-map-marker"></i>Tracker</a>
-      <a href="HW_PixarV2_Reports.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-chart-line"></i>Reports</a>
-      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-4">System</div>
-      <a href="HW_PixarV2_Software_Updates.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-cloud-download"></i>Software Updates</a>
-      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold bg-brand-soft text-brand-deep border-l-2 border-brand -ml-1"><i class="pi pi-cog"></i>Settings</a>
-      <div class="ml-7 mt-1 mb-1 text-xs space-y-1">
-        <a class="block text-slate-500 hover:text-slate-900 py-1">Profile</a>
-        <a class="block text-slate-500 hover:text-slate-900 py-1">Security</a>
-        <a class="block text-brand-deep font-semibold py-1">› Branding</a>
-        <a class="block text-slate-500 hover:text-slate-900 py-1">Self-registration</a>
-        <a class="block text-slate-500 hover:text-slate-900 py-1">Master Keys</a>
-        <a class="block text-slate-500 hover:text-slate-900 py-1">Integrations</a>
-        <a class="block text-slate-500 hover:text-slate-900 py-1">Notifications</a>
+    <nav class="sidebar">
+      <div class="nav-group"><p class="nav-group-label">Monitor</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Mission Control</a>
       </div>
-    </aside>
+      <div class="nav-group"><p class="nav-group-label">Manage</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/></svg>Lockers</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Devices</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Users</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>Access matrix</a>
+      </div>
+      <div class="nav-group"><p class="nav-group-label">Investigate</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/></svg>Notifications<span class="nav-badge">99+</span></a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>Tracker</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Reports</a>
+      </div>
+      <div class="nav-group"><p class="nav-group-label">System</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>Software updates</a>
+        <a class="nav-item active" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>Settings</a>
+        <div class="sub-nav">
+          <div class="sub-nav-item-side active" data-section="profile" onclick="showSection('profile')"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>Profile</div>
+          <div class="sub-nav-item-side" data-section="security" onclick="showSection('security')"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/></svg>Security</div>
+          <div class="sub-nav-item-side" data-section="branding" onclick="showSection('branding')"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>Branding</div>
+          <div class="sub-nav-item-side" data-section="idp" onclick="showSection('idp')"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Identity provider<span class="new-tag">SSO</span></div>
+          <div class="sub-nav-item-side" data-section="selfreg" onclick="showSection('selfreg')"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>Self-registration<span class="new-tag">NEW</span></div>
+          <div class="sub-nav-item-side" data-section="locale" onclick="showSection('locale')"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>System &amp; locale</div>
+          <div class="sub-nav-item-side" data-section="api" onclick="showSection('api')"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="8 14 12 10 16 14"/></svg>API tokens</div>
+          <div class="sub-nav-item-side" data-section="webhooks" onclick="showSection('webhooks')"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="10 13 14 17 18 13"/></svg>Webhooks</div>
+          <div class="sub-nav-item-side" data-section="audit" onclick="showSection('audit')"><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Audit log</div>
+        </div>
+      </div>
+      <div style="padding:var(--s-3);font-size:var(--t-11);color:var(--c-text-muted);">v2.0.0</div>
+    </nav>
 
-    <main style="grid-area:main;" class="p-6 overflow-y-auto space-y-5">
+    <main class="main">
 
-      <div class="max-w-4xl space-y-5">
+      <!-- Settings side nav -->
+      <aside class="settings-nav">
+        <p class="settings-nav-h">My account</p>
+        <div class="s-nav-item active" data-section="profile"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>Profile</div>
+        <div class="s-nav-item" data-section="security"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Security</div>
 
-        <div class="p-card"><div class="p-card-body">
-          <div class="text-base font-semibold mb-1">Organization identity</div>
-          <div class="text-xs text-slate-500 mb-4">Shown on kiosk welcome screens, emails, and PDF exports.</div>
-          <div class="grid grid-cols-2 gap-4">
+        <p class="settings-nav-h">Organization</p>
+        <div class="s-nav-item" data-section="branding"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>Branding</div>
+        <div class="s-nav-item" data-section="idp"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Identity provider <span class="new-tag">SSO</span></div>
+        <div class="s-nav-item" data-section="selfreg"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>Self-registration <span class="new-tag">NEW</span></div>
+        <div class="s-nav-item" data-section="locale"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>System &amp; locale</div>
+
+        <p class="settings-nav-h">Developer</p>
+        <div class="s-nav-item" data-section="api"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="8 14 12 10 16 14"/></svg>API tokens</div>
+        <div class="s-nav-item" data-section="webhooks"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="10 13 14 17 18 13"/><polyline points="10 11 14 7 18 11"/></svg>Webhooks</div>
+        <div class="s-nav-item" data-section="audit"><svg class="s-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Audit log</div>
+      </aside>
+
+      <!-- Content area -->
+      <div class="content">
+
+      <section class="settings-section active" data-content="profile">
+        <header class="page-head">
+          <h1 class="page-title">Profile</h1>
+          <p class="page-sub">Your account identity, sign-in, and security.</p>
+        </header>
+
+        <!-- Identity callout -->
+        <div class="id-strip">
+          <div class="id-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <div class="id-meta">
+            <div class="id-title">Signed in via Microsoft Entra ID SSO</div>
+            <div class="id-sub">Your name, email, and badge are kept in sync from Active Directory · last sync 14 min ago</div>
+          </div>
+          <span class="id-status"><span class="dot"></span>Active</span>
+        </div>
+
+        <!-- Identity -->
+        <div class="card">
+          <div class="card-head">
             <div>
-              <label class="text-xs font-semibold text-slate-600 uppercase">Organization name</label>
-              <input class="p-inputtext p-component w-full mt-1" value="Corewell Health" />
-            </div>
-            <div>
-              <label class="text-xs font-semibold text-slate-600 uppercase">Display name</label>
-              <input class="p-inputtext p-component w-full mt-1" value="Corewell" />
-            </div>
-            <div class="col-span-2">
-              <label class="text-xs font-semibold text-slate-600 uppercase">Tagline</label>
-              <input class="p-inputtext p-component w-full mt-1" value="Building healthier communities" />
+              <h3 class="card-title">Identity</h3>
+              <div class="card-sub">Your name and email — how the system addresses you and how teammates find you</div>
             </div>
           </div>
-        </div></div>
-
-        <div class="p-card"><div class="p-card-body">
-          <div class="text-base font-semibold mb-1">Brand assets</div>
-          <div class="text-xs text-slate-500 mb-4">Light logo for kiosk · dark logo for app · favicon.</div>
-          <div class="grid grid-cols-3 gap-4">
-            <div class="rounded-lg border-2 border-dashed border-slate-300 p-6 text-center">
-              <div class="w-16 h-16 rounded-full bg-brand-soft grid place-items-center mx-auto"><span class="text-brand font-bold">C</span></div>
-              <div class="text-xs font-semibold mt-3">Light logo</div>
-              <button class="p-button p-button-text p-button-sm mt-1">Replace</button>
-            </div>
-            <div class="rounded-lg border-2 border-dashed border-slate-300 p-6 text-center">
-              <div class="w-16 h-16 rounded-full bg-slate-900 grid place-items-center mx-auto"><span class="text-white font-bold">C</span></div>
-              <div class="text-xs font-semibold mt-3">Dark logo</div>
-              <button class="p-button p-button-text p-button-sm mt-1">Replace</button>
-            </div>
-            <div class="rounded-lg border-2 border-dashed border-slate-300 p-6 text-center">
-              <div class="w-10 h-10 rounded bg-brand mx-auto grid place-items-center text-white text-xs font-bold">CH</div>
-              <div class="text-xs font-semibold mt-3">Favicon</div>
-              <button class="p-button p-button-text p-button-sm mt-1">Replace</button>
-            </div>
-          </div>
-        </div></div>
-
-        <div class="p-card"><div class="p-card-body">
-          <div class="text-base font-semibold mb-1">Color palette</div>
-          <div class="text-xs text-slate-500 mb-4">Primary drives buttons + links. Accent drives chips + selection.</div>
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="text-xs font-semibold text-slate-600 uppercase">Primary</label>
-              <div class="flex items-center gap-2 mt-1">
-                <div class="w-10 h-10 rounded-lg" style="background:#2563EB;"></div>
-                <input class="p-inputtext p-component flex-1" value="#2563EB" />
+          <div class="card-body">
+            <div class="field-row">
+              <div class="field">
+                <label class="field-label">First name</label>
+                <div class="field-input"><input type="text" value="Admin"></div>
+              </div>
+              <div class="field">
+                <label class="field-label">Last name</label>
+                <div class="field-input"><input type="text" value="Rowe"></div>
               </div>
             </div>
-            <div>
-              <label class="text-xs font-semibold text-slate-600 uppercase">Accent</label>
-              <div class="flex items-center gap-2 mt-1">
-                <div class="w-10 h-10 rounded-lg" style="background:#7C3AED;"></div>
-                <input class="p-inputtext p-component flex-1" value="#7C3AED" />
+            <div class="field">
+              <label class="field-label">Work email</label>
+              <div class="field-input mono"><input type="text" value="admin@honestwaves.test"></div>
+              <div class="field-help">Synced from Microsoft Entra ID. To change, ask your IT team to update the AD account.</div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label class="field-label">Badge ID</label>
+                <div class="field-input mono" style="background:var(--c-surface-2);color:var(--c-text-muted);"><input type="text" value="EMP-ADMIN-001" readonly></div>
+                <div class="field-help">Assigned by your organization · contact admin to change</div>
+              </div>
+              <div class="field">
+                <label class="field-label">Employee ID</label>
+                <div class="field-input mono" style="background:var(--c-surface-2);color:var(--c-text-muted);"><input type="text" value="EMP-ADMIN-001" readonly></div>
+                <div class="field-help">Read-only · SCIM-managed</div>
               </div>
             </div>
           </div>
-        </div></div>
+          <div class="card-foot">
+            <button class="btn">Cancel</button>
+            <button class="btn primary">Save</button>
+          </div>
+        </div>
 
-        <div class="p-card"><div class="p-card-body">
-          <div class="flex items-center"><div><div class="text-base font-semibold">Allow self-registration on kiosk</div><div class="text-xs text-slate-500">Guests can create temporary accounts at the kiosk with badge + photo.</div></div><div class="ml-auto"><span class="p-inputswitch p-inputswitch-checked"><span class="p-inputswitch-slider"></span></span></div></div>
-          <div class="border-t border-slate-100 my-4"></div>
-          <div class="grid grid-cols-2 gap-4">
+        <!-- Password (with Travis P1 current password) -->
+        <div class="card">
+          <div class="card-head">
             <div>
-              <label class="text-xs font-semibold text-slate-600 uppercase">Default guest TTL</label>
-              <div class="p-dropdown w-full mt-1 bg-slate-50 border border-slate-200 rounded px-3 py-2 text-sm flex items-center justify-between cursor-pointer">
-                <span>24 hours</span><i class="pi pi-angle-down text-slate-400"></i>
-              </div>
+              <h3 class="card-title">Password</h3>
+              <div class="card-sub">Change the password you use to sign in. You'll stay signed in on this device.</div>
             </div>
-            <div>
-              <label class="text-xs font-semibold text-slate-600 uppercase">Default department</label>
-              <div class="p-dropdown w-full mt-1 bg-slate-50 border border-slate-200 rounded px-3 py-2 text-sm flex items-center justify-between cursor-pointer">
-                <span>Guest (24h)</span><i class="pi pi-angle-down text-slate-400"></i>
+          </div>
+          <div class="card-body">
+            <div class="field">
+              <label class="field-label">Current password<span class="required">*</span></label>
+              <div class="field-input"><input type="password" value="••••••••••" autocomplete="current-password"></div>
+              <div class="field-help" style="color:var(--c-warning-text);">Required — verifies it's really you (security fix · Travis P1)</div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label class="field-label">New password<span class="required">*</span></label>
+                <div class="field-input"><input type="password" placeholder="At least 12 characters with one number and one symbol"></div>
+              </div>
+              <div class="field">
+                <label class="field-label">Confirm new password<span class="required">*</span></label>
+                <div class="field-input"><input type="password" placeholder="Re-enter the new password"></div>
               </div>
             </div>
           </div>
-          <div class="flex items-center mt-4"><div><div class="text-sm font-semibold">Require photo capture</div><div class="text-xs text-slate-500">Photo stored with audit trail · auto-purged after TTL.</div></div><div class="ml-auto"><span class="p-inputswitch p-inputswitch-checked"><span class="p-inputswitch-slider"></span></span></div></div>
-          <div class="flex items-center mt-3"><div><div class="text-sm font-semibold">Require host approval</div><div class="text-xs text-slate-500">Email manager when a guest self-registers.</div></div><div class="ml-auto"><span class="p-inputswitch"><span class="p-inputswitch-slider"></span></span></div></div>
-        </div></div>
+          <div class="card-foot">
+            <button class="btn primary">Update password</button>
+          </div>
+        </div>
 
-        <div class="p-card"><div class="p-card-body">
-          <div class="text-base font-semibold mb-1 flex items-center gap-2">Master Keys <i class="pi pi-shield text-warning"></i></div>
-          <div class="text-xs text-slate-500 mb-4">Physical override keys. Use of a master key triggers a high-severity alert and audit log entry.</div>
-          <table class="w-full text-sm">
-            <thead><tr class="text-left text-xs uppercase text-slate-500"><th class="py-2">Key</th><th>Holder</th><th>Last used</th><th>Status</th><th></th></tr></thead>
-            <tbody class="divide-y divide-slate-100">
-              <tr><td class="py-2 font-mono text-xs">MK-001</td><td>Admin Rowe</td><td class="text-slate-500">3w ago</td><td><span class="p-tag p-tag-success">Active</span></td><td><button class="p-button p-button-text p-button-sm">Rotate</button></td></tr>
-              <tr><td class="py-2 font-mono text-xs">MK-002</td><td>James Tan (Security)</td><td class="text-slate-500">12h ago</td><td><span class="p-tag p-tag-success">Active</span></td><td><button class="p-button p-button-text p-button-sm">Rotate</button></td></tr>
-              <tr><td class="py-2 font-mono text-xs">MK-003</td><td class="text-slate-400">Unassigned</td><td class="text-slate-500">never</td><td><span class="p-tag p-tag-warning">Spare</span></td><td><button class="p-button p-button-text p-button-sm">Assign</button></td></tr>
-            </tbody>
-          </table>
-        </div></div>
+        <!-- Security toggles -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3 class="card-title">Security &amp; sessions</h3>
+              <div class="card-sub">Auto-logout, two-factor, and active sessions</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="toggle-row">
+              <div class="toggle-meta">
+                <div class="toggle-label">Auto-logout after inactivity</div>
+                <div class="toggle-sub">Sign out dashboard users after the configured inactivity period. Configurable per role (Travis P5).</div>
+              </div>
+              <span class="toggle on"></span>
+            </div>
+            <div class="field-row" style="padding-left:0;padding-top:var(--s-3);">
+              <div class="field" style="margin-bottom:0;">
+                <label class="field-label">Inactivity timeout</label>
+                <div class="field-input"><input type="text" value="15 minutes"></div>
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label class="field-label">Maximum session</label>
+                <div class="field-input"><input type="text" value="12 hours"></div>
+              </div>
+            </div>
+            <div class="toggle-row" style="margin-top:var(--s-3);">
+              <div class="toggle-meta">
+                <div class="toggle-label">Force password change on first sign-in</div>
+                <div class="toggle-sub">Manually-added users must change their password the first time they sign in (Travis P1).</div>
+              </div>
+              <span class="toggle on"></span>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-meta">
+                <div class="toggle-label">Two-factor authentication</div>
+                <div class="toggle-sub">Require a verification code in addition to password. SSO users bypass this — Entra ID handles 2FA.</div>
+              </div>
+              <span class="toggle"></span>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-meta">
+                <div class="toggle-label">Sign out everywhere</div>
+                <div class="toggle-sub">End all sessions across browsers and devices. You'll need to sign back in.</div>
+              </div>
+              <button class="btn danger" style="height:28px;">Sign out everywhere</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- System & locale (Travis P3 timezone) -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3 class="card-title">System &amp; locale</h3>
+              <div class="card-sub">Time zone, date format, and currency. Applies to your view only.</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="field-row">
+              <div class="field">
+                <label class="field-label">Time zone</label>
+                <div class="field-input"><input type="text" value="America/Detroit (EDT, UTC-4)"></div>
+                <div class="field-help">Used for all timestamps shown to you (Travis P3)</div>
+              </div>
+              <div class="field">
+                <label class="field-label">Date format</label>
+                <div class="field-input"><input type="text" value="Jun 17, 2026 · 3:14 PM"></div>
+                <div class="field-help">12-hour with month name — per Conventions tab</div>
+              </div>
+            </div>
+            <div class="field-row" style="margin-top:var(--s-3);">
+              <div class="field">
+                <label class="field-label">Currency</label>
+                <div class="field-input"><input type="text" value="USD ($)"></div>
+                <div class="field-help">For replacement costs and chargebacks</div>
+              </div>
+              <div class="field">
+                <label class="field-label">Language</label>
+                <div class="field-input"><input type="text" value="English (US)"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card-foot">
+            <button class="btn primary">Save</button>
+          </div>
+        </div>
+
+        <!-- Branding section preview -->
+        <header class="page-head" style="margin-top:var(--s-6);">
+          <h1 class="page-title">Branding · preview</h1>
+          <p class="page-sub">Tenant brand assets shown to operators and customers. Tap any slot to upload.</p>
+        </header>
+
+        <!-- Shared brand -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3 class="card-title">Organization brand</h3>
+              <div class="card-sub">Logos and names shared across operator and customer surfaces</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="field-row">
+              <div class="field">
+                <label class="field-label">Company name</label>
+                <div class="field-input"><input type="text" value="HonestWaves"></div>
+                <div class="field-help">Shown in the dashboard header, on the locker screen, and in outbound notifications.</div>
+              </div>
+              <div class="field">
+                <label class="field-label">Brand logo</label>
+                <div class="field-input" style="height:auto;padding:var(--s-2) var(--s-3);">
+                  <div style="display:flex;align-items:center;gap:8px;flex:1;">
+                    <div style="width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#2563EB,#1E40AF);"></div>
+                    <span style="font-weight:600;">HonestWaves.svg</span>
+                  </div>
+                  <button class="btn" style="height:24px;font-size:var(--t-11);">Replace</button>
+                </div>
+                <div class="field-help">Used in dashboard header and locker home screen</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Locker app artwork -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3 class="card-title">Locker app artwork</h3>
+              <div class="card-sub">Per-screen artwork for customers at the locker · tap to upload</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="asset-grid">
+
+              <div class="asset-card">
+                <div class="asset-preview"><div class="uploaded">SPLASH</div></div>
+                <div class="asset-meta">
+                  <div class="asset-label">Splash screen</div>
+                  <div class="asset-state uploaded"><span class="dot"></span>Uploaded</div>
+                </div>
+              </div>
+              <div class="asset-card">
+                <div class="asset-preview"><div class="uploaded">SAVER</div></div>
+                <div class="asset-meta">
+                  <div class="asset-label">Screensaver</div>
+                  <div class="asset-state uploaded"><span class="dot"></span>Uploaded</div>
+                </div>
+              </div>
+              <div class="asset-card">
+                <div class="asset-preview"><span class="placeholder">＋</span></div>
+                <div class="asset-meta">
+                  <div class="asset-label">Check-in icon</div>
+                  <div class="asset-state"><span class="dot"></span>Using default</div>
+                </div>
+              </div>
+              <div class="asset-card">
+                <div class="asset-preview"><span class="placeholder">＋</span></div>
+                <div class="asset-meta">
+                  <div class="asset-label">Check-out icon</div>
+                  <div class="asset-state"><span class="dot"></span>Using default</div>
+                </div>
+              </div>
+              <div class="asset-card">
+                <div class="asset-preview"><span class="placeholder">＋</span></div>
+                <div class="asset-meta">
+                  <div class="asset-label">Sample device</div>
+                  <div class="asset-state"><span class="dot"></span>Using default</div>
+                </div>
+              </div>
+              <div class="asset-card">
+                <div class="asset-preview"><span class="placeholder">＋</span></div>
+                <div class="asset-meta">
+                  <div class="asset-label">Scan sample</div>
+                  <div class="asset-state"><span class="dot"></span>Using default</div>
+                </div>
+              </div>
+              <div class="asset-card">
+                <div class="asset-preview"><span class="placeholder">＋</span></div>
+                <div class="asset-meta">
+                  <div class="asset-label">Deposit sample</div>
+                  <div class="asset-state"><span class="dot"></span>Using default</div>
+                </div>
+              </div>
+              <div class="asset-card">
+                <div class="asset-preview"><span class="placeholder">＋</span></div>
+                <div class="asset-meta">
+                  <div class="asset-label">Pickup sample</div>
+                  <div class="asset-state"><span class="dot"></span>Using default</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="travis-credit">
+          <strong>Travis recs integrated:</strong>
+          <span class="rec-tag">P5</span>Auto-logout timeout &nbsp;
+          <span class="rec-tag">P3</span>Time zone setting &nbsp;
+          <span class="rec-tag">P1</span>Force password change on first sign-in &nbsp;
+          <span class="rec-tag">P1</span>Current password required for password change &nbsp;
+          <span class="rec-tag">P1</span>Unified User Management + Account Settings (one left rail)
+        </div>
+      </section><!-- /profile -->
+
+      <!-- =============== Self-registration section (mirrors staging "Edit Guest registration" + adds discoverability) =============== -->
+      <section class="settings-section" data-content="selfreg">
+        <header class="page-head">
+          <h1 class="page-title">Self-registration</h1>
+          <p class="page-sub">How locker self-registrations are handled for this tenant — the same controls available on Users → Guests, surfaced here for discoverability.</p>
+        </header>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3 class="card-title">Auto-approval</h3>
+              <p class="card-sub">When ON, the pending queue is bypassed and self-registrants get user access immediately.</p>
+            </div>
+            <span class="id-status" id="selfregStatusPill"><span class="dot"></span>On</span>
+          </div>
+          <div class="card-body">
+            <div class="toggle-row">
+              <div class="toggle-meta">
+                <div class="toggle-label">Auto-approve new self-registrations</div>
+                <div class="toggle-sub">New badges scanned at a locker skip the pending queue and are immediately granted user access in the default department. Turn off if your facility requires admin review before granting access.</div>
+              </div>
+              <div class="toggle on" id="selfregAutoToggle" role="switch" aria-checked="true"></div>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-meta">
+                <div class="toggle-label">Default department</div>
+                <div class="toggle-sub">Auto-approved users are added to this department on conversion. Override per locker in Lockers → Templates.</div>
+              </div>
+              <select class="field-input" id="selfregDeptSelect" style="height:32px;width:220px;flex:none;">
+                <option>Corewell POC</option>
+                <option>Emergency Medicine</option>
+                <option>Nursing</option>
+                <option>IT / Help Desk</option>
+                <option>Security / Facilities</option>
+                <option>Radiology</option>
+                <option>Physical Therapy</option>
+                <option>Pharmacy</option>
+                <option>Admin / HR</option>
+              </select>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-meta">
+                <div class="toggle-label">Notify admins when a registration is denied <span style="font-size:10px;background:var(--c-violet-soft);color:var(--c-violet);padding:1px 6px;border-radius:4px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-left:6px;">v2 redesign</span></div>
+                <div class="toggle-sub">Send an in-app + email notification to the Security group when a self-registration is denied. Recommended even when auto-approval is on, so denials are reviewed.</div>
+              </div>
+              <div class="toggle on" role="switch" aria-checked="true"></div>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-meta">
+                <div class="toggle-label">Auto-revoke unused guests <span style="font-size:10px;background:var(--c-violet-soft);color:var(--c-violet);padding:1px 6px;border-radius:4px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-left:6px;">v2 redesign</span></div>
+                <div class="toggle-sub">Auto-deactivate self-registered users who have not checked out a device in 30 days. Their badge can be re-scanned to re-activate.</div>
+              </div>
+              <div class="toggle" role="switch" aria-checked="false"></div>
+            </div>
+          </div>
+          <div class="card-foot">
+            <button class="btn ghost">Cancel</button>
+            <button class="btn primary">Save changes</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3 class="card-title">Registration activity (30 days)</h3>
+              <p class="card-sub">Cross-link: full list of self-registrations on <a href="HW_PixarV2_Users.html" style="color:var(--c-brand);">Users → Guests</a>.</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+              <div style="padding:12px;background:var(--c-surface-2);border:1px solid var(--c-divider);border-radius:8px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--c-text-muted);font-weight:600;">Total</div><div style="font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;">47</div></div>
+              <div style="padding:12px;background:var(--c-surface-2);border:1px solid var(--c-divider);border-radius:8px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--c-text-muted);font-weight:600;">Auto-approved</div><div style="font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--c-success);">45</div></div>
+              <div style="padding:12px;background:var(--c-surface-2);border:1px solid var(--c-divider);border-radius:8px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--c-text-muted);font-weight:600;">Pending</div><div style="font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;">0</div></div>
+              <div style="padding:12px;background:var(--c-surface-2);border:1px solid var(--c-divider);border-radius:8px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--c-text-muted);font-weight:600;">Denied</div><div style="font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--c-danger);">2</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="travis-credit">
+          <strong>Why this is in main Settings + Users → Guests:</strong>
+          Staging buries Guest registration behind a Settings button inside the Guests tab. We're surfacing the same controls in <strong>two</strong> places — admins who think "this is a tenant setting" find it in Settings; admins who think "this is part of guest management" find it under Users. Saves a support ticket.
+        </div>
+      </section><!-- /selfreg -->
+
+      <!-- Stub sections for other nav items -->
+      <section class="settings-section" data-content="security">
+        <header class="page-head"><h1 class="page-title">Security</h1><p class="page-sub">Password, MFA, sessions.</p></header>
+        <div class="empty-stub"><strong>Covered in Profile</strong>Password + force-change controls live in the Profile section above. Sessions and MFA configuration land in a future iteration.</div>
+      </section>
+      <section class="settings-section" data-content="branding">
+        <header class="page-head"><h1 class="page-title">Branding</h1><p class="page-sub">Tenant logo and brand assets shown on the locker and customer surfaces.</p></header>
+        <div class="empty-stub"><strong>Coming in v2 redesign</strong>Asset library with per-mode previews (AC deposit / AC pickup / DC check-in / DC check-out / Hybrid).</div>
+      </section>
+      <section class="settings-section" data-content="idp">
+        <header class="page-head"><h1 class="page-title">Identity provider · SSO</h1><p class="page-sub">SAML SSO + SCIM provisioning with Microsoft Entra ID, Okta, Google Workspace.</p></header>
+        <div class="empty-stub"><strong>Coming in v2 redesign</strong>Provider connect flow, SCIM token issuance, group → role mapping, and force-SSO toggle.</div>
+      </section>
+      <section class="settings-section" data-content="locale">
+        <header class="page-head"><h1 class="page-title">System &amp; locale</h1><p class="page-sub">Time zone, date format, language, units.</p></header>
+        <div class="empty-stub"><strong>Coming in v2 redesign</strong>Tenant time zone picker (Travis P3), 12/24h clock, ISO/US date format, weight + length units.</div>
+      </section>
+      <section class="settings-section" data-content="api">
+        <header class="page-head"><h1 class="page-title">API tokens</h1><p class="page-sub">Personal and service tokens for the HonestWaves API.</p></header>
+        <div class="empty-stub"><strong>Coming in v2 redesign</strong>Token issuance with scopes, last-used timestamp, rotation, and revoke.</div>
+      </section>
+      <section class="settings-section" data-content="webhooks">
+        <header class="page-head"><h1 class="page-title">Webhooks</h1><p class="page-sub">Outbound events to your systems.</p></header>
+        <div class="empty-stub"><strong>Coming in v2 redesign</strong>Subscribe to events (bay.state_changed, device.deposited, guest.registered, …), endpoint health, delivery retry log.</div>
+      </section>
+      <section class="settings-section" data-content="audit">
+        <header class="page-head"><h1 class="page-title">Audit log</h1><p class="page-sub">Who did what, when.</p></header>
+        <div class="empty-stub"><strong>Coming in v2 redesign</strong>Full audit trail of admin actions with filterable timeline; supplements the operational Reports view.</div>
+      </section>
 
       </div>
-
     </main>
   </div>
-  <script src="pixarV2-interactivity.js"></script>
+
+  <script>
+    // Sidebar section switching — synced between in-page nav AND main sidebar accordion
+    const navItems = document.querySelectorAll('.s-nav-item[data-section], .sub-nav-item-side[data-section]');
+    const sections = document.querySelectorAll('.settings-section[data-content]');
+    function showSection(name) {
+      navItems.forEach(n => n.classList.toggle('active', n.dataset.section === name));
+      sections.forEach(s => s.classList.toggle('active', s.dataset.content === name));
+      try { localStorage.setItem('hw.settings.section', name); } catch (e) {}
+    }
+    navItems.forEach(n => n.addEventListener('click', () => showSection(n.dataset.section)));
+    try {
+      const saved = localStorage.getItem('hw.settings.section');
+      if (saved) showSection(saved);
+    } catch (e) {}
+
+    // Self-registration auto-approval toggle (visual)
+    const autoToggle = document.getElementById('selfregAutoToggle');
+    const statusPill = document.getElementById('selfregStatusPill');
+    if (autoToggle && statusPill) {
+      autoToggle.addEventListener('click', () => {
+        autoToggle.classList.toggle('on');
+        const isOn = autoToggle.classList.contains('on');
+        autoToggle.setAttribute('aria-checked', isOn);
+        statusPill.innerHTML = isOn
+          ? '<span class="dot"></span>On'
+          : '<span class="dot" style="background:var(--c-warning);"></span>Off';
+        statusPill.style.background = isOn ? 'var(--c-success-soft)' : 'var(--c-warning-soft)';
+        statusPill.style.color = isOn ? 'var(--c-success)' : 'var(--c-warning-text)';
+      });
+    }
+    // Other toggles on the page (simple click-to-toggle)
+    document.querySelectorAll('.toggle').forEach(t => {
+      if (t.id === 'selfregAutoToggle') return;
+      t.addEventListener('click', () => {
+        t.classList.toggle('on');
+        t.setAttribute('aria-checked', t.classList.contains('on'));
+      });
+    });
+  </script>
+<script src="pixarV2-interactivity.js"></script>
 </body>
 </html>

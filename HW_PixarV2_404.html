@@ -1,94 +1,383 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Pixar v.2 · 404 — Locker not found</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/lara-light-blue/theme.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/primevue.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config={theme:{extend:{colors:{
-      'brand':{DEFAULT:'#2563EB',deep:'#1E40AF',soft:'#EFF6FF'},'pixar':{DEFAULT:'#7C3AED',soft:'#EDE9FE'},
-      'success':{DEFAULT:'#10B981',soft:'#D1FAE5'},'warning':{DEFAULT:'#F59E0B',soft:'#FEF3C7',text:'#B45309'},
-      'danger':{DEFAULT:'#DC2626',soft:'#FEE2E2'},'info':{DEFAULT:'#0EA5E9',soft:'#E0F2FE'},
-    },fontFamily:{sans:['Inter','system-ui','sans-serif']}}}};
-  </script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>404 · HonestWaves Console</title>
   <style>
-    body{font-family:'Inter',system-ui,sans-serif;}
-    .annotation{background:linear-gradient(90deg,#7C3AED,#1E40AF);color:#fff;padding:8px 24px;font-size:12px;display:flex;align-items:center;gap:12px;}
-    .annotation .chip{background:rgba(255,255,255,.2);font-weight:600;padding:2px 7px;border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.04em;}
-    .locker-svg{filter:drop-shadow(0 18px 30px rgba(124,58,237,.25));}
-    .bay-cell{width:62px;height:46px;border-radius:6px;display:grid;place-items:center;font-size:10px;font-weight:600;}
-    .open-bay{background:#FEE2E2;border:2px dashed #DC2626;color:#991B1B;animation:pulse 2s infinite;}
-    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-  </style>
-  <link rel="stylesheet" href="pixarV2-tokens.css" />
-</head>
-<body class="bg-gradient-to-br from-slate-50 via-pixar-soft to-brand-soft min-h-screen text-slate-900">
+    :root {
+      --c-surface: #FFFFFF;
+      --c-surface-2: #FAFAFB;
+      --c-surface-3: #F4F5F7;
+      --c-paper: #FAF8F3;             /* warm paper backdrop for the sketch */
+      --c-border: #E5E7EB;
+      --c-border-strong: #D1D5DB;
+      --c-text: #0F172A;
+      --c-text-2: #475569;
+      --c-text-muted: #94A3B8;
+      --c-brand: #2563EB;
+      --c-brand-hover: #1D4ED8;
+      --c-brand-soft: #EFF6FF;
+      --c-brand-deep: #1E40AF;
+      --c-warning: #F59E0B;
+      --c-warning-soft: #FFFBEB;
+      --c-warning-text: #B45309;
 
-  <div class="annotation">
-    <span class="chip">Pixar v.2</span>
-    <strong>404 — Locker not found.</strong>
-    <span>PrimeVue Card · Button · Tag · Tailwind gradient · brand-consistent error page.</span>
-    <span class="ml-auto"><a href="HW_PixarV2_Browse.html" class="underline">← v.2 home</a></span>
+      --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --font-serif: "Lora", Georgia, "Times New Roman", serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      color: var(--c-text);
+      background: var(--c-surface-2);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+    svg { display: block; }
+
+    /* ============================================================
+       Top bar — minimal, just brand + breadcrumb
+       ============================================================ */
+    .topbar {
+      background: var(--c-surface);
+      border-bottom: 1px solid var(--c-border);
+      padding: 14px 24px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .logo-mark {
+      width: 28px; height: 28px;
+      border-radius: 7px;
+      background: linear-gradient(135deg, var(--c-brand) 0%, var(--c-brand-deep) 100%);
+      display: grid; place-items: center;
+      color: white; font-weight: 700; font-size: 14px;
+    }
+    .topbar-title { font-weight: 600; font-size: 15px; letter-spacing: -0.01em; }
+    .topbar-sub { color: var(--c-text-muted); font-size: 12px; }
+    .topbar-spacer { flex: 1; }
+    .topbar-status {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px;
+      background: var(--c-warning-soft);
+      color: var(--c-warning-text);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+    }
+    .topbar-status .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--c-warning);
+    }
+
+    /* ============================================================
+       Stage — split layout: portrait on the left, copy on the right.
+       Falls back to stacked on narrow screens.
+       ============================================================ */
+    .stage {
+      min-height: calc(100vh - 56px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 32px;
+      padding: 40px 64px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    /* Portrait — warm paper card with the pencil sketch.
+       If pixar.png is missing, the SVG fallback below shows in its place. */
+    .portrait {
+      position: relative;
+      background: var(--c-paper);
+      border: 1px solid var(--c-border);
+      border-radius: 18px;
+      padding: 28px;
+      overflow: hidden;
+      box-shadow:
+        0 1px 2px rgba(15, 23, 42, 0.04),
+        0 16px 48px rgba(15, 23, 42, 0.08);
+      transform: rotate(-1.2deg);
+      transition: transform .3s ease;
+    }
+    .portrait:hover { transform: rotate(0deg) scale(1.01); }
+    .portrait::after {
+      content: "";
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at top left, rgba(255,255,255,0.4) 0%, transparent 60%),
+        radial-gradient(ellipse at bottom right, rgba(15,23,42,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .portrait img,
+    .portrait .pixar-fallback {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 4px;
+      filter: contrast(1.05);
+    }
+    .portrait .caption {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 13px;
+      color: var(--c-text-muted);
+      text-align: center;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px dashed rgba(15, 23, 42, 0.15);
+    }
+    .portrait .caption-name { color: var(--c-text); font-weight: 500; }
+
+    /* SVG fallback — only visible if pixar.png is missing. */
+    .pixar-fallback {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      background: #F0EBE0;
+      display: grid; place-items: center;
+      color: #8B7355;
+      border-radius: 4px;
+    }
+    .pixar-fallback .fb-inner {
+      text-align: center;
+      padding: 24px;
+    }
+    .pixar-fallback .fb-mark {
+      font-size: 64px;
+      margin-bottom: 8px;
+    }
+    .pixar-fallback .fb-title {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 14px;
+      max-width: 200px;
+      margin: 0 auto;
+    }
+    /* Hide fallback when the image successfully loads */
+    .portrait img:not([src=""]):not([src*="MISSING"]) + .pixar-fallback { display: none; }
+
+    /* Copy side */
+    .copy {
+      max-width: 480px;
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px;
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      color: var(--c-text-muted);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 24px;
+      font-family: var(--font-mono);
+    }
+    .eyebrow .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--c-warning);
+    }
+
+    .copy h1 {
+      font-size: 42px;
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+      font-weight: 700;
+      margin: 0 0 12px;
+      color: var(--c-text);
+    }
+    .copy h1 .pixar {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 600;
+      color: var(--c-brand);
+    }
+    .copy p.lede {
+      font-size: 17px;
+      color: var(--c-text-2);
+      margin: 0 0 28px;
+      line-height: 1.55;
+    }
+
+    .actions {
+      display: flex; align-items: center; gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 40px;
+      padding: 0 18px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--c-text);
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+      transition: background .12s, border-color .12s, transform .12s;
+    }
+    .btn:hover {
+      background: var(--c-surface-3);
+      border-color: var(--c-border-strong);
+    }
+    .btn.primary {
+      background: var(--c-brand);
+      color: white;
+      border-color: var(--c-brand);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+    .btn.primary:hover { background: var(--c-brand-hover); border-color: var(--c-brand-hover); transform: translateY(-1px); }
+
+    .help {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 16px;
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: 10px;
+      font-size: 13px;
+      color: var(--c-text-2);
+    }
+    .help svg { color: var(--c-text-muted); flex-shrink: 0; margin-top: 2px; }
+    .help strong { color: var(--c-text); font-weight: 600; }
+    .help a {
+      color: var(--c-brand);
+      font-weight: 600;
+    }
+    .help-reqid {
+      display: inline-block;
+      padding: 2px 6px;
+      background: var(--c-surface-3);
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--c-text-2);
+      margin-left: 4px;
+    }
+
+    /* ============================================================
+       Annotation strip (for the prototype review)
+       ============================================================ */
+    .annotation-strip {
+      background: linear-gradient(90deg, var(--c-brand-soft), #F0F7FF);
+      border-bottom: 1px solid #DBEAFE;
+      padding: 8px 24px;
+      font-size: 12px;
+      color: var(--c-brand-deep);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .annotation-strip strong { color: var(--c-brand-deep); }
+    .annotation-strip .chip {
+      background: var(--c-brand);
+      color: white;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* ============================================================
+       Responsive — stack on tablet/mobile
+       ============================================================ */
+    @media (max-width: 980px) {
+      .stage {
+        grid-template-columns: 1fr;
+        padding: 32px 20px;
+        gap: 24px;
+      }
+      .copy { max-width: 100%; }
+      .copy h1 { font-size: 32px; }
+      .portrait { max-width: 360px; margin: 0 auto; transform: rotate(-1deg); }
+    }
+  </style>
+<link rel="stylesheet" href="pixarV2-tokens.css" />
+</head>
+<body>
+<div style="background:linear-gradient(90deg,#1E40AF,#7C3AED);color:#fff;padding:8px 24px;font-size:12px;display:flex;align-items:center;gap:12px;font-family:Inter,system-ui,sans-serif;">
+  <span style="background:rgba(255,255,255,.18);font-weight:600;padding:2px 8px;border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.04em;">Pixar v.2</span>
+  <strong style="color:#fff;">Forked from v.1 — same markup, same interactions.</strong>
+  <span>Dev: bind .btn → &lt;Button&gt;, .pill → &lt;Tag&gt;, .card → &lt;Card&gt;, .drawer → &lt;Sidebar&gt;, .modal → &lt;Dialog&gt;, tabs → &lt;TabView&gt;.</span>
+  <span style="margin-left:auto;"><a href="HW_PixarV2_Hub.html" style="color:#fff;text-decoration:underline;">← Hub</a> · <a href="HW_PixarV2_Tokens.html" style="color:#fff;text-decoration:underline;">Tokens</a></span>
+</div>
+
+  <div class="annotation-strip">
+    <span class="chip">Prototype 404</span>
+    <strong>Page not found · Pixar edition.</strong>
+    <span>Brand-defining error page with the pencil portrait, friendly headline, and clear way back.</span>
+    <span style="margin-left:auto;color:#64748B;">Drop <code style="background:rgba(255,255,255,0.6);padding:1px 5px;border-radius:3px;font-size:11px;">pixar.png</code> alongside this file for the real image.</span>
   </div>
 
-  <main class="max-w-5xl mx-auto px-6 py-16">
-    <div class="grid grid-cols-2 gap-12 items-center">
-
-      <!-- Left: locker mock with one open bay -->
-      <div class="locker-svg">
-        <div class="bg-white rounded-2xl shadow-xl p-6 border border-slate-200">
-          <div class="flex items-center mb-4 pb-3 border-b border-slate-100">
-            <div class="w-8 h-8 rounded-md bg-brand grid place-items-center text-white font-bold text-sm">H</div>
-            <span class="ml-2 font-semibold">L-???-???</span>
-            <span class="ml-auto p-tag p-tag-danger">Not found</span>
-          </div>
-          <div class="grid grid-cols-4 gap-2">
-            <div class="bay-cell bg-success-soft text-success">1</div>
-            <div class="bay-cell bg-success-soft text-success">2</div>
-            <div class="bay-cell bg-success-soft text-success">3</div>
-            <div class="bay-cell bg-success-soft text-success">4</div>
-            <div class="bay-cell bg-success-soft text-success">5</div>
-            <div class="bay-cell open-bay"><i class="pi pi-question text-base"></i></div>
-            <div class="bay-cell bg-success-soft text-success">7</div>
-            <div class="bay-cell bg-success-soft text-success">8</div>
-            <div class="bay-cell bg-success-soft text-success">9</div>
-            <div class="bay-cell bg-success-soft text-success">10</div>
-            <div class="bay-cell bg-success-soft text-success">11</div>
-            <div class="bay-cell bg-success-soft text-success">12</div>
-          </div>
-          <div class="text-xs text-center text-slate-500 mt-4">11 of 12 bays accounted for · 1 missing</div>
-        </div>
-      </div>
-
-      <!-- Right: copy + CTA -->
-      <div>
-        <div class="text-[140px] font-extrabold leading-none bg-gradient-to-br from-pixar to-brand bg-clip-text text-transparent">404</div>
-        <h1 class="text-3xl font-bold mt-2">This bay's empty.</h1>
-        <p class="text-lg text-slate-600 mt-3">The page you were trying to reach isn't on the rack. It might've been moved, renamed, or never existed.</p>
-        <div class="flex gap-3 mt-6">
-          <a href="HW_PixarV2_Hub.html" class="p-button"><i class="pi pi-home mr-2"></i>Open the connected hub</a>
-          <a href="HW_PixarV2_Dashboard.html" class="p-button p-button-outlined">Go to Dashboard</a>
-        </div>
-        <div class="mt-8 pt-6 border-t border-slate-200">
-          <div class="text-xs font-bold uppercase text-slate-500 mb-3">Looking for…</div>
-          <div class="flex flex-wrap gap-2 text-sm">
-            <a href="HW_PixarV2_Lockers.html" class="p-tag" style="background:white;color:#1E40AF;border:1px solid #BFDBFE;cursor:pointer;">Lockers</a>
-            <a href="HW_PixarV2_Devices.html" class="p-tag" style="background:white;color:#1E40AF;border:1px solid #BFDBFE;cursor:pointer;">Devices</a>
-            <a href="HW_PixarV2_Users.html" class="p-tag" style="background:white;color:#1E40AF;border:1px solid #BFDBFE;cursor:pointer;">Users</a>
-            <a href="HW_PixarV2_Tracker.html" class="p-tag" style="background:white;color:#1E40AF;border:1px solid #BFDBFE;cursor:pointer;">Tracker</a>
-            <a href="HW_PixarV2_Asset_Accounting.html" class="p-tag" style="background:white;color:#7C3AED;border:1px solid #DDD6FE;cursor:pointer;">Asset Accounting</a>
-            <a href="HW_PixarV2_Components.html" class="p-tag" style="background:white;color:#475569;border:1px solid #E2E8F0;cursor:pointer;">Component reference</a>
-          </div>
-        </div>
-        <div class="mt-6 text-xs text-slate-400">If this page should exist, ping <code class="bg-slate-100 px-1.5 py-0.5 rounded">#hw-dashboard</code> in Slack — include the URL you tried.</div>
-      </div>
-
+  <header class="topbar">
+    <div class="logo-mark">H</div>
+    <div>
+      <div class="topbar-title">HonestWaves Console</div>
+      <div class="topbar-sub">Dashboard · admin</div>
     </div>
+    <div class="topbar-spacer"></div>
+    <span class="topbar-status">
+      <span class="dot"></span>
+      HTTP 404
+    </span>
+  </header>
+
+  <main class="stage">
+
+    <!-- Portrait card -->
+    <div class="portrait">
+      <img src="pixar.png" alt="Pixar — a wirehaired terrier — sitting on a couch, drawn in pencil." onerror="this.style.display='none';">
+      <div class="pixar-fallback" aria-hidden="true">
+        <div class="fb-inner">
+          <div class="fb-mark">🐾</div>
+          <div class="fb-title">Pixar's pencil portrait goes here<br><span style="font-size:11px;color:#A89070;">— add <code style="font-family:var(--font-mono);">pixar.png</code> next to this file</span></div>
+        </div>
+      </div>
+      <div class="caption">
+        A portrait of <span class="caption-name">Pixar</span>, our resident missing-page mascot.
+      </div>
+    </div>
+
+    <!-- Copy side -->
+    <div class="copy">
+      <span class="eyebrow"><span class="dot"></span>404 · Page not found</span>
+      <h1><span class="pixar">Pixar</span> was unable to find this page with his image.</h1>
+      <p class="lede">
+        The page you're looking for moved, was deleted, or never existed in the first place.
+        Pixar searched the couch, behind the couch, and under the dashboard. No luck.
+      </p>
+
+      <div class="actions">
+        <a class="btn primary" href="/dashboard">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12 12 3l9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V10"/></svg>
+          Back to dashboard
+        </a>
+        <a class="btn" href="javascript:history.back()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          Go back
+        </a>
+      </div>
+
+      <div class="help">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+          <div>
+            <strong>Still stuck?</strong> Check the URL for a typo, or
+            <a href="mailto:support@honestwaves.com">contact support</a>.
+            Mention reference <span class="help-reqid">req_8f4c2a1e</span> if you do.
+          </div>
+        </div>
+    </div>
+
   </main>
-  <script src="pixarV2-interactivity.js"></script>
+
+<script src="pixarV2-interactivity.js"></script>
 </body>
 </html>

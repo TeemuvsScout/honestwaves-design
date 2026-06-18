@@ -3,337 +3,848 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pixar v.2 · Asset Accounting</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/lara-light-blue/theme.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/primevue.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = { theme: { extend: {
-      colors: {
-        'brand': { DEFAULT: '#2563EB', deep: '#1E40AF', soft: '#EFF6FF' },
-        'pixar': { DEFAULT: '#7C3AED', soft: '#EDE9FE' },
-        'success': { DEFAULT: '#10B981', soft: '#D1FAE5' },
-        'warning': { DEFAULT: '#F59E0B', soft: '#FEF3C7', text: '#B45309' },
-        'danger':  { DEFAULT: '#DC2626', soft: '#FEE2E2' },
-        'info':    { DEFAULT: '#0EA5E9', soft: '#E0F2FE' },
-      },
-      fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
-    } } };
-  </script>
+  <title>Asset Accounting · HonestWaves Redesign</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    body { font-family: 'Inter', system-ui, sans-serif; }
-    :root { --primary-color: #2563EB; --primary-color-text: #FFFFFF; --highlight-bg: #EFF6FF; --highlight-text-color: #1E40AF; }
-    .annotation { background: linear-gradient(90deg, #7C3AED, #1E40AF); color: white; padding: 8px 24px; font-size: 12px; display: flex; align-items: center; gap: 12px; }
-    .annotation .chip { background: rgba(255,255,255,.2); color: white; font-weight: 600; padding: 2px 7px; border-radius: 999px; font-size: 10px; text-transform: uppercase; letter-spacing: .04em; }
-  </style>
-  <link rel="stylesheet" href="pixarV2-tokens.css" />
-</head>
-<body class="bg-slate-50 text-slate-900">
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+    a{color:inherit;text-decoration:none}
 
-  <div class="annotation">
-    <span class="chip">Pixar v.2</span>
-    <strong>Asset Accounting.</strong>
-    <span>NEW section · TabView with 5 sub-views · DataTable drill-downs · Tag severity for high-risk users.</span>
-    <span class="ml-auto"><a href="HW_PixarV2_Browse.html" class="underline">← v.2 home</a></span>
+    :root{
+      --font-sans:'Inter','Helvetica Neue',Arial,sans-serif;
+      --font-mono:'JetBrains Mono',ui-monospace,monospace;
+      --c-bg:#F8FAFC;--c-surface:#FFFFFF;--c-surface-2:#F8FAFC;--c-surface-3:#F1F5F9;
+      --c-border:#E2E8F0;--c-border-strong:#CBD5E1;--c-divider:#EDF1F6;
+      --c-text:#0F172A;--c-text-2:#475569;--c-text-muted:#94A3B8;
+      --c-brand:#2563EB;--c-brand-hover:#1D4ED8;--c-brand-deep:#1E40AF;--c-brand-soft:#EFF6FF;
+      --c-success:#10B981;--c-success-soft:#D1FAE5;
+      --c-warning:#F59E0B;--c-warning-text:#B45309;--c-warning-soft:#FEF3C7;
+      --c-danger:#DC2626;--c-danger-soft:#FEE2E2;
+      --c-info:#0EA5E9;--c-info-soft:#E0F2FE;
+      --c-violet:#7C3AED;--c-violet-soft:#EDE9FE;
+      --c-cyan:#06B6D4;--c-cyan-soft:#CFFAFE;
+      --c-rose:#FB7185;
+      --s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:20px;--s-6:24px;--s-7:32px;
+      --r-sm:4px;--r-md:6px;--r-lg:10px;
+      --t-11:11px;--t-12:12px;--t-13:13px;--t-14:14px;--t-16:16px;--t-20:20px;--t-22:22px;
+      --sh-1:0 1px 2px rgba(15,23,42,.04);
+    }
+
+    html,body{height:100%;font-family:var(--font-sans);font-size:var(--t-13);color:var(--c-text);background:var(--c-bg);-webkit-font-smoothing:antialiased;line-height:1.5}
+
+    .annotation-strip{background:linear-gradient(90deg,#7C3AED 0%,#5B21B6 100%);color:white;padding:8px 24px;font-size:var(--t-12);display:flex;align-items:center;gap:12px}
+    .annotation-strip strong{color:white}
+    .annotation-strip .chip{background:rgba(255,255,255,.2);color:white;font-weight:600;padding:2px 7px;border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.04em}
+
+    /* Shell */
+    .shell{display:grid;grid-template-columns:232px 1fr;grid-template-rows:52px 1fr;grid-template-areas:"logo top" "side main";height:calc(100vh - 36px);background:var(--c-bg)}
+    .logo{grid-area:logo;background:var(--c-surface);border-right:1px solid var(--c-border);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 var(--s-4);gap:8px;font-weight:600}
+    .logo-mark{width:24px;height:24px;background:linear-gradient(135deg,var(--c-brand),var(--c-brand-deep));color:white;border-radius:var(--r-md);display:grid;place-items:center;font-weight:700;font-size:11px}
+    .logo-tenant{font-size:10px;font-weight:500;color:var(--c-text-muted);background:var(--c-surface-3);padding:2px 6px;border-radius:var(--r-sm);margin-left:4px}
+    .topbar{grid-area:top;background:var(--c-surface);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 var(--s-5);gap:var(--s-4)}
+    .breadcrumb{display:flex;align-items:center;gap:6px;font-size:var(--t-12);color:var(--c-text-2)}
+    .topbar-spacer{flex:1}
+    .icon-btn{width:32px;height:32px;display:grid;place-items:center;color:var(--c-text-2);border-radius:var(--r-md);position:relative}
+    .icon-btn:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .icon-btn .badge{position:absolute;top:4px;right:4px;width:14px;height:14px;background:var(--c-danger);color:white;font-size:8px;font-weight:700;border-radius:50%;display:grid;place-items:center}
+    .avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#F59E0B,#DC2626);color:white;display:grid;place-items:center;font-size:10px;font-weight:600}
+
+    .sidebar{grid-area:side;background:var(--c-surface);border-right:1px solid var(--c-border);padding:var(--s-3);overflow-y:auto}
+    .nav-h{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--c-text-muted);padding:0 var(--s-3);margin:var(--s-3) 0 var(--s-2)}
+    .nav-h:first-child{margin-top:0}
+    .nav-item{display:flex;align-items:center;gap:var(--s-3);padding:7px var(--s-3);border-radius:var(--r-md);font-size:var(--t-13);color:var(--c-text-2);position:relative;cursor:pointer}
+    .nav-item:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .nav-item.active{background:var(--c-brand-soft);color:var(--c-brand-deep);font-weight:600}
+    .nav-item.active::before{content:"";position:absolute;left:-2px;top:8px;bottom:8px;width:2px;background:var(--c-brand);border-radius:2px}
+    .nav-icon{width:16px;height:16px;flex-shrink:0;opacity:.85}
+    .nav-item.active .nav-icon{opacity:1}
+    .new-pill{margin-left:auto;font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;background:var(--c-violet-soft);color:var(--c-violet);text-transform:uppercase;letter-spacing:.04em}
+
+    /* Sidebar accordion sub-nav — multi-level */
+    .sub-nav{margin:2px 0 6px 0;padding-left:0;border-left:1px solid var(--c-divider);margin-left:18px}
+    .sub-nav-item{display:flex;align-items:center;gap:6px;padding:5px 10px 5px 12px;font-size:12px;color:var(--c-text-2);border-radius:0 var(--r-sm) var(--r-sm) 0;cursor:pointer;position:relative;margin-left:-1px;border-left:2px solid transparent}
+    .sub-nav-item:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .sub-nav-item.active{color:var(--c-brand-deep);font-weight:600;border-left-color:var(--c-brand);background:var(--c-brand-soft)}
+    .sub-nav-icon{width:12px;height:12px;flex-shrink:0;opacity:.7}
+    .sub-nav-item.active .sub-nav-icon{opacity:1}
+    .chev{width:10px;height:10px;flex-shrink:0;color:var(--c-text-muted);transition:transform .15s ease;transform:rotate(-90deg)}
+    .sub-nav-group.expanded > .sub-nav-item > .chev{transform:rotate(0deg)}
+    .sub-nav-l3{margin:0 0 0 16px;padding-left:0;border-left:1px solid var(--c-divider);display:none}
+    .sub-nav-group.expanded > .sub-nav-l3{display:block}
+    .sub-nav-item-l3{display:flex;align-items:center;gap:6px;padding:4px 10px 4px 10px;font-size:11px;color:var(--c-text-2);border-radius:0 var(--r-sm) var(--r-sm) 0;cursor:pointer;position:relative;margin-left:-1px;border-left:2px solid transparent}
+    .sub-nav-item-l3:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .sub-nav-item-l3.active{color:var(--c-brand-deep);font-weight:600;border-left-color:var(--c-brand);background:var(--c-brand-soft)}
+    .sub-nav-item-l3 .l3-count{margin-left:auto;font-size:9px;font-weight:600;color:var(--c-text-muted)}
+
+    .main{grid-area:main;overflow-y:auto}
+    .main-inner{padding:var(--s-5) var(--s-6);max-width:1480px}
+
+    /* Sub-tabs */
+    .subtabs{display:flex;align-items:center;gap:2px;border-bottom:1px solid var(--c-border);margin-bottom:var(--s-5)}
+    .subtab{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;font-size:var(--t-13);font-weight:500;color:var(--c-text-2);border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer}
+    .subtab:hover{color:var(--c-text)}
+    .subtab.active{color:var(--c-brand-deep);border-bottom-color:var(--c-brand);font-weight:600}
+    .subtab .count{font-size:10px;font-weight:600;padding:1px 6px;border-radius:999px;background:var(--c-surface-3);color:var(--c-text-2)}
+    .subtab.active .count{background:var(--c-brand-soft);color:var(--c-brand-deep)}
+
+    .tab-pane{display:none}
+    .tab-pane.active{display:block}
+
+    .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s-4);margin-bottom:var(--s-4)}
+    .page-title{font-size:var(--t-20);font-weight:600;letter-spacing:-.01em;margin:0 0 2px}
+    .page-sub{font-size:var(--t-12);color:var(--c-text-2);margin:0}
+    .page-actions{display:flex;align-items:center;gap:var(--s-2)}
+
+    .btn{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 var(--s-3);font-size:var(--t-12);font-weight:500;color:var(--c-text);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);box-shadow:var(--sh-1)}
+    .btn:hover{background:var(--c-surface-3);border-color:var(--c-border-strong)}
+    .btn.primary{background:var(--c-brand);color:white;border-color:var(--c-brand)}
+    .btn.primary:hover{background:var(--c-brand-hover)}
+    .btn.ghost{background:transparent;border-color:transparent;box-shadow:none}
+    .btn.ghost:hover{background:var(--c-surface-3)}
+    .btn.danger{color:var(--c-danger);border-color:var(--c-border)}
+
+    /* KPI */
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-3);margin-bottom:var(--s-4)}
+    .kpi{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);padding:var(--s-3) var(--s-4)}
+    .kpi-label{font-size:10px;font-weight:600;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:5px;margin-bottom:4px}
+    .kpi-label-dot{width:6px;height:6px;border-radius:50%}
+    .kpi-value{font-size:var(--t-22);font-weight:600;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums}
+    .kpi-sub{font-size:10px;color:var(--c-text-muted);margin-top:2px;font-variant-numeric:tabular-nums}
+    .kpi-value.danger{color:var(--c-danger)}
+    .kpi-value.warn{color:var(--c-warning-text)}
+    .kpi-value.success{color:var(--c-success)}
+    .trend-up{color:var(--c-danger);font-weight:600}
+    .trend-down{color:var(--c-success);font-weight:600}
+
+    /* Data tables */
+    .card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);box-shadow:var(--sh-1);overflow:hidden;margin-bottom:var(--s-4)}
+    .card-head{padding:var(--s-3) var(--s-4);border-bottom:1px solid var(--c-divider);display:flex;align-items:center;justify-content:space-between}
+    .card-title{font-size:var(--t-14);font-weight:600;margin:0}
+    .card-sub{font-size:var(--t-11);color:var(--c-text-2);margin-top:2px}
+    .card-body{padding:var(--s-3) var(--s-4)}
+    .card-foot{padding:var(--s-3) var(--s-4);background:var(--c-surface-2);border-top:1px solid var(--c-divider);display:flex;justify-content:space-between;align-items:center;font-size:var(--t-11);color:var(--c-text-2)}
+
+    table{width:100%;border-collapse:collapse;font-size:var(--t-13)}
+    thead{background:var(--c-surface-2);border-bottom:1px solid var(--c-border)}
+    th{text-align:left;padding:8px 12px;font-size:var(--t-11);font-weight:600;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:.04em}
+    td{padding:10px 12px;border-bottom:1px solid var(--c-divider);color:var(--c-text);vertical-align:middle}
+    tr:last-child td{border-bottom:none}
+    tbody tr:hover{background:var(--c-surface-2);cursor:pointer}
+    .num{font-variant-numeric:tabular-nums;font-weight:600}
+    .num.danger{color:var(--c-danger)}
+    .num.success{color:var(--c-success)}
+    .muted{color:var(--c-text-muted)}
+
+    .pill{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:999px;font-size:var(--t-11);font-weight:600}
+    .pill .pill-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+    .pill.success{background:var(--c-success-soft);color:var(--c-success)}
+    .pill.warning{background:var(--c-warning-soft);color:var(--c-warning-text)}
+    .pill.danger{background:var(--c-danger-soft);color:var(--c-danger)}
+    .pill.info{background:var(--c-info-soft);color:var(--c-info)}
+    .pill.muted{background:var(--c-surface-3);color:var(--c-text-2)}
+    .pill.violet{background:var(--c-violet-soft);color:var(--c-violet)}
+
+    .user-mark{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--c-brand-soft);color:var(--c-brand-deep);font-size:10px;font-weight:600;border-radius:50%;margin-right:8px}
+    .user-mark.warn{background:var(--c-warning-soft);color:var(--c-warning-text)}
+    .user-mark.danger{background:var(--c-danger-soft);color:var(--c-danger)}
+
+    /* Filter bar */
+    .filter-bar{display:flex;align-items:center;gap:var(--s-2);padding:var(--s-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);margin-bottom:var(--s-3);flex-wrap:wrap}
+    .filter-search{flex:1;min-width:240px;display:flex;align-items:center;gap:var(--s-2);height:32px;padding:0 var(--s-3);background:var(--c-surface-2);border:1px solid var(--c-border);border-radius:var(--r-md);color:var(--c-text);font-size:var(--t-13)}
+    .filter-search input{border:0;outline:0;background:transparent;flex:1;color:inherit;font:inherit}
+    .filter-select{height:32px;padding:0 28px 0 var(--s-3);font-size:var(--t-12);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);color:var(--c-text)}
+
+    /* Activity feed */
+    .activity-feed{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);margin-bottom:var(--s-4)}
+    .activity-row{display:flex;gap:var(--s-3);padding:var(--s-3) var(--s-4);border-bottom:1px solid var(--c-divider)}
+    .activity-row:last-child{border-bottom:none}
+    .activity-dot{width:8px;height:8px;border-radius:50%;background:var(--c-text-muted);margin-top:8px;flex-shrink:0}
+    .activity-dot.danger{background:var(--c-danger)}
+    .activity-dot.warn{background:var(--c-warning)}
+    .activity-dot.success{background:var(--c-success)}
+    .activity-meta{flex:1;line-height:1.4}
+    .activity-title{font-weight:600;font-size:var(--t-13);color:var(--c-text)}
+    .activity-sub{font-size:var(--t-12);color:var(--c-text-2);margin-top:2px}
+    .activity-time{font-size:10px;color:var(--c-text-muted);margin-top:4px}
+
+    /* Pivot tabs */
+    .pivot-bar{display:inline-flex;gap:2px;padding:3px;background:var(--c-surface-3);border-radius:var(--r-md);margin-bottom:var(--s-3)}
+    .pivot-btn{padding:4px 10px;font-size:var(--t-12);font-weight:500;color:var(--c-text-2);background:transparent;border:none;border-radius:var(--r-sm);cursor:pointer}
+    .pivot-btn.active{background:var(--c-surface);color:var(--c-text);font-weight:600;box-shadow:var(--sh-1)}
+
+    /* Sparkline placeholder */
+    .spark{display:inline-block;width:60px;height:18px;background:linear-gradient(to top,var(--c-danger-soft),transparent);border-radius:2px;position:relative;vertical-align:middle}
+
+    /* Rule card */
+    .rule-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+    .rule-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:8px;padding:14px}
+    .rule-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+    .rule-title{font-size:13px;font-weight:600}
+    .rule-desc{font-size:11px;color:var(--c-text-2);margin-bottom:8px;line-height:1.45}
+    .rule-meta{font-size:11px;color:var(--c-text-muted)}
+
+    .legend{display:flex;align-items:center;gap:12px;font-size:11px;color:var(--c-text-2);margin-bottom:8px}
+    .legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle}
+
+    .travis-credit{margin-top:var(--s-5);padding:var(--s-3) var(--s-4);background:var(--c-surface);border:1px dashed var(--c-border);border-radius:var(--r-md);font-size:var(--t-11);color:var(--c-text-2)}
+    .travis-credit strong{color:var(--c-text)}
+    .rec-tag{display:inline-block;background:var(--c-info-soft);color:var(--c-info);padding:1px 6px;border-radius:4px;font-size:10px;margin-right:4px;font-weight:600}
+
+    /* Drawer */
+    .drawer-side{position:fixed;top:0;right:0;width:420px;height:100vh;background:var(--c-surface);border-left:1px solid var(--c-border);box-shadow:-4px 0 24px rgba(15,23,42,.08);transform:translateX(100%);transition:transform .25s ease;z-index:50;overflow-y:auto}
+    .drawer-side.open{transform:translateX(0)}
+    .drawer-head{padding:var(--s-5) var(--s-5) var(--s-3);border-bottom:1px solid var(--c-border)}
+    .drawer-title{font-size:var(--t-16);font-weight:600;margin:8px 0 4px}
+    .drawer-sub{font-size:var(--t-12);color:var(--c-text-2)}
+    .drawer-section{padding:var(--s-4) var(--s-5);border-bottom:1px solid var(--c-divider)}
+    .drawer-h{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--c-text-muted);margin:0 0 8px}
+
+    /* Chart placeholders */
+    .bar-row{display:grid;grid-template-columns:140px 1fr 60px;align-items:center;gap:12px;padding:6px 0;font-size:12px}
+    .bar-track{height:8px;background:var(--c-surface-3);border-radius:4px;overflow:hidden;position:relative}
+    .bar-fill{height:100%;background:var(--c-brand);border-radius:4px}
+    .bar-fill.danger{background:var(--c-danger)}
+    .bar-fill.warn{background:var(--c-warning)}
+    .bar-fill.success{background:var(--c-success)}
+  </style>
+<link rel="stylesheet" href="pixarV2-tokens.css" />
+</head>
+<body>
+<div style="background:linear-gradient(90deg,#1E40AF,#7C3AED);color:#fff;padding:8px 24px;font-size:12px;display:flex;align-items:center;gap:12px;font-family:Inter,system-ui,sans-serif;">
+  <span style="background:rgba(255,255,255,.18);font-weight:600;padding:2px 8px;border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.04em;">Pixar v.2</span>
+  <strong style="color:#fff;">Forked from v.1 — same markup, same interactions.</strong>
+  <span>Dev: bind .btn → &lt;Button&gt;, .pill → &lt;Tag&gt;, .card → &lt;Card&gt;, .drawer → &lt;Sidebar&gt;, .modal → &lt;Dialog&gt;, tabs → &lt;TabView&gt;.</span>
+  <span style="margin-left:auto;"><a href="HW_PixarV2_Hub.html" style="color:#fff;text-decoration:underline;">← Hub</a> · <a href="HW_PixarV2_Tokens.html" style="color:#fff;text-decoration:underline;">Tokens</a></span>
+</div>
+
+<div class="annotation-strip">
+  <span class="chip">Prototype 13</span>
+  <strong>Asset Accounting.</strong>
+  <span>Financial picture of devices in the field · Loss & damage · Inventory value · Repair tracker · Thresholds & rules.</span>
+  <span style="margin-left:auto;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:999px;font-size:11px;">NEW SECTION</span>
+</div>
+
+<div class="shell">
+  <div class="logo">
+    <div class="logo-mark">H</div>
+    <div>HonestWaves</div>
+    <span class="logo-tenant">QA</span>
   </div>
 
-  <div class="grid" style="grid-template-columns: 232px 1fr; grid-template-rows: 56px 1fr; grid-template-areas: 'logo top' 'side main'; min-height: calc(100vh - 32px);">
-
-    <div style="grid-area: logo;" class="bg-white border-r border-b border-slate-200 flex items-center px-4 gap-2">
-      <div class="w-7 h-7 rounded-md bg-brand grid place-items-center text-white font-bold text-sm">H</div>
-      <span class="font-semibold">HonestWaves</span>
-      <span class="ml-auto p-tag p-tag-info text-xs"><span class="p-tag-value">QA</span></span>
+  <div class="topbar">
+    <div class="breadcrumb">
+      <span style="color:var(--c-text-2);">Finance</span>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--c-text-muted);"><polyline points="9 18 15 12 9 6"/></svg>
+      <strong>Asset Accounting</strong>
     </div>
+    <div class="topbar-spacer"></div>
+    <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/></svg><span class="badge">99+</span></button>
+    <div class="avatar">AR</div>
+  </div>
 
-    <div style="grid-area: top;" class="bg-white border-b border-slate-200 flex items-center px-5 gap-3">
-      <div class="text-sm text-slate-500 flex items-center gap-2"><span>Finance</span><i class="pi pi-angle-right text-xs"></i><strong class="text-slate-900">Asset Accounting</strong></div>
-      <div class="flex-1"></div>
-      <select class="p-dropdown p-component p-inputtext-sm"><option>This quarter</option><option>YTD</option></select>
-      <button class="p-button p-component p-button-outlined p-button-sm">
-        <span class="p-button-icon p-button-icon-left pi pi-download"></span>
-        <span class="p-button-label">Export</span>
-      </button>
-      <button class="p-button p-component p-button-sm">
-        <span class="p-button-icon p-button-icon-left pi pi-calendar"></span>
-        <span class="p-button-label">Schedule</span>
-      </button>
-    </div>
-
-    <aside style="grid-area: side;" class="bg-white border-r border-slate-200 p-3 overflow-y-auto">
-      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2">Finance</div>
-      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold bg-brand-soft text-brand-deep border-l-2 border-brand -ml-1"><i class="pi pi-dollar text-base"></i>Asset Accounting<span class="ml-auto p-tag text-[10px] py-0.5 px-1.5" style="background:#EDE9FE;color:#7C3AED;"><span class="p-tag-value">NEW</span></span></a>
-      <!-- Accordion: 5 sub-views -->
-      <div class="ml-6 border-l border-slate-200 pl-2 mt-1 space-y-0.5">
-        <a class="flex items-center px-2 py-1 rounded text-xs font-semibold text-brand-deep bg-brand-soft border-l-2 border-brand -ml-0.5">Overview</a>
-        <a class="flex items-center px-2 py-1 rounded text-xs text-slate-600 hover:bg-slate-100">Loss &amp; damage<span class="ml-auto text-[10px] text-slate-400">23</span></a>
-        <a class="flex items-center px-2 py-1 rounded text-xs text-slate-600 hover:bg-slate-100">Inventory value</a>
-        <a class="flex items-center px-2 py-1 rounded text-xs text-slate-600 hover:bg-slate-100">Repair tracker<span class="ml-auto text-[10px] text-slate-400">7</span></a>
-        <a class="flex items-center px-2 py-1 rounded text-xs text-slate-600 hover:bg-slate-100">Thresholds &amp; rules<span class="ml-auto text-[10px] text-slate-400">9</span></a>
+  <aside class="sidebar">
+    <p class="nav-h">Operate</p>
+    <div class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</div>
+    <div class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Mission Control</div>
+    <p class="nav-h">Inventory</p>
+    <div class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>Lockers</div>
+    <div class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Devices</div>
+    <p class="nav-h">People</p>
+    <div class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Users</div>
+    <div class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/></svg>Access matrix</div>
+    <p class="nav-h">Investigate</p>
+    <div class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/></svg>Notifications</div>
+    <div class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/></svg>Tracker</div>
+    <div class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Reports</div>
+    <p class="nav-h">Finance</p>
+    <div class="nav-item active"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Asset Accounting<span class="new-pill">NEW</span></div>
+    <div class="sub-nav">
+      <!-- Overview (no pivots) -->
+      <div class="sub-nav-group">
+        <div class="sub-nav-item active" data-pane="overview"><span style="width:10px;"></span><svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Overview</div>
       </div>
-    </aside>
 
-    <main style="grid-area: main;" class="overflow-y-auto p-6 max-w-[1480px]">
-
-      <!-- Page header -->
-      <div class="flex items-end justify-between mb-5">
-        <div>
-          <h1 class="text-xl font-semibold tracking-tight flex items-center gap-2">
-            Asset Accounting
-            <span class="p-tag text-[10px]" style="background:#EDE9FE;color:#7C3AED;"><span class="p-tag-value">NEW</span></span>
-          </h1>
-          <p class="text-xs text-slate-500 mt-0.5">Financial picture of devices in the field · filter, drill, export · Q2 2026</p>
+      <!-- Loss & damage — has 4 pivots -->
+      <div class="sub-nav-group">
+        <div class="sub-nav-item" data-pane="loss">
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" onclick="event.stopPropagation();this.closest('.sub-nav-group').classList.toggle('expanded');"><polyline points="6 9 12 15 18 9"/></svg>
+          <svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Loss &amp; damage
+        </div>
+        <div class="sub-nav-l3">
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">By user<span class="l3-count">47</span></div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">By department<span class="l3-count">7</span></div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">By location<span class="l3-count">3</span></div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">By model<span class="l3-count">5</span></div>
         </div>
       </div>
 
-      <!-- TabView -->
-      <div class="p-tabview p-component">
-        <div class="p-tabview-nav-container mb-4">
-          <ul class="p-tabview-nav flex border-b border-slate-200">
-            <li class="p-tabview-selected"><a class="p-tabview-nav-link flex items-center gap-2" style="padding: 10px 16px; border-bottom: 2px solid #2563EB; color: #1E40AF; font-weight: 600; font-size: 13px;"><i class="pi pi-th-large"></i>Overview</a></li>
-            <li><a class="p-tabview-nav-link flex items-center gap-2" style="padding: 10px 16px; color: #475569; font-size: 13px;"><i class="pi pi-exclamation-triangle"></i>Loss &amp; damage<span class="ml-1 p-tag p-tag-info text-[10px]"><span class="p-tag-value">23</span></span></a></li>
-            <li><a class="p-tabview-nav-link flex items-center gap-2" style="padding: 10px 16px; color: #475569; font-size: 13px;"><i class="pi pi-box"></i>Inventory value</a></li>
-            <li><a class="p-tabview-nav-link flex items-center gap-2" style="padding: 10px 16px; color: #475569; font-size: 13px;"><i class="pi pi-wrench"></i>Repair tracker<span class="ml-1 p-tag p-tag-info text-[10px]"><span class="p-tag-value">7</span></span></a></li>
-            <li><a class="p-tabview-nav-link flex items-center gap-2" style="padding: 10px 16px; color: #475569; font-size: 13px;"><i class="pi pi-sliders-h"></i>Thresholds &amp; rules<span class="ml-1 p-tag p-tag-info text-[10px]"><span class="p-tag-value">9</span></span></a></li>
-          </ul>
+      <!-- Inventory value — 4 pivots -->
+      <div class="sub-nav-group">
+        <div class="sub-nav-item" data-pane="inventory">
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" onclick="event.stopPropagation();this.closest('.sub-nav-group').classList.toggle('expanded');"><polyline points="6 9 12 15 18 9"/></svg>
+          <svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="6 3 18 3 22 9 12 22 2 9 6 3"/></svg>Inventory value
         </div>
+        <div class="sub-nav-l3">
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">By locker<span class="l3-count">5</span></div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">By location<span class="l3-count">3</span></div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">By model<span class="l3-count">5</span></div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Forecast &amp; EOL</div>
+        </div>
+      </div>
+
+      <!-- Repair tracker — 5 pivots -->
+      <div class="sub-nav-group">
+        <div class="sub-nav-item" data-pane="repair">
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" onclick="event.stopPropagation();this.closest('.sub-nav-group').classList.toggle('expanded');"><polyline points="6 9 12 15 18 9"/></svg>
+          <svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Repair tracker
+        </div>
+        <div class="sub-nav-l3">
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Queue<span class="l3-count">3</span></div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Pipeline<span class="l3-count">3</span></div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Vendors<span class="l3-count">4</span></div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Cost analytics</div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Component catalog</div>
+        </div>
+      </div>
+
+      <!-- Thresholds & rules — 5 pivots -->
+      <div class="sub-nav-group">
+        <div class="sub-nav-item" data-pane="rules">
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" onclick="event.stopPropagation();this.closest('.sub-nav-group').classList.toggle('expanded');"><polyline points="6 9 12 15 18 9"/></svg>
+          <svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Thresholds &amp; rules
+        </div>
+        <div class="sub-nav-l3">
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">User-level<span class="l3-count">4</span></div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Department-level<span class="l3-count">2</span></div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Device-level<span class="l3-count">3</span></div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Rule audit log</div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Notification routing</div>
+        </div>
+      </div>
+    </div>
+    <p class="nav-h">Setup</p>
+    <div class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 17 9 11 13 15 21 7"/></svg>Software updates</div>
+    <div class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>Settings</div>
+  </aside>
+
+  <main class="main">
+    <div class="main-inner">
+
+      <!-- Sub-tabs -->
+      <div class="subtabs">
+        <div class="subtab active" data-pane="overview"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Overview</div>
+        <div class="subtab" data-pane="loss"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Loss &amp; damage <span class="count">23</span></div>
+        <div class="subtab" data-pane="inventory"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Inventory value</div>
+        <div class="subtab" data-pane="repair"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Repair tracker <span class="count">7</span></div>
+        <div class="subtab" data-pane="rules"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Thresholds &amp; rules <span class="count">9</span></div>
+      </div>
+
+      <!-- ========================== OVERVIEW ========================== -->
+      <div id="pane-overview" class="tab-pane active">
+        <header class="page-head">
+          <div>
+            <h1 class="page-title">Asset Accounting</h1>
+            <p class="page-sub">Financial picture of devices in the field · filter, drill, export · Q2 2026</p>
+          </div>
+          <div class="page-actions">
+            <select class="filter-select"><option>Last 7 days</option><option>Last 30 days</option><option selected>This quarter</option><option>YTD</option><option>Custom…</option></select>
+            <button class="btn ghost">Export</button>
+            <button class="btn ghost">Schedule</button>
+          </div>
+        </header>
 
         <!-- KPI strip -->
-        <div class="grid grid-cols-4 gap-3 mb-4">
-          <div class="p-card">
-            <div class="p-card-body">
-              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5 mb-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-brand"></span>Assets in lockers
-              </div>
-              <div class="text-3xl font-semibold tabular-nums tracking-tight">$56,685</div>
-              <div class="text-xs text-slate-500 mt-0.5 tabular-nums">113 devices · 4 lockers</div>
-            </div>
+        <section class="kpis">
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-brand);"></span>Assets in lockers</div>
+            <div class="kpi-value">$56,685</div>
+            <div class="kpi-sub">113 devices · 4 lockers</div>
           </div>
-          <div class="p-card">
-            <div class="p-card-body">
-              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5 mb-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-danger"></span>Losses this quarter
-              </div>
-              <div class="text-3xl font-semibold tabular-nums tracking-tight text-danger">$14,247</div>
-              <div class="text-xs mt-0.5 tabular-nums flex items-center gap-1">
-                <span class="p-tag p-tag-danger text-[10px] py-0 px-1"><span class="p-tag-value">▲ 18%</span></span>
-                <span class="text-slate-500">vs last Q</span>
-              </div>
-            </div>
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-danger);"></span>Losses this quarter</div>
+            <div class="kpi-value danger">$14,247</div>
+            <div class="kpi-sub"><span class="trend-up">▲ 18%</span> vs last Q</div>
           </div>
-          <div class="p-card">
-            <div class="p-card-body">
-              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5 mb-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-success"></span>Recovered this Q
-              </div>
-              <div class="text-3xl font-semibold tabular-nums tracking-tight text-success">$3,124</div>
-              <div class="text-xs text-slate-500 mt-0.5 tabular-nums">22% recovery rate</div>
-            </div>
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-success);"></span>Recovered this quarter</div>
+            <div class="kpi-value success">$3,124</div>
+            <div class="kpi-sub">22% recovery rate</div>
           </div>
-          <div class="p-card">
-            <div class="p-card-body">
-              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5 mb-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-warning"></span>Net loss YTD
-              </div>
-              <div class="text-3xl font-semibold tabular-nums tracking-tight text-warning-text">$36,840</div>
-              <div class="text-xs text-slate-500 mt-0.5 tabular-nums">vs $42K budget · $5,160 under</div>
-            </div>
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-warning);"></span>Net loss YTD</div>
+            <div class="kpi-value warn">$36,840</div>
+            <div class="kpi-sub">vs $42K budget · $5,160 under</div>
           </div>
-        </div>
+        </section>
 
-        <!-- Two-column drill -->
-        <div class="grid grid-cols-2 gap-3 mb-4">
-
-          <!-- Top departments by loss -->
-          <div class="p-card">
-            <div class="p-card-body">
-              <div class="flex items-center justify-between mb-3">
-                <div>
-                  <h3 class="font-semibold text-base">Top departments by loss</h3>
-                  <p class="text-xs text-slate-500 mt-0.5">This quarter · click row to drill</p>
-                </div>
-                <button class="p-button p-button-text p-button-sm text-xs">View all <i class="pi pi-arrow-right text-[10px] ml-1"></i></button>
+        <!-- Top departments + High-risk users (two-col) -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">Top departments by loss</h3>
+                <p class="card-sub">This quarter — click row to drill</p>
               </div>
-              <div class="p-datatable p-component p-datatable-sm">
-                <div class="p-datatable-wrapper">
-                  <table class="p-datatable-table w-full">
-                    <tbody class="p-datatable-tbody">
-                      <tr class="cursor-pointer hover:bg-slate-50 border-b border-slate-100">
-                        <td class="py-2 px-3"><div class="font-semibold text-sm">Emergency Medicine</div><div class="text-[10px] text-slate-500">23 users · Troy Hospital</div></td>
-                        <td class="py-2 px-3 text-xs text-slate-500">9 lost</td>
-                        <td class="py-2 px-3 text-right font-semibold text-sm text-danger tabular-nums">$4,829</td>
-                      </tr>
-                      <tr class="cursor-pointer hover:bg-slate-50 border-b border-slate-100">
-                        <td class="py-2 px-3"><div class="font-semibold text-sm">Nursing</div><div class="text-[10px] text-slate-500">14 users · Troy Hospital</div></td>
-                        <td class="py-2 px-3 text-xs text-slate-500">6 lost</td>
-                        <td class="py-2 px-3 text-right font-semibold text-sm text-danger tabular-nums">$3,124</td>
-                      </tr>
-                      <tr class="cursor-pointer hover:bg-slate-50 border-b border-slate-100">
-                        <td class="py-2 px-3"><div class="font-semibold text-sm">Radiology</div><div class="text-[10px] text-slate-500">15 users · Royal Oak</div></td>
-                        <td class="py-2 px-3 text-xs text-slate-500">4 lost</td>
-                        <td class="py-2 px-3 text-right font-semibold text-sm text-warning-text tabular-nums">$1,847</td>
-                      </tr>
-                      <tr class="cursor-pointer hover:bg-slate-50 border-b border-slate-100">
-                        <td class="py-2 px-3"><div class="font-semibold text-sm">Security / Facilities</div><div class="text-[10px] text-slate-500">22 users · Troy Hospital</div></td>
-                        <td class="py-2 px-3 text-xs text-slate-500">14 lost</td>
-                        <td class="py-2 px-3 text-right font-semibold text-sm text-warning-text tabular-nums">$1,190</td>
-                      </tr>
-                      <tr class="cursor-pointer hover:bg-slate-50">
-                        <td class="py-2 px-3"><div class="font-semibold text-sm">Admin / HR</div><div class="text-[10px] text-slate-500">16 users · Beaumont</div></td>
-                        <td class="py-2 px-3 text-xs text-slate-500">2 lost</td>
-                        <td class="py-2 px-3 text-right font-semibold text-sm tabular-nums">$340</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+              <button class="btn ghost" style="font-size:11px;">View all</button>
             </div>
+            <table>
+              <tbody>
+                <tr onclick="openDept('Emergency Medicine')">
+                  <td><strong>Emergency Medicine</strong><br><span class="muted" style="font-size:10px;">23 users · Troy Hospital</span></td>
+                  <td class="num">9 lost</td>
+                  <td class="num danger" style="text-align:right;">$4,829</td>
+                </tr>
+                <tr>
+                  <td><strong>Nursing</strong><br><span class="muted" style="font-size:10px;">14 users · Troy Hospital</span></td>
+                  <td class="num">6 lost</td>
+                  <td class="num danger" style="text-align:right;">$3,124</td>
+                </tr>
+                <tr>
+                  <td><strong>Radiology</strong><br><span class="muted" style="font-size:10px;">15 users · Royal Oak</span></td>
+                  <td class="num">4 lost</td>
+                  <td class="num warn" style="text-align:right;">$1,847</td>
+                </tr>
+                <tr>
+                  <td><strong>Security / Facilities</strong><br><span class="muted" style="font-size:10px;">22 users · Troy Hospital</span></td>
+                  <td class="num">14 lost</td>
+                  <td class="num warn" style="text-align:right;">$1,190</td>
+                </tr>
+                <tr>
+                  <td><strong>Admin / HR</strong><br><span class="muted" style="font-size:10px;">16 users · Beaumont</span></td>
+                  <td class="num">2 lost</td>
+                  <td class="num" style="text-align:right;">$340</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
-          <!-- High-risk users -->
-          <div class="p-card">
-            <div class="p-card-body">
-              <div class="flex items-center justify-between mb-3">
-                <div>
-                  <h3 class="font-semibold text-base">High-risk users</h3>
-                  <p class="text-xs text-slate-500 mt-0.5">Approaching or past loss thresholds</p>
-                </div>
-                <button class="p-button p-button-text p-button-sm text-xs">View all 8 <i class="pi pi-arrow-right text-[10px] ml-1"></i></button>
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h3 class="card-title">High-risk users</h3>
+                <p class="card-sub">Approaching or past loss thresholds</p>
               </div>
-              <div class="p-datatable p-component p-datatable-sm">
-                <div class="p-datatable-wrapper">
-                  <table class="p-datatable-table w-full">
-                    <tbody class="p-datatable-tbody">
-                      <tr class="cursor-pointer hover:bg-slate-50 border-b border-slate-100">
-                        <td class="py-2 px-3"><div class="flex items-center gap-2"><div class="p-avatar p-component p-avatar-circle" style="background:#FEE2E2;color:#DC2626;width:24px;height:24px;font-size:10px;"><span>CS</span></div><div><div class="font-semibold text-sm">Crosby Smith</div><div class="text-[10px] text-slate-500">Troy · ER · MD</div></div></div></td>
-                        <td class="py-2 px-3 text-center"><span class="p-tag p-tag-danger"><span class="p-tag-value">Blocked</span></span></td>
-                        <td class="py-2 px-3 text-right font-semibold text-sm text-danger tabular-nums">$1,247</td>
-                      </tr>
-                      <tr class="cursor-pointer hover:bg-slate-50 border-b border-slate-100">
-                        <td class="py-2 px-3"><div class="flex items-center gap-2"><div class="p-avatar p-component p-avatar-circle" style="background:#FEF3C7;color:#B45309;width:24px;height:24px;font-size:10px;"><span>LD</span></div><div><div class="font-semibold text-sm">Lauren Davis</div><div class="text-[10px] text-slate-500">Troy · ER · RN</div></div></div></td>
-                        <td class="py-2 px-3 text-center"><span class="p-tag p-tag-warning"><span class="p-tag-value">Approval req</span></span></td>
-                        <td class="py-2 px-3 text-right font-semibold text-sm text-warning-text tabular-nums">$782</td>
-                      </tr>
-                      <tr class="cursor-pointer hover:bg-slate-50 border-b border-slate-100">
-                        <td class="py-2 px-3"><div class="flex items-center gap-2"><div class="p-avatar p-component p-avatar-circle" style="background:#FEF3C7;color:#B45309;width:24px;height:24px;font-size:10px;"><span>NV</span></div><div><div class="font-semibold text-sm">Natashalee Vargas</div><div class="text-[10px] text-slate-500">Troy · ICU · MD</div></div></div></td>
-                        <td class="py-2 px-3 text-center"><span class="p-tag p-tag-warning"><span class="p-tag-value">Approval req</span></span></td>
-                        <td class="py-2 px-3 text-right font-semibold text-sm text-warning-text tabular-nums">$599</td>
-                      </tr>
-                      <tr class="cursor-pointer hover:bg-slate-50 border-b border-slate-100">
-                        <td class="py-2 px-3"><div class="flex items-center gap-2"><div class="p-avatar p-component p-avatar-circle" style="background:#EFF6FF;color:#1E40AF;width:24px;height:24px;font-size:10px;"><span>JJ</span></div><div><div class="font-semibold text-sm">John Johnson</div><div class="text-[10px] text-slate-500">Troy · Cardio · Tech</div></div></div></td>
-                        <td class="py-2 px-3 text-center"><span class="p-tag" style="background:#F1F5F9;color:#64748B;"><span class="p-tag-value">Watching</span></span></td>
-                        <td class="py-2 px-3 text-right font-semibold text-sm tabular-nums">$268</td>
-                      </tr>
-                      <tr class="cursor-pointer hover:bg-slate-50">
-                        <td class="py-2 px-3"><div class="flex items-center gap-2"><div class="p-avatar p-component p-avatar-circle" style="background:#EFF6FF;color:#1E40AF;width:24px;height:24px;font-size:10px;"><span>JS</span></div><div><div class="font-semibold text-sm">John Smith</div><div class="text-[10px] text-slate-500">Troy · ICU · RN</div></div></div></td>
-                        <td class="py-2 px-3 text-center text-slate-400 text-xs">—</td>
-                        <td class="py-2 px-3 text-right font-semibold text-sm tabular-nums">$179</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+              <button class="btn ghost" style="font-size:11px;">View all 8</button>
             </div>
+            <table>
+              <tbody>
+                <tr onclick="openUser('Crosby Smith')">
+                  <td><span class="user-mark danger">CS</span><strong>Crosby Smith</strong><br><span class="muted" style="font-size:10px;">Troy · ER · MD</span></td>
+                  <td><span class="pill danger"><span class="pill-dot"></span>Blocked</span></td>
+                  <td class="num danger" style="text-align:right;">$1,247</td>
+                </tr>
+                <tr>
+                  <td><span class="user-mark warn">LC</span><strong>Lauren Davis</strong><br><span class="muted" style="font-size:10px;">Troy · ER · RN</span></td>
+                  <td><span class="pill warning"><span class="pill-dot"></span>Approval req</span></td>
+                  <td class="num warn" style="text-align:right;">$782</td>
+                </tr>
+                <tr>
+                  <td><span class="user-mark warn">NV</span><strong>Natashalee Vargas</strong><br><span class="muted" style="font-size:10px;">Troy · ICU · MD</span></td>
+                  <td><span class="pill warning"><span class="pill-dot"></span>Approval req</span></td>
+                  <td class="num warn" style="text-align:right;">$599</td>
+                </tr>
+                <tr>
+                  <td><span class="user-mark">JJ</span><strong>John Johnson</strong><br><span class="muted" style="font-size:10px;">Troy · Cardiology · Tech</span></td>
+                  <td><span class="pill muted"><span class="pill-dot"></span>Watching</span></td>
+                  <td class="num" style="text-align:right;">$268</td>
+                </tr>
+                <tr>
+                  <td><span class="user-mark">JS</span><strong>John Smith</strong><br><span class="muted" style="font-size:10px;">Troy · ICU · RN</span></td>
+                  <td class="muted" style="font-size:11px;">—</td>
+                  <td class="num" style="text-align:right;">$179</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-
         </div>
 
         <!-- Activity feed -->
-        <div class="p-card">
-          <div class="p-card-body">
-            <div class="flex items-center justify-between mb-3">
-              <div>
-                <h3 class="font-semibold text-base">Recent loss / damage activity</h3>
-                <p class="text-xs text-slate-500 mt-0.5">Live feed across all locations</p>
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3 class="card-title">Recent loss / damage activity</h3>
+              <p class="card-sub">Live feed across all locations</p>
+            </div>
+            <div style="display:flex;gap:6px;">
+              <button class="btn ghost" style="font-size:11px;">All events</button>
+              <button class="btn ghost" style="font-size:11px;">Losses</button>
+              <button class="btn ghost" style="font-size:11px;">Damage</button>
+              <button class="btn ghost" style="font-size:11px;">Recoveries</button>
+            </div>
+          </div>
+          <div class="activity-feed" style="margin:0;border:0;border-radius:0;">
+            <div class="activity-row">
+              <div class="activity-dot danger"></div>
+              <div class="activity-meta">
+                <div class="activity-title">Crosby Smith blocked from checkout</div>
+                <div class="activity-sub">Lost 3rd device in 90 days · "Block at 3 lost" rule fired</div>
+                <div class="activity-time">2 min ago</div>
               </div>
-              <div class="p-selectbutton p-component p-buttonset flex" role="group">
-                <button class="p-button p-component p-highlight p-button-sm" style="background:#EFF6FF;color:#1E40AF;border-color:#BFDBFE;"><span class="p-button-label">All events</span></button>
-                <button class="p-button p-component p-button-sm"><span class="p-button-label">Losses</span></button>
-                <button class="p-button p-component p-button-sm"><span class="p-button-label">Damage</span></button>
-                <button class="p-button p-component p-button-sm"><span class="p-button-label">Recoveries</span></button>
+              <button class="btn ghost" style="font-size:11px;">View user</button>
+            </div>
+            <div class="activity-row">
+              <div class="activity-dot warn"></div>
+              <div class="activity-meta">
+                <div class="activity-title">Lauren Davis returned iPhone 16e #15 damaged</div>
+                <div class="activity-sub">Screen + charging port · $268 charged to Emergency Medicine · Sent to repair queue</div>
+                <div class="activity-time">14 min ago</div>
+              </div>
+              <button class="btn ghost" style="font-size:11px;">View incident</button>
+            </div>
+            <div class="activity-row">
+              <div class="activity-dot success"></div>
+              <div class="activity-meta">
+                <div class="activity-title">iPhone 16e #22 recovered</div>
+                <div class="activity-sub">Reported lost May 28 · Recovered by Marcus Chen · $599 reversal</div>
+                <div class="activity-time">25 min ago</div>
+              </div>
+              <button class="btn ghost" style="font-size:11px;">View device</button>
+            </div>
+            <div class="activity-row">
+              <div class="activity-dot danger"></div>
+              <div class="activity-meta">
+                <div class="activity-title">AiRista badge #28 marked lost</div>
+                <div class="activity-sub">John Smith · Bay 4 · Green8 · Not returned 7 days past expected</div>
+                <div class="activity-time">52 min ago</div>
+              </div>
+              <button class="btn ghost" style="font-size:11px;">View incident</button>
+            </div>
+            <div class="activity-row">
+              <div class="activity-dot warn"></div>
+              <div class="activity-meta">
+                <div class="activity-title">Emergency Medicine crossed $4,500 quarterly threshold</div>
+                <div class="activity-sub">Email sent to Dr. Sarah Park (Department Head)</div>
+                <div class="activity-time">1h 12m ago</div>
               </div>
             </div>
-
-            <div class="space-y-3">
-              <div class="flex items-start gap-3 border-b border-slate-100 pb-3">
-                <span class="w-2 h-2 rounded-full bg-danger mt-2"></span>
-                <div class="flex-1">
-                  <div class="flex items-center justify-between">
-                    <div class="font-semibold text-sm">Crosby Smith blocked from checkout</div>
-                    <span class="text-xs text-slate-400 tabular-nums">2 min ago</span>
-                  </div>
-                  <div class="text-xs text-slate-600 mt-0.5">Lost 3rd device in 90 days · "Block at 3 lost" rule fired</div>
-                </div>
-                <button class="p-button p-button-text p-button-sm text-xs">View user</button>
-              </div>
-              <div class="flex items-start gap-3 border-b border-slate-100 pb-3">
-                <span class="w-2 h-2 rounded-full bg-warning mt-2"></span>
-                <div class="flex-1">
-                  <div class="flex items-center justify-between">
-                    <div class="font-semibold text-sm">Lauren Davis returned iPhone 16e #15 damaged</div>
-                    <span class="text-xs text-slate-400 tabular-nums">14 min ago</span>
-                  </div>
-                  <div class="text-xs text-slate-600 mt-0.5">Screen + charging port · $268 charged to Emergency Medicine · Sent to repair queue</div>
-                </div>
-                <button class="p-button p-button-text p-button-sm text-xs">View incident</button>
-              </div>
-              <div class="flex items-start gap-3 border-b border-slate-100 pb-3">
-                <span class="w-2 h-2 rounded-full bg-success mt-2"></span>
-                <div class="flex-1">
-                  <div class="flex items-center justify-between">
-                    <div class="font-semibold text-sm">iPhone 16e #22 recovered</div>
-                    <span class="text-xs text-slate-400 tabular-nums">25 min ago</span>
-                  </div>
-                  <div class="text-xs text-slate-600 mt-0.5">Reported lost May 28 · Recovered by Marcus Chen · $599 reversal</div>
-                </div>
-                <button class="p-button p-button-text p-button-sm text-xs">View device</button>
-              </div>
-              <div class="flex items-start gap-3 border-b border-slate-100 pb-3">
-                <span class="w-2 h-2 rounded-full bg-danger mt-2"></span>
-                <div class="flex-1">
-                  <div class="flex items-center justify-between">
-                    <div class="font-semibold text-sm">AiRista badge #28 marked lost</div>
-                    <span class="text-xs text-slate-400 tabular-nums">52 min ago</span>
-                  </div>
-                  <div class="text-xs text-slate-600 mt-0.5">John Smith · Bay 4 · Green8 · Not returned 7 days past expected</div>
-                </div>
-                <button class="p-button p-button-text p-button-sm text-xs">View incident</button>
-              </div>
-              <div class="flex items-start gap-3 border-b border-slate-100 pb-3">
-                <span class="w-2 h-2 rounded-full bg-warning mt-2"></span>
-                <div class="flex-1">
-                  <div class="flex items-center justify-between">
-                    <div class="font-semibold text-sm">Emergency Medicine crossed $4,500 quarterly threshold</div>
-                    <span class="text-xs text-slate-400 tabular-nums">1h 12m ago</span>
-                  </div>
-                  <div class="text-xs text-slate-600 mt-0.5">Email sent to Dr. Sarah Park (Department Head)</div>
-                </div>
-              </div>
-              <div class="flex items-start gap-3">
-                <span class="w-2 h-2 rounded-full bg-success mt-2"></span>
-                <div class="flex-1">
-                  <div class="flex items-center justify-between">
-                    <div class="font-semibold text-sm">iPhone 16e #11 repair complete</div>
-                    <span class="text-xs text-slate-400 tabular-nums">2h 04m ago</span>
-                  </div>
-                  <div class="text-xs text-slate-600 mt-0.5">Port + battery replaced · $154 cost · Ready to redeploy</div>
-                </div>
+            <div class="activity-row">
+              <div class="activity-dot success"></div>
+              <div class="activity-meta">
+                <div class="activity-title">iPhone 16e #11 repair complete</div>
+                <div class="activity-sub">Port + battery replaced · $154 cost · Ready to redeploy</div>
+                <div class="activity-time">2h 04m ago</div>
               </div>
             </div>
           </div>
         </div>
 
+        <div class="travis-credit">
+          <strong>Mirrors the existing Asset Accounting prototype</strong> — see <a href="HonestWaves_Asset_Accounting_Full.html" style="color:var(--c-brand);">v1 build</a> — but redrawn in the redesign style (Inter font, sentence-case pills, unified token system). Sources: <em>Top departments by loss · High-risk users · Activity feed</em>.
+        </div>
       </div>
 
-      <div class="mt-6 p-3 bg-pixar-soft border border-pixar/20 rounded-md text-sm text-pixar">
-        <strong>Implementation:</strong> <code class="bg-white px-1 rounded">&lt;TabView&gt;</code> for 5 sub-views · <code class="bg-white px-1 rounded">&lt;Card&gt;</code> for KPIs and panel containers · <code class="bg-white px-1 rounded">&lt;DataTable&gt;</code> for drill tables · <code class="bg-white px-1 rounded">&lt;Tag&gt;</code> with severity for status pills · <code class="bg-white px-1 rounded">&lt;Avatar&gt;</code> for user marks · <code class="bg-white px-1 rounded">&lt;SelectButton&gt;</code> for activity filter chips. Tailwind utilities for layout (<code class="bg-white px-1 rounded">grid-cols-4 gap-3</code>) and typography (<code class="bg-white px-1 rounded">tabular-nums</code>).
+      <!-- ========================== LOSS & DAMAGE ========================== -->
+      <div id="pane-loss" class="tab-pane">
+        <header class="page-head">
+          <div>
+            <h1 class="page-title">Loss &amp; damage reports</h1>
+            <p class="page-sub">Pivot, drill, and export · same skeleton as Inventory, Repair, and other aggregate views</p>
+          </div>
+          <div class="page-actions">
+            <select class="filter-select"><option>Last 7 days</option><option>Last 30 days</option><option selected>This quarter</option><option>YTD</option></select>
+            <button class="btn ghost">Export</button>
+            <button class="btn">+ Save view</button>
+          </div>
+        </header>
+
+        <!-- Pivot toggle -->
+        <div class="pivot-bar">
+          <button class="pivot-btn active">By user</button>
+          <button class="pivot-btn">By department</button>
+          <button class="pivot-btn">By location</button>
+          <button class="pivot-btn">By model</button>
+        </div>
+
+        <div class="filter-bar">
+          <div class="filter-search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="Search users…" /></div>
+          <select class="filter-select"><option>All users</option><option>High-risk only</option><option>Blocked</option></select>
+          <select class="filter-select"><option>All departments</option><option>Emergency Medicine</option><option>Nursing</option></select>
+        </div>
+
+        <div class="card">
+          <table>
+            <thead>
+              <tr><th>User</th><th>Department</th><th>Lost</th><th>Damaged</th><th>Recovered</th><th>$ This Q</th><th>$ Lifetime</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr onclick="openUser('Crosby Smith')">
+                <td><span class="user-mark danger">CS</span><strong>Crosby Smith</strong></td>
+                <td>Emergency Medicine</td>
+                <td class="num">2 ($1,198)</td>
+                <td class="num">1 ($89)</td>
+                <td class="num">0</td>
+                <td class="num danger">$1,247</td>
+                <td class="num"><strong>$1,247</strong></td>
+                <td><span class="pill danger"><span class="pill-dot"></span>Blocked</span></td>
+              </tr>
+              <tr>
+                <td><span class="user-mark warn">LD</span><strong>Lauren Davis</strong></td>
+                <td>Nursing</td>
+                <td class="num">0</td>
+                <td class="num">4 ($782)</td>
+                <td class="num">0</td>
+                <td class="num warn">$782</td>
+                <td class="num"><strong>$1,089</strong></td>
+                <td><span class="pill warning"><span class="pill-dot"></span>Approval req</span></td>
+              </tr>
+              <tr>
+                <td><span class="user-mark warn">NV</span><strong>Natashalee Vargas</strong></td>
+                <td>Emergency Medicine</td>
+                <td class="num">1 ($599)</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num warn">$599</td>
+                <td class="num"><strong>$599</strong></td>
+                <td><span class="pill warning"><span class="pill-dot"></span>Approval req</span></td>
+              </tr>
+              <tr>
+                <td><span class="user-mark">JJ</span><strong>John Johnson</strong></td>
+                <td>Nursing</td>
+                <td class="num">0</td>
+                <td class="num">2 ($268)</td>
+                <td class="num">0</td>
+                <td class="num">$268</td>
+                <td class="num"><strong>$268</strong></td>
+                <td><span class="pill muted"><span class="pill-dot"></span>Warned</span></td>
+              </tr>
+              <tr>
+                <td><span class="user-mark">JS</span><strong>John Smith</strong></td>
+                <td>Security / Facilities</td>
+                <td class="num">3 ($255)</td>
+                <td class="num">2 ($66)</td>
+                <td class="num">1 ($85)</td>
+                <td class="num">$236</td>
+                <td class="num"><strong>$340</strong></td>
+                <td><span class="pill muted"><span class="pill-dot"></span>Watching</span></td>
+              </tr>
+              <tr>
+                <td><span class="user-mark">AD</span><strong>Austin Dragt</strong></td>
+                <td>Admin / HR</td>
+                <td class="num">2 ($170)</td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td class="num">$170</td>
+                <td class="num"><strong>$170</strong></td>
+                <td class="muted">—</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="card-foot">
+            <span>6 of 47 users with activity this quarter</span>
+            <span>Total Q2 loss: <strong>$14,247</strong></span>
+          </div>
+        </div>
       </div>
 
-    </main>
+      <!-- ========================== INVENTORY VALUE ========================== -->
+      <div id="pane-inventory" class="tab-pane">
+        <header class="page-head">
+          <div>
+            <h1 class="page-title">Asset inventory value</h1>
+            <p class="page-sub">Real-time replacement-cost value of every device currently inside a locker</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn ghost">Export</button>
+          </div>
+        </header>
 
-  </div>
-  <script src="pixarV2-interactivity.js"></script>
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label">Total in lockers</div><div class="kpi-value">$56,685</div><div class="kpi-sub">113 devices</div></div>
+          <div class="kpi"><div class="kpi-label">iPhone 16e</div><div class="kpi-value">$42,529</div><div class="kpi-sub">71 × $599</div></div>
+          <div class="kpi"><div class="kpi-label">AiRista badges</div><div class="kpi-value">$4,250</div><div class="kpi-sub">50 × $85</div></div>
+          <div class="kpi"><div class="kpi-label">Other models</div><div class="kpi-value">$9,906</div><div class="kpi-sub">12 devices · 3 models</div></div>
+        </section>
+
+        <div class="pivot-bar">
+          <button class="pivot-btn active">By locker</button>
+          <button class="pivot-btn">By location</button>
+          <button class="pivot-btn">By model</button>
+          <button class="pivot-btn">Forecast &amp; EOL</button>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Value by locker</h3><span class="card-sub">Click a locker for per-bay detail</span></div>
+          <table>
+            <thead><tr><th>Locker</th><th>Location</th><th>Bays</th><th>iPhone</th><th>AiRista</th><th>Other</th><th>Total value</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Pink8</strong></td><td>Troy ER</td><td class="num">8</td><td class="num">5 ($2,995)</td><td class="num">2 ($170)</td><td class="num">1 ($549)</td><td class="num"><strong>$3,714</strong></td></tr>
+              <tr><td><strong>Green1</strong></td><td>Troy ICU</td><td class="num">8</td><td class="num">6 ($3,594)</td><td class="num">2 ($170)</td><td class="num">0</td><td class="num"><strong>$3,764</strong></td></tr>
+              <tr><td><strong>Blue3</strong></td><td>Royal Oak Radiology</td><td class="num">32</td><td class="num">22 ($13,178)</td><td class="num">8 ($680)</td><td class="num">2 ($1,098)</td><td class="num"><strong>$14,956</strong></td></tr>
+              <tr><td><strong>Beaumont1</strong></td><td>Beaumont Main</td><td class="num">32</td><td class="num">25 ($14,975)</td><td class="num">20 ($1,700)</td><td class="num">9 ($7,862)</td><td class="num"><strong>$24,537</strong></td></tr>
+              <tr><td><strong>HQ Test</strong></td><td>HQ Lab</td><td class="num">8</td><td class="num">13 ($7,787)</td><td class="num">18 ($1,530)</td><td class="num">0</td><td class="num"><strong>$9,317</strong></td></tr>
+            </tbody>
+          </table>
+          <div class="card-foot"><span>Fleet total · 88 bays · 113 devices · 71 iPhone · 50 AiRista · 12 other</span><strong>$56,685</strong></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Inventory by device model</h3></div>
+          <table>
+            <thead><tr><th>Model</th><th>In service</th><th>In lockers</th><th>In use</th><th>In repair</th><th>Replacement</th><th>Total value</th></tr></thead>
+            <tbody>
+              <tr><td><strong>iPhone 16e</strong><br><span class="muted" style="font-size:10px;">Apple</span></td><td class="num">71</td><td class="num">63</td><td class="num">6</td><td class="num">2</td><td class="num">$599</td><td class="num"><strong>$42,529</strong></td></tr>
+              <tr><td><strong>AiRista badge</strong><br><span class="muted" style="font-size:10px;">AiRista</span></td><td class="num">50</td><td class="num">42</td><td class="num">7</td><td class="num">1</td><td class="num">$85</td><td class="num"><strong>$4,250</strong></td></tr>
+              <tr><td><strong>Pixel 8 Pro</strong><br><span class="muted" style="font-size:10px;">Google</span></td><td class="num">4</td><td class="num">3</td><td class="num">1</td><td class="num">0</td><td class="num">$999</td><td class="num"><strong>$3,996</strong></td></tr>
+              <tr><td><strong>ChromeBook X360</strong><br><span class="muted" style="font-size:10px;">HP</span></td><td class="num">2</td><td class="num">2</td><td class="num">0</td><td class="num">0</td><td class="num">$549</td><td class="num"><strong>$1,098</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ========================== REPAIR TRACKER ========================== -->
+      <div id="pane-repair" class="tab-pane">
+        <header class="page-head">
+          <div>
+            <h1 class="page-title">Repair &amp; replacement tracker</h1>
+            <p class="page-sub">Components, queue, pipeline · charge the right amount, not $599 every time</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn primary">+ Add device</button>
+          </div>
+        </header>
+
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label">In pipeline</div><div class="kpi-value">7</div><div class="kpi-sub">3 queued · 3 in repair · 1 ready</div></div>
+          <div class="kpi"><div class="kpi-label">Avg repair cost</div><div class="kpi-value">$142</div><div class="kpi-sub">vs $599 replace · 76% savings</div></div>
+          <div class="kpi"><div class="kpi-label">Repaired this Q</div><div class="kpi-value success">68%</div><div class="kpi-sub">vs 32% replaced</div></div>
+          <div class="kpi"><div class="kpi-label">Forecast next month</div><div class="kpi-value">$1,820</div><div class="kpi-sub">Based on 8-week trend</div></div>
+        </section>
+
+        <div class="pivot-bar">
+          <button class="pivot-btn active">Queue</button>
+          <button class="pivot-btn">Pipeline</button>
+          <button class="pivot-btn">Vendors</button>
+          <button class="pivot-btn">Cost analytics</button>
+          <button class="pivot-btn">Component catalog</button>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Repair queue</h3><span class="card-sub">Sorted by intake date</span></div>
+          <table>
+            <thead><tr><th>Device</th><th>Components</th><th>Returned by</th><th>Intake</th><th>Cost est.</th><th>Stage</th><th>Vendor</th></tr></thead>
+            <tbody>
+              <tr><td><strong>iPhone 16e #15</strong></td><td>Screen + port</td><td>Lauren Davis</td><td>Jun 6</td><td class="num">$268</td><td><span class="pill muted"><span class="pill-dot"></span>Queued</span></td><td class="muted">—</td></tr>
+              <tr><td><strong>iPhone 16e #03</strong></td><td>Charging port</td><td>Crosby Smith</td><td>Jun 5</td><td class="num">$89</td><td><span class="pill muted"><span class="pill-dot"></span>Queued</span></td><td class="muted">—</td></tr>
+              <tr><td><strong>AiRista badge #07</strong></td><td>Strap</td><td>John Smith</td><td>Jun 5</td><td class="num">$12</td><td><span class="pill muted"><span class="pill-dot"></span>Queued</span></td><td class="muted">—</td></tr>
+              <tr><td><strong>iPhone 16e #11</strong></td><td>Port + battery</td><td>Lauren Davis</td><td>May 28</td><td class="num">$154</td><td><span class="pill info"><span class="pill-dot"></span>In repair</span></td><td>TechFix Co.</td></tr>
+              <tr><td><strong>iPhone 16e #07</strong></td><td>Screen</td><td>Crosby Smith</td><td>May 28</td><td class="num">$179</td><td><span class="pill info"><span class="pill-dot"></span>In repair</span></td><td>TechFix Co.</td></tr>
+              <tr><td><strong>AiRista badge #14</strong></td><td>Battery</td><td>Isaac Yi</td><td>May 22</td><td class="num">$25</td><td><span class="pill info"><span class="pill-dot"></span>In repair</span></td><td>AiRista Direct</td></tr>
+              <tr><td><strong>iPhone 16e #22</strong></td><td>Screen</td><td>Casandra W.</td><td>May 12</td><td class="num">$179</td><td><span class="pill success"><span class="pill-dot"></span>Ready</span></td><td>TechFix Co.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Repair vendors</h3><button class="btn ghost" style="font-size:11px;">+ Add vendor</button></div>
+          <table>
+            <thead><tr><th>Vendor</th><th>Models supported</th><th>Avg turnaround</th><th>Repairs this Q</th><th>Spend this Q</th><th>Rating</th></tr></thead>
+            <tbody>
+              <tr><td><strong>TechFix Co.</strong></td><td>iPhone 16e · Pixel 8 Pro</td><td>5–7 days</td><td class="num">18</td><td class="num">$3,481</td><td>★★★★ 4.2</td></tr>
+              <tr><td><strong>AiRista Direct</strong></td><td>AiRista badges</td><td>3–5 days</td><td class="num">9</td><td class="num">$285</td><td>★★★★★ 4.8</td></tr>
+              <tr><td><strong>Apple Authorized</strong></td><td>iPhone 16e</td><td>10–14 days</td><td class="num">2</td><td class="num">$540</td><td>★★★★★ 5.0</td></tr>
+              <tr><td><strong>In-house IT</strong></td><td>All</td><td>1–2 days</td><td class="num">4</td><td class="num">$0</td><td class="muted">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ========================== THRESHOLDS & RULES ========================== -->
+      <div id="pane-rules" class="tab-pane">
+        <header class="page-head">
+          <div>
+            <h1 class="page-title">Thresholds &amp; rules</h1>
+            <p class="page-sub">Automated actions when a user, department, or device class crosses a defined limit</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn primary">+ Add rule</button>
+          </div>
+        </header>
+
+        <div class="pivot-bar">
+          <button class="pivot-btn active">User-level</button>
+          <button class="pivot-btn">Department-level</button>
+          <button class="pivot-btn">Device-level</button>
+          <button class="pivot-btn">Rule audit log</button>
+          <button class="pivot-btn">Notification routing</button>
+        </div>
+
+        <div class="rule-grid">
+          <div class="rule-card">
+            <div class="rule-head">
+              <span class="rule-title">Block checkout after 3 lost devices</span>
+              <span class="pill success"><span class="pill-dot"></span>Active</span>
+            </div>
+            <div class="rule-desc">User cannot check out new devices until a supervisor signs in. Currently affects <strong>Crosby Smith</strong>.</div>
+            <div class="rule-meta">1 blocked · 4 at warning · Threshold 3 · Window 90 days</div>
+          </div>
+          <div class="rule-card">
+            <div class="rule-head">
+              <span class="rule-title">Require supervisor approval if loss &gt; $500</span>
+              <span class="pill success"><span class="pill-dot"></span>Active</span>
+            </div>
+            <div class="rule-desc">Lifetime $ loss threshold. Approval required at next checkout.</div>
+            <div class="rule-meta">2 users in this state · Threshold $500 · All time</div>
+          </div>
+          <div class="rule-card">
+            <div class="rule-head">
+              <span class="rule-title">Email warning at 2 incidents</span>
+              <span class="pill success"><span class="pill-dot"></span>Active</span>
+            </div>
+            <div class="rule-desc">Sends "next incident blocks your checkout privileges" with policy link.</div>
+            <div class="rule-meta">4 users warned this quarter · Threshold 2 · Window 90 days</div>
+          </div>
+          <div class="rule-card">
+            <div class="rule-head">
+              <span class="rule-title">Photo at return for high-value devices (&gt; $500)</span>
+              <span class="pill success"><span class="pill-dot"></span>Active</span>
+            </div>
+            <div class="rule-desc">Locker camera captures device photo at return. Stored for damage disputes.</div>
+            <div class="rule-meta">Applies to iPhone 16e, Pixel 8 Pro, ChromeBook X360</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Rule fire log</h3><span class="card-sub">Most recent rule triggers</span></div>
+          <div class="activity-feed" style="margin:0;border:0;border-radius:0;">
+            <div class="activity-row"><div class="activity-dot danger"></div><div class="activity-meta"><div class="activity-title">"Block at 3 lost" fired</div><div class="activity-sub">Crosby Smith · 3rd lost device this 90-day window · Checkout blocked</div><div class="activity-time">2 min ago</div></div></div>
+            <div class="activity-row"><div class="activity-dot warn"></div><div class="activity-meta"><div class="activity-title">"Dept loss &gt; $3K" fired</div><div class="activity-sub">Emergency Medicine · Crossed $4,500 this Q · Email to Dr. Sarah Park</div><div class="activity-time">1h 12m ago</div></div></div>
+            <div class="activity-row"><div class="activity-dot warn"></div><div class="activity-meta"><div class="activity-title">"Approval req &gt; $500" fired</div><div class="activity-sub">Lauren Davis · Crossed $500 lifetime · Will need supervisor on next checkout</div><div class="activity-time">3h ago</div></div></div>
+            <div class="activity-row"><div class="activity-dot danger"></div><div class="activity-meta"><div class="activity-title">"Auto-mark lost at 7d" fired</div><div class="activity-sub">AiRista badge #28 · 7d past expected return · Auto-charged $85</div><div class="activity-time">52 min ago</div></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  // Sub-tab switching — synced between top tabs AND sidebar accordion
+  const allNavs = document.querySelectorAll('.subtab[data-pane], .sub-nav-item[data-pane]');
+  const panes = {
+    overview: document.getElementById('pane-overview'),
+    loss: document.getElementById('pane-loss'),
+    inventory: document.getElementById('pane-inventory'),
+    repair: document.getElementById('pane-repair'),
+    rules: document.getElementById('pane-rules')
+  };
+  function showPane(name) {
+    allNavs.forEach(t => t.classList.toggle('active', t.dataset.pane === name));
+    Object.entries(panes).forEach(([k, el]) => { if (el) el.classList.toggle('active', k === name); });
+    try { localStorage.setItem('hw.assetacc.pane', name); } catch (e) {}
+  }
+  allNavs.forEach(t => t.addEventListener('click', () => showPane(t.dataset.pane)));
+  try {
+    const saved = localStorage.getItem('hw.assetacc.pane');
+    if (saved && panes[saved]) showPane(saved);
+  } catch (e) {}
+
+  function openDept(name) { console.log('Drill into', name); }
+  function openUser(name) { console.log('Open user', name); }
+</script>
+
+<script src="pixarV2-interactivity.js"></script>
 </body>
 </html>

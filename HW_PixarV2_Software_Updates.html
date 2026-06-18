@@ -1,135 +1,583 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Pixar v.2 · Software Updates</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/lara-light-blue/theme.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/primevue.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config={theme:{extend:{colors:{
-      'brand':{DEFAULT:'#2563EB',deep:'#1E40AF',soft:'#EFF6FF'},'pixar':{DEFAULT:'#7C3AED',soft:'#EDE9FE'},
-      'success':{DEFAULT:'#10B981',soft:'#D1FAE5'},'warning':{DEFAULT:'#F59E0B',soft:'#FEF3C7',text:'#B45309'},
-      'danger':{DEFAULT:'#DC2626',soft:'#FEE2E2'},'info':{DEFAULT:'#0EA5E9',soft:'#E0F2FE'},
-    },fontFamily:{sans:['Inter','system-ui','sans-serif']}}}};
-  </script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1440">
+  <title>HonestWaves redesign · 10 · Software updates</title>
   <style>
-    body{font-family:'Inter',system-ui,sans-serif;}
-    :root{--primary-color:#2563EB;--primary-color-text:#fff;--highlight-bg:#EFF6FF;--highlight-text-color:#1E40AF;}
-    .annotation{background:linear-gradient(90deg,#7C3AED,#1E40AF);color:#fff;padding:8px 24px;font-size:12px;display:flex;align-items:center;gap:12px;}
-    .annotation .chip{background:rgba(255,255,255,.2);font-weight:600;padding:2px 7px;border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.04em;}
-  </style>
-  <link rel="stylesheet" href="pixarV2-tokens.css" />
-</head>
-<body class="bg-slate-50 text-slate-900">
+    :root{
+      --c-surface:#FFFFFF; --c-surface-2:#FAFAFB; --c-surface-3:#F4F5F7;
+      --c-border:#E5E7EB; --c-border-strong:#D1D5DB; --c-divider:#EDF0F4;
+      --c-text:#0F172A; --c-text-2:#475569; --c-text-muted:#94A3B8;
+      --c-brand:#2563EB; --c-brand-hover:#1D4ED8; --c-brand-soft:#EFF6FF; --c-brand-deep:#1E40AF;
+      --c-success:#10B981; --c-success-soft:#ECFDF5;
+      --c-warning:#F59E0B; --c-warning-soft:#FFFBEB; --c-warning-text:#B45309;
+      --c-danger:#EF4444; --c-danger-soft:#FEF2F2;
+      --c-info:#6366F1; --c-info-soft:#EEF2FF;
+      --c-violet:#7C3AED; --c-violet-soft:#F5F3FF;
+      --c-cyan:#06B6D4; --c-cyan-soft:#ECFEFF;
+      --c-slate:#64748B; --c-slate-soft:#F1F5F9;
+      --font-sans:"Inter",-apple-system,sans-serif;
+      --font-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+      --t-10:10px; --t-11:11px; --t-12:12px; --t-13:13px; --t-14:14px; --t-16:16px; --t-20:20px;
+      --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:20px; --s-6:24px;
+      --r-sm:4px; --r-md:6px; --r-lg:8px;
+      --sh-1:0 1px 2px rgba(15,23,42,.04);
+      --sh-2:0 1px 3px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04);
+      --sidebar-w:232px; --topbar-h:52px;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:var(--font-sans);font-size:var(--t-13);line-height:1.45;color:var(--c-text);background:var(--c-surface-2);-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+    svg{display:block}
+    .shell{display:grid;grid-template-columns:var(--sidebar-w) 1fr 400px;grid-template-rows:var(--topbar-h) 1fr;grid-template-areas:"logo topbar topbar" "side main drawer";min-height:100vh}
+    @media (max-width: 1280px){.shell{grid-template-columns:var(--sidebar-w) 1fr;grid-template-areas:"logo topbar" "side main"}.drawer{display:none!important}}
+    .logo{grid-area:logo;background:var(--c-surface);border-right:1px solid var(--c-border);border-bottom:1px solid var(--c-border);display:flex;align-items:center;gap:10px;padding:0 var(--s-4);font-weight:600;font-size:var(--t-14)}
+    .logo-mark{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--c-brand),var(--c-brand-deep));display:grid;place-items:center;color:white;font-weight:700;font-size:13px}
+    .logo-tenant{margin-left:auto;font-size:var(--t-11);color:var(--c-text-muted);background:var(--c-surface-3);padding:2px 6px;border-radius:var(--r-sm);font-weight:500}
+    .topbar{grid-area:topbar;background:var(--c-surface);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 var(--s-5);gap:var(--s-3)}
+    .breadcrumb{display:flex;align-items:center;gap:var(--s-2);color:var(--c-text-2);font-size:var(--t-13)}
+    .breadcrumb strong{color:var(--c-text);font-weight:600}
+    .topbar-spacer{flex:1}
+    .search{display:flex;align-items:center;gap:var(--s-2);width:340px;height:32px;padding:0 var(--s-3);background:var(--c-surface-2);border:1px solid var(--c-border);border-radius:var(--r-md);color:var(--c-text-muted);font-size:var(--t-13)}
+    .search-kbd{margin-left:auto;padding:1px 5px;font-family:var(--font-mono);font-size:10px;color:var(--c-text-2);background:var(--c-surface);border:1px solid var(--c-border);border-radius:3px}
+    .icon-btn{width:32px;height:32px;display:grid;place-items:center;border-radius:var(--r-md);color:var(--c-text-2);position:relative}
+    .icon-btn:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .icon-btn .badge{position:absolute;top:2px;right:2px;min-width:16px;height:16px;padding:0 4px;background:var(--c-danger);color:white;border:2px solid var(--c-surface);border-radius:999px;font-size:9px;font-weight:700;display:grid;place-items:center}
+    .avatar-btn{display:flex;align-items:center;gap:var(--s-2);padding:4px 8px 4px 4px;border-radius:var(--r-md)}
+    .avatar-btn:hover{background:var(--c-surface-3)}
+    .avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#6366F1,#2563EB);color:white;font-size:11px;font-weight:600;display:grid;place-items:center}
+    .avatar-meta{line-height:1.1;text-align:left}
+    .avatar-name{font-size:var(--t-12);font-weight:600}
+    .avatar-email{font-size:var(--t-11);color:var(--c-text-muted)}
+    .sidebar{grid-area:side;background:var(--c-surface);border-right:1px solid var(--c-border);padding:var(--s-3) var(--s-2);overflow-y:auto}
+    .nav-group{margin-bottom:var(--s-4)}
+    .nav-group-label{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--c-text-muted);padding:0 var(--s-3);margin:0 0 4px}
+    .nav-item{display:flex;align-items:center;gap:var(--s-3);padding:7px var(--s-3);border-radius:var(--r-md);font-size:var(--t-13);color:var(--c-text-2);position:relative}
+    .nav-item:hover{background:var(--c-surface-3);color:var(--c-text)}
+    .nav-item.active{background:var(--c-brand-soft);color:var(--c-brand-deep);font-weight:600}
+    .nav-item.active::before{content:"";position:absolute;left:-2px;top:8px;bottom:8px;width:2px;background:var(--c-brand);border-radius:2px}
+    .nav-icon{width:16px;height:16px;flex-shrink:0;opacity:.85}
+    .nav-item.active .nav-icon{opacity:1}
+    .nav-badge{margin-left:auto;font-size:10px;font-weight:600;padding:1px 6px;border-radius:999px;background:var(--c-danger-soft);color:var(--c-danger)}
+    .main{grid-area:main;overflow-y:auto}
+    .main-inner{padding:var(--s-5) var(--s-6);max-width:1080px}
+    .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s-4);margin-bottom:var(--s-4)}
+    .page-title{font-size:var(--t-20);font-weight:600;letter-spacing:-.01em;margin:0 0 2px}
+    .page-sub{font-size:var(--t-12);color:var(--c-text-2);margin:0}
+    .page-actions{display:flex;align-items:center;gap:var(--s-2)}
+    .btn{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 var(--s-3);font-size:var(--t-12);font-weight:500;color:var(--c-text);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);box-shadow:var(--sh-1)}
+    .btn:hover{background:var(--c-surface-3);border-color:var(--c-border-strong)}
+    .btn.primary{background:var(--c-brand);color:white;border-color:var(--c-brand)}
+    .btn.primary:hover{background:var(--c-brand-hover);border-color:var(--c-brand-hover)}
+    .btn.ghost{background:transparent;border-color:transparent;box-shadow:none}
 
-  <div class="annotation">
-    <span class="chip">Pixar v.2</span>
-    <strong>Software Updates.</strong>
-    <span>PrimeVue TabView (Firmware · App · Schedule) · DataTable · ProgressBar · Tag · Dialog for rollout.</span>
-    <span class="ml-auto"><a href="HW_PixarV2_Browse.html" class="underline">← v.2 home</a></span>
+    /* KPI */
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-3);margin-bottom:var(--s-4)}
+    .kpi{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);padding:var(--s-3) var(--s-4)}
+    .kpi-label{font-size:10px;font-weight:600;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:5px;margin-bottom:4px}
+    .kpi-label-dot{width:6px;height:6px;border-radius:50%}
+    .kpi-value{font-size:22px;font-weight:600;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums}
+    .kpi-sub{font-size:10px;color:var(--c-text-muted);margin-top:2px}
+    .kpi-value.danger{color:var(--c-danger)}
+    .kpi-value.success{color:var(--c-success)}
+    .kpi-value.warn{color:var(--c-warning-text)}
+
+    /* Compose card */
+    .compose{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-lg);padding:var(--s-4) var(--s-5);margin-bottom:var(--s-4)}
+    .compose-h{font-size:var(--t-13);font-weight:600;margin:0 0 var(--s-3);display:flex;align-items:center;gap:8px}
+    .compose-row{display:grid;grid-template-columns:1fr 1fr auto;gap:var(--s-3);align-items:end}
+    .field-label{display:block;font-size:10px;font-weight:600;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px}
+    .field-input{display:flex;align-items:center;gap:var(--s-2);height:36px;padding:0 var(--s-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);font-size:var(--t-13)}
+    .field-input:focus-within{border-color:var(--c-brand);box-shadow:0 0 0 3px var(--c-brand-soft)}
+    .field-input.with-chevron::after{content:"";flex-shrink:0;width:0;height:0;border:4px solid transparent;border-top-color:var(--c-text-muted);margin-top:4px;margin-left:auto}
+    .field-input strong{font-weight:600;color:var(--c-text)}
+    .field-input .mono{font-family:var(--font-mono);font-size:var(--t-11);color:var(--c-text-2);margin-left:8px}
+    .compose-sub{font-size:var(--t-11);color:var(--c-text-muted);margin-top:4px}
+
+    /* Table */
+    .list-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-lg);overflow:hidden}
+    .list-head{display:flex;align-items:center;padding:var(--s-3) var(--s-4);border-bottom:1px solid var(--c-border);background:var(--c-surface-2)}
+    .list-h{font-weight:600;font-size:var(--t-13);margin:0}
+    .list-h-sub{font-size:var(--t-11);color:var(--c-text-muted);margin-left:8px;font-weight:500}
+    table.fleet{width:100%;border-collapse:collapse;font-size:var(--t-12)}
+    table.fleet thead th{text-align:left;font-weight:600;font-size:10px;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:.06em;padding:8px var(--s-3);background:var(--c-surface-2);border-bottom:1px solid var(--c-border)}
+    table.fleet tbody td{padding:0 var(--s-3);height:44px;border-bottom:1px solid var(--c-divider);vertical-align:middle}
+    table.fleet tbody tr{transition:background .12s;cursor:pointer}
+    table.fleet tbody tr:hover{background:var(--c-surface-2)}
+    table.fleet tbody tr.selected{background:var(--c-brand-soft)}
+    table.fleet tbody tr:last-child td{border-bottom:0}
+
+    .pill{display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 8px;border-radius:999px;font-size:var(--t-11);font-weight:600;line-height:1;white-space:nowrap}
+    .pill-dot{width:6px;height:6px;border-radius:50%}
+    .pill.success{background:var(--c-success-soft);color:var(--c-success)}
+    .pill.success .pill-dot{background:var(--c-success)}
+    .pill.warn{background:var(--c-warning-soft);color:var(--c-warning-text)}
+    .pill.warn .pill-dot{background:var(--c-warning)}
+    .pill.danger{background:var(--c-danger-soft);color:var(--c-danger)}
+    .pill.danger .pill-dot{background:var(--c-danger)}
+    .pill.info{background:var(--c-info-soft);color:var(--c-info)}
+    .pill.info .pill-dot{background:var(--c-info)}
+    .pill.slate{background:var(--c-slate-soft);color:var(--c-slate)}
+    .pill.slate .pill-dot{background:var(--c-slate)}
+    .pill.live{background:var(--c-info-soft);color:var(--c-info)}
+    .pill.live .pill-dot{background:var(--c-info);animation:pulse 1.5s infinite}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(99,102,241,.5)}70%{box-shadow:0 0 0 4px rgba(99,102,241,0)}100%{box-shadow:0 0 0 0 rgba(99,102,241,0)}}
+
+    .locker-cell{display:flex;align-items:center;gap:8px}
+    .locker-icon{width:28px;height:28px;border-radius:var(--r-md);background:var(--c-violet-soft);color:var(--c-violet);display:grid;place-items:center;flex-shrink:0}
+    .locker-name{font-weight:600;color:var(--c-text)}
+    .locker-sub{font-size:10px;color:var(--c-text-muted);font-family:var(--font-mono);margin-top:1px}
+    .version-mono{font-family:var(--font-mono);font-size:var(--t-11);font-weight:600;color:var(--c-text)}
+    .version-muted{font-family:var(--font-mono);font-size:var(--t-11);color:var(--c-text-muted)}
+    .progress-cell{display:flex;align-items:center;gap:8px}
+    .progress-bar{flex:1;height:5px;background:var(--c-surface-3);border-radius:99px;overflow:hidden;min-width:80px;max-width:120px}
+    .progress-fill{height:100%;background:var(--c-info);border-radius:99px;transition:width .3s}
+    .progress-pct{font-size:10px;font-weight:600;color:var(--c-text-2);font-variant-numeric:tabular-nums;min-width:32px;text-align:right}
+
+    /* Release timeline */
+    .timeline-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-lg);padding:var(--s-4) var(--s-5);margin-bottom:var(--s-4)}
+    .release-item{display:flex;align-items:flex-start;gap:var(--s-3);padding:10px 0;border-bottom:1px solid var(--c-divider)}
+    .release-item:last-child{border-bottom:0;padding-bottom:0}
+    .release-dot{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;flex-shrink:0}
+    .release-dot.success{background:var(--c-success-soft);color:var(--c-success)}
+    .release-dot.info{background:var(--c-info-soft);color:var(--c-info)}
+    .release-meta{flex:1}
+    .release-version{font-weight:600;font-size:var(--t-13)}
+    .release-sub{font-size:var(--t-11);color:var(--c-text-2);margin-top:2px}
+    .release-stats{display:flex;align-items:center;gap:14px;font-size:var(--t-11);color:var(--c-text-muted);margin-top:4px}
+    .release-stats strong{color:var(--c-text);font-weight:600}
+    .release-time{font-size:var(--t-11);color:var(--c-text-muted);white-space:nowrap}
+
+    /* Confirm modal mock */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;z-index:200}
+    .modal-backdrop.open{display:flex}
+    .modal{width:480px;background:var(--c-surface);border-radius:var(--r-lg);box-shadow:0 16px 48px rgba(15,23,42,.2);overflow:hidden}
+    .modal-head{padding:var(--s-5) var(--s-5) 0;display:flex;align-items:flex-start;gap:var(--s-3)}
+    .modal-icon{width:40px;height:40px;border-radius:50%;background:var(--c-brand-soft);color:var(--c-brand);display:grid;place-items:center;flex-shrink:0}
+    .modal-title{font-size:var(--t-16);font-weight:600;margin:0 0 6px}
+    .modal-body{padding:0 var(--s-5) var(--s-5) calc(var(--s-5) + 40px + var(--s-3));font-size:var(--t-12);color:var(--c-text-2);line-height:1.6}
+    .modal-foot{padding:var(--s-3) var(--s-5);background:var(--c-surface-2);border-top:1px solid var(--c-border);display:flex;justify-content:flex-end;gap:var(--s-2)}
+
+    /* Drawer */
+    .drawer{grid-area:drawer;background:var(--c-surface);border-left:1px solid var(--c-border);overflow-y:auto}
+    .drawer-head{padding:var(--s-4);border-bottom:1px solid var(--c-divider)}
+    .drawer-head-row{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s-3)}
+    .drawer-title{font-size:var(--t-16);font-weight:600;margin:0;line-height:1.2}
+    .drawer-sub{font-size:var(--t-11);color:var(--c-text-muted);margin-top:4px;font-family:var(--font-mono)}
+    .drawer-close{width:28px;height:28px;display:grid;place-items:center;border-radius:var(--r-md);color:var(--c-text-2)}
+    .drawer-close:hover{background:var(--c-surface-3)}
+    .drawer-section{padding:var(--s-4);border-bottom:1px solid var(--c-divider)}
+    .drawer-section:last-child{border-bottom:0}
+    .drawer-h{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--c-text-muted);margin:0 0 var(--s-2)}
+    .info-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:var(--t-12);border-bottom:1px solid var(--c-divider)}
+    .info-row:last-child{border-bottom:0}
+    .info-label{color:var(--c-text-2)}
+    .info-value{font-weight:600;color:var(--c-text)}
+    .info-value.mono{font-family:var(--font-mono);font-size:var(--t-11)}
+
+    .lifecycle{position:relative;padding-left:18px}
+    .lifecycle::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:var(--c-divider)}
+    .lc-step{position:relative;padding:6px 0;font-size:var(--t-12)}
+    .lc-step::before{content:"";position:absolute;left:-9px;top:9px;width:11px;height:11px;border-radius:50%;background:var(--c-text-muted);box-shadow:0 0 0 2px var(--c-surface)}
+    .lc-step.done::before{background:var(--c-success)}
+    .lc-step.active::before{background:var(--c-info);animation:pulse 1.5s infinite}
+    .lc-step.pending::before{background:var(--c-border-strong)}
+    .lc-label{font-weight:500;color:var(--c-text);font-size:var(--t-12)}
+    .lc-time{font-size:10px;color:var(--c-text-muted);margin-top:2px}
+
+    .drawer-actions{display:flex;gap:6px;padding:var(--s-3) var(--s-4);background:var(--c-surface-2);border-top:1px solid var(--c-divider)}
+    .drawer-actions .btn{flex:1;justify-content:center;height:28px;font-size:var(--t-11)}
+
+    .annotation-strip{background:linear-gradient(90deg,var(--c-brand-soft),#F0F7FF);border-bottom:1px solid #DBEAFE;padding:8px 24px;font-size:var(--t-12);color:var(--c-brand-deep);display:flex;align-items:center;gap:12px}
+    .annotation-strip strong{color:var(--c-brand-deep)}
+    .annotation-strip .chip{background:var(--c-brand);color:white;font-weight:600;padding:2px 7px;border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.04em}
+  </style>
+<link rel="stylesheet" href="pixarV2-tokens.css" />
+</head>
+<body>
+<div style="background:linear-gradient(90deg,#1E40AF,#7C3AED);color:#fff;padding:8px 24px;font-size:12px;display:flex;align-items:center;gap:12px;font-family:Inter,system-ui,sans-serif;">
+  <span style="background:rgba(255,255,255,.18);font-weight:600;padding:2px 8px;border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.04em;">Pixar v.2</span>
+  <strong style="color:#fff;">Forked from v.1 — same markup, same interactions.</strong>
+  <span>Dev: bind .btn → &lt;Button&gt;, .pill → &lt;Tag&gt;, .card → &lt;Card&gt;, .drawer → &lt;Sidebar&gt;, .modal → &lt;Dialog&gt;, tabs → &lt;TabView&gt;.</span>
+  <span style="margin-left:auto;"><a href="HW_PixarV2_Hub.html" style="color:#fff;text-decoration:underline;">← Hub</a> · <a href="HW_PixarV2_Tokens.html" style="color:#fff;text-decoration:underline;">Tokens</a></span>
+</div>
+
+  <div class="annotation-strip">
+    <span class="chip">Prototype 10</span>
+    <strong>Software updates.</strong>
+    <span>Renamed from OTA · Send-update wizard · 5 status pills · live progress · release timeline · confirm dialog · drawer.</span>
+    <span style="margin-left:auto;color:#64748B;">Click "Send update" to see the confirmation pattern.</span>
   </div>
 
-  <div class="grid" style="grid-template-columns:232px 1fr;grid-template-rows:56px 1fr;grid-template-areas:'logo top' 'side main';min-height:calc(100vh - 32px);">
-
-    <div style="grid-area:logo;" class="bg-white border-r border-b border-slate-200 flex items-center px-4 gap-2">
-      <div class="w-7 h-7 rounded-md bg-brand grid place-items-center text-white font-bold text-sm">H</div>
-      <span class="font-semibold">HonestWaves</span>
-      <span class="ml-auto p-tag p-tag-info text-xs"><span class="p-tag-value">QA</span></span>
+  <div class="shell">
+    <div class="logo">
+      <div class="logo-mark">H</div>
+      <div>HonestWaves</div>
+      <span class="logo-tenant">QA</span>
     </div>
 
-    <div style="grid-area:top;" class="bg-white border-b border-slate-200 flex items-center px-5 gap-3">
-      <div class="text-sm text-slate-500 flex items-center gap-2"><span>System</span><i class="pi pi-angle-right text-xs"></i><strong class="text-slate-900">Software Updates</strong></div>
-      <div class="flex-1"></div>
-      <button class="p-button p-button-outlined p-button-sm"><i class="pi pi-history mr-2"></i>History</button>
-      <button class="p-button p-button-sm"><i class="pi pi-cloud-upload mr-2"></i>Push Update</button>
-      <div class="p-avatar p-component p-avatar-circle ml-2" style="background:#2563EB;color:#fff;"><span>AR</span></div>
+    <div class="topbar">
+      <div class="breadcrumb">
+        <span style="color:var(--c-text-2);">System</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--c-text-muted);"><polyline points="9 18 15 12 9 6"/></svg>
+        <strong>Software updates</strong>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+        <span>Search lockers, devices, users…</span>
+        <span class="search-kbd">⌘K</span>
+      </div>
+      <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="badge">99+</span></button>
+      <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+      <button class="avatar-btn"><div class="avatar">AR</div><div class="avatar-meta"><div class="avatar-name">Admin Rowe</div><div class="avatar-email">admin@honestwaves.test</div></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
     </div>
 
-    <aside style="grid-area:side;" class="bg-white border-r border-slate-200 p-3 overflow-y-auto">
-      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-1">Monitor</div>
-      <a href="HW_PixarV2_Dashboard.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-th-large"></i>Dashboard</a>
-      <a href="HW_PixarV2_Mission_Control.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-eye"></i>Mission Control</a>
-      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-4">Manage</div>
-      <a href="HW_PixarV2_Lockers.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-server"></i>Lockers</a>
-      <a href="HW_PixarV2_Devices.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-mobile"></i>Devices</a>
-      <a href="HW_PixarV2_Users.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-users"></i>Users</a>
-      <a href="HW_PixarV2_Access_Matrix.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-key"></i>Access Matrix</a>
-      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-4">Investigate</div>
-      <a href="HW_PixarV2_Notifications.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-bell"></i>Notifications</a>
-      <a href="HW_PixarV2_Tracker.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-map-marker"></i>Tracker</a>
-      <a href="HW_PixarV2_Reports.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-chart-line"></i>Reports</a>
-      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 mt-4">System</div>
-      <a class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold bg-brand-soft text-brand-deep border-l-2 border-brand -ml-1"><i class="pi pi-cloud-download"></i>Software Updates</a>
-      <a href="HW_PixarV2_Settings.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100"><i class="pi pi-cog"></i>Settings</a>
-    </aside>
+    <nav class="sidebar">
+      <div class="nav-group"><p class="nav-group-label">Monitor</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Mission Control</a>
+      </div>
+      <div class="nav-group"><p class="nav-group-label">Manage</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/></svg>Lockers</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Devices</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Users</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>Access matrix</a>
+      </div>
+      <div class="nav-group"><p class="nav-group-label">Investigate</p>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/></svg>Notifications<span class="nav-badge">99+</span></a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>Tracker</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Reports</a>
+      </div>
+      <div class="nav-group"><p class="nav-group-label">System</p>
+        <a class="nav-item active" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>Software updates</a>
+        <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>Settings</a>
+      </div>
+      <div style="padding:var(--s-3);font-size:var(--t-11);color:var(--c-text-muted);">v2.0.0</div>
+    </nav>
 
-    <main style="grid-area:main;" class="p-6 overflow-y-auto space-y-5">
+    <main class="main">
+      <div class="main-inner">
 
-      <!-- Live rollout banner -->
-      <div class="rounded-xl p-4 flex items-center gap-4 border-l-4 border-brand bg-brand-soft">
-        <i class="pi pi-cloud-download text-3xl text-brand-deep"></i>
-        <div class="flex-1">
-          <div class="font-semibold text-brand-deep">Rolling out: Locker firmware 4.12.2 → 4.13.0</div>
-          <div class="text-xs text-slate-600 mt-0.5">Phased rollout · Grand Rapids first · QA approved May 28 by James Tan</div>
-          <div class="p-progressbar h-2 bg-white rounded-full mt-2 overflow-hidden">
-            <div class="bg-brand h-full" style="width:64%"></div>
+        <header class="page-head">
+          <div>
+            <h1 class="page-title">Software updates</h1>
+            <p class="page-sub">Push app and firmware updates to lockers · 12 lockers · 1 currently updating</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn ghost"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>Release history</button>
+            <button class="btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>Maintenance windows</button>
+          </div>
+        </header>
+
+        <!-- KPI strip -->
+        <section class="kpis">
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-success);"></span>Up to date</div>
+            <div class="kpi-value success">9</div>
+            <div class="kpi-sub">of 12 lockers · 75%</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-info);"></span>Updating now</div>
+            <div class="kpi-value" style="color:var(--c-info);">1</div>
+            <div class="kpi-sub">Pink8 · 58% complete</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-warning);"></span>Update queued</div>
+            <div class="kpi-value warn">1</div>
+            <div class="kpi-sub">Blue34 · waits for window</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-text-muted);"></span>Not reported</div>
+            <div class="kpi-value" style="color:var(--c-slate);">1</div>
+            <div class="kpi-sub">ICU1 · offline 47 min</div>
+          </div>
+        </section>
+
+        <!-- Compose -->
+        <div class="compose">
+          <h3 class="compose-h">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
+            Push an update
+          </h3>
+          <div class="compose-row">
+            <div>
+              <label class="field-label">Release version</label>
+              <div class="field-input with-chevron">
+                <strong>2.2.0-rc1</strong>
+                <span class="mono">build 2020061</span>
+              </div>
+              <p class="compose-sub">12 lockers eligible · 9 currently on 2.1.23.3003</p>
+            </div>
+            <div>
+              <label class="field-label">Target lockers</label>
+              <div class="field-input with-chevron">
+                <strong>2 lockers selected</strong>
+                <span class="mono">Pink8, Blue34</span>
+              </div>
+              <p class="compose-sub">Pick locations or individual lockers</p>
+            </div>
+            <button class="btn primary" style="height:36px;padding:0 var(--s-4);" onclick="document.getElementById('confirmModal').classList.add('open')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" x2="11" y1="2" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Send update
+            </button>
           </div>
         </div>
-        <div class="text-right">
-          <div class="text-sm font-bold">9 of 14</div>
-          <div class="text-xs text-slate-500">lockers complete</div>
+
+        <!-- Fleet table -->
+        <div class="list-card">
+          <div class="list-head">
+            <h3 class="list-h">Current fleet versions</h3>
+            <span class="list-h-sub">12 lockers · live status</span>
+          </div>
+          <table class="fleet">
+            <thead>
+              <tr>
+                <th>Locker</th>
+                <th>Location</th>
+                <th>Installed version</th>
+                <th>Update status</th>
+                <th>Progress</th>
+                <th>Last reported</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr class="selected">
+                <td>
+                  <div class="locker-cell">
+                    <div class="locker-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg></div>
+                    <div><div class="locker-name">Pink8</div><div class="locker-sub">5c00…b221d</div></div>
+                  </div>
+                </td>
+                <td>HonestWaves OC</td>
+                <td><span class="version-mono">2.1.23.3003</span> → <span class="version-mono" style="color:var(--c-info);">2.2.0-rc1</span></td>
+                <td><span class="pill live"><span class="pill-dot"></span>Updating now</span></td>
+                <td><div class="progress-cell"><div class="progress-bar"><div class="progress-fill" style="width:58%;"></div></div><span class="progress-pct">58%</span></div></td>
+                <td>just now</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div class="locker-cell">
+                    <div class="locker-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg></div>
+                    <div><div class="locker-name">Blue34</div><div class="locker-sub">5c00…205d</div></div>
+                  </div>
+                </td>
+                <td>HonestWaves HQ</td>
+                <td><span class="version-mono">2.1.23.3003</span></td>
+                <td><span class="pill warn"><span class="pill-dot"></span>Update queued</span></td>
+                <td><div class="progress-cell"><span style="font-size:10px;color:var(--c-text-muted);">Window starts 10:00 PM</span></div></td>
+                <td>1 sec ago</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div class="locker-cell">
+                    <div class="locker-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg></div>
+                    <div><div class="locker-name">Green</div><div class="locker-sub">5c00…1ce7</div></div>
+                  </div>
+                </td>
+                <td>Troy Hospital · Emergency</td>
+                <td><span class="version-mono">2.2.0-rc1</span></td>
+                <td><span class="pill success"><span class="pill-dot"></span>Up to date</span></td>
+                <td><div class="progress-cell"><span style="font-size:10px;color:var(--c-success);">Updated 14 min ago</span></div></td>
+                <td>1 sec ago</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div class="locker-cell">
+                    <div class="locker-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg></div>
+                    <div><div class="locker-name">Brown</div><div class="locker-sub">5e6f…2e8c</div></div>
+                  </div>
+                </td>
+                <td>Troy Hospital · Emergency</td>
+                <td><span class="version-mono">2.2.0-rc1</span></td>
+                <td><span class="pill success"><span class="pill-dot"></span>Up to date</span></td>
+                <td><div class="progress-cell"><span style="font-size:10px;color:var(--c-success);">Updated 14 min ago</span></div></td>
+                <td>4 sec ago</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div class="locker-cell">
+                    <div class="locker-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg></div>
+                    <div><div class="locker-name">Purple</div><div class="locker-sub">2b7a…0512</div></div>
+                  </div>
+                </td>
+                <td>Troy Hospital · Emergency</td>
+                <td><span class="version-mono">2.1.23.3003</span></td>
+                <td><span class="pill danger"><span class="pill-dot"></span>Update failed</span></td>
+                <td><div class="progress-cell"><span style="font-size:10px;color:var(--c-danger);">Hardware fault · auto-retry in 30m</span></div></td>
+                <td>14 sec ago</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div class="locker-cell">
+                    <div class="locker-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg></div>
+                    <div><div class="locker-name">Red</div><div class="locker-sub">f0c5…6855</div></div>
+                  </div>
+                </td>
+                <td>Troy Hospital · Emergency</td>
+                <td><span class="version-mono">2.2.0-rc1</span></td>
+                <td><span class="pill success"><span class="pill-dot"></span>Up to date</span></td>
+                <td><div class="progress-cell"><span style="font-size:10px;color:var(--c-success);">Updated 14 min ago</span></div></td>
+                <td>5 sec ago</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div class="locker-cell">
+                    <div class="locker-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg></div>
+                    <div><div class="locker-name">ICU1</div><div class="locker-sub">0b32…028f</div></div>
+                  </div>
+                </td>
+                <td>Troy Hospital · ICU</td>
+                <td><span class="version-muted">—</span></td>
+                <td><span class="pill slate"><span class="pill-dot"></span>Not reported</span></td>
+                <td><div class="progress-cell"><span style="font-size:10px;color:var(--c-text-muted);">Last seen 47 min ago</span></div></td>
+                <td><span style="color:var(--c-danger);">47 min ago</span></td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div class="locker-cell">
+                    <div class="locker-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg></div>
+                    <div><div class="locker-name">ICU2</div><div class="locker-sub">6900…8662</div></div>
+                  </div>
+                </td>
+                <td>Troy Hospital · ICU</td>
+                <td><span class="version-mono">2.2.0-rc1</span></td>
+                <td><span class="pill success"><span class="pill-dot"></span>Up to date</span></td>
+                <td><div class="progress-cell"><span style="font-size:10px;color:var(--c-success);">Updated 2 days ago</span></div></td>
+                <td>3 sec ago</td>
+              </tr>
+
+            </tbody>
+          </table>
         </div>
-        <button class="p-button p-button-outlined p-button-sm">View detail</button>
-      </div>
 
-      <!-- KPI strip -->
-      <div class="grid grid-cols-4 gap-4">
-        <div class="p-card"><div class="p-card-body"><div class="text-xs text-slate-500 uppercase">Pending</div><div class="text-2xl font-bold mt-1 text-warning">87</div><div class="text-xs text-slate-500 mt-1">devices awaiting APK</div></div></div>
-        <div class="p-card"><div class="p-card-body"><div class="text-xs text-slate-500 uppercase">In progress</div><div class="text-2xl font-bold mt-1 text-info">12</div><div class="text-xs text-slate-500 mt-1">currently updating</div></div></div>
-        <div class="p-card"><div class="p-card-body"><div class="text-xs text-slate-500 uppercase">Failed (24h)</div><div class="text-2xl font-bold mt-1 text-danger">3</div><div class="text-xs text-slate-500 mt-1">needs investigation</div></div></div>
-        <div class="p-card"><div class="p-card-body"><div class="text-xs text-slate-500 uppercase">Up to date</div><div class="text-2xl font-bold mt-1 text-success">1,145</div><div class="text-xs text-slate-500 mt-1">92% of fleet</div></div></div>
-      </div>
+        <!-- Release timeline -->
+        <div class="timeline-card" style="margin-top:var(--s-4);">
+          <h3 class="compose-h">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+            Recent releases
+          </h3>
+          <div class="release-item">
+            <div class="release-dot info"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 17 9 11 13 15 21 7"/></svg></div>
+            <div class="release-meta">
+              <div class="release-version">v2.2.0-rc1 · <span style="color:var(--c-text-muted);font-weight:500;font-family:var(--font-mono);font-size:var(--t-11);">build 2020061</span></div>
+              <div class="release-sub">Adds Self-service mode rename · fixes "Chargable" typo · adds Order to Tracker</div>
+              <div class="release-stats"><span><strong>3</strong> sent</span><span><strong>1</strong> in progress</span><span><strong>0</strong> failed</span></div>
+            </div>
+            <div class="release-time">today · 2:14 PM</div>
+          </div>
+          <div class="release-item">
+            <div class="release-dot success"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="release-meta">
+              <div class="release-version">v2.1.23.3003</div>
+              <div class="release-sub">Hardware self-check improvements · faster sync cursor reset</div>
+              <div class="release-stats"><span><strong>9</strong> succeeded</span><span><strong>0</strong> failed</span></div>
+            </div>
+            <div class="release-time">14 days ago</div>
+          </div>
+          <div class="release-item">
+            <div class="release-dot success"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="release-meta">
+              <div class="release-version">v2.1.22.3001</div>
+              <div class="release-sub">Self-registration approval flow · branding asset compression</div>
+              <div class="release-stats"><span><strong>12</strong> succeeded</span><span><strong>0</strong> failed</span></div>
+            </div>
+            <div class="release-time">28 days ago</div>
+          </div>
+        </div>
 
-      <!-- Tabs -->
-      <div class="p-tabview">
-        <div class="p-tabview-nav-container"><div class="p-tabview-nav-content"><ul class="p-tabview-nav">
-          <li class="p-tabview-selected p-highlight"><a class="p-tabview-nav-link"><span>Locker firmware</span></a></li>
-          <li><a class="p-tabview-nav-link"><span>Device APK</span></a></li>
-          <li><a class="p-tabview-nav-link"><span>Scheduled rollouts</span></a></li>
-          <li><a class="p-tabview-nav-link"><span>Release notes</span></a></li>
-        </ul></div></div>
       </div>
-
-      <div class="p-datatable p-datatable-sm">
-        <table class="w-full bg-white rounded-lg shadow-sm overflow-hidden">
-          <thead>
-            <tr class="text-left text-xs uppercase tracking-wide text-slate-500 bg-slate-50">
-              <th class="px-4 py-3">Locker</th>
-              <th class="px-4 py-3">Location</th>
-              <th class="px-4 py-3">Current FW</th>
-              <th class="px-4 py-3">Target</th>
-              <th class="px-4 py-3">Progress</th>
-              <th class="px-4 py-3">Status</th>
-              <th class="px-4 py-3">Started</th>
-              <th class="px-4 py-3 w-8"></th>
-            </tr>
-          </thead>
-          <tbody class="text-sm divide-y divide-slate-100">
-            <tr class="hover:bg-slate-50"><td class="px-4 py-3 font-semibold">L-GR-001</td><td class="px-4 py-3">Grand Rapids</td><td class="px-4 py-3 font-mono text-xs">4.13.0</td><td class="px-4 py-3 font-mono text-xs">4.13.0</td><td class="px-4 py-3"><div class="p-progressbar w-32 h-2 bg-slate-100 rounded-full"><div class="bg-success h-full rounded-full" style="width:100%"></div></div></td><td class="px-4 py-3"><span class="p-tag p-tag-success">Complete</span></td><td class="px-4 py-3 text-slate-500">2h ago</td><td class="px-4 py-3"><i class="pi pi-ellipsis-v text-slate-400"></i></td></tr>
-            <tr class="hover:bg-slate-50"><td class="px-4 py-3 font-semibold">L-GR-002</td><td class="px-4 py-3">Grand Rapids</td><td class="px-4 py-3 font-mono text-xs">4.12.2 → <span class="text-brand">4.13.0</span></td><td class="px-4 py-3 font-mono text-xs">4.13.0</td><td class="px-4 py-3"><div class="p-progressbar w-32 h-2 bg-slate-100 rounded-full"><div class="bg-brand h-full rounded-full" style="width:68%"></div></div></td><td class="px-4 py-3"><span class="p-tag" style="background:#E0F2FE;color:#0369A1;">Installing · 68%</span></td><td class="px-4 py-3 text-slate-500">6m ago</td><td class="px-4 py-3"><i class="pi pi-ellipsis-v text-slate-400"></i></td></tr>
-            <tr class="hover:bg-slate-50"><td class="px-4 py-3 font-semibold">L-DET-001</td><td class="px-4 py-3">Detroit</td><td class="px-4 py-3 font-mono text-xs">4.12.2</td><td class="px-4 py-3 font-mono text-xs">4.13.0</td><td class="px-4 py-3"><div class="p-progressbar w-32 h-2 bg-slate-100 rounded-full"><div class="bg-warning h-full rounded-full" style="width:0%"></div></div></td><td class="px-4 py-3"><span class="p-tag p-tag-warning">Queued · Jun 18 02:00</span></td><td class="px-4 py-3 text-slate-500">—</td><td class="px-4 py-3"><i class="pi pi-ellipsis-v text-slate-400"></i></td></tr>
-            <tr class="hover:bg-slate-50"><td class="px-4 py-3 font-semibold">L-DET-002</td><td class="px-4 py-3">Detroit</td><td class="px-4 py-3 font-mono text-xs">4.11.0</td><td class="px-4 py-3 font-mono text-xs">4.13.0</td><td class="px-4 py-3"><div class="p-progressbar w-32 h-2 bg-slate-100 rounded-full"><div class="bg-danger h-full rounded-full" style="width:32%"></div></div></td><td class="px-4 py-3"><span class="p-tag p-tag-danger">Failed · Locker offline</span></td><td class="px-4 py-3 text-slate-500">3h ago</td><td class="px-4 py-3"><i class="pi pi-ellipsis-v text-slate-400"></i></td></tr>
-            <tr class="hover:bg-slate-50"><td class="px-4 py-3 font-semibold">L-LAN-001</td><td class="px-4 py-3">Lansing</td><td class="px-4 py-3 font-mono text-xs">4.13.0</td><td class="px-4 py-3 font-mono text-xs">4.13.0</td><td class="px-4 py-3"><div class="p-progressbar w-32 h-2 bg-slate-100 rounded-full"><div class="bg-success h-full rounded-full" style="width:100%"></div></div></td><td class="px-4 py-3"><span class="p-tag p-tag-success">Complete</span></td><td class="px-4 py-3 text-slate-500">yesterday</td><td class="px-4 py-3"><i class="pi pi-ellipsis-v text-slate-400"></i></td></tr>
-            <tr class="hover:bg-slate-50"><td class="px-4 py-3 font-semibold">L-LAN-002</td><td class="px-4 py-3">Lansing</td><td class="px-4 py-3 font-mono text-xs">4.12.2</td><td class="px-4 py-3 font-mono text-xs">4.13.0</td><td class="px-4 py-3"><div class="p-progressbar w-32 h-2 bg-slate-100 rounded-full"><div class="bg-slate-300 h-full rounded-full" style="width:0%"></div></div></td><td class="px-4 py-3"><span class="p-tag" style="background:#F1F5F9;color:#475569;">Scheduled · Jun 19</span></td><td class="px-4 py-3 text-slate-500">—</td><td class="px-4 py-3"><i class="pi pi-ellipsis-v text-slate-400"></i></td></tr>
-          </tbody>
-        </table>
-      </div>
-
     </main>
+
+    <!-- DRAWER: Pink8 update lifecycle -->
+    <aside class="drawer">
+      <div class="drawer-head">
+        <div class="drawer-head-row">
+          <div>
+            <h2 class="drawer-title">Pink8 — Update in progress</h2>
+            <div class="drawer-sub">5c00…b221d · update_4a8c1e</div>
+          </div>
+          <button class="drawer-close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg></button>
+        </div>
+      </div>
+
+      <div class="drawer-section">
+        <p class="drawer-h">Update status</p>
+        <span class="pill live"><span class="pill-dot"></span>Updating now · 58%</span>
+        <div style="margin-top:var(--s-3);">
+          <div class="progress-bar" style="height:8px;max-width:100%;"><div class="progress-fill" style="width:58%;"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--c-text-muted);margin-top:6px;font-variant-numeric:tabular-nums;">
+            <span>11.4 MB / 19.8 MB</span>
+            <span>~ 1m 20s remaining</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer-section">
+        <p class="drawer-h">Update lifecycle</p>
+        <div class="lifecycle">
+          <div class="lc-step done"><div class="lc-label">Command issued</div><div class="lc-time">2:14 PM · by Admin Rowe</div></div>
+          <div class="lc-step done"><div class="lc-label">Command sent to locker</div><div class="lc-time">2:14 PM</div></div>
+          <div class="lc-step done"><div class="lc-label">Download started</div><div class="lc-time">2:14 PM</div></div>
+          <div class="lc-step active"><div class="lc-label">Installing</div><div class="lc-time">in progress · 58%</div></div>
+          <div class="lc-step pending"><div class="lc-label">Verifying</div><div class="lc-time">—</div></div>
+          <div class="lc-step pending"><div class="lc-label">Restart &amp; report</div><div class="lc-time">—</div></div>
+        </div>
+      </div>
+
+      <div class="drawer-section">
+        <p class="drawer-h">Version detail</p>
+        <div class="info-row"><span class="info-label">From</span><span class="info-value mono">2.1.23.3003</span></div>
+        <div class="info-row"><span class="info-label">To</span><span class="info-value mono">2.2.0-rc1</span></div>
+        <div class="info-row"><span class="info-label">Build</span><span class="info-value mono">2020061</span></div>
+        <div class="info-row"><span class="info-label">Initiated by</span><span class="info-value">Admin Rowe</span></div>
+        <div class="info-row"><span class="info-label">Window</span><span class="info-value">Immediate</span></div>
+      </div>
+
+      <div class="drawer-actions">
+        <button class="btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 6 12 12 16 14"/></svg>Open in Tracker</button>
+        <button class="btn" style="color:var(--c-danger);"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>Cancel update</button>
+      </div>
+    </aside>
   </div>
-  <script src="pixarV2-interactivity.js"></script>
+
+  <!-- Confirm modal -->
+  <div class="modal-backdrop" id="confirmModal">
+    <div class="modal">
+      <div class="modal-head">
+        <div class="modal-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" x2="11" y1="2" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </div>
+        <div>
+          <h3 class="modal-title">Send v2.2.0-rc1 to 2 lockers?</h3>
+        </div>
+      </div>
+      <div class="modal-body">
+        <strong>Pink8</strong> and <strong>Blue34</strong> will download and install build <code style="font-family:var(--font-mono);font-size:var(--t-11);background:var(--c-surface-3);padding:1px 4px;border-radius:3px;">2020061</code>. Each takes about 5 minutes and will restart afterwards.
+        <br><br>
+        Open checkouts on these lockers will pause until the update finishes. No data is lost.
+      </div>
+      <div class="modal-foot">
+        <button class="btn" onclick="document.getElementById('confirmModal').classList.remove('open')">Cancel</button>
+        <button class="btn primary">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" x2="11" y1="2" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Send update
+        </button>
+      </div>
+    </div>
+  </div>
+
+<script src="pixarV2-interactivity.js"></script>
 </body>
 </html>
