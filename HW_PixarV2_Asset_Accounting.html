@@ -845,6 +845,361 @@
   function openUser(name) { console.log('Open user', name); }
 </script>
 
+<script>
+  // ===========================================================================
+  // Pivot sub-tab content swapping for Loss & damage / Inventory / Repair / Rules
+  // Original (first) tab keeps existing markup; other tabs get scaffolded content.
+  // ===========================================================================
+  (function() {
+    const PIVOT_CONTENT = {
+      // ============== LOSS & DAMAGE ==============
+      'pane-loss': {
+        'By department': `
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Loss & damage by department</h3><span class="card-sub">Click a department for per-user drill</span></div>
+            <table>
+              <thead><tr><th>Department</th><th>Users</th><th>Lost</th><th>Damaged</th><th>Recovered</th><th>$ This Q</th><th>$ Lifetime</th><th>Trend</th></tr></thead>
+              <tbody>
+                <tr onclick="openDept('Emergency Medicine')"><td><strong>Emergency Medicine</strong></td><td class="num">48</td><td class="num">7 ($4,193)</td><td class="num">3 ($267)</td><td class="num">1 ($85)</td><td class="num danger">$4,375</td><td class="num"><strong>$8,940</strong></td><td><span class="pill warning"><span class="pill-dot"></span>▲ +18%</span></td></tr>
+                <tr onclick="openDept('Nursing')"><td><strong>Nursing</strong></td><td class="num">96</td><td class="num">3 ($1,797)</td><td class="num">9 ($1,225)</td><td class="num">2 ($170)</td><td class="num warn">$2,852</td><td class="num"><strong>$5,610</strong></td><td><span class="pill muted"><span class="pill-dot"></span>— flat</span></td></tr>
+                <tr onclick="openDept('Security / Facilities')"><td><strong>Security / Facilities</strong></td><td class="num">22</td><td class="num">4 ($425)</td><td class="num">3 ($98)</td><td class="num">1 ($85)</td><td class="num">$438</td><td class="num"><strong>$1,290</strong></td><td><span class="pill success"><span class="pill-dot"></span>▼ -6%</span></td></tr>
+                <tr onclick="openDept('Radiology')"><td><strong>Radiology</strong></td><td class="num">31</td><td class="num">1 ($599)</td><td class="num">2 ($358)</td><td class="num">0</td><td class="num">$957</td><td class="num"><strong>$2,140</strong></td><td><span class="pill muted"><span class="pill-dot"></span>— flat</span></td></tr>
+                <tr onclick="openDept('Admin / HR')"><td><strong>Admin / HR</strong></td><td class="num">17</td><td class="num">2 ($170)</td><td class="num">0</td><td class="num">0</td><td class="num">$170</td><td class="num"><strong>$170</strong></td><td><span class="pill success"><span class="pill-dot"></span>▼ -50%</span></td></tr>
+                <tr onclick="openDept('Pharmacy')"><td><strong>Pharmacy</strong></td><td class="num">12</td><td class="num">0</td><td class="num">1 ($85)</td><td class="num">0</td><td class="num">$85</td><td class="num"><strong>$255</strong></td><td><span class="pill success"><span class="pill-dot"></span>▼ -25%</span></td></tr>
+                <tr onclick="openDept('Lab')"><td><strong>Laboratory</strong></td><td class="num">9</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">$0</td><td class="num"><strong>$0</strong></td><td><span class="pill success"><span class="pill-dot"></span>Clean</span></td></tr>
+              </tbody>
+            </table>
+            <div class="card-foot"><span>7 departments · 235 users · 14 incidents this Q</span><strong>$8,877 quarterly · $18,405 lifetime</strong></div>
+          </div>`,
+        'By location': `
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Loss & damage by location</h3><span class="card-sub">Across all lockers in each facility</span></div>
+            <table>
+              <thead><tr><th>Location</th><th>Lockers</th><th>Users</th><th>Lost</th><th>Damaged</th><th>$ This Q</th><th>Top model lost</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Troy ER</strong></td><td class="num">2</td><td class="num">68</td><td class="num">5 ($2,995)</td><td class="num">4 ($358)</td><td class="num danger">$3,353</td><td>iPhone 16e (5)</td></tr>
+                <tr><td><strong>Troy ICU</strong></td><td class="num">1</td><td class="num">42</td><td class="num">3 ($1,797)</td><td class="num">3 ($267)</td><td class="num warn">$2,064</td><td>iPhone 16e (3)</td></tr>
+                <tr><td><strong>Royal Oak Radiology</strong></td><td class="num">1</td><td class="num">31</td><td class="num">2 ($1,198)</td><td class="num">3 ($268)</td><td class="num warn">$1,466</td><td>iPhone 16e (2)</td></tr>
+                <tr><td><strong>Beaumont Main</strong></td><td class="num">3</td><td class="num">87</td><td class="num">7 ($1,210)</td><td class="num">5 ($425)</td><td class="num warn">$1,635</td><td>AiRista (4)</td></tr>
+                <tr><td><strong>HQ Lab</strong></td><td class="num">1</td><td class="num">7</td><td class="num">0</td><td class="num">1 ($66)</td><td class="num">$66</td><td class="muted">—</td></tr>
+              </tbody>
+            </table>
+            <div class="card-foot"><span>5 locations · 8 lockers · 235 users</span><strong>$8,584 this Q</strong></div>
+          </div>`,
+        'By model': `
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Loss & damage by device model</h3><span class="card-sub">Loss rate and $ impact per model</span></div>
+            <table>
+              <thead><tr><th>Model</th><th>In service</th><th>Lost</th><th>Damaged</th><th>Recovered</th><th>$ This Q</th><th>Loss rate</th><th>MTBF (return)</th></tr></thead>
+              <tbody>
+                <tr><td><strong>iPhone 16e</strong><br><span class="muted" style="font-size:10px;">Apple · $599 each</span></td><td class="num">71</td><td class="num">13 ($7,787)</td><td class="num">11 ($1,964)</td><td class="num">3 ($1,797)</td><td class="num danger">$7,954</td><td><span class="pill danger"><span class="pill-dot"></span>18.3%</span></td><td>4.2 cycles</td></tr>
+                <tr><td><strong>AiRista badge</strong><br><span class="muted" style="font-size:10px;">AiRista · $85 each</span></td><td class="num">50</td><td class="num">4 ($340)</td><td class="num">7 ($595)</td><td class="num">1 ($85)</td><td class="num warn">$850</td><td><span class="pill warning"><span class="pill-dot"></span>8.0%</span></td><td>8.1 cycles</td></tr>
+                <tr><td><strong>Pixel 8 Pro</strong><br><span class="muted" style="font-size:10px;">Google · $999 each</span></td><td class="num">4</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">$0</td><td><span class="pill success"><span class="pill-dot"></span>0%</span></td><td>—</td></tr>
+                <tr><td><strong>ChromeBook X360</strong><br><span class="muted" style="font-size:10px;">HP · $549 each</span></td><td class="num">2</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">$0</td><td><span class="pill success"><span class="pill-dot"></span>0%</span></td><td>—</td></tr>
+              </tbody>
+            </table>
+            <div class="card-foot"><span>4 models · 127 devices total</span><strong>$8,804 this Q</strong></div>
+          </div>`
+      },
+
+      // ============== INVENTORY VALUE ==============
+      'pane-inventory': {
+        'By location': `
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Value by location</h3><span class="card-sub">Aggregate value across lockers at each site</span></div>
+            <table>
+              <thead><tr><th>Location</th><th>Lockers</th><th>Bays</th><th>Devices</th><th>iPhone value</th><th>AiRista value</th><th>Other</th><th>Total value</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Beaumont Main</strong></td><td class="num">1</td><td class="num">32</td><td class="num">54</td><td class="num">$14,975</td><td class="num">$1,700</td><td class="num">$7,862</td><td class="num"><strong>$24,537</strong></td></tr>
+                <tr><td><strong>Royal Oak Radiology</strong></td><td class="num">1</td><td class="num">32</td><td class="num">32</td><td class="num">$13,178</td><td class="num">$680</td><td class="num">$1,098</td><td class="num"><strong>$14,956</strong></td></tr>
+                <tr><td><strong>HQ Lab</strong></td><td class="num">1</td><td class="num">8</td><td class="num">31</td><td class="num">$7,787</td><td class="num">$1,530</td><td class="num">$0</td><td class="num"><strong>$9,317</strong></td></tr>
+                <tr><td><strong>Troy ICU</strong></td><td class="num">1</td><td class="num">8</td><td class="num">8</td><td class="num">$3,594</td><td class="num">$170</td><td class="num">$0</td><td class="num"><strong>$3,764</strong></td></tr>
+                <tr><td><strong>Troy ER</strong></td><td class="num">1</td><td class="num">8</td><td class="num">8</td><td class="num">$2,995</td><td class="num">$170</td><td class="num">$549</td><td class="num"><strong>$3,714</strong></td></tr>
+              </tbody>
+            </table>
+            <div class="card-foot"><span>5 locations · 5 lockers · 88 bays · 133 devices</span><strong>$56,288 total</strong></div>
+          </div>`,
+        'By model': `
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Value by device model</h3><span class="card-sub">Replacement cost × units in service</span></div>
+            <table>
+              <thead><tr><th>Model</th><th>In service</th><th>In lockers</th><th>In use</th><th>In repair</th><th>Replacement cost</th><th>Total value</th><th>% of fleet $</th></tr></thead>
+              <tbody>
+                <tr><td><strong>iPhone 16e</strong><br><span class="muted" style="font-size:10px;">Apple</span></td><td class="num">71</td><td class="num">63</td><td class="num">6</td><td class="num">2</td><td class="num">$599</td><td class="num"><strong>$42,529</strong></td><td class="num">75.0%</td></tr>
+                <tr><td><strong>AiRista badge</strong><br><span class="muted" style="font-size:10px;">AiRista</span></td><td class="num">50</td><td class="num">42</td><td class="num">7</td><td class="num">1</td><td class="num">$85</td><td class="num"><strong>$4,250</strong></td><td class="num">7.5%</td></tr>
+                <tr><td><strong>Pixel 8 Pro</strong><br><span class="muted" style="font-size:10px;">Google</span></td><td class="num">4</td><td class="num">3</td><td class="num">1</td><td class="num">0</td><td class="num">$999</td><td class="num"><strong>$3,996</strong></td><td class="num">7.0%</td></tr>
+                <tr><td><strong>ChromeBook X360</strong><br><span class="muted" style="font-size:10px;">HP</span></td><td class="num">2</td><td class="num">2</td><td class="num">0</td><td class="num">0</td><td class="num">$549</td><td class="num"><strong>$1,098</strong></td><td class="num">1.9%</td></tr>
+              </tbody>
+            </table>
+            <div class="card-foot"><span>4 models · 127 active devices</span><strong>$51,873 fleet value</strong></div>
+          </div>`,
+        'Forecast & EOL': `
+          <section class="kpis" style="margin-bottom:16px;">
+            <div class="kpi"><div class="kpi-label">Reaching EOL this year</div><div class="kpi-value">14</div><div class="kpi-sub">$8,386 to replace</div></div>
+            <div class="kpi"><div class="kpi-label">Forecast spend · next 12mo</div><div class="kpi-value">$12,940</div><div class="kpi-sub">Refresh + projected loss</div></div>
+            <div class="kpi"><div class="kpi-label">Avg device age</div><div class="kpi-value">17 mo</div><div class="kpi-sub">iPhone fleet · 24mo target</div></div>
+            <div class="kpi"><div class="kpi-label">Refresh cycle</div><div class="kpi-value">36 mo</div><div class="kpi-sub">Next refresh: Q1 2027</div></div>
+          </section>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">End-of-life forecast</h3><span class="card-sub">Devices approaching refresh / replacement</span></div>
+            <table>
+              <thead><tr><th>Model</th><th>Units at EOL</th><th>EOL date</th><th>Replacement</th><th>$ Total</th><th>Budget Q</th></tr></thead>
+              <tbody>
+                <tr><td><strong>iPhone 16e (batch A)</strong></td><td class="num">12</td><td>Sep 2026</td><td>iPhone 17e</td><td class="num">$7,188</td><td>Q3 2026</td></tr>
+                <tr><td><strong>AiRista badge (v1)</strong></td><td class="num">8</td><td>Dec 2026</td><td>AiRista v2</td><td class="num">$680</td><td>Q4 2026</td></tr>
+                <tr><td><strong>ChromeBook X360</strong></td><td class="num">2</td><td>Mar 2027</td><td>Chromebook X380</td><td class="num">$1,198</td><td>Q1 2027</td></tr>
+                <tr><td><strong>iPhone 16e (batch B)</strong></td><td class="num">22</td><td>Apr 2027</td><td>iPhone 17e</td><td class="num">$13,178</td><td>Q2 2027</td></tr>
+              </tbody>
+            </table>
+            <div class="card-foot"><span>44 units across 3 model lines</span><strong>$22,244 replacement spend forecast</strong></div>
+          </div>`
+      },
+
+      // ============== REPAIR ==============
+      'pane-repair': {
+        'Pipeline': `
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Repair pipeline</h3><span class="card-sub">Stage-by-stage flow · target turnaround 5–7 days</span></div>
+            <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;padding:24px;">
+              <div style="background:var(--c-surface-3);border-radius:var(--r-md);padding:16px;text-align:center;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--c-text-muted);font-weight:600;">Intake</div><div style="font-size:32px;font-weight:700;color:var(--c-text);margin:8px 0;line-height:1;">3</div><div style="font-size:11px;color:var(--c-text-2);">Awaiting triage</div></div>
+              <div style="background:var(--c-info-soft);border-radius:var(--r-md);padding:16px;text-align:center;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--c-info);font-weight:600;">In repair</div><div style="font-size:32px;font-weight:700;color:var(--c-text);margin:8px 0;line-height:1;">3</div><div style="font-size:11px;color:var(--c-text-2);">Avg 4.2 days in stage</div></div>
+              <div style="background:var(--c-warning-soft);border-radius:var(--r-md);padding:16px;text-align:center;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--c-warning-text);font-weight:600;">QC</div><div style="font-size:32px;font-weight:700;color:var(--c-text);margin:8px 0;line-height:1;">1</div><div style="font-size:11px;color:var(--c-text-2);">Quality check</div></div>
+              <div style="background:var(--c-success-soft);border-radius:var(--r-md);padding:16px;text-align:center;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--c-success);font-weight:600;">Ready</div><div style="font-size:32px;font-weight:700;color:var(--c-text);margin:8px 0;line-height:1;">1</div><div style="font-size:11px;color:var(--c-text-2);">Ready to redeploy</div></div>
+              <div style="background:var(--c-surface-3);border-radius:var(--r-md);padding:16px;text-align:center;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--c-text-muted);font-weight:600;">Closed Q</div><div style="font-size:32px;font-weight:700;color:var(--c-text);margin:8px 0;line-height:1;">33</div><div style="font-size:11px;color:var(--c-text-2);">68% repaired</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">In-pipeline detail</h3><span class="card-sub">7 devices currently active</span></div>
+            <table>
+              <thead><tr><th>Device</th><th>Component</th><th>Stage</th><th>Days in stage</th><th>Vendor</th><th>ETA</th></tr></thead>
+              <tbody>
+                <tr><td><strong>iPhone 16e #15</strong></td><td>Screen + port</td><td><span class="pill muted"><span class="pill-dot"></span>Intake</span></td><td class="num">1d</td><td class="muted">—</td><td>Jun 14</td></tr>
+                <tr><td><strong>iPhone 16e #03</strong></td><td>Charging port</td><td><span class="pill muted"><span class="pill-dot"></span>Intake</span></td><td class="num">2d</td><td class="muted">—</td><td>Jun 13</td></tr>
+                <tr><td><strong>AiRista badge #07</strong></td><td>Strap</td><td><span class="pill muted"><span class="pill-dot"></span>Intake</span></td><td class="num">2d</td><td>In-house IT</td><td>Jun 11</td></tr>
+                <tr><td><strong>iPhone 16e #11</strong></td><td>Port + battery</td><td><span class="pill info"><span class="pill-dot"></span>In repair</span></td><td class="num">4d</td><td>TechFix Co.</td><td>Jun 12</td></tr>
+                <tr><td><strong>iPhone 16e #07</strong></td><td>Screen</td><td><span class="pill info"><span class="pill-dot"></span>In repair</span></td><td class="num">4d</td><td>TechFix Co.</td><td>Jun 12</td></tr>
+                <tr><td><strong>AiRista badge #14</strong></td><td>Battery</td><td><span class="pill warning"><span class="pill-dot"></span>QC</span></td><td class="num">1d</td><td>AiRista Direct</td><td>Jun 10</td></tr>
+                <tr><td><strong>iPhone 16e #22</strong></td><td>Screen</td><td><span class="pill success"><span class="pill-dot"></span>Ready</span></td><td class="num">2d</td><td>TechFix Co.</td><td>Today</td></tr>
+              </tbody>
+            </table>
+          </div>`,
+        'Vendors': `
+          <section class="kpis" style="margin-bottom:16px;">
+            <div class="kpi"><div class="kpi-label">Active vendors</div><div class="kpi-value">4</div><div class="kpi-sub">All under contract</div></div>
+            <div class="kpi"><div class="kpi-label">Avg turnaround</div><div class="kpi-value">5.4d</div><div class="kpi-sub">Target 7d</div></div>
+            <div class="kpi"><div class="kpi-label">Spend this Q</div><div class="kpi-value">$4,306</div><div class="kpi-sub">vs $30K replace</div></div>
+            <div class="kpi"><div class="kpi-label">Avg rating</div><div class="kpi-value success">4.5★</div><div class="kpi-sub">29 repairs this Q</div></div>
+          </section>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Repair vendors</h3><button class="btn ghost" style="font-size:11px;">+ Add vendor</button></div>
+            <table>
+              <thead><tr><th>Vendor</th><th>Models supported</th><th>Avg turnaround</th><th>Repairs this Q</th><th>Spend this Q</th><th>Rating</th><th>Contract ends</th></tr></thead>
+              <tbody>
+                <tr><td><strong>TechFix Co.</strong></td><td>iPhone 16e · Pixel 8 Pro</td><td>5–7 days</td><td class="num">18</td><td class="num">$3,481</td><td>★★★★ 4.2</td><td>Dec 2026</td></tr>
+                <tr><td><strong>AiRista Direct</strong></td><td>AiRista badges</td><td>3–5 days</td><td class="num">9</td><td class="num">$285</td><td>★★★★★ 4.8</td><td>Mar 2027</td></tr>
+                <tr><td><strong>Apple Authorized</strong></td><td>iPhone 16e</td><td>10–14 days</td><td class="num">2</td><td class="num">$540</td><td>★★★★★ 5.0</td><td>Open MSA</td></tr>
+                <tr><td><strong>In-house IT</strong></td><td>All models</td><td>1–2 days</td><td class="num">4</td><td class="num">$0</td><td class="muted">—</td><td>—</td></tr>
+              </tbody>
+            </table>
+          </div>`,
+        'Cost analytics': `
+          <section class="kpis" style="margin-bottom:16px;">
+            <div class="kpi"><div class="kpi-label">Total saved this Q</div><div class="kpi-value success">$22,654</div><div class="kpi-sub">vs replace-all</div></div>
+            <div class="kpi"><div class="kpi-label">Avg repair</div><div class="kpi-value">$142</div><div class="kpi-sub">vs $599 replace · 76% savings</div></div>
+            <div class="kpi"><div class="kpi-label">Repair rate</div><div class="kpi-value success">68%</div><div class="kpi-sub">vs 32% replaced</div></div>
+            <div class="kpi"><div class="kpi-label">Forecast next month</div><div class="kpi-value">$1,820</div><div class="kpi-sub">Based on 8-week trend</div></div>
+          </section>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Repair vs replace · last 12 weeks</h3><span class="card-sub">Cost of action by week</span></div>
+            <div style="padding:24px;">
+              <div style="display:grid;grid-template-columns:repeat(12,1fr);gap:8px;align-items:end;height:140px;">
+                <div style="background:var(--c-info);height:30%;border-radius:3px 3px 0 0;" title="Wk 1 · $89"></div>
+                <div style="background:var(--c-info);height:42%;border-radius:3px 3px 0 0;" title="Wk 2 · $142"></div>
+                <div style="background:var(--c-info);height:36%;border-radius:3px 3px 0 0;" title="Wk 3 · $98"></div>
+                <div style="background:var(--c-info);height:55%;border-radius:3px 3px 0 0;" title="Wk 4 · $268"></div>
+                <div style="background:var(--c-info);height:48%;border-radius:3px 3px 0 0;" title="Wk 5 · $179"></div>
+                <div style="background:var(--c-danger);height:78%;border-radius:3px 3px 0 0;" title="Wk 6 · $599 replace"></div>
+                <div style="background:var(--c-info);height:39%;border-radius:3px 3px 0 0;" title="Wk 7 · $154"></div>
+                <div style="background:var(--c-info);height:25%;border-radius:3px 3px 0 0;" title="Wk 8 · $25"></div>
+                <div style="background:var(--c-info);height:58%;border-radius:3px 3px 0 0;" title="Wk 9 · $342"></div>
+                <div style="background:var(--c-info);height:33%;border-radius:3px 3px 0 0;" title="Wk 10 · $89"></div>
+                <div style="background:var(--c-info);height:51%;border-radius:3px 3px 0 0;" title="Wk 11 · $179"></div>
+                <div style="background:var(--c-info);height:44%;border-radius:3px 3px 0 0;" title="Wk 12 · $142"></div>
+              </div>
+              <div style="display:flex;gap:24px;margin-top:16px;font-size:12px;color:var(--c-text-2);"><span><span class="pill-dot" style="background:var(--c-info);"></span> Repair cost · 11 weeks</span><span><span class="pill-dot" style="background:var(--c-danger);"></span> Full replacement · 1 week</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Cost by component</h3></div>
+            <table>
+              <thead><tr><th>Component</th><th>Repairs this Q</th><th>Avg cost</th><th>Total spend</th><th>Replace cost</th><th>Saved</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Screen</strong></td><td class="num">14</td><td class="num">$179</td><td class="num">$2,506</td><td class="num">$8,386</td><td class="num success"><strong>$5,880</strong></td></tr>
+                <tr><td><strong>Charging port</strong></td><td class="num">9</td><td class="num">$89</td><td class="num">$801</td><td class="num">$5,391</td><td class="num success"><strong>$4,590</strong></td></tr>
+                <tr><td><strong>Battery</strong></td><td class="num">4</td><td class="num">$54</td><td class="num">$216</td><td class="num">$2,396</td><td class="num success"><strong>$2,180</strong></td></tr>
+                <tr><td><strong>AiRista strap</strong></td><td class="num">6</td><td class="num">$12</td><td class="num">$72</td><td class="num">$510</td><td class="num success"><strong>$438</strong></td></tr>
+              </tbody>
+            </table>
+          </div>`,
+        'Component catalog': `
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Component catalog</h3><span class="card-sub">Pricing + lead times by repair component</span></div>
+            <table>
+              <thead><tr><th>Component</th><th>Compatible models</th><th>Vendor</th><th>Unit cost</th><th>Lead time</th><th>In stock</th><th>Reorder pt</th></tr></thead>
+              <tbody>
+                <tr><td><strong>iPhone 16e screen</strong></td><td>iPhone 16e</td><td>TechFix Co.</td><td class="num">$179</td><td>3–5 days</td><td class="num">4</td><td class="num">3</td></tr>
+                <tr><td><strong>iPhone 16e charging port</strong></td><td>iPhone 16e</td><td>TechFix Co.</td><td class="num">$89</td><td>2–3 days</td><td class="num">6</td><td class="num">2</td></tr>
+                <tr><td><strong>iPhone 16e battery</strong></td><td>iPhone 16e</td><td>Apple Authorized</td><td class="num">$54</td><td>5–7 days</td><td class="num">2</td><td class="num">2</td></tr>
+                <tr><td><strong>AiRista strap</strong></td><td>AiRista badge</td><td>AiRista Direct</td><td class="num">$12</td><td>1–2 days</td><td class="num">28</td><td class="num">10</td></tr>
+                <tr><td><strong>AiRista battery</strong></td><td>AiRista badge</td><td>AiRista Direct</td><td class="num">$25</td><td>3 days</td><td class="num">9</td><td class="num">5</td></tr>
+                <tr><td><strong>Pixel 8 Pro screen</strong></td><td>Pixel 8 Pro</td><td>TechFix Co.</td><td class="num">$269</td><td>7–10 days</td><td class="num">0</td><td class="num">1</td></tr>
+                <tr><td><strong>Pixel 8 Pro battery</strong></td><td>Pixel 8 Pro</td><td>TechFix Co.</td><td class="num">$78</td><td>5 days</td><td class="num">1</td><td class="num">1</td></tr>
+                <tr><td><strong>ChromeBook screen</strong></td><td>ChromeBook X360</td><td>HP Direct</td><td class="num">$148</td><td>10–14 days</td><td class="num">0</td><td class="num">1</td></tr>
+              </tbody>
+            </table>
+            <div class="card-foot"><span>8 components · 4 vendors · 50 units in stock</span><strong>$854 inventory value</strong></div>
+          </div>`
+      },
+
+      // ============== THRESHOLDS & RULES ==============
+      'pane-rules': {
+        'Department-level': `
+          <div class="rule-grid">
+            <div class="rule-card">
+              <div class="rule-head"><span class="rule-title">Email dept lead if dept loss &gt; $3K this Q</span><span class="pill success"><span class="pill-dot"></span>Active</span></div>
+              <div class="rule-desc">Send weekly digest to Dept lead when quarterly $ loss crosses threshold. Currently flagging <strong>Emergency Medicine</strong> (at $4,375).</div>
+              <div class="rule-meta">1 dept flagged · Threshold $3,000 · Window quarterly</div>
+            </div>
+            <div class="rule-card">
+              <div class="rule-head"><span class="rule-title">Disable dept checkouts after 5 incidents in 30d</span><span class="pill warning"><span class="pill-dot"></span>Soft-block</span></div>
+              <div class="rule-desc">Dept can still check out but requires VP override. Auto-clears after 30 days clean.</div>
+              <div class="rule-meta">0 depts blocked currently · Threshold 5 · Window 30 days</div>
+            </div>
+            <div class="rule-card">
+              <div class="rule-head"><span class="rule-title">Monthly $ exposure cap per dept</span><span class="pill success"><span class="pill-dot"></span>Active</span></div>
+              <div class="rule-desc">Hard cap on monthly $ replacement exposure. Triggers approval workflow.</div>
+              <div class="rule-meta">Cap $5K · 2 depts approaching · ER at 78%</div>
+            </div>
+            <div class="rule-card">
+              <div class="rule-head"><span class="rule-title">Quarterly summary to all dept leads</span><span class="pill success"><span class="pill-dot"></span>Active</span></div>
+              <div class="rule-desc">Automated quarterly performance email to each dept lead. PDF includes user-level breakdown.</div>
+              <div class="rule-meta">7 dept leads enrolled · Cadence Q-end · Next fire Jul 1</div>
+            </div>
+          </div>`,
+        'Device-level': `
+          <div class="rule-grid">
+            <div class="rule-card">
+              <div class="rule-head"><span class="rule-title">Auto-mark lost at 7 days past expected return</span><span class="pill success"><span class="pill-dot"></span>Active</span></div>
+              <div class="rule-desc">Device automatically marked Lost. Replacement cost charged to user. Last 24h: <strong>1 device</strong> auto-marked.</div>
+              <div class="rule-meta">23 devices auto-marked this Q · Threshold 7d</div>
+            </div>
+            <div class="rule-card">
+              <div class="rule-head"><span class="rule-title">Photo at return for devices &gt; $500</span><span class="pill success"><span class="pill-dot"></span>Active</span></div>
+              <div class="rule-desc">Locker camera captures device photo at return. Stored 90 days for damage disputes.</div>
+              <div class="rule-meta">Applies to iPhone 16e, Pixel 8 Pro, ChromeBook X360 · 73 devices total</div>
+            </div>
+            <div class="rule-card">
+              <div class="rule-head"><span class="rule-title">Disable bay after 3 damaged returns</span><span class="pill warning"><span class="pill-dot"></span>Active</span></div>
+              <div class="rule-desc">Bay flagged for inspection. May indicate sensor or hardware issue. Bay restored after IT review.</div>
+              <div class="rule-meta">0 bays disabled · Threshold 3 · Window 7 days</div>
+            </div>
+            <div class="rule-card">
+              <div class="rule-head"><span class="rule-title">Battery alert at &lt; 15%</span><span class="pill success"><span class="pill-dot"></span>Active</span></div>
+              <div class="rule-desc">Notify holder + queue device for swap. Applies during checkout window.</div>
+              <div class="rule-meta">3 alerts today · Threshold 15%</div>
+            </div>
+            <div class="rule-card">
+              <div class="rule-head"><span class="rule-title">Force return after 14 days continuous use</span><span class="pill muted"><span class="pill-dot"></span>Paused</span></div>
+              <div class="rule-desc">Prevents indefinite device hold. Triggers email + locker push notification.</div>
+              <div class="rule-meta">Currently paused (per IT request) · Was 14d · Last fired Apr 2026</div>
+            </div>
+          </div>`,
+        'Rule audit log': `
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Rule changes · last 90 days</h3><span class="card-sub">Who changed which rule when</span></div>
+            <div class="activity-feed" style="margin:0;border:0;border-radius:0;">
+              <div class="activity-row"><div class="activity-dot info"></div><div class="activity-meta"><div class="activity-title">"Block at 3 lost" threshold changed</div><div class="activity-sub">Admin Rowe · 4 → 3 lost devices · Window unchanged at 90 days</div><div class="activity-time">2 days ago</div></div></div>
+              <div class="activity-row"><div class="activity-dot success"></div><div class="activity-meta"><div class="activity-title">"Photo at return &gt; $500" enabled</div><div class="activity-sub">Sarah Park · Activated for iPhone 16e, Pixel 8 Pro, ChromeBook X360</div><div class="activity-time">2 weeks ago</div></div></div>
+              <div class="activity-row"><div class="activity-dot warn"></div><div class="activity-meta"><div class="activity-title">"Force return at 14d" paused</div><div class="activity-sub">Admin Rowe · IT requested pause during firmware rollout</div><div class="activity-time">3 weeks ago</div></div></div>
+              <div class="activity-row"><div class="activity-dot info"></div><div class="activity-meta"><div class="activity-title">"Dept loss &gt; $3K" notification updated</div><div class="activity-sub">Sarah Park · Added Crosby Smith as cc on ER alerts</div><div class="activity-time">5 weeks ago</div></div></div>
+              <div class="activity-row"><div class="activity-dot info"></div><div class="activity-meta"><div class="activity-title">"Email warning at 2 incidents" created</div><div class="activity-sub">Admin Rowe · New rule · Window 90 days · Tied to escalation policy v2</div><div class="activity-time">8 weeks ago</div></div></div>
+              <div class="activity-row"><div class="activity-dot danger"></div><div class="activity-meta"><div class="activity-title">"Hard block at 5 lost" deleted</div><div class="activity-sub">Admin Rowe · Replaced by softer "Block at 3 + supervisor override"</div><div class="activity-time">9 weeks ago</div></div></div>
+            </div>
+          </div>`,
+        'Notification routing': `
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Notification routing</h3><span class="card-sub">Who gets pinged for which rule fire</span></div>
+            <table>
+              <thead><tr><th>Rule</th><th>Recipients</th><th>Channel</th><th>Cadence</th><th>Last sent</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Block checkout at 3 lost</strong></td><td>Holder · Their supervisor · Admin Rowe</td><td>Email + SMS</td><td>Immediate</td><td class="num">2 min ago</td></tr>
+                <tr><td><strong>Dept loss &gt; $3K this Q</strong></td><td>Dept lead · CFO (cc)</td><td>Email</td><td>Weekly digest</td><td>Mon 8:00 AM</td></tr>
+                <tr><td><strong>Supervisor approval &gt; $500</strong></td><td>User's direct supervisor</td><td>In-app banner</td><td>Immediate</td><td>3h ago</td></tr>
+                <tr><td><strong>Email warning at 2 incidents</strong></td><td>Holder only</td><td>Email</td><td>Immediate</td><td>1d ago</td></tr>
+                <tr><td><strong>Auto-mark lost at 7d</strong></td><td>Holder · Their dept lead · Asset team</td><td>Email + In-app</td><td>Immediate</td><td>52 min ago</td></tr>
+                <tr><td><strong>Battery alert &lt; 15%</strong></td><td>Holder</td><td>Push notification</td><td>Immediate</td><td>15 min ago</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Escalation policy</h3><span class="card-sub">Who's on rotation for critical asset alerts</span></div>
+            <table>
+              <thead><tr><th>Tier</th><th>On-call</th><th>Backup</th><th>SLA</th></tr></thead>
+              <tbody>
+                <tr><td><strong>P1 · Asset blocking</strong></td><td>Admin Rowe</td><td>Sarah Park</td><td>15 min</td></tr>
+                <tr><td><strong>P2 · Dept threshold</strong></td><td>Sarah Park</td><td>—</td><td>4 hr</td></tr>
+                <tr><td><strong>P3 · Routine warning</strong></td><td>Asset team queue</td><td>—</td><td>1 business day</td></tr>
+              </tbody>
+            </table>
+          </div>`
+      }
+    };
+
+    // Wire each pivot-bar
+    document.querySelectorAll('.pivot-bar').forEach(bar => {
+      const pane = bar.closest('.tab-pane');
+      if (!pane) return;
+      const paneId = pane.id;
+      const sectionMap = PIVOT_CONTENT[paneId];
+      if (!sectionMap) return;
+
+      // Find the content area: all siblings after the pivot-bar
+      // Wrap them in a swap zone (and save original HTML)
+      let swap = pane.querySelector('.pivot-swap-zone');
+      if (!swap) {
+        swap = document.createElement('div');
+        swap.className = 'pivot-swap-zone';
+        // Move all next-siblings of pivot-bar (and the filter-bar if directly after) into swap
+        const moved = [];
+        let next = bar.nextElementSibling;
+        while (next) {
+          const m = next;
+          next = next.nextElementSibling;
+          moved.push(m);
+        }
+        bar.after(swap);
+        moved.forEach(n => swap.appendChild(n));
+        swap.dataset.originalHtml = swap.innerHTML;
+      }
+
+      bar.querySelectorAll('.pivot-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.preventDefault();
+          bar.querySelectorAll('.pivot-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const tabName = btn.textContent.trim();
+          const html = sectionMap[tabName];
+          if (html) {
+            swap.innerHTML = html;
+          } else {
+            swap.innerHTML = swap.dataset.originalHtml;
+          }
+        });
+      });
+    });
+  })();
+</script>
+
 <script src="pixarV2-interactivity.js"></script>
 </body>
 </html>
