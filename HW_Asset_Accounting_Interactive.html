@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Asset Accounting · HonestWaves · Interactive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/aura-light-blue/theme.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="hw-theme.css">
+  <style>
+    :root {
+      --c-surface:#FFFFFF; --c-surface-2:#FAFAFB; --c-surface-3:#F4F5F7;
+      --c-border:#E5E7EB; --c-border-strong:#D1D5DB; --c-divider:#EDF0F4;
+      --c-text:#0F172A; --c-text-2:#475569; --c-text-muted:#94A3B8;
+      --c-brand:#2563EB; --c-brand-soft:#EFF6FF; --c-brand-deep:#1E40AF;
+      --c-success:#10B981; --c-success-soft:#ECFDF5;
+      --c-warning:#F59E0B; --c-warning-soft:#FFFBEB; --c-warning-text:#B45309;
+      --c-danger:#EF4444; --c-danger-soft:#FEF2F2;
+      --c-info:#6366F1; --c-info-soft:#EEF2FF;
+      --c-violet:#7C3AED; --c-violet-soft:#F5F3FF;
+      --r-md:6px; --r-pill:999px;
+    }
+    body { font-family:'Inter',system-ui,sans-serif; font-size:13px; color:var(--c-text); background:var(--c-surface-2); margin:0; }
+
+    .shell { display:grid; grid-template-columns:240px 1fr; grid-template-rows:52px 1fr; grid-template-areas:'logo top' 'side main'; height:100vh; }
+    .area-logo { grid-area:logo; background:var(--c-surface); border-right:1px solid var(--c-border); border-bottom:1px solid var(--c-border); display:flex; align-items:center; padding:0 16px; gap:10px; font-weight:600; }
+    .area-logo .mark { width:28px; height:28px; border-radius:6px; background:linear-gradient(135deg,var(--c-brand),var(--c-brand-deep)); display:grid; place-items:center; color:white; font-weight:700; font-size:13px; }
+    .area-top { grid-area:top; background:var(--c-surface); border-bottom:1px solid var(--c-border); display:flex; align-items:center; padding:0 20px; gap:12px; }
+    .area-side { grid-area:side; background:var(--c-surface); border-right:1px solid var(--c-border); padding:12px 8px; overflow-y:auto; }
+    .area-main { grid-area:main; overflow-y:auto; background:var(--c-surface-2); padding:20px 24px; }
+
+    .nav-group { font-size:10px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--c-text-muted); padding:12px 12px 4px; }
+    .nav-item { display:flex; align-items:center; gap:10px; padding:7px 12px; border-radius:var(--r-md); font-size:13px; color:var(--c-text-2); cursor:pointer; }
+    .nav-item:hover { background:var(--c-surface-3); color:var(--c-text); }
+    .nav-item.active { background:var(--c-brand-soft); color:var(--c-brand-deep); font-weight:600; position:relative; }
+    .nav-item.active::before { content:''; position:absolute; left:-2px; top:8px; bottom:8px; width:2px; background:var(--c-brand); border-radius:2px; }
+    .nav-item .new-tag { margin-left:auto; background:var(--c-violet-soft); color:var(--c-violet); font-size:9px; padding:1px 5px; border-radius:3px; font-weight:700; }
+
+    .page-head { display:flex; align-items:flex-end; gap:16px; margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--c-border); }
+    .page-title { font-size:22px; font-weight:600; letter-spacing:-.015em; line-height:1.1; margin:0; }
+    .page-sub { font-size:13px; color:var(--c-text-2); margin-top:4px; }
+
+    .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+    .kpi { background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); padding:14px 16px; box-shadow:0 1px 2px rgba(15,23,42,.04); }
+    .kpi-label { font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--c-text-muted); font-weight:600; display:flex; align-items:center; gap:6px; }
+    .kpi-label-dot { width:6px; height:6px; border-radius:999px; }
+    .kpi-value { font-size:24px; font-weight:700; color:var(--c-text); line-height:1.1; margin-top:4px; }
+    .kpi-value.success { color:var(--c-success); } .kpi-value.danger { color:var(--c-danger); } .kpi-value.warn { color:var(--c-warning-text); } .kpi-value.info { color:var(--c-info); }
+    .kpi-sub { font-size:11px; color:var(--c-text-2); margin-top:4px; }
+
+    .card { background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); box-shadow:0 1px 2px rgba(15,23,42,.04); margin-bottom:16px; }
+    .card-head { padding:14px 18px; border-bottom:1px solid var(--c-border); display:flex; align-items:center; gap:10px; }
+    .card-title { font-size:14px; font-weight:600; margin:0; }
+    .card-sub { font-size:12px; color:var(--c-text-muted); }
+    .card-foot { padding:10px 18px; border-top:1px solid var(--c-border); display:flex; align-items:center; gap:10px; font-size:12px; color:var(--c-text-2); background:var(--c-surface-2); border-radius:0 0 var(--r-md) var(--r-md); }
+
+    .pivot-bar { display:flex; gap:2px; padding:4px; background:var(--c-surface-3); border-radius:var(--r-md); margin-bottom:14px; }
+    .pivot-btn { padding:6px 12px; font-size:12px; font-weight:500; color:var(--c-text-2); cursor:pointer; border-radius:4px; border:0; background:transparent; font-family:inherit; }
+    .pivot-btn.active { background:var(--c-surface); color:var(--c-text); box-shadow:0 1px 2px rgba(15,23,42,.05); font-weight:600; }
+
+    .p-button { display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 12px; font-size:12px; font-weight:500; color:var(--c-text); background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); box-shadow:0 1px 2px rgba(15,23,42,.04); cursor:pointer; font-family:inherit; }
+    .p-button:hover { background:var(--c-surface-3); border-color:var(--c-border-strong); }
+    .p-button.p-button-primary { background:var(--c-brand); color:white; border-color:var(--c-brand); }
+    .p-button.p-button-primary:hover { background:var(--c-brand-deep); border-color:var(--c-brand-deep); }
+    .p-button.p-button-text { background:transparent; border-color:transparent; box-shadow:none; color:var(--c-text-2); }
+    .p-button.p-button-text:hover { background:var(--c-surface-3); color:var(--c-text); }
+    .p-button.p-button-danger { background:var(--c-danger); color:white; border-color:var(--c-danger); }
+    .p-button.p-button-sm { height:26px; padding:0 8px; font-size:11px; }
+    .p-button.p-button-xs { height:22px; padding:0 7px; font-size:10px; gap:4px; }
+
+    .p-tag { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; padding:2px 8px; border-radius:var(--r-pill); letter-spacing:.02em; }
+    .p-tag-success { background:var(--c-success-soft); color:var(--c-success); }
+    .p-tag-warning { background:var(--c-warning-soft); color:var(--c-warning-text); }
+    .p-tag-danger { background:var(--c-danger-soft); color:var(--c-danger); }
+    .p-tag-info { background:var(--c-info-soft); color:var(--c-info); }
+    .p-tag-violet { background:var(--c-violet-soft); color:var(--c-violet); }
+    .p-tag-secondary { background:var(--c-surface-3); color:var(--c-text-2); }
+    .pill-dot { width:5px; height:5px; border-radius:999px; background:currentColor; margin-right:2px; }
+
+    table.dt { width:100%; border-collapse:collapse; }
+    table.dt thead th { background:var(--c-surface-3); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--c-text-2); padding:10px 16px; text-align:left; border-bottom:1px solid var(--c-border); }
+    table.dt tbody td { padding:11px 16px; font-size:13px; border-bottom:1px solid var(--c-divider); }
+    table.dt tbody tr:hover { background:var(--c-surface-2); }
+    table.dt .num { text-align:right; font-variant-numeric: tabular-nums; }
+    table.dt .mono { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--c-text-muted); }
+
+    .p-inputtext, .p-dropdown { height:30px; padding:0 10px; font-size:13px; border:1px solid var(--c-border); border-radius:var(--r-md); background:var(--c-surface); color:var(--c-text); outline:none; font-family:inherit; }
+    .p-dropdown { appearance:none; -webkit-appearance:none; padding-right:28px; background-image:url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748B%22%20stroke-width%3D%222%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 10px center; cursor:pointer; }
+    .p-inputtext:focus { border-color:var(--c-brand); box-shadow:0 0 0 3px var(--c-brand-soft); }
+
+    .p-dialog-mask { position:fixed; inset:0; background:rgba(15,23,42,.45); display:grid; place-items:center; z-index:9000; backdrop-filter:blur(4px); }
+    .p-dialog { background:var(--c-surface); border-radius:8px; box-shadow:0 12px 28px rgba(15,23,42,.18); width:520px; max-width:92vw; max-height:90vh; overflow:auto; }
+    .p-dialog-header { padding:16px 20px; border-bottom:1px solid var(--c-border); display:flex; align-items:center; gap:10px; }
+    .p-dialog-title { font-size:15px; font-weight:600; margin:0; }
+    .p-dialog-content { padding:20px; }
+    .p-dialog-footer { padding:12px 20px; border-top:1px solid var(--c-border); display:flex; justify-content:flex-end; gap:8px; }
+    .field { margin-bottom:14px; }
+    .field label { display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--c-text-2); margin-bottom:4px; }
+    .field input, .field select { width:100%; box-sizing:border-box; }
+    .field-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+    .p-toast { position:fixed; top:70px; right:24px; z-index:9100; display:flex; flex-direction:column; gap:8px; }
+    .p-toast-message { background:var(--c-surface); border:1px solid var(--c-border); border-left-width:4px; border-radius:6px; padding:12px 16px; box-shadow:0 8px 24px rgba(15,23,42,.12); min-width:280px; max-width:380px; display:flex; align-items:flex-start; gap:10px; animation:toastIn .15s ease-out; }
+    .p-toast-message.severity-success { border-left-color:var(--c-success); }
+    .p-toast-message.severity-warn { border-left-color:var(--c-warning); }
+    .p-toast-message.severity-error { border-left-color:var(--c-danger); }
+    .p-toast-message.severity-info { border-left-color:var(--c-info); }
+    @keyframes toastIn { from { transform:translateY(-8px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+
+    .annotation { background:linear-gradient(90deg,#1E40AF,#7C3AED); color:#fff; padding:8px 24px; font-size:12px; display:flex; align-items:center; gap:12px; }
+    .annotation .chip { background:rgba(255,255,255,.18); font-weight:600; padding:2px 8px; border-radius:var(--r-pill); font-size:10px; text-transform:uppercase; letter-spacing:.04em; }
+    .annotation button { background:rgba(255,255,255,.18); color:white; border:0; padding:4px 10px; border-radius:999px; font-size:11px; font-weight:600; cursor:pointer; }
+
+    .rec-row { display:flex; align-items:flex-start; gap:14px; padding:14px 18px; border-bottom:1px solid var(--c-divider); }
+    .rec-row:last-child { border-bottom:0; }
+    .rec-dot { width:8px; height:8px; border-radius:999px; flex-shrink:0; margin-top:6px; }
+    .rec-dot.danger { background:var(--c-danger); }
+    .rec-dot.warn { background:var(--c-warning); }
+    .rec-dot.info { background:var(--c-info); }
+    .rec-dot.success { background:var(--c-success); }
+    .rec-title { font-size:13px; font-weight:600; line-height:1.4; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+    .rec-sub { font-size:12px; color:var(--c-text-2); margin-top:3px; line-height:1.5; }
+    .rec-meta { font-size:11px; color:var(--c-text-muted); margin-top:2px; font-family:'JetBrains Mono',monospace; }
+    .rec-actions { display:flex; flex-direction:column; gap:4px; margin-left:auto; align-items:flex-end; flex-shrink:0; }
+
+    .toggle { position:relative; display:inline-block; width:32px; height:18px; }
+    .toggle input { opacity:0; width:0; height:0; }
+    .toggle-slider { position:absolute; cursor:pointer; inset:0; background-color:var(--c-border-strong); border-radius:18px; transition:.2s; }
+    .toggle-slider::before { content:''; position:absolute; height:14px; width:14px; left:2px; bottom:2px; background-color:white; border-radius:50%; transition:.2s; }
+    .toggle input:checked + .toggle-slider { background-color:var(--c-success); }
+    .toggle input:checked + .toggle-slider::before { transform:translateX(14px); }
+  </style>
+</head>
+<body>
+
+<div class="annotation">
+  <span class="chip">Interactive</span>
+  <strong>Asset Accounting · Full demo.</strong>
+  <span>Vue 3 reactivity · PrimeVue components · localStorage CRUD · all 7 panes · click recommendations, add POs, toggle rules, watch KPIs update live.</span>
+  <span style="margin-left:auto;">
+    <button id="reset-data">⟲ Reset to seed data</button>
+  </span>
+</div>
+
+<div id="app"></div>
+
+<script type="module">
+  import { createApp, ref, computed, reactive, onMounted, watch } from 'https://unpkg.com/vue@3.5.13/dist/vue.esm-browser.js';
+
+  // ========================================================================
+  // STATE — persists to localStorage
+  // ========================================================================
+  const STATE_KEY = 'hw.assetacc.v1';
+
+  function seedState() {
+    return {
+      recommendations: [
+        { id:1, scope:'Location', impact:'High',   tone:'danger',  title:'Add 4 devices to Royal Oak Radiology', sub:'Utilization trending 89% → 102% over 6 weeks · 8 morning checkouts queued in last 14 days · Prevents emergency procurement.', meta:'Confidence 92% · $1,840 saved vs rush', action:'Create PO', status:'open' },
+        { id:2, scope:'Location', impact:'Med',    tone:'warn',    title:'Relocate 3 devices from HQ Lab to Troy ER', sub:'HQ Lab at 18% utilization · Troy ER at 94%. Reallocation balances both above target band.', meta:'Confidence 88% · $1,797 capital freed', action:'Schedule move', status:'open' },
+        { id:3, scope:'Device',   impact:'Med',    tone:'warn',    title:'Service 5 devices at 90% battery cycle threshold', sub:'iPhone 16e #03, #07, #11, #15, #22 · 451–478 of 500 cycles. Battery swap $54 each vs replace $599.', meta:'Confidence 95% · $2,725 saved', action:'Batch service', status:'open' },
+        { id:4, scope:'Bay',      impact:'Low',    tone:'info',    title:'Pink8 · Bay 3 needs preventive service in 14 days', sub:'2.4× usage of peer bays · 38 checkouts/wk vs 16 avg · Lock mechanism wear trending.', meta:'Confidence 81% · Last serviced 11mo ago', action:'Add to calendar', status:'open' },
+        { id:5, scope:'Department',impact:'Low',   tone:'info',    title:'Increase ER North allocation by 6 devices', sub:'Headcount +8 last Q (HRIS sync · 32 → 40) · Current 8 devices · Recommended 14 per-head usage.', meta:'Confidence 76% · Workday cross-check', action:'Request budget', status:'open' },
+        { id:6, scope:'Device',   impact:'Forecast',tone:'success', title:'Refurbished iPhone 16e for batch B refresh — saves $4,800', sub:'Q2 2027 refresh (22 devices) · Refurb $381 vs new $599 · 4-month life delta acceptable.', meta:'Confidence 84% · 18-month TCO model', action:'Lock in plan', status:'open' },
+      ],
+      purchaseOrders: [
+        { id:'PO-4218', vendor:'Apple Authorized',    item:'iPhone 16e',                  qty:12, total_cents:718800, status:'Shipped',                expected:'Jun 14' },
+        { id:'PO-4220', vendor:'AiRista Direct',      item:'AiRista badge v2',            qty:8,  total_cents:76000,  status:'Approved · awaiting ship', expected:'Jun 18' },
+        { id:'PO-4222', vendor:'TechFix Co.',         item:'Screen + battery kits',       qty:10, total_cents:216000, status:'Vendor confirmed',       expected:'Jun 17' },
+        { id:'PO-4225', vendor:'HP Direct',           item:'ChromeBook X380',             qty:2,  total_cents:119800, status:'Pending VP approval',    expected:'—' },
+        { id:'PO-4226', vendor:'Apple Authorized',    item:'iPhone 16e refurb (test)',    qty:4,  total_cents:152400, status:'Draft',                  expected:'—' },
+      ],
+      transfers: [
+        { id:1, asset:'iPhone 16e #28', from:'HQ Lab', to:'Troy ER', reason:'Reallocation', released_by:'James Tan',  received_by:null,           status:'In transit' },
+        { id:2, asset:'iPhone 16e #29', from:'HQ Lab', to:'Troy ER', reason:'Reallocation', released_by:'James Tan',  received_by:null,           status:'In transit' },
+        { id:3, asset:'AiRista #04,06,09', from:'ICU 5N', to:'ER North', reason:'Headcount shift', released_by:'Sarah Park', received_by:'Crosby Smith', status:'Delivered May 20' },
+      ],
+      journalEntries: [
+        { id:'JE-1011', date:'Jun 11', event:'PHN-0017 marked lost',       debit:'5650 Loss on Asset',  credit:'1520 IT Equipment',  amount_cents:59900, status:'Synced QB' },
+        { id:'JE-1012', date:'Jun 11', event:'Period depreciation',         debit:'5510 Depreciation',   credit:'1521 Accum. Depr.',  amount_cents:156400,status:'Synced QB' },
+        { id:'JE-1013', date:'Jun 6',  event:'Repair invoice TechFix',     debit:'5410 Equipment Repair',credit:'2110 AP TechFix',   amount_cents:26800, status:'Synced QB' },
+        { id:'JE-1014', date:'May 28', event:'Batch battery swap',         debit:'5410 Equipment Repair',credit:'2110 AP TechFix',   amount_cents:21600, status:'Synced QB' },
+        { id:'JE-1015', date:'May 14', event:'Cost-center chargeback',     debit:'1380 ER Dept CB',     credit:'5650 Loss on Asset', amount_cents:124700,status:'Pending review' },
+      ],
+      rules: [
+        { id:1, level:'User',       title:'Block checkout after 3 lost devices',                   detail:'User cannot check out new devices until supervisor signs in.', meta:'1 blocked · 4 at warning',          active:true  },
+        { id:2, level:'User',       title:'Require supervisor approval if loss > $500',           detail:'Lifetime $ loss threshold. Approval required at next checkout.', meta:'2 users in this state',           active:true  },
+        { id:3, level:'User',       title:'Email warning at 2 incidents',                         detail:'Sends "next incident blocks your checkout privileges" with policy link.', meta:'4 users warned this Q',     active:true  },
+        { id:4, level:'Department', title:'Email dept lead if dept loss > $3K this Q',           detail:'Send weekly digest to dept lead when quarterly $ loss crosses threshold.', meta:'1 dept flagged · ER',     active:true  },
+        { id:5, level:'Department', title:'Disable dept checkouts after 5 incidents in 30d',     detail:'Dept can still check out but requires VP override.',                meta:'0 depts blocked currently',         active:true  },
+        { id:6, level:'Device',     title:'Auto-mark lost at 7 days past expected return',       detail:'Device automatically marked Lost. Replacement cost charged.', meta:'23 devices auto-marked this Q',          active:true  },
+        { id:7, level:'Device',     title:'Photo at return for devices > $500',                 detail:'Locker camera captures device photo at return. Stored 90 days.', meta:'Applies to 73 devices',                  active:true  },
+        { id:8, level:'Device',     title:'Force return after 14 days continuous use',           detail:'Prevents indefinite device hold.',                                  meta:'Paused per IT request',                      active:false },
+      ],
+      activityLog: [
+        { ts:'2 min ago', tone:'danger',  title:'Rec acted: Add 4 devices to Royal Oak Rad',         actor:'Admin Rowe' },
+        { ts:'1h ago',    tone:'success', title:'PO-4218 received · 12 of 12 verified',              actor:'Sarah Park' },
+        { ts:'3h ago',    tone:'info',    title:'JE-1015 awaiting controller review',                actor:'System' },
+        { ts:'yesterday', tone:'warn',    title:'Rule "Email at $3K" fired · ER North dept',         actor:'System' },
+      ]
+    };
+  }
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STATE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch(e) {}
+    const fresh = seedState();
+    localStorage.setItem(STATE_KEY, JSON.stringify(fresh));
+    return fresh;
+  }
+  function saveState(s) { try { localStorage.setItem(STATE_KEY, JSON.stringify(s)); } catch(e) {} }
+
+  document.getElementById('reset-data').addEventListener('click', () => {
+    if (confirm('Reset to seed data? Any changes will be lost.')) {
+      localStorage.removeItem(STATE_KEY);
+      location.reload();
+    }
+  });
+
+  const fmt = {
+    money: (cents) => '$' + (cents/100).toLocaleString('en-US', { minimumFractionDigits:0, maximumFractionDigits:0 }),
+    moneyDec: (cents) => '$' + (cents/100).toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }),
+  };
+
+  const PANES = [
+    { id:'overview',  label:'Overview',         icon:'pi-th-large', group:'Monitor' },
+    { id:'loss',      label:'Loss & damage',    icon:'pi-bolt',     group:'Operations' },
+    { id:'inventory', label:'Inventory',        icon:'pi-box',      group:'Operations' },
+    { id:'repair',    label:'Repair tracker',   icon:'pi-wrench',   group:'Operations' },
+    { id:'accounting',label:'Accounting & ERP', icon:'pi-database', group:'Finance', tag:'NEW' },
+    { id:'insights',  label:'Insights',         icon:'pi-bolt',     group:'Finance', tag:'NEW' },
+    { id:'rules',     label:'Thresholds & rules', icon:'pi-shield', group:'Policy' },
+  ];
+
+  const App = {
+    setup() {
+      const state = reactive(loadState());
+      const activePane = ref('insights');  // start on insights so user sees the differentiator
+      const toasts = ref([]);
+      const dialog = reactive({ open:false, type:null, form:{} });
+
+      // Auto-save on any mutation
+      watch(state, () => saveState(state), { deep:true });
+
+      const openRecs       = computed(() => state.recommendations.filter(r => r.status === 'open'));
+      const highImpactRecs = computed(() => openRecs.value.filter(r => r.impact === 'High').length);
+      const actedRecs      = computed(() => state.recommendations.filter(r => r.status === 'acted').length);
+      const activeRules    = computed(() => state.rules.filter(r => r.active).length);
+      const openPOs        = computed(() => state.purchaseOrders.length);
+      const poCommitted    = computed(() => state.purchaseOrders.reduce((sum, p) => sum + p.total_cents, 0));
+      const transfersInTransit = computed(() => state.transfers.filter(t => t.status === 'In transit').length);
+      const pendingJEs     = computed(() => state.journalEntries.filter(j => j.status === 'Pending review').length);
+      const syncedJEs      = computed(() => state.journalEntries.filter(j => j.status === 'Synced QB').length);
+
+      const showToast = (severity, summary, detail) => {
+        const id = Date.now() + Math.random();
+        toasts.value.push({ id, severity, summary, detail });
+        setTimeout(() => { toasts.value = toasts.value.filter(t => t.id !== id); }, 3800);
+      };
+
+      const dismissRec = (rec) => {
+        rec.status = 'dismissed';
+        showToast('info', 'Dismissed', `"${rec.title.slice(0, 40)}…"`);
+      };
+      const actOnRec = (rec) => {
+        rec.status = 'acted';
+        // Log activity
+        state.activityLog.unshift({ ts:'just now', tone:'success', title:'Acted: ' + rec.title.slice(0, 40), actor:'Admin Rowe' });
+        showToast('success', rec.action + ' triggered', rec.title.slice(0, 50));
+      };
+
+      const openAddPO = () => {
+        dialog.type = 'po';
+        dialog.form = { vendor:'', item:'', qty:1, total_cents:0, expected:'' };
+        dialog.open = true;
+      };
+      const savePO = () => {
+        if (!dialog.form.vendor || !dialog.form.item || !dialog.form.qty) {
+          showToast('error', 'Missing required fields', 'Vendor, item, qty required');
+          return;
+        }
+        const nextNum = 4229 + state.purchaseOrders.length;
+        state.purchaseOrders.unshift({
+          id: 'PO-' + nextNum,
+          vendor: dialog.form.vendor,
+          item: dialog.form.item,
+          qty: Number(dialog.form.qty),
+          total_cents: Number(dialog.form.total_cents) * 100,
+          status: 'Draft',
+          expected: dialog.form.expected || '—',
+        });
+        showToast('success', 'PO created', 'PO-' + nextNum + ' · ' + dialog.form.vendor);
+        dialog.open = false;
+      };
+
+      const openAddTransfer = () => {
+        dialog.type = 'transfer';
+        dialog.form = { asset:'', from:'', to:'', reason:'Reallocation', released_by:'Admin Rowe' };
+        dialog.open = true;
+      };
+      const saveTransfer = () => {
+        if (!dialog.form.asset || !dialog.form.from || !dialog.form.to) {
+          showToast('error', 'Missing fields', 'Asset, from, to required');
+          return;
+        }
+        state.transfers.unshift({
+          id: Date.now(),
+          asset: dialog.form.asset,
+          from: dialog.form.from,
+          to: dialog.form.to,
+          reason: dialog.form.reason,
+          released_by: dialog.form.released_by,
+          received_by: null,
+          status: 'In transit',
+        });
+        showToast('success', 'Transfer created', dialog.form.asset + ' · ' + dialog.form.from + ' → ' + dialog.form.to);
+        dialog.open = false;
+      };
+
+      const toggleRule = (rule) => {
+        rule.active = !rule.active;
+        showToast(rule.active ? 'success' : 'warn', rule.active ? 'Rule activated' : 'Rule paused', rule.title.slice(0, 50));
+      };
+
+      const reviewJE = (je) => {
+        if (je.status === 'Pending review') {
+          je.status = 'Synced QB';
+          state.activityLog.unshift({ ts:'just now', tone:'success', title:'JE ' + je.id + ' approved + synced to QuickBooks', actor:'Admin Rowe' });
+          showToast('success', 'JE approved', je.id + ' synced to QuickBooks');
+        }
+      };
+
+      return {
+        state, activePane, PANES, toasts, dialog,
+        openRecs, highImpactRecs, actedRecs, activeRules, openPOs, poCommitted, transfersInTransit, pendingJEs, syncedJEs,
+        dismissRec, actOnRec, openAddPO, savePO, openAddTransfer, saveTransfer, toggleRule, reviewJE,
+        showToast, fmt,
+      };
+    },
+    template: `
+<div class="shell">
+  <div class="area-logo">
+    <div class="mark">H</div>
+    <div>
+      <div style="font-weight:600; font-size:14px; line-height:1.1;">HonestWaves</div>
+      <div style="font-size:11px; color:var(--c-text-muted); line-height:1.1;">Asset Accounting</div>
+    </div>
+  </div>
+
+  <div class="area-top">
+    <div style="flex:1;"></div>
+    <span style="font-size:11px; font-family:'JetBrains Mono', monospace; color:var(--c-text-muted);">v.2 · interactive · Partner API mock</span>
+  </div>
+
+  <aside class="area-side">
+    <template v-for="group in ['Monitor','Operations','Finance','Policy']" :key="group">
+      <div class="nav-group">{{ group }}</div>
+      <a v-for="p in PANES.filter(x => x.group === group)" :key="p.id"
+         class="nav-item" :class="{active: activePane === p.id}"
+         @click="activePane = p.id">
+        <i :class="'pi ' + p.icon"></i>{{ p.label }}
+        <span v-if="p.tag" class="new-tag">{{ p.tag }}</span>
+      </a>
+    </template>
+  </aside>
+
+  <main class="area-main">
+
+    <!-- =================== OVERVIEW =================== -->
+    <section v-if="activePane === 'overview'">
+      <header class="page-head">
+        <div style="flex:1;">
+          <h1 class="page-title">Overview</h1>
+          <p class="page-sub">Strategic snapshot · {{ openRecs.length }} open recommendations · {{ activeRules }} active rules · {{ pendingJEs }} JE(s) pending review</p>
+        </div>
+        <button class="p-button p-button-text"><i class="pi pi-download"></i>Export</button>
+      </header>
+      <section class="kpis">
+        <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-brand);"></span>Capitalized assets</div><div class="kpi-value">$56,288</div><div class="kpi-sub">133 devices · book value</div></div>
+        <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-danger);"></span>Losses this Q</div><div class="kpi-value danger">$8,876</div><div class="kpi-sub">14 incidents</div></div>
+        <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-success);"></span>Recovered this Q</div><div class="kpi-value success">$3,210</div><div class="kpi-sub">Insights acted on</div></div>
+        <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-info);"></span>JEs auto-pushed</div><div class="kpi-value">{{ syncedJEs }}</div><div class="kpi-sub">to QuickBooks · 98% straight-through</div></div>
+      </section>
+
+      <div class="card">
+        <div class="card-head"><h3 class="card-title">Top action items right now</h3><span class="card-sub" style="margin-left:auto;">Sourced from Insights, Inventory, and Rules</span></div>
+        <table class="dt">
+          <thead><tr><th>Type</th><th>Subject</th><th>Reasoning</th><th>Impact</th><th></th></tr></thead>
+          <tbody>
+            <tr v-for="r in openRecs.slice(0, 5)" :key="'r'+r.id">
+              <td><span class="p-tag" :class="'p-tag-' + (r.tone === 'danger' ? 'danger' : r.tone === 'warn' ? 'warning' : r.tone === 'success' ? 'success' : 'info')">{{ r.scope }}</span></td>
+              <td><strong>{{ r.title }}</strong></td>
+              <td style="color:var(--c-text-2); font-size:12px;">{{ r.sub.slice(0, 80) }}…</td>
+              <td><span class="p-tag" :class="r.impact === 'High' ? 'p-tag-danger' : r.impact === 'Med' ? 'p-tag-warning' : 'p-tag-secondary'">{{ r.impact }}</span></td>
+              <td><button class="p-button p-button-text p-button-xs" @click="activePane = 'insights'">View →</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3 class="card-title">Activity feed</h3></div>
+        <div style="padding:8px 0;">
+          <div v-for="(a, i) in state.activityLog.slice(0, 8)" :key="i" style="display:flex; align-items:flex-start; gap:12px; padding:10px 18px; border-bottom:1px solid var(--c-divider);">
+            <span class="rec-dot" :class="a.tone"></span>
+            <div style="flex:1;">
+              <div style="font-size:13px;">{{ a.title }}</div>
+              <div style="font-size:11px; color:var(--c-text-muted); margin-top:2px;">{{ a.actor }} · {{ a.ts }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== INSIGHTS (predictor) =================== -->
+    <section v-if="activePane === 'insights'">
+      <header class="page-head">
+        <div style="flex:1;">
+          <h1 class="page-title">Insights <span class="p-tag p-tag-violet" style="font-size:11px; margin-left:6px; vertical-align:middle;">Predictor</span></h1>
+          <p class="page-sub">Predictive intelligence · {{ openRecs.length }} open recommendations · {{ actedRecs }} acted on this Q · {{ highImpactRecs }} high-impact</p>
+        </div>
+        <button class="p-button p-button-text"><i class="pi pi-download"></i>Export digest</button>
+        <button class="p-button p-button-primary"><i class="pi pi-bell"></i>Subscribe weekly</button>
+      </header>
+
+      <section class="kpis">
+        <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-violet);"></span>Open recommendations</div><div class="kpi-value">{{ openRecs.length }}</div><div class="kpi-sub">{{ highImpactRecs }} high-impact</div></div>
+        <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-success);"></span>$ opportunity</div><div class="kpi-value success">$8,420</div><div class="kpi-sub">If all acted on this Q</div></div>
+        <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-warning);"></span>Lifecycle risk</div><div class="kpi-value warn">11</div><div class="kpi-sub">Devices at cycle threshold</div></div>
+        <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-info);"></span>Acted this Q</div><div class="kpi-value info">{{ actedRecs }}</div><div class="kpi-sub">Captured value</div></div>
+      </section>
+
+      <div class="card">
+        <div class="card-head"><h3 class="card-title">All recommendations</h3><span class="card-sub" style="margin-left:auto;">Click action to apply · click dismiss to remove</span></div>
+        <div>
+          <div v-for="r in openRecs" :key="r.id" class="rec-row">
+            <span class="rec-dot" :class="r.tone"></span>
+            <div style="flex:1;">
+              <div class="rec-title">
+                {{ r.title }}
+                <span class="p-tag" :class="r.tone === 'danger' ? 'p-tag-danger' : r.tone === 'warn' ? 'p-tag-warning' : r.tone === 'success' ? 'p-tag-success' : 'p-tag-info'">{{ r.scope }}</span>
+                <span class="p-tag" :class="r.impact === 'High' ? 'p-tag-danger' : r.impact === 'Med' ? 'p-tag-warning' : 'p-tag-secondary'">{{ r.impact }} impact</span>
+              </div>
+              <div class="rec-sub">{{ r.sub }}</div>
+              <div class="rec-meta">{{ r.meta }}</div>
+            </div>
+            <div class="rec-actions">
+              <button class="p-button p-button-primary p-button-xs" @click="actOnRec(r)">{{ r.action }}</button>
+              <button class="p-button p-button-text p-button-xs" @click="dismissRec(r)">Dismiss</button>
+            </div>
+          </div>
+          <div v-if="openRecs.length === 0" style="text-align:center; padding:40px; color:var(--c-text-muted);">
+            <i class="pi pi-check-circle" style="font-size:32px; display:block; margin-bottom:8px; color:var(--c-success);"></i>
+            All clear · no open recommendations
+          </div>
+        </div>
+      </div>
+
+      <div class="card" v-if="actedRecs > 0">
+        <div class="card-head"><h3 class="card-title">Recently acted on this session</h3></div>
+        <table class="dt">
+          <thead><tr><th>Recommendation</th><th>Scope</th><th>Action</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr v-for="r in state.recommendations.filter(x => x.status === 'acted')" :key="'a'+r.id">
+              <td><strong>{{ r.title.slice(0, 60) }}{{ r.title.length > 60 ? '…' : '' }}</strong></td>
+              <td><span class="p-tag p-tag-info">{{ r.scope }}</span></td>
+              <td>{{ r.action }}</td>
+              <td><span class="p-tag p-tag-success">Acted</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- =================== INVENTORY =================== -->
+    <section v-if="activePane === 'inventory'">
+      <header class="page-head">
+        <div style="flex:1;">
+          <h1 class="page-title">Inventory</h1>
+          <p class="page-sub">Procurement · transfers · disposal · warranty · {{ openPOs }} open POs ({{ fmt.money(poCommitted) }}) · {{ transfersInTransit }} in transit</p>
+        </div>
+        <button class="p-button" @click="openAddTransfer"><i class="pi pi-arrow-right-arrow-left"></i>New transfer</button>
+        <button class="p-button p-button-primary" @click="openAddPO"><i class="pi pi-plus"></i>New PO</button>
+      </header>
+
+      <section class="kpis">
+        <div class="kpi"><div class="kpi-label">Open POs</div><div class="kpi-value">{{ openPOs }}</div><div class="kpi-sub">{{ fmt.money(poCommitted) }} committed</div></div>
+        <div class="kpi"><div class="kpi-label">Items on order</div><div class="kpi-value">{{ state.purchaseOrders.reduce((s,p) => s + p.qty, 0) }}</div><div class="kpi-sub">Across {{ new Set(state.purchaseOrders.map(p => p.vendor)).size }} vendors</div></div>
+        <div class="kpi"><div class="kpi-label">In transit</div><div class="kpi-value">{{ transfersInTransit }}</div><div class="kpi-sub">{{ state.transfers.length }} total this Q</div></div>
+        <div class="kpi"><div class="kpi-label">Under warranty</div><div class="kpi-value">94</div><div class="kpi-sub">of 127 devices · 74%</div></div>
+      </section>
+
+      <div class="card">
+        <div class="card-head"><h3 class="card-title">Open purchase orders</h3><span class="card-sub">{{ state.purchaseOrders.length }} POs · click status to view detail</span></div>
+        <table class="dt">
+          <thead><tr><th>PO #</th><th>Vendor</th><th>Item</th><th class="num">Qty</th><th class="num">Total</th><th>Status</th><th>Expected</th></tr></thead>
+          <tbody>
+            <tr v-for="po in state.purchaseOrders" :key="po.id">
+              <td><strong>{{ po.id }}</strong></td>
+              <td>{{ po.vendor }}</td>
+              <td>{{ po.item }}</td>
+              <td class="num">{{ po.qty }}</td>
+              <td class="num">{{ fmt.money(po.total_cents) }}</td>
+              <td><span class="p-tag" :class="po.status.includes('Shipped') ? 'p-tag-info' : po.status.includes('Approved') ? 'p-tag-warning' : po.status.includes('Draft') ? 'p-tag-secondary' : 'p-tag-warning'">{{ po.status }}</span></td>
+              <td>{{ po.expected }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3 class="card-title">Asset transfers · chain of custody</h3></div>
+        <table class="dt">
+          <thead><tr><th>Asset</th><th>From</th><th>To</th><th>Reason</th><th>Released by</th><th>Received by</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr v-for="t in state.transfers" :key="t.id">
+              <td><strong>{{ t.asset }}</strong></td>
+              <td>{{ t.from }}</td><td>{{ t.to }}</td><td>{{ t.reason }}</td>
+              <td>{{ t.released_by }}</td>
+              <td>{{ t.received_by || '—' }}</td>
+              <td><span class="p-tag" :class="t.status.includes('Delivered') ? 'p-tag-success' : 'p-tag-warning'">{{ t.status }}</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- =================== ACCOUNTING & ERP =================== -->
+    <section v-if="activePane === 'accounting'">
+      <header class="page-head">
+        <div style="flex:1;">
+          <h1 class="page-title">Accounting &amp; ERP <span class="p-tag p-tag-violet" style="font-size:11px; margin-left:6px;">NEW</span></h1>
+          <p class="page-sub">Depreciation · GL · cost centers · {{ syncedJEs }} JEs synced · {{ pendingJEs }} pending review</p>
+        </div>
+        <button class="p-button p-button-text"><i class="pi pi-download"></i>Export GL</button>
+        <button class="p-button p-button-primary"><i class="pi pi-plus"></i>Manual JE</button>
+      </header>
+
+      <section class="kpis">
+        <div class="kpi"><div class="kpi-label">Capitalized</div><div class="kpi-value">$56,288</div><div class="kpi-sub">133 devices</div></div>
+        <div class="kpi"><div class="kpi-label">YTD depreciation</div><div class="kpi-value info">$18,762</div><div class="kpi-sub">SL · book</div></div>
+        <div class="kpi"><div class="kpi-label">JEs synced to QB</div><div class="kpi-value success">{{ syncedJEs }}</div><div class="kpi-sub">98% straight-through</div></div>
+        <div class="kpi"><div class="kpi-label">Pending review</div><div class="kpi-value warn">{{ pendingJEs }}</div><div class="kpi-sub">Click row to approve</div></div>
+      </section>
+
+      <div class="card">
+        <div class="card-head"><h3 class="card-title">Recent journal entries</h3><span class="card-sub">Auto-generated from tracked events · click pending JEs to approve</span></div>
+        <table class="dt">
+          <thead><tr><th>JE</th><th>Date</th><th>Event</th><th>Debit</th><th>Credit</th><th class="num">Amount</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr v-for="je in state.journalEntries" :key="je.id" @click="reviewJE(je)" :style="{ cursor: je.status === 'Pending review' ? 'pointer' : 'default' }">
+              <td><strong>{{ je.id }}</strong></td>
+              <td>{{ je.date }}</td>
+              <td>{{ je.event }}</td>
+              <td class="mono">{{ je.debit }}</td>
+              <td class="mono">{{ je.credit }}</td>
+              <td class="num">{{ fmt.moneyDec(je.amount_cents) }}</td>
+              <td><span class="p-tag" :class="je.status === 'Synced QB' ? 'p-tag-success' : 'p-tag-warning'">{{ je.status }}</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3 class="card-title">ERP integrations</h3></div>
+        <table class="dt">
+          <thead><tr><th>System</th><th>Category</th><th>Status</th><th>Last sync</th><th>Sync direction</th></tr></thead>
+          <tbody>
+            <tr><td><strong>QuickBooks Online</strong></td><td>Accounting</td><td><span class="p-tag p-tag-success">Connected</span></td><td class="mono">4 min ago</td><td>Bi-directional</td></tr>
+            <tr><td><strong>Workday HRIS</strong></td><td>HRIS</td><td><span class="p-tag p-tag-success">Connected</span></td><td class="mono">2h ago</td><td>Inbound</td></tr>
+            <tr><td><strong>NetSuite</strong></td><td>ERP</td><td><span class="p-tag p-tag-secondary">Available</span></td><td class="mono">—</td><td>—</td></tr>
+            <tr><td><strong>SAP S/4HANA</strong></td><td>ERP</td><td><span class="p-tag p-tag-secondary">Available</span></td><td class="mono">—</td><td>—</td></tr>
+            <tr><td><strong>Sage Intacct</strong></td><td>Accounting</td><td><span class="p-tag p-tag-secondary">Available</span></td><td class="mono">—</td><td>—</td></tr>
+            <tr><td><strong>Microsoft Dynamics 365</strong></td><td>ERP</td><td><span class="p-tag p-tag-secondary">Available</span></td><td class="mono">—</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- =================== LOSS & DAMAGE =================== -->
+    <section v-if="activePane === 'loss'">
+      <header class="page-head">
+        <div style="flex:1;">
+          <h1 class="page-title">Loss &amp; damage</h1>
+          <p class="page-sub">Pivot, drill, and export · same skeleton as Inventory, Repair, and other aggregate views</p>
+        </div>
+        <button class="p-button p-button-text"><i class="pi pi-download"></i>Export</button>
+      </header>
+      <section class="kpis">
+        <div class="kpi"><div class="kpi-label">Lost YTD</div><div class="kpi-value danger">11</div><div class="kpi-sub">$8,876 replacement</div></div>
+        <div class="kpi"><div class="kpi-label">Damaged YTD</div><div class="kpi-value warn">18</div><div class="kpi-sub">$2,108 cost</div></div>
+        <div class="kpi"><div class="kpi-label">Recovered</div><div class="kpi-value success">7</div><div class="kpi-sub">$3,210 captured</div></div>
+        <div class="kpi"><div class="kpi-label">Repeat offenders</div><div class="kpi-value">3</div><div class="kpi-sub">≥ 3 incidents · blocked</div></div>
+      </section>
+      <div class="card">
+        <div class="card-head"><h3 class="card-title">High-risk users</h3><span class="card-sub">Click "Charge dept" to push a JE</span></div>
+        <table class="dt">
+          <thead><tr><th>User</th><th>Department</th><th class="num">Lost</th><th class="num">Damaged</th><th class="num">$ Lifetime</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            <tr><td><strong>Crosby Smith</strong></td><td>ER North</td><td class="num">2 ($1,198)</td><td class="num">1 ($89)</td><td class="num"><strong>$1,247</strong></td><td><span class="p-tag p-tag-danger">Blocked</span></td><td><button class="p-button p-button-xs" @click="showToast('success','Charged','Chargeback queued')">Charge dept</button></td></tr>
+            <tr><td><strong>Lauren Davis</strong></td><td>Nursing</td><td class="num">0</td><td class="num">4 ($782)</td><td class="num"><strong>$1,089</strong></td><td><span class="p-tag p-tag-warning">Approval req</span></td><td><button class="p-button p-button-xs" @click="showToast('success','Charged','Chargeback queued')">Charge dept</button></td></tr>
+            <tr><td><strong>Natashalee Vargas</strong></td><td>ER North</td><td class="num">1 ($599)</td><td class="num">0</td><td class="num"><strong>$599</strong></td><td><span class="p-tag p-tag-warning">Approval req</span></td><td><button class="p-button p-button-xs" @click="showToast('success','Charged','Chargeback queued')">Charge dept</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- =================== REPAIR =================== -->
+    <section v-if="activePane === 'repair'">
+      <header class="page-head">
+        <div style="flex:1;">
+          <h1 class="page-title">Repair tracker</h1>
+          <p class="page-sub">Queue, pipeline, vendors · charge the right amount, not $599 every time</p>
+        </div>
+        <button class="p-button p-button-primary" @click="showToast('info','Intake form','Wire to /api/devices/{id}/repairs in production')"><i class="pi pi-plus"></i>Intake device</button>
+      </header>
+      <section class="kpis">
+        <div class="kpi"><div class="kpi-label">In pipeline</div><div class="kpi-value">7</div><div class="kpi-sub">3 queued · 3 in repair · 1 ready</div></div>
+        <div class="kpi"><div class="kpi-label">Avg repair</div><div class="kpi-value">$142</div><div class="kpi-sub">vs $599 replace · 76% savings</div></div>
+        <div class="kpi"><div class="kpi-label">Repaired this Q</div><div class="kpi-value success">68%</div><div class="kpi-sub">vs 32% replaced</div></div>
+        <div class="kpi"><div class="kpi-label">Saved this Q</div><div class="kpi-value success">$22,654</div><div class="kpi-sub">vs replace-all baseline</div></div>
+      </section>
+      <div class="card">
+        <div class="card-head"><h3 class="card-title">Repair queue</h3></div>
+        <table class="dt">
+          <thead><tr><th>Device</th><th>Components</th><th>Returned by</th><th class="num">Cost est.</th><th>Stage</th><th>Vendor</th></tr></thead>
+          <tbody>
+            <tr><td><strong>iPhone 16e #15</strong></td><td>Screen + port</td><td>Lauren Davis</td><td class="num">$268</td><td><span class="p-tag p-tag-secondary">Queued</span></td><td class="mono">—</td></tr>
+            <tr><td><strong>iPhone 16e #03</strong></td><td>Charging port</td><td>Crosby Smith</td><td class="num">$89</td><td><span class="p-tag p-tag-secondary">Queued</span></td><td class="mono">—</td></tr>
+            <tr><td><strong>iPhone 16e #11</strong></td><td>Port + battery</td><td>Lauren Davis</td><td class="num">$154</td><td><span class="p-tag p-tag-info">In repair</span></td><td>TechFix Co.</td></tr>
+            <tr><td><strong>iPhone 16e #07</strong></td><td>Screen</td><td>Crosby Smith</td><td class="num">$179</td><td><span class="p-tag p-tag-info">In repair</span></td><td>TechFix Co.</td></tr>
+            <tr><td><strong>iPhone 16e #22</strong></td><td>Screen</td><td>Casandra W.</td><td class="num">$179</td><td><span class="p-tag p-tag-success">Ready</span></td><td>TechFix Co.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- =================== RULES =================== -->
+    <section v-if="activePane === 'rules'">
+      <header class="page-head">
+        <div style="flex:1;">
+          <h1 class="page-title">Thresholds &amp; rules</h1>
+          <p class="page-sub">{{ activeRules }} active of {{ state.rules.length }} · automated actions when thresholds are crossed · toggle to pause/resume</p>
+        </div>
+        <button class="p-button p-button-primary" @click="showToast('info','New rule','Wire to POST /api/rules in production')"><i class="pi pi-plus"></i>New rule</button>
+      </header>
+      <section class="kpis">
+        <div class="kpi"><div class="kpi-label">User-level</div><div class="kpi-value">{{ state.rules.filter(r => r.level === 'User' && r.active).length }}</div><div class="kpi-sub">of {{ state.rules.filter(r => r.level === 'User').length }} configured</div></div>
+        <div class="kpi"><div class="kpi-label">Dept-level</div><div class="kpi-value">{{ state.rules.filter(r => r.level === 'Department' && r.active).length }}</div><div class="kpi-sub">of {{ state.rules.filter(r => r.level === 'Department').length }} configured</div></div>
+        <div class="kpi"><div class="kpi-label">Device-level</div><div class="kpi-value">{{ state.rules.filter(r => r.level === 'Device' && r.active).length }}</div><div class="kpi-sub">of {{ state.rules.filter(r => r.level === 'Device').length }} configured</div></div>
+        <div class="kpi"><div class="kpi-label">Paused</div><div class="kpi-value warn">{{ state.rules.filter(r => !r.active).length }}</div><div class="kpi-sub">Click toggle to resume</div></div>
+      </section>
+
+      <div class="card" v-for="level in ['User','Department','Device']" :key="level">
+        <div class="card-head"><h3 class="card-title">{{ level }}-level rules</h3><span class="card-sub">{{ state.rules.filter(r => r.level === level).length }} configured</span></div>
+        <div>
+          <div v-for="rule in state.rules.filter(r => r.level === level)" :key="rule.id" class="rec-row">
+            <span class="rec-dot" :class="rule.active ? 'success' : 'warn'"></span>
+            <div style="flex:1;">
+              <div class="rec-title">{{ rule.title }}</div>
+              <div class="rec-sub">{{ rule.detail }}</div>
+              <div class="rec-meta">{{ rule.meta }}</div>
+            </div>
+            <div class="rec-actions">
+              <label class="toggle">
+                <input type="checkbox" :checked="rule.active" @change="toggleRule(rule)">
+                <span class="toggle-slider"></span>
+              </label>
+              <span class="p-tag" :class="rule.active ? 'p-tag-success' : 'p-tag-secondary'" style="margin-top:6px;">{{ rule.active ? 'Active' : 'Paused' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- =============== Dialogs =============== -->
+<div v-if="dialog.open" class="p-dialog-mask" @click.self="dialog.open = false">
+  <div class="p-dialog">
+    <header class="p-dialog-header">
+      <h3 class="p-dialog-title">{{ dialog.type === 'po' ? 'New purchase order' : 'New asset transfer' }}</h3>
+      <button class="p-button p-button-text p-button-sm" style="margin-left:auto;" @click="dialog.open = false"><i class="pi pi-times"></i></button>
+    </header>
+    <div class="p-dialog-content">
+      <template v-if="dialog.type === 'po'">
+        <div class="field-row">
+          <div class="field"><label>Vendor *</label><input class="p-inputtext" v-model="dialog.form.vendor" placeholder="Apple Authorized"></div>
+          <div class="field"><label>Expected delivery</label><input class="p-inputtext" v-model="dialog.form.expected" placeholder="Jun 20"></div>
+        </div>
+        <div class="field"><label>Item *</label><input class="p-inputtext" v-model="dialog.form.item" placeholder="iPhone 16e"></div>
+        <div class="field-row">
+          <div class="field"><label>Quantity *</label><input class="p-inputtext" type="number" v-model="dialog.form.qty" min="1"></div>
+          <div class="field"><label>Total ($)</label><input class="p-inputtext" type="number" v-model="dialog.form.total_cents" min="0" step="0.01"></div>
+        </div>
+        <div style="font-size:11px; color:var(--c-text-muted); margin-top:8px;">Maps to <code>POST /api/purchase-orders</code> in production. JE auto-generated on receipt.</div>
+      </template>
+      <template v-if="dialog.type === 'transfer'">
+        <div class="field"><label>Asset *</label><input class="p-inputtext" v-model="dialog.form.asset" placeholder="iPhone 16e #28"></div>
+        <div class="field-row">
+          <div class="field"><label>From *</label><input class="p-inputtext" v-model="dialog.form.from" placeholder="HQ Lab"></div>
+          <div class="field"><label>To *</label><input class="p-inputtext" v-model="dialog.form.to" placeholder="Troy ER"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Reason</label><select class="p-dropdown" v-model="dialog.form.reason"><option>Reallocation</option><option>Headcount shift</option><option>Pilot eval</option><option>Repair</option></select></div>
+          <div class="field"><label>Released by</label><input class="p-inputtext" v-model="dialog.form.released_by"></div>
+        </div>
+        <div style="font-size:11px; color:var(--c-text-muted); margin-top:8px;">Maps to <code>POST /api/asset-transfers</code> · chain-of-custody recorded.</div>
+      </template>
+    </div>
+    <div class="p-dialog-footer">
+      <button class="p-button p-button-text" @click="dialog.open = false">Cancel</button>
+      <button class="p-button p-button-primary" @click="dialog.type === 'po' ? savePO() : saveTransfer()"><i class="pi pi-check"></i>Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- =============== Toasts =============== -->
+<div class="p-toast">
+  <div v-for="t in toasts" :key="t.id" :class="'p-toast-message severity-' + t.severity">
+    <i :class="['pi', t.severity === 'success' ? 'pi-check-circle' : t.severity === 'error' ? 'pi-times-circle' : t.severity === 'warn' ? 'pi-exclamation-triangle' : 'pi-info-circle']"
+       :style="{ color: t.severity === 'success' ? 'var(--c-success)' : t.severity === 'error' ? 'var(--c-danger)' : t.severity === 'warn' ? 'var(--c-warning)' : 'var(--c-info)', fontSize:'16px', marginTop:'2px' }"></i>
+    <div style="flex:1;">
+      <strong>{{ t.summary }}</strong>
+      <div v-if="t.detail" style="font-size:11px; color:var(--c-text-2); margin-top:2px;">{{ t.detail }}</div>
+    </div>
+  </div>
+</div>
+    `
+  };
+
+  createApp(App).mount('#app');
+</script>
+
+</body>
+</html>
