@@ -309,6 +309,21 @@
         </div>
       </div>
 
+      <!-- Insights — 5 pivots (NEW) -->
+      <div class="sub-nav-group">
+        <div class="sub-nav-item" data-pane="insights">
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" onclick="event.stopPropagation();this.closest('.sub-nav-group').classList.toggle('expanded');"><polyline points="6 9 12 15 18 9"/></svg>
+          <svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11H5l7-9v9h4l-7 9-2-9z"/></svg>Insights<span class="l3-count" style="margin-left:auto;background:var(--c-violet-soft);color:var(--c-violet);padding:1px 4px;border-radius:3px;font-size:9px;font-weight:700;">NEW</span>
+        </div>
+        <div class="sub-nav-l3">
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Recommendations<span class="l3-count">12</span></div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Lifecycle &amp; EOL<span class="l3-count">8</span></div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Utilization patterns</div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Service calendar<span class="l3-count">6</span></div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">What-if simulator</div>
+        </div>
+      </div>
+
       <!-- Thresholds & rules — 5 pivots -->
       <div class="sub-nav-group">
         <div class="sub-nav-item" data-pane="rules">
@@ -750,6 +765,161 @@
         </div>
       </div>
 
+      <!-- ========================== INSIGHTS (USAGE PREDICTOR) ========================== -->
+      <div id="pane-insights" class="tab-pane">
+        <header class="page-head">
+          <div>
+            <h1 class="page-title">Insights <span class="pill" style="background:var(--c-violet-soft);color:var(--c-violet);font-size:11px;vertical-align:middle;margin-left:6px;"><span class="pill-dot" style="background:var(--c-violet);"></span>NEW</span></h1>
+            <p class="page-sub">Predictive intelligence · usage patterns, lifecycle forecasts, and recommended actions across bays, locations, departments, and devices</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn ghost">Export digest</button>
+            <button class="btn primary">+ Subscribe weekly</button>
+          </div>
+        </header>
+
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-violet);"></span>Open recommendations</div><div class="kpi-value">12</div><div class="kpi-sub">4 high-impact</div></div>
+          <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-success);"></span>$ opportunity</div><div class="kpi-value success">$8,420</div><div class="kpi-sub">If all acted on this Q</div></div>
+          <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-warning);"></span>Devices at lifecycle risk</div><div class="kpi-value">11</div><div class="kpi-sub">Battery / cycle threshold</div></div>
+          <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-info);"></span>Acted this Q</div><div class="kpi-value">9</div><div class="kpi-sub">$3,210 captured</div></div>
+        </section>
+
+        <div class="pivot-bar">
+          <button class="pivot-btn active">Recommendations</button>
+          <button class="pivot-btn">Lifecycle &amp; EOL</button>
+          <button class="pivot-btn">Utilization patterns</button>
+          <button class="pivot-btn">Service calendar</button>
+          <button class="pivot-btn">What-if simulator</button>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3 class="card-title">All recommendations</h3>
+            <span class="card-sub">Ranked by impact · click an item to view rationale + one-click action</span>
+          </div>
+          <div class="activity-feed" style="margin:0;border:0;border-radius:0;">
+
+            <div class="activity-row">
+              <div class="activity-dot danger"></div>
+              <div class="activity-meta">
+                <div class="activity-title">
+                  Add 4 devices to Royal Oak Radiology
+                  <span class="pill warning" style="margin-left:8px;"><span class="pill-dot"></span>Location</span>
+                  <span class="pill danger" style="margin-left:4px;"><span class="pill-dot"></span>High impact</span>
+                </div>
+                <div class="activity-sub">Utilization trending 89% → 102% over 6 weeks · 8 morning checkouts queued in last 14 days · Prevents emergency procurement in ~6 weeks. <strong>Saves $1,840 vs rush order.</strong></div>
+                <div class="activity-time">Confidence 92% · Based on 18 weeks usage data</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;margin-left:auto;">
+                <button class="btn primary" style="font-size:11px;height:24px;padding:0 10px;">Create PO</button>
+                <button class="btn ghost" style="font-size:10px;height:20px;padding:0 6px;">Dismiss</button>
+              </div>
+            </div>
+
+            <div class="activity-row">
+              <div class="activity-dot warn"></div>
+              <div class="activity-meta">
+                <div class="activity-title">
+                  Relocate 3 devices from HQ Lab to Troy ER
+                  <span class="pill info" style="margin-left:8px;"><span class="pill-dot"></span>Location</span>
+                  <span class="pill warning" style="margin-left:4px;"><span class="pill-dot"></span>Med impact</span>
+                </div>
+                <div class="activity-sub">HQ Lab at 18% utilization · Troy ER at 94%. Reallocation balances both above target band (60–85%). <strong>$1,797 capital freed without procurement.</strong></div>
+                <div class="activity-time">Confidence 88% · Includes chain-of-custody auto-generation</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;margin-left:auto;">
+                <button class="btn primary" style="font-size:11px;height:24px;padding:0 10px;">Schedule move</button>
+                <button class="btn ghost" style="font-size:10px;height:20px;padding:0 6px;">Dismiss</button>
+              </div>
+            </div>
+
+            <div class="activity-row">
+              <div class="activity-dot warn"></div>
+              <div class="activity-meta">
+                <div class="activity-title">
+                  Service 5 devices at 90% battery cycle threshold
+                  <span class="pill info" style="margin-left:8px;"><span class="pill-dot"></span>Device</span>
+                  <span class="pill warning" style="margin-left:4px;"><span class="pill-dot"></span>Med impact</span>
+                </div>
+                <div class="activity-sub">iPhone 16e #03, #07, #11, #15, #22 · Apple-rated 500 cycles, current 451–478. Battery swap $54 each vs full replace $599. <strong>$2,725 saved vs replacement.</strong></div>
+                <div class="activity-time">Confidence 95% · TechFix Co. has capacity Tue Jun 17</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;margin-left:auto;">
+                <button class="btn primary" style="font-size:11px;height:24px;padding:0 10px;">Batch service</button>
+                <button class="btn ghost" style="font-size:10px;height:20px;padding:0 6px;">Dismiss</button>
+              </div>
+            </div>
+
+            <div class="activity-row">
+              <div class="activity-dot info"></div>
+              <div class="activity-meta">
+                <div class="activity-title">
+                  Pink8 · Bay 3 needs preventive service in 14 days
+                  <span class="pill info" style="margin-left:8px;"><span class="pill-dot"></span>Bay</span>
+                  <span class="pill muted" style="margin-left:4px;"><span class="pill-dot"></span>Low impact</span>
+                </div>
+                <div class="activity-sub">2.4× usage of peer bays · 38 checkouts/wk vs 16 avg · Lock mechanism trending toward wear threshold. Service prevents 92% of likely failures.</div>
+                <div class="activity-time">Confidence 81% · Last serviced 11 months ago</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;margin-left:auto;">
+                <button class="btn primary" style="font-size:11px;height:24px;padding:0 10px;">Add to calendar</button>
+                <button class="btn ghost" style="font-size:10px;height:20px;padding:0 6px;">Dismiss</button>
+              </div>
+            </div>
+
+            <div class="activity-row">
+              <div class="activity-dot info"></div>
+              <div class="activity-meta">
+                <div class="activity-title">
+                  Increase ER North allocation by 6 devices
+                  <span class="pill info" style="margin-left:8px;"><span class="pill-dot"></span>Department</span>
+                  <span class="pill muted" style="margin-left:4px;"><span class="pill-dot"></span>Low impact</span>
+                </div>
+                <div class="activity-sub">Headcount +8 last Q (HRIS sync · 32 → 40) · Current allocation 8 devices · Recommended 14 based on per-head usage. Aligns to flu-season baseline.</div>
+                <div class="activity-time">Confidence 76% · Cross-checked with Workday</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;margin-left:auto;">
+                <button class="btn primary" style="font-size:11px;height:24px;padding:0 10px;">Request budget</button>
+                <button class="btn ghost" style="font-size:10px;height:20px;padding:0 6px;">Dismiss</button>
+              </div>
+            </div>
+
+            <div class="activity-row">
+              <div class="activity-dot success"></div>
+              <div class="activity-meta">
+                <div class="activity-title">
+                  Refurbished iPhone 16e for batch B refresh — saves $4,800
+                  <span class="pill info" style="margin-left:8px;"><span class="pill-dot"></span>Device</span>
+                  <span class="pill success" style="margin-left:4px;"><span class="pill-dot"></span>Forecast</span>
+                </div>
+                <div class="activity-sub">Q2 2027 refresh batch B (22 devices) · Refurb @ $381 vs new @ $599 · Expected life delta only 4 months given fleet usage. Net savings $4,796.</div>
+                <div class="activity-time">Confidence 84% · Compared with 18-month TCO model</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;margin-left:auto;">
+                <button class="btn primary" style="font-size:11px;height:24px;padding:0 10px;">Lock in plan</button>
+                <button class="btn ghost" style="font-size:10px;height:20px;padding:0 6px;">Dismiss</button>
+              </div>
+            </div>
+
+          </div>
+          <div class="card-foot"><span>Showing 6 of 12 recommendations</span><a class="card-link">View all →</a></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Recently acted on</h3><span class="card-sub">Insights you closed this quarter · $3,210 captured</span></div>
+          <table>
+            <thead><tr><th>Recommendation</th><th>Scope</th><th>Acted by</th><th>Action</th><th>Captured</th><th>Date</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Add 2 AiRista to Troy ICU</strong></td><td><span class="pill info"><span class="pill-dot"></span>Location</span></td><td>Sarah Park</td><td>PO #4218</td><td class="num success">$170</td><td class="muted">Jun 4</td></tr>
+              <tr><td><strong>Battery swap · 4 iPhones</strong></td><td><span class="pill info"><span class="pill-dot"></span>Device</span></td><td>Admin Rowe</td><td>TechFix · invoice $216</td><td class="num success">$2,180</td><td class="muted">May 28</td></tr>
+              <tr><td><strong>Relocate 2 devices · ICU → ER</strong></td><td><span class="pill info"><span class="pill-dot"></span>Location</span></td><td>Sarah Park</td><td>In-house move</td><td class="num success">$398</td><td class="muted">May 20</td></tr>
+              <tr><td><strong>Pink8 Bay 7 service</strong></td><td><span class="pill info"><span class="pill-dot"></span>Bay</span></td><td>James Tan</td><td>Vendor visit</td><td class="num success">$462</td><td class="muted">May 12</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- ========================== THRESHOLDS & RULES ========================== -->
       <div id="pane-rules" class="tab-pane">
         <header class="page-head">
@@ -828,6 +998,7 @@
     loss: document.getElementById('pane-loss'),
     inventory: document.getElementById('pane-inventory'),
     repair: document.getElementById('pane-repair'),
+    insights: document.getElementById('pane-insights'),
     rules: document.getElementById('pane-rules')
   };
   function showPane(name) {
@@ -1052,6 +1223,186 @@
               </tbody>
             </table>
             <div class="card-foot"><span>8 components · 4 vendors · 50 units in stock</span><strong>$854 inventory value</strong></div>
+          </div>`
+      },
+
+      // ============== INSIGHTS (USAGE PREDICTOR) ==============
+      'pane-insights': {
+        'Lifecycle & EOL': `
+          <section class="kpis">
+            <div class="kpi"><div class="kpi-label">At EOL within 90d</div><div class="kpi-value danger">8</div><div class="kpi-sub">$2,892 replacement spend</div></div>
+            <div class="kpi"><div class="kpi-label">Battery cycles consumed</div><div class="kpi-value">63%</div><div class="kpi-sub">Fleet avg · target &lt; 80%</div></div>
+            <div class="kpi"><div class="kpi-label">Predicted replacements · next Q</div><div class="kpi-value">$6,420</div><div class="kpi-sub">14 devices forecast</div></div>
+            <div class="kpi"><div class="kpi-label">Ahead-of-schedule</div><div class="kpi-value warn">5</div><div class="kpi-sub">Wearing 25%+ faster than rated</div></div>
+          </section>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Device lifecycle predictions</h3><span class="card-sub">Per-device forecast based on usage, battery health, and manufacturer rating</span></div>
+            <table>
+              <thead><tr><th>Device</th><th>Model</th><th>Age</th><th>Cycles</th><th>Predicted EOL</th><th>vs manufacturer</th><th>Recommended action</th></tr></thead>
+              <tbody>
+                <tr><td><strong>iPhone 16e #15</strong></td><td>iPhone 16e</td><td>14mo</td><td class="num">478 / 500</td><td>Aug 2026</td><td><span class="pill danger"><span class="pill-dot"></span>3mo early</span></td><td>Battery swap · $54</td></tr>
+                <tr><td><strong>iPhone 16e #22</strong></td><td>iPhone 16e</td><td>14mo</td><td class="num">472 / 500</td><td>Sep 2026</td><td><span class="pill danger"><span class="pill-dot"></span>2mo early</span></td><td>Battery swap · $54</td></tr>
+                <tr><td><strong>iPhone 16e #03</strong></td><td>iPhone 16e</td><td>13mo</td><td class="num">461 / 500</td><td>Oct 2026</td><td><span class="pill warning"><span class="pill-dot"></span>On track</span></td><td>Service Tue Jun 17</td></tr>
+                <tr><td><strong>iPhone 16e #11</strong></td><td>iPhone 16e</td><td>12mo</td><td class="num">451 / 500</td><td>Nov 2026</td><td><span class="pill warning"><span class="pill-dot"></span>On track</span></td><td>Service Tue Jun 17</td></tr>
+                <tr><td><strong>AiRista batch v1 (8)</strong></td><td>AiRista badge</td><td>22mo</td><td class="num">—</td><td>Dec 2026 EOL</td><td><span class="pill danger"><span class="pill-dot"></span>Mfr EOL</span></td><td>Migrate to v2</td></tr>
+                <tr><td><strong>Pixel 8 Pro #2</strong></td><td>Pixel 8 Pro</td><td>8mo</td><td class="num">312 / 800</td><td>Apr 2028</td><td><span class="pill danger"><span class="pill-dot"></span>30% faster wear</span></td><td>Flag for inspection</td></tr>
+                <tr><td><strong>iPhone 16e batch B (22)</strong></td><td>iPhone 16e</td><td>3mo</td><td class="num">~92 / 500</td><td>Apr 2027</td><td><span class="pill success"><span class="pill-dot"></span>On track</span></td><td>Plan refurb refresh</td></tr>
+                <tr><td><strong>ChromeBook X360 (2)</strong></td><td>ChromeBook</td><td>16mo</td><td class="num">—</td><td>Mar 2027</td><td><span class="pill warning"><span class="pill-dot"></span>Approaching EOL</span></td><td>Budget Q1 2027</td></tr>
+              </tbody>
+            </table>
+            <div class="card-foot"><span>8 devices flagged · 4 model lines</span><strong>Total $ at lifecycle risk: $5,728</strong></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Refresh calendar · next 18 months</h3><span class="card-sub">Smoothed replacement schedule to avoid budget spikes</span></div>
+            <table>
+              <thead><tr><th>Window</th><th>Devices</th><th>Reason</th><th>Refurb option</th><th>New option</th><th>Recommendation</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Q3 2026 · Sep</strong></td><td class="num">12 iPhone 16e (batch A)</td><td>EOL · 14-month cycle</td><td class="num success">$4,572</td><td class="num">$7,188</td><td>Refurb</td></tr>
+                <tr><td><strong>Q4 2026 · Dec</strong></td><td class="num">8 AiRista (v1)</td><td>Mfr EOL</td><td class="muted">—</td><td class="num">$680</td><td>New (v2)</td></tr>
+                <tr><td><strong>Q1 2027 · Mar</strong></td><td class="num">2 ChromeBook X360</td><td>EOL</td><td class="num success">$760</td><td class="num">$1,198</td><td>Refurb</td></tr>
+                <tr><td><strong>Q2 2027 · Apr</strong></td><td class="num">22 iPhone 16e (batch B)</td><td>14-month cycle</td><td class="num success">$8,382</td><td class="num">$13,178</td><td>Refurb · save $4,796</td></tr>
+              </tbody>
+            </table>
+            <div class="card-foot"><span>44 devices · 4 refresh waves</span><strong>Recommended $14,394 · vs $22,244 all-new = $7,850 saved</strong></div>
+          </div>`,
+
+        'Utilization patterns': `
+          <section class="kpis">
+            <div class="kpi"><div class="kpi-label">Fleet utilization</div><div class="kpi-value">66%</div><div class="kpi-sub">Target band 60–85%</div></div>
+            <div class="kpi"><div class="kpi-label">Above band</div><div class="kpi-value danger">2 sites</div><div class="kpi-sub">Royal Oak Rad · Troy ER</div></div>
+            <div class="kpi"><div class="kpi-label">Below band</div><div class="kpi-value warn">1 site</div><div class="kpi-sub">HQ Lab · 18%</div></div>
+            <div class="kpi"><div class="kpi-label">Peak hour load</div><div class="kpi-value">94%</div><div class="kpi-sub">Mon 7–9am · Nursing shifts</div></div>
+          </section>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Location utilization · 12 weeks</h3><span class="card-sub">Trend vs target band</span></div>
+            <table>
+              <thead><tr><th>Location</th><th>Devices</th><th>Avg util</th><th>Peak util</th><th>Trend</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Royal Oak Radiology</strong></td><td class="num">32</td><td class="num danger">94%</td><td class="num">102%</td><td><span class="pill danger"><span class="pill-dot"></span>▲ +7 pts vs 12w avg</span></td><td><span class="pill danger"><span class="pill-dot"></span>Over capacity</span></td></tr>
+                <tr><td><strong>Troy ER</strong></td><td class="num">8</td><td class="num warn">89%</td><td class="num">96%</td><td><span class="pill warning"><span class="pill-dot"></span>▲ +4 pts</span></td><td><span class="pill warning"><span class="pill-dot"></span>Near cap</span></td></tr>
+                <tr><td><strong>Beaumont Main</strong></td><td class="num">32</td><td class="num">71%</td><td class="num">84%</td><td><span class="pill muted"><span class="pill-dot"></span>— flat</span></td><td><span class="pill success"><span class="pill-dot"></span>In band</span></td></tr>
+                <tr><td><strong>Troy ICU</strong></td><td class="num">8</td><td class="num">62%</td><td class="num">78%</td><td><span class="pill muted"><span class="pill-dot"></span>— flat</span></td><td><span class="pill success"><span class="pill-dot"></span>In band</span></td></tr>
+                <tr><td><strong>HQ Lab</strong></td><td class="num">8</td><td class="num warn">18%</td><td class="num">28%</td><td><span class="pill success"><span class="pill-dot"></span>▼ -3 pts</span></td><td><span class="pill warning"><span class="pill-dot"></span>Below band</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Per-bay heatmap · top 10 bays</h3><span class="card-sub">Checkouts per week · highest first</span></div>
+            <table>
+              <thead><tr><th>Bay</th><th>Locker</th><th>Checkouts/wk</th><th>vs peers</th><th>Battery state of device</th><th>Recommendation</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Bay 3</strong></td><td>Pink8</td><td class="num">38</td><td><span class="pill danger"><span class="pill-dot"></span>2.4× peer</span></td><td class="num warn">68%</td><td>Service in 14d</td></tr>
+                <tr><td><strong>Bay 1</strong></td><td>Beaumont1</td><td class="num">31</td><td><span class="pill warning"><span class="pill-dot"></span>1.9× peer</span></td><td class="num">82%</td><td>On track</td></tr>
+                <tr><td><strong>Bay 12</strong></td><td>Blue3</td><td class="num">29</td><td><span class="pill warning"><span class="pill-dot"></span>1.8× peer</span></td><td class="num">88%</td><td>On track</td></tr>
+                <tr><td><strong>Bay 6</strong></td><td>Pink8</td><td class="num">26</td><td><span class="pill warning"><span class="pill-dot"></span>1.6× peer</span></td><td class="num warn">62%</td><td>Rotate device</td></tr>
+                <tr><td><strong>Bay 4</strong></td><td>Green1</td><td class="num">22</td><td><span class="pill muted"><span class="pill-dot"></span>1.4× peer</span></td><td class="num">75%</td><td>Monitor</td></tr>
+                <tr><td><strong>Bay 7</strong></td><td>HQ Test</td><td class="num">2</td><td><span class="pill warning"><span class="pill-dot"></span>0.1× peer</span></td><td class="num">100%</td><td>Reallocate to Troy ER</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Department patterns</h3><span class="card-sub">When and how each dept checks out</span></div>
+            <table>
+              <thead><tr><th>Department</th><th>Peak hour</th><th>Peak day</th><th>Avg duration</th><th>Headcount</th><th>Allocated devices</th><th>Recommended</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Emergency Medicine</strong></td><td>Mon 7–9am</td><td>Mon</td><td class="num">5.2h</td><td class="num">48</td><td class="num warn">8</td><td><strong class="num">14</strong></td></tr>
+                <tr><td><strong>Nursing</strong></td><td>Mon 7am</td><td>Mon</td><td class="num">7.8h</td><td class="num">96</td><td class="num">24</td><td><strong class="num">22</strong></td></tr>
+                <tr><td><strong>Security / Facilities</strong></td><td>24×7</td><td>Tue/Fri</td><td class="num">11.4h</td><td class="num">22</td><td class="num">8</td><td><strong class="num">8</strong></td></tr>
+                <tr><td><strong>Cardiology</strong></td><td>Tue 8am</td><td>Tue</td><td class="num">4.1h</td><td class="num">31</td><td class="num">10</td><td><strong class="num">9</strong></td></tr>
+                <tr><td><strong>Admin / HR</strong></td><td>Wed 9am</td><td>Wed</td><td class="num">2.0h</td><td class="num">17</td><td class="num">3</td><td><strong class="num">2</strong></td></tr>
+              </tbody>
+            </table>
+          </div>`,
+
+        'Service calendar': `
+          <section class="kpis">
+            <div class="kpi"><div class="kpi-label">This week</div><div class="kpi-value">3</div><div class="kpi-sub">Scheduled visits</div></div>
+            <div class="kpi"><div class="kpi-label">Next 30 days</div><div class="kpi-value">11</div><div class="kpi-sub">Devices + bays</div></div>
+            <div class="kpi"><div class="kpi-label">Overdue</div><div class="kpi-value danger">2</div><div class="kpi-sub">Past recommended date</div></div>
+            <div class="kpi"><div class="kpi-label">Cost-avoidance</div><div class="kpi-value success">$3,860</div><div class="kpi-sub">If all completed on time</div></div>
+          </section>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Upcoming · next 30 days</h3><span class="card-sub">Click any item to schedule or batch with others</span></div>
+            <table>
+              <thead><tr><th>Date</th><th>Subject</th><th>Type</th><th>Reason</th><th>Vendor</th><th>Est. cost</th><th></th></tr></thead>
+              <tbody>
+                <tr><td><strong>Today · Jun 11</strong></td><td>AiRista badge #14</td><td><span class="pill warning"><span class="pill-dot"></span>QC</span></td><td>Battery test post-swap</td><td>AiRista Direct</td><td class="num">$0</td><td><button class="btn ghost" style="font-size:11px;height:24px;padding:0 8px;">View</button></td></tr>
+                <tr><td><strong>Jun 13</strong></td><td>iPhone 16e #03, #07</td><td><span class="pill info"><span class="pill-dot"></span>Battery</span></td><td>Approaching 90% cycles</td><td>TechFix Co.</td><td class="num">$108</td><td><button class="btn ghost" style="font-size:11px;height:24px;padding:0 8px;">View</button></td></tr>
+                <tr><td><strong>Jun 17</strong></td><td>iPhone 16e #11, #15, #22</td><td><span class="pill info"><span class="pill-dot"></span>Battery</span></td><td>Batch with #03, #07</td><td>TechFix Co.</td><td class="num">$162</td><td><button class="btn ghost" style="font-size:11px;height:24px;padding:0 8px;">View</button></td></tr>
+                <tr><td><strong>Jun 20</strong></td><td>Pink8 · Bay 7</td><td><span class="pill info"><span class="pill-dot"></span>Bay service</span></td><td>Lock mechanism wear</td><td>In-house IT</td><td class="num">$0</td><td><button class="btn ghost" style="font-size:11px;height:24px;padding:0 8px;">View</button></td></tr>
+                <tr><td><strong>Jun 24</strong></td><td>Pink8 · Bay 3</td><td><span class="pill info"><span class="pill-dot"></span>Bay service</span></td><td>Preventive · 2.4× usage</td><td>In-house IT</td><td class="num">$0</td><td><button class="btn ghost" style="font-size:11px;height:24px;padding:0 8px;">View</button></td></tr>
+                <tr><td><strong>Jun 28</strong></td><td>Pixel 8 Pro #2</td><td><span class="pill warning"><span class="pill-dot"></span>Inspection</span></td><td>30% faster wear · root cause TBD</td><td>TechFix Co.</td><td class="num">$95</td><td><button class="btn ghost" style="font-size:11px;height:24px;padding:0 8px;">View</button></td></tr>
+                <tr><td><strong>Jul 5</strong></td><td>iPhone 16e batch A (12)</td><td><span class="pill danger"><span class="pill-dot"></span>OS update</span></td><td>iOS 18.6 security patch</td><td>In-house IT</td><td class="num">$0</td><td><button class="btn ghost" style="font-size:11px;height:24px;padding:0 8px;">View</button></td></tr>
+                <tr><td><strong>Jul 9</strong></td><td>AiRista batch v1 (8)</td><td><span class="pill warning"><span class="pill-dot"></span>EOL prep</span></td><td>Migration to v2 starts Oct</td><td>AiRista Direct</td><td class="num">$0</td><td><button class="btn ghost" style="font-size:11px;height:24px;padding:0 8px;">View</button></td></tr>
+              </tbody>
+            </table>
+            <div class="card-foot"><span>8 scheduled · 2 overdue · 1 today</span><strong>Est. spend $365 · cost-avoidance $3,860</strong></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Overdue · acting required</h3><span class="card-sub">Past recommended date · risk of failure rising</span></div>
+            <table>
+              <thead><tr><th>Subject</th><th>Recommended date</th><th>Days overdue</th><th>Risk</th><th>Recommended action</th></tr></thead>
+              <tbody>
+                <tr><td><strong>iPhone 16e #08 · battery swap</strong></td><td class="muted">May 30</td><td class="num danger">12d</td><td><span class="pill danger"><span class="pill-dot"></span>High</span></td><td>Service this week · $54</td></tr>
+                <tr><td><strong>Blue3 · Bay 18 · sensor calibration</strong></td><td class="muted">Jun 4</td><td class="num warn">7d</td><td><span class="pill warning"><span class="pill-dot"></span>Med</span></td><td>In-house · 20 min visit</td></tr>
+              </tbody>
+            </table>
+          </div>`,
+
+        'What-if simulator': `
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Scenario planner</h3><span class="card-sub">Test a change before you commit · projections based on 18 weeks of usage data</span></div>
+            <div style="padding:20px;display:grid;grid-template-columns:240px 1fr;gap:32px;">
+              <div>
+                <p class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.04em;margin:0 0 12px;">Pre-built scenarios</p>
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                  <button class="btn" style="width:100%;justify-content:flex-start;">Apply all recommendations</button>
+                  <button class="btn ghost" style="width:100%;justify-content:flex-start;">Reallocate idle → high-util</button>
+                  <button class="btn ghost" style="width:100%;justify-content:flex-start;">Refurbish refresh path</button>
+                  <button class="btn ghost" style="width:100%;justify-content:flex-start;">Headcount-driven sizing</button>
+                  <button class="btn ghost" style="width:100%;justify-content:flex-start;">Custom scenario…</button>
+                </div>
+              </div>
+              <div>
+                <p class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.04em;margin:0 0 8px;">Active scenario · Apply all recommendations</p>
+                <div style="font-size:14px;color:var(--c-text);margin-bottom:16px;">Add 4 devices to Royal Oak Rad · Relocate 3 from HQ to Troy ER · Service 5 iPhone 16e batteries · Pink8 Bay 3 preventive · ER North +6 allocation · Lock in refurb refresh Q2 2027.</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                  <div class="kpi" style="margin:0;"><div class="kpi-label">Net Q-impact</div><div class="kpi-value success">+$5,210</div><div class="kpi-sub">After service spend $3,210</div></div>
+                  <div class="kpi" style="margin:0;"><div class="kpi-label">Forecast utilization</div><div class="kpi-value">73%</div><div class="kpi-sub">Was 66% · target 60–85%</div></div>
+                  <div class="kpi" style="margin:0;"><div class="kpi-label">Devices added</div><div class="kpi-value">4</div><div class="kpi-sub">Royal Oak Rad only</div></div>
+                  <div class="kpi" style="margin:0;"><div class="kpi-label">Devices reallocated</div><div class="kpi-value">3</div><div class="kpi-sub">HQ → Troy ER</div></div>
+                  <div class="kpi" style="margin:0;"><div class="kpi-label">Risk score change</div><div class="kpi-value success">-32%</div><div class="kpi-sub">Lifecycle + capacity</div></div>
+                  <div class="kpi" style="margin:0;"><div class="kpi-label">Implementation</div><div class="kpi-value">14 days</div><div class="kpi-sub">PO + service + move</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Projected outcomes by location</h3><span class="card-sub">90 days after applying scenario</span></div>
+            <table>
+              <thead><tr><th>Location</th><th>Today · util</th><th>Today · devices</th><th>After · util</th><th>After · devices</th><th>Status change</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Royal Oak Radiology</strong></td><td class="num danger">94%</td><td class="num">32</td><td class="num success">79%</td><td class="num">36</td><td><span class="pill success"><span class="pill-dot"></span>Over → In band</span></td></tr>
+                <tr><td><strong>Troy ER</strong></td><td class="num warn">89%</td><td class="num">8</td><td class="num success">76%</td><td class="num">11</td><td><span class="pill success"><span class="pill-dot"></span>Near → In band</span></td></tr>
+                <tr><td><strong>HQ Lab</strong></td><td class="num warn">18%</td><td class="num">8</td><td class="num">42%</td><td class="num">5</td><td><span class="pill warning"><span class="pill-dot"></span>Below → Closer to band</span></td></tr>
+                <tr><td><strong>Beaumont Main</strong></td><td class="num">71%</td><td class="num">32</td><td class="num">71%</td><td class="num">32</td><td><span class="pill muted"><span class="pill-dot"></span>No change</span></td></tr>
+                <tr><td><strong>Troy ICU</strong></td><td class="num">62%</td><td class="num">8</td><td class="num">62%</td><td class="num">8</td><td><span class="pill muted"><span class="pill-dot"></span>No change</span></td></tr>
+              </tbody>
+            </table>
+            <div class="card-foot"><span>3 of 5 locations shift toward target band</span><strong>Fleet util · 66% → 73%</strong></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Risk register · with vs without scenario</h3></div>
+            <table>
+              <thead><tr><th>Risk</th><th>Today</th><th>After scenario</th><th>Delta</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Capacity stockout · Royal Oak Rad</strong></td><td><span class="pill danger"><span class="pill-dot"></span>High</span></td><td><span class="pill success"><span class="pill-dot"></span>Low</span></td><td class="num success">-42 pts</td></tr>
+                <tr><td><strong>Battery failure · iPhone 16e batch A</strong></td><td><span class="pill warning"><span class="pill-dot"></span>Med</span></td><td><span class="pill success"><span class="pill-dot"></span>Low</span></td><td class="num success">-28 pts</td></tr>
+                <tr><td><strong>Idle capital · HQ Lab</strong></td><td><span class="pill warning"><span class="pill-dot"></span>Med</span></td><td><span class="pill success"><span class="pill-dot"></span>Low</span></td><td class="num success">-22 pts</td></tr>
+                <tr><td><strong>Pink8 Bay 3 mechanism failure</strong></td><td><span class="pill warning"><span class="pill-dot"></span>Med</span></td><td><span class="pill success"><span class="pill-dot"></span>Low</span></td><td class="num success">-18 pts</td></tr>
+              </tbody>
+            </table>
+            <div class="card-foot"><span>Overall risk score</span><strong class="success">68 → 36 (-32 pts · -47%)</strong></div>
           </div>`
       },
 
