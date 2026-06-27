@@ -1,0 +1,1228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Asset Accounting · HonestWaves · Interactive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/aura-light-blue/theme.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="hw-theme.css">
+<style>
+:root {
+  --c-surface:#FFFFFF; --c-surface-2:#FAFAFB; --c-surface-3:#F4F5F7;
+  --c-border:#E5E7EB; --c-border-strong:#D1D5DB; --c-divider:#EDF0F4;
+  --c-text:#0F172A; --c-text-2:#475569; --c-text-muted:#94A3B8;
+  --c-brand:#2563EB; --c-brand-soft:#EFF6FF; --c-brand-deep:#1E40AF;
+  --c-success:#10B981; --c-success-soft:#ECFDF5;
+  --c-warning:#F59E0B; --c-warning-soft:#FFFBEB; --c-warning-text:#B45309;
+  --c-danger:#EF4444; --c-danger-soft:#FEF2F2;
+  --c-info:#6366F1; --c-info-soft:#EEF2FF;
+  --c-violet:#7C3AED; --c-violet-soft:#F5F3FF;
+  --r-md:6px; --r-pill:999px;
+}
+body { font-family:'Inter',system-ui,sans-serif; font-size:13px; color:var(--c-text); background:var(--c-surface-2); margin:0; }
+.shell { display:grid; grid-template-columns:240px 1fr; grid-template-rows:52px 1fr; grid-template-areas:'logo top' 'side main'; height:100vh; }
+.area-logo { grid-area:logo; background:var(--c-surface); border-right:1px solid var(--c-border); border-bottom:1px solid var(--c-border); display:flex; align-items:center; padding:0 16px; gap:10px; font-weight:600; }
+.area-logo .mark { width:28px; height:28px; border-radius:6px; background:linear-gradient(135deg,var(--c-brand),var(--c-brand-deep)); display:grid; place-items:center; color:white; font-weight:700; font-size:13px; }
+.area-top { grid-area:top; background:var(--c-surface); border-bottom:1px solid var(--c-border); display:flex; align-items:center; padding:0 20px; gap:12px; }
+.area-side { grid-area:side; background:var(--c-surface); border-right:1px solid var(--c-border); padding:12px 8px; overflow-y:auto; }
+.area-main { grid-area:main; overflow-y:auto; background:var(--c-surface-2); padding:20px 24px; }
+.nav-group { font-size:10px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--c-text-muted); padding:12px 12px 4px; }
+.nav-item { display:flex; align-items:center; gap:10px; padding:7px 12px; border-radius:var(--r-md); font-size:13px; color:var(--c-text-2); cursor:pointer; }
+.nav-item:hover { background:var(--c-surface-3); color:var(--c-text); }
+.nav-item.active { background:var(--c-brand-soft); color:var(--c-brand-deep); font-weight:600; position:relative; }
+.nav-item.active::before { content:''; position:absolute; left:-2px; top:8px; bottom:8px; width:2px; background:var(--c-brand); border-radius:2px; }
+.nav-item .new-tag { margin-left:auto; background:var(--c-violet-soft); color:var(--c-violet); font-size:9px; padding:1px 5px; border-radius:3px; font-weight:700; }
+.page-head { display:flex; align-items:flex-end; gap:16px; margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--c-border); }
+.page-title { font-size:22px; font-weight:600; letter-spacing:-.015em; line-height:1.1; margin:0; }
+.page-sub { font-size:13px; color:var(--c-text-2); margin-top:4px; }
+.kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+.kpis-5 { grid-template-columns:repeat(5,1fr); }
+.kpi { background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); padding:14px 16px; box-shadow:0 1px 2px rgba(15,23,42,.04); }
+.kpi-label { font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--c-text-muted); font-weight:600; display:flex; align-items:center; gap:6px; }
+.kpi-label-dot { width:6px; height:6px; border-radius:999px; }
+.kpi-value { font-size:24px; font-weight:700; color:var(--c-text); line-height:1.1; margin-top:4px; }
+.kpi-value.success { color:var(--c-success); } .kpi-value.danger { color:var(--c-danger); } .kpi-value.warn { color:var(--c-warning-text); } .kpi-value.info { color:var(--c-info); }
+.kpi-sub { font-size:11px; color:var(--c-text-2); margin-top:4px; }
+.card { background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); box-shadow:0 1px 2px rgba(15,23,42,.04); margin-bottom:16px; }
+.card-head { padding:14px 18px; border-bottom:1px solid var(--c-border); display:flex; align-items:center; gap:10px; }
+.card-title { font-size:14px; font-weight:600; margin:0; }
+.card-sub { font-size:12px; color:var(--c-text-muted); }
+.card-foot { padding:10px 18px; border-top:1px solid var(--c-border); display:flex; align-items:center; gap:10px; font-size:12px; color:var(--c-text-2); background:var(--c-surface-2); border-radius:0 0 var(--r-md) var(--r-md); }
+.pivot-bar { display:flex; flex-wrap:wrap; gap:2px; padding:4px; background:var(--c-surface-3); border-radius:var(--r-md); margin-bottom:14px; width:fit-content; }
+.pivot-btn { padding:6px 12px; font-size:12px; font-weight:500; color:var(--c-text-2); cursor:pointer; border-radius:4px; border:0; background:transparent; font-family:inherit; }
+.pivot-btn.active { background:var(--c-surface); color:var(--c-text); box-shadow:0 1px 2px rgba(15,23,42,.05); font-weight:600; }
+.p-button { display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 12px; font-size:12px; font-weight:500; color:var(--c-text); background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); box-shadow:0 1px 2px rgba(15,23,42,.04); cursor:pointer; font-family:inherit; }
+.p-button:hover { background:var(--c-surface-3); border-color:var(--c-border-strong); }
+.p-button.p-button-primary { background:var(--c-brand); color:white; border-color:var(--c-brand); }
+.p-button.p-button-primary:hover { background:var(--c-brand-deep); border-color:var(--c-brand-deep); }
+.p-button.p-button-text { background:transparent; border-color:transparent; box-shadow:none; color:var(--c-text-2); }
+.p-button.p-button-text:hover { background:var(--c-surface-3); color:var(--c-text); }
+.p-button.p-button-danger { background:var(--c-danger); color:white; border-color:var(--c-danger); }
+.p-button.p-button-sm { height:26px; padding:0 8px; font-size:11px; }
+.p-button.p-button-xs { height:22px; padding:0 7px; font-size:10px; gap:4px; }
+.p-tag { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; padding:2px 8px; border-radius:var(--r-pill); letter-spacing:.02em; }
+.p-tag-success { background:var(--c-success-soft); color:var(--c-success); }
+.p-tag-warning { background:var(--c-warning-soft); color:var(--c-warning-text); }
+.p-tag-danger { background:var(--c-danger-soft); color:var(--c-danger); }
+.p-tag-info { background:var(--c-info-soft); color:var(--c-info); }
+.p-tag-violet { background:var(--c-violet-soft); color:var(--c-violet); }
+.p-tag-secondary { background:var(--c-surface-3); color:var(--c-text-2); }
+.pill-dot { width:5px; height:5px; border-radius:999px; background:currentColor; margin-right:2px; }
+table.dt { width:100%; border-collapse:collapse; }
+table.dt thead th { background:var(--c-surface-3); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--c-text-2); padding:10px 16px; text-align:left; border-bottom:1px solid var(--c-border); }
+table.dt tbody td { padding:11px 16px; font-size:13px; border-bottom:1px solid var(--c-divider); }
+table.dt tbody tr:hover { background:var(--c-surface-2); }
+table.dt .num { text-align:right; font-variant-numeric:tabular-nums; }
+table.dt .mono { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--c-text-muted); }
+.p-inputtext, .p-dropdown { height:30px; padding:0 10px; font-size:13px; border:1px solid var(--c-border); border-radius:var(--r-md); background:var(--c-surface); color:var(--c-text); outline:none; font-family:inherit; }
+.p-dropdown { appearance:none; -webkit-appearance:none; padding-right:28px; background-image:url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748B%22%20stroke-width%3D%222%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 10px center; cursor:pointer; }
+.p-inputtext:focus { border-color:var(--c-brand); box-shadow:0 0 0 3px var(--c-brand-soft); }
+.p-dialog-mask { position:fixed; inset:0; background:rgba(15,23,42,.45); display:grid; place-items:center; z-index:9000; backdrop-filter:blur(4px); }
+.p-dialog { background:var(--c-surface); border-radius:8px; box-shadow:0 12px 28px rgba(15,23,42,.18); width:520px; max-width:92vw; max-height:90vh; overflow:auto; }
+.p-dialog-header { padding:16px 20px; border-bottom:1px solid var(--c-border); display:flex; align-items:center; gap:10px; }
+.p-dialog-title { font-size:15px; font-weight:600; margin:0; }
+.p-dialog-content { padding:20px; }
+.p-dialog-footer { padding:12px 20px; border-top:1px solid var(--c-border); display:flex; justify-content:flex-end; gap:8px; }
+.field { margin-bottom:14px; }
+.field label { display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--c-text-2); margin-bottom:4px; }
+.field input, .field select { width:100%; box-sizing:border-box; }
+.field-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.p-toast { position:fixed; top:70px; right:24px; z-index:9100; display:flex; flex-direction:column; gap:8px; }
+.p-toast-message { background:var(--c-surface); border:1px solid var(--c-border); border-left-width:4px; border-radius:6px; padding:12px 16px; box-shadow:0 8px 24px rgba(15,23,42,.12); min-width:280px; max-width:380px; display:flex; align-items:flex-start; gap:10px; animation:toastIn .15s ease-out; }
+.p-toast-message.severity-success { border-left-color:var(--c-success); }
+.p-toast-message.severity-warn { border-left-color:var(--c-warning); }
+.p-toast-message.severity-error { border-left-color:var(--c-danger); }
+.p-toast-message.severity-info { border-left-color:var(--c-info); }
+@keyframes toastIn { from { transform:translateY(-8px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+.annotation { background:linear-gradient(90deg,#1E40AF,#7C3AED); color:#fff; padding:8px 24px; font-size:12px; display:flex; align-items:center; gap:12px; }
+.annotation .chip { background:rgba(255,255,255,.18); font-weight:600; padding:2px 8px; border-radius:var(--r-pill); font-size:10px; text-transform:uppercase; letter-spacing:.04em; }
+.annotation button { background:rgba(255,255,255,.18); color:white; border:0; padding:4px 10px; border-radius:999px; font-size:11px; font-weight:600; cursor:pointer; }
+.rec-row { display:flex; align-items:flex-start; gap:14px; padding:14px 18px; border-bottom:1px solid var(--c-divider); }
+.rec-row:last-child { border-bottom:0; }
+.rec-dot { width:8px; height:8px; border-radius:999px; flex-shrink:0; margin-top:6px; }
+.rec-dot.danger { background:var(--c-danger); }
+.rec-dot.warn { background:var(--c-warning); }
+.rec-dot.info { background:var(--c-info); }
+.rec-dot.success { background:var(--c-success); }
+.rec-title { font-size:13px; font-weight:600; line-height:1.4; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.rec-sub { font-size:12px; color:var(--c-text-2); margin-top:3px; line-height:1.5; }
+.rec-meta { font-size:11px; color:var(--c-text-muted); margin-top:2px; font-family:'JetBrains Mono',monospace; }
+.rec-actions { display:flex; flex-direction:column; gap:4px; margin-left:auto; align-items:flex-end; flex-shrink:0; }
+.toggle { position:relative; display:inline-block; width:32px; height:18px; }
+.toggle input { opacity:0; width:0; height:0; }
+.toggle-slider { position:absolute; cursor:pointer; inset:0; background-color:var(--c-border-strong); border-radius:18px; transition:.2s; }
+.toggle-slider::before { content:''; position:absolute; height:14px; width:14px; left:2px; bottom:2px; background-color:white; border-radius:50%; transition:.2s; }
+.toggle input:checked + .toggle-slider { background-color:var(--c-success); }
+.toggle input:checked + .toggle-slider::before { transform:translateX(14px); }
+.scenario-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:18px; }
+.scenario-stat { background:var(--c-surface-2); border:1px solid var(--c-border); border-radius:6px; padding:12px; }
+.scenario-stat-label { font-size:10px; text-transform:uppercase; letter-spacing:.04em; color:var(--c-text-muted); font-weight:600; }
+.scenario-stat-value { font-size:18px; font-weight:700; margin-top:4px; }
+.scenario-stat-sub { font-size:10px; color:var(--c-text-muted); margin-top:2px; }
+</style>
+</head>
+<body>
+
+<div class="annotation">
+  <span class="chip">Interactive</span>
+  <strong>Asset Accounting · Full demo.</strong>
+  <span>Vue 3 + PrimeVue · 7 panes · 38 sub-tabs · localStorage CRUD · dismiss recs, add POs, toggle rules, approve JEs — watch KPIs update live.</span>
+  <span style="margin-left:auto;"><button id="reset-data">⟲ Reset to seed data</button></span>
+</div>
+
+<div id="app"></div>
+
+<script type="module">
+import { createApp, ref, computed, reactive, onMounted, watch } from 'https://unpkg.com/vue@3.5.13/dist/vue.esm-browser.js';
+
+const STATE_KEY = 'hw.assetacc.v2';
+
+function seedState() { return {
+  recommendations: [
+    { id:1, scope:'Location', impact:'High', tone:'danger', title:'Add 4 devices to Royal Oak Radiology', sub:'Utilization trending 89% → 102% over 6 weeks · 8 morning checkouts queued in last 14 days · Prevents emergency procurement.', meta:'Confidence 92% · $1,840 saved vs rush', action:'Create PO', status:'open' },
+    { id:2, scope:'Location', impact:'Med', tone:'warn', title:'Relocate 3 devices from HQ Lab to Troy ER', sub:'HQ Lab at 18% utilization · Troy ER at 94%. Reallocation balances both above target band.', meta:'Confidence 88% · $1,797 capital freed', action:'Schedule move', status:'open' },
+    { id:3, scope:'Device', impact:'Med', tone:'warn', title:'Service 5 devices at 90% battery cycle threshold', sub:'iPhone 16e #03, #07, #11, #15, #22 · 451–478 of 500 cycles. Battery swap $54 each vs replace $599.', meta:'Confidence 95% · $2,725 saved', action:'Batch service', status:'open' },
+    { id:4, scope:'Bay', impact:'Low', tone:'info', title:'Pink8 · Bay 3 needs preventive service in 14 days', sub:'2.4× usage of peer bays · 38 checkouts/wk vs 16 avg · Lock mechanism wear trending.', meta:'Confidence 81% · Last serviced 11mo ago', action:'Add to calendar', status:'open' },
+    { id:5, scope:'Department', impact:'Low', tone:'info', title:'Increase ER North allocation by 6 devices', sub:'Headcount +8 last Q (HRIS sync · 32 → 40) · Current 8 devices · Recommended 14 per-head usage.', meta:'Confidence 76% · Workday cross-check', action:'Request budget', status:'open' },
+    { id:6, scope:'Device', impact:'Forecast', tone:'success', title:'Refurbished iPhone 16e for batch B refresh — saves $4,800', sub:'Q2 2027 refresh (22 devices) · Refurb $381 vs new $599 · 4-month life delta acceptable.', meta:'Confidence 84% · 18-month TCO model', action:'Lock in plan', status:'open' },
+  ],
+  purchaseOrders: [
+    { id:'PO-4218', vendor:'Apple Authorized', item:'iPhone 16e', qty:12, total_cents:718800, status:'Shipped', expected:'Jun 14' },
+    { id:'PO-4220', vendor:'AiRista Direct', item:'AiRista badge v2', qty:8, total_cents:76000, status:'Approved · awaiting ship', expected:'Jun 18' },
+    { id:'PO-4222', vendor:'TechFix Co.', item:'Screen + battery kits', qty:10, total_cents:216000, status:'Vendor confirmed', expected:'Jun 17' },
+    { id:'PO-4225', vendor:'HP Direct', item:'ChromeBook X380', qty:2, total_cents:119800, status:'Pending VP approval', expected:'—' },
+    { id:'PO-4226', vendor:'Apple Authorized', item:'iPhone 16e refurb (test)', qty:4, total_cents:152400, status:'Draft', expected:'—' },
+  ],
+  transfers: [
+    { id:1, asset:'iPhone 16e #28', from:'HQ Lab', to:'Troy ER', reason:'Reallocation', released_by:'James Tan', received_by:null, status:'In transit' },
+    { id:2, asset:'iPhone 16e #29', from:'HQ Lab', to:'Troy ER', reason:'Reallocation', released_by:'James Tan', received_by:null, status:'In transit' },
+    { id:3, asset:'AiRista #04,06,09', from:'ICU 5N', to:'ER North', reason:'Headcount shift', released_by:'Sarah Park', received_by:'Crosby Smith', status:'Delivered May 20' },
+  ],
+  journalEntries: [
+    { id:'JE-1011', date:'Jun 11', event:'PHN-0017 marked lost', debit:'5650 Loss on Asset', credit:'1520 IT Equipment', amount_cents:59900, status:'Synced QB' },
+    { id:'JE-1012', date:'Jun 11', event:'Period depreciation', debit:'5510 Depreciation', credit:'1521 Accum. Depr.', amount_cents:156400, status:'Synced QB' },
+    { id:'JE-1013', date:'Jun 6', event:'Repair invoice TechFix', debit:'5410 Equipment Repair', credit:'2110 AP TechFix', amount_cents:26800, status:'Synced QB' },
+    { id:'JE-1014', date:'May 28', event:'Batch battery swap', debit:'5410 Equipment Repair', credit:'2110 AP TechFix', amount_cents:21600, status:'Synced QB' },
+    { id:'JE-1015', date:'May 14', event:'Cost-center chargeback', debit:'1380 ER Dept CB', credit:'5650 Loss on Asset', amount_cents:124700, status:'Pending review' },
+  ],
+  rules: [
+    { id:1, level:'User', title:'Block checkout after 3 lost devices', detail:'User cannot check out new devices until supervisor signs in.', meta:'1 blocked · 4 at warning', active:true },
+    { id:2, level:'User', title:'Require supervisor approval if loss > $500', detail:'Lifetime $ loss threshold. Approval required at next checkout.', meta:'2 users in this state', active:true },
+    { id:3, level:'User', title:'Email warning at 2 incidents', detail:'Sends "next incident blocks your checkout privileges" with policy link.', meta:'4 users warned this Q', active:true },
+    { id:4, level:'Department', title:'Email dept lead if dept loss > $3K this Q', detail:'Send weekly digest to dept lead when quarterly $ loss crosses threshold.', meta:'1 dept flagged · ER', active:true },
+    { id:5, level:'Department', title:'Disable dept checkouts after 5 incidents in 30d', detail:'Dept can still check out but requires VP override.', meta:'0 depts blocked currently', active:true },
+    { id:6, level:'Device', title:'Auto-mark lost at 7 days past expected return', detail:'Device automatically marked Lost. Replacement cost charged.', meta:'23 devices auto-marked this Q', active:true },
+    { id:7, level:'Device', title:'Photo at return for devices > $500', detail:'Locker camera captures device photo at return. Stored 90 days.', meta:'Applies to 73 devices', active:true },
+    { id:8, level:'Device', title:'Force return after 14 days continuous use', detail:'Prevents indefinite device hold.', meta:'Paused per IT request', active:false },
+  ],
+  scenarioApplied: false,
+  activityLog: [
+    { ts:'2 min ago', tone:'danger', title:'Rec acted: Add 4 devices to Royal Oak Rad', actor:'Admin Rowe' },
+    { ts:'1h ago', tone:'success', title:'PO-4218 received · 12 of 12 verified', actor:'Sarah Park' },
+    { ts:'3h ago', tone:'info', title:'JE-1015 awaiting controller review', actor:'System' },
+    { ts:'yesterday', tone:'warn', title:'Rule "Email at $3K" fired · ER North dept', actor:'System' },
+  ]
+}; }
+
+function loadState() {
+  try { const raw = localStorage.getItem(STATE_KEY); if (raw) return JSON.parse(raw); } catch(e) {}
+  const fresh = seedState(); localStorage.setItem(STATE_KEY, JSON.stringify(fresh)); return fresh;
+}
+function saveState(s) { try { localStorage.setItem(STATE_KEY, JSON.stringify(s)); } catch(e) {} }
+
+document.getElementById('reset-data').addEventListener('click', () => {
+  if (confirm('Reset to seed data? Any changes will be lost.')) { localStorage.removeItem(STATE_KEY); location.reload(); }
+});
+
+const fmt = {
+  money: (cents) => '$' + Math.round(cents/100).toLocaleString('en-US'),
+  moneyDec: (cents) => '$' + (cents/100).toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }),
+};
+
+const PANES = [
+  { id:'overview', label:'Overview', icon:'pi-th-large', group:'Monitor' },
+  { id:'loss', label:'Loss & damage', icon:'pi-bolt', group:'Operations' },
+  { id:'inventory', label:'Inventory', icon:'pi-box', group:'Operations' },
+  { id:'repair', label:'Repair tracker', icon:'pi-wrench', group:'Operations' },
+  { id:'accounting', label:'Accounting & ERP', icon:'pi-database', group:'Finance', tag:'NEW' },
+  { id:'insights', label:'Insights', icon:'pi-chart-line', group:'Finance', tag:'NEW' },
+  { id:'rules', label:'Thresholds & rules', icon:'pi-shield', group:'Policy' },
+];
+
+const SUBTABS = {
+  loss: ['By user', 'By department', 'By location', 'By model'],
+  inventory: ['By locker', 'By location', 'By model', 'Forecast & EOL', 'Procurement', 'Transfers & disposal', 'Warranty & audits'],
+  repair: ['Queue', 'Pipeline', 'Vendors', 'Cost analytics', 'Component catalog'],
+  accounting: ['Depreciation', 'GL & journal entries', 'Cost centers', 'Budget vs actual', 'ERP integrations', 'Period close'],
+  insights: ['Recommendations', 'Lifecycle & EOL', 'Utilization patterns', 'Service calendar', 'What-if simulator'],
+  rules: ['User-level', 'Department-level', 'Device-level', 'Rule audit log', 'Notification routing'],
+};
+
+const App = {
+  setup() {
+    const state = reactive(loadState());
+    const activePane = ref('insights');
+    const subtab = reactive({ loss:'By user', inventory:'By locker', repair:'Queue', accounting:'Depreciation', insights:'Recommendations', rules:'User-level' });
+    const toasts = ref([]);
+    const dialog = reactive({ open:false, type:null, form:{} });
+    watch(state, () => saveState(state), { deep:true });
+
+    const openRecs = computed(() => state.recommendations.filter(r => r.status === 'open'));
+    const highImpactRecs = computed(() => openRecs.value.filter(r => r.impact === 'High').length);
+    const actedRecs = computed(() => state.recommendations.filter(r => r.status === 'acted').length);
+    const activeRules = computed(() => state.rules.filter(r => r.active).length);
+    const openPOs = computed(() => state.purchaseOrders.length);
+    const poCommitted = computed(() => state.purchaseOrders.reduce((s,p) => s + p.total_cents, 0));
+    const transfersInTransit = computed(() => state.transfers.filter(t => t.status === 'In transit').length);
+    const pendingJEs = computed(() => state.journalEntries.filter(j => j.status === 'Pending review').length);
+    const syncedJEs = computed(() => state.journalEntries.filter(j => j.status === 'Synced QB').length);
+
+    const showToast = (severity, summary, detail) => {
+      const id = Date.now() + Math.random();
+      toasts.value.push({ id, severity, summary, detail });
+      setTimeout(() => { toasts.value = toasts.value.filter(t => t.id !== id); }, 3800);
+    };
+    const dismissRec = (rec) => { rec.status = 'dismissed'; showToast('info', 'Dismissed', rec.title.slice(0, 40) + '…'); };
+    const actOnRec = (rec) => {
+      rec.status = 'acted';
+      state.activityLog.unshift({ ts:'just now', tone:'success', title:'Acted: ' + rec.title.slice(0, 40), actor:'Admin Rowe' });
+      showToast('success', rec.action + ' triggered', rec.title.slice(0, 50));
+    };
+    const openAddPO = () => { dialog.type = 'po'; dialog.form = { vendor:'', item:'', qty:1, total_cents:0, expected:'' }; dialog.open = true; };
+    const savePO = () => {
+      if (!dialog.form.vendor || !dialog.form.item || !dialog.form.qty) { showToast('error', 'Missing fields', 'Vendor, item, qty required'); return; }
+      const nextNum = 4229 + state.purchaseOrders.length;
+      state.purchaseOrders.unshift({ id: 'PO-' + nextNum, vendor: dialog.form.vendor, item: dialog.form.item, qty: Number(dialog.form.qty), total_cents: Number(dialog.form.total_cents) * 100, status: 'Draft', expected: dialog.form.expected || '—' });
+      showToast('success', 'PO created', 'PO-' + nextNum + ' · ' + dialog.form.vendor);
+      dialog.open = false;
+    };
+    const openAddTransfer = () => { dialog.type = 'transfer'; dialog.form = { asset:'', from:'', to:'', reason:'Reallocation', released_by:'Admin Rowe' }; dialog.open = true; };
+    const saveTransfer = () => {
+      if (!dialog.form.asset || !dialog.form.from || !dialog.form.to) { showToast('error', 'Missing fields', 'Asset, from, to required'); return; }
+      state.transfers.unshift({ id: Date.now(), asset: dialog.form.asset, from: dialog.form.from, to: dialog.form.to, reason: dialog.form.reason, released_by: dialog.form.released_by, received_by:null, status:'In transit' });
+      showToast('success', 'Transfer created', dialog.form.asset + ' · ' + dialog.form.from + ' → ' + dialog.form.to);
+      dialog.open = false;
+    };
+    const toggleRule = (rule) => { rule.active = !rule.active; showToast(rule.active ? 'success' : 'warn', rule.active ? 'Rule activated' : 'Rule paused', rule.title.slice(0, 50)); };
+    const reviewJE = (je) => { if (je.status === 'Pending review') { je.status = 'Synced QB'; state.activityLog.unshift({ ts:'just now', tone:'success', title:'JE ' + je.id + ' approved + synced to QuickBooks', actor:'Admin Rowe' }); showToast('success', 'JE approved', je.id + ' synced to QuickBooks'); } };
+    const applyScenario = () => {
+      state.scenarioApplied = !state.scenarioApplied;
+      showToast(state.scenarioApplied ? 'success' : 'info', state.scenarioApplied ? 'Scenario applied' : 'Scenario reverted', 'Reallocate · service · refresh · risk -32 pts');
+    };
+
+    return {
+      state, activePane, subtab, PANES, SUBTABS, toasts, dialog,
+      openRecs, highImpactRecs, actedRecs, activeRules, openPOs, poCommitted, transfersInTransit, pendingJEs, syncedJEs,
+      dismissRec, actOnRec, openAddPO, savePO, openAddTransfer, saveTransfer, toggleRule, reviewJE, applyScenario,
+      showToast, fmt,
+    };
+  },
+  template: `
+<div class="shell">
+  <div class="area-logo">
+    <div class="mark">H</div>
+    <div>
+      <div style="font-weight:600; font-size:14px; line-height:1.1;">HonestWaves</div>
+      <div style="font-size:11px; color:var(--c-text-muted); line-height:1.1;">Asset Accounting</div>
+    </div>
+  </div>
+  <div class="area-top">
+    <div style="flex:1;"></div>
+    <span style="font-size:11px; font-family:'JetBrains Mono', monospace; color:var(--c-text-muted);">v.2 · interactive · 38 sub-tabs · Partner API mock</span>
+  </div>
+  <aside class="area-side">
+    <template v-for="group in ['Monitor','Operations','Finance','Policy']" :key="group">
+      <div class="nav-group">{{ group }}</div>
+      <a v-for="p in PANES.filter(x => x.group === group)" :key="p.id"
+         class="nav-item" :class="{active: activePane === p.id}"
+         @click="activePane = p.id">
+        <i :class="'pi ' + p.icon"></i>{{ p.label }}
+        <span v-if="p.tag" class="new-tag">{{ p.tag }}</span>
+      </a>
+    </template>
+  </aside>
+
+  <main class="area-main">
+
+    <!-- OVERVIEW -->
+    <section v-if="activePane === 'overview'">
+      <header class="page-head">
+        <div style="flex:1;"><h1 class="page-title">Overview</h1><p class="page-sub">Strategic snapshot · {{ openRecs.length }} open recommendations · {{ activeRules }} active rules · {{ pendingJEs }} JE(s) pending review</p></div>
+        <button class="p-button p-button-text"><i class="pi pi-download"></i>Export</button>
+      </header>
+      <section class="kpis">
+        <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-brand);"></span>Capitalized assets</div><div class="kpi-value">$56,288</div><div class="kpi-sub">133 devices · book value</div></div>
+        <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-danger);"></span>Losses this Q</div><div class="kpi-value danger">$8,876</div><div class="kpi-sub">14 incidents</div></div>
+        <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-success);"></span>Recovered this Q</div><div class="kpi-value success">$3,210</div><div class="kpi-sub">Insights acted on</div></div>
+        <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-info);"></span>JEs auto-pushed</div><div class="kpi-value">{{ syncedJEs }}</div><div class="kpi-sub">to QuickBooks · 98% straight-through</div></div>
+      </section>
+      <div class="card"><div class="card-head"><h3 class="card-title">Top action items right now</h3></div>
+        <table class="dt"><thead><tr><th>Type</th><th>Subject</th><th>Reasoning</th><th>Impact</th><th></th></tr></thead>
+          <tbody>
+            <tr v-for="r in openRecs.slice(0, 5)" :key="'r'+r.id">
+              <td><span class="p-tag" :class="'p-tag-' + (r.tone === 'warn' ? 'warning' : r.tone)">{{ r.scope }}</span></td>
+              <td><strong>{{ r.title }}</strong></td>
+              <td style="color:var(--c-text-2); font-size:12px;">{{ r.sub.slice(0, 80) }}…</td>
+              <td><span class="p-tag" :class="r.impact === 'High' ? 'p-tag-danger' : r.impact === 'Med' ? 'p-tag-warning' : 'p-tag-secondary'">{{ r.impact }}</span></td>
+              <td><button class="p-button p-button-text p-button-xs" @click="activePane = 'insights'">View →</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card"><div class="card-head"><h3 class="card-title">Activity feed</h3></div>
+        <div style="padding:8px 0;">
+          <div v-for="(a, i) in state.activityLog.slice(0, 8)" :key="i" style="display:flex; align-items:flex-start; gap:12px; padding:10px 18px; border-bottom:1px solid var(--c-divider);">
+            <span class="rec-dot" :class="a.tone"></span>
+            <div style="flex:1;"><div style="font-size:13px;">{{ a.title }}</div><div style="font-size:11px; color:var(--c-text-muted); margin-top:2px;">{{ a.actor }} · {{ a.ts }}</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== INSIGHTS (5 sub-tabs) =================== -->
+    <section v-if="activePane === 'insights'">
+      <header class="page-head">
+        <div style="flex:1;"><h1 class="page-title">Insights <span class="p-tag p-tag-violet" style="font-size:11px; margin-left:6px; vertical-align:middle;">Predictor</span></h1><p class="page-sub">Predictive intelligence · bay / location / department / device usage tracking + lifecycle predictions</p></div>
+        <button class="p-button p-button-text"><i class="pi pi-download"></i>Export digest</button>
+        <button class="p-button p-button-primary"><i class="pi pi-bell"></i>Subscribe weekly</button>
+      </header>
+      <div class="pivot-bar"><button v-for="t in SUBTABS.insights" :key="t" class="pivot-btn" :class="{active: subtab.insights === t}" @click="subtab.insights = t">{{ t }}</button></div>
+
+      <!-- Recommendations -->
+      <template v-if="subtab.insights === 'Recommendations'">
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-violet);"></span>Open recommendations</div><div class="kpi-value">{{ openRecs.length }}</div><div class="kpi-sub">{{ highImpactRecs }} high-impact</div></div>
+          <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-success);"></span>$ opportunity</div><div class="kpi-value success">$8,420</div><div class="kpi-sub">If all acted on this Q</div></div>
+          <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-warning);"></span>Lifecycle risk</div><div class="kpi-value warn">11</div><div class="kpi-sub">Devices at cycle threshold</div></div>
+          <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-info);"></span>Acted this Q</div><div class="kpi-value info">{{ actedRecs }}</div><div class="kpi-sub">Captured value</div></div>
+        </section>
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">All recommendations</h3><span class="card-sub" style="margin-left:auto;">Click action to apply · click dismiss to remove</span></div>
+          <div>
+            <div v-for="r in openRecs" :key="r.id" class="rec-row">
+              <span class="rec-dot" :class="r.tone"></span>
+              <div style="flex:1;">
+                <div class="rec-title">{{ r.title }}
+                  <span class="p-tag" :class="r.tone === 'danger' ? 'p-tag-danger' : r.tone === 'warn' ? 'p-tag-warning' : r.tone === 'success' ? 'p-tag-success' : 'p-tag-info'">{{ r.scope }}</span>
+                  <span class="p-tag" :class="r.impact === 'High' ? 'p-tag-danger' : r.impact === 'Med' ? 'p-tag-warning' : 'p-tag-secondary'">{{ r.impact }} impact</span>
+                </div>
+                <div class="rec-sub">{{ r.sub }}</div>
+                <div class="rec-meta">{{ r.meta }}</div>
+              </div>
+              <div class="rec-actions">
+                <button class="p-button p-button-primary p-button-xs" @click="actOnRec(r)">{{ r.action }}</button>
+                <button class="p-button p-button-text p-button-xs" @click="dismissRec(r)">Dismiss</button>
+              </div>
+            </div>
+            <div v-if="openRecs.length === 0" style="text-align:center; padding:40px; color:var(--c-text-muted);">
+              <i class="pi pi-check-circle" style="font-size:32px; display:block; margin-bottom:8px; color:var(--c-success);"></i>All clear · no open recommendations
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <!-- Lifecycle & EOL -->
+      <template v-if="subtab.insights === 'Lifecycle & EOL'">
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label">At EOL within 90d</div><div class="kpi-value danger">8</div><div class="kpi-sub">$2,892 replacement spend</div></div>
+          <div class="kpi"><div class="kpi-label">Battery cycles consumed</div><div class="kpi-value">63%</div><div class="kpi-sub">Fleet avg · target &lt; 80%</div></div>
+          <div class="kpi"><div class="kpi-label">Predicted replacements · next Q</div><div class="kpi-value">$6,420</div><div class="kpi-sub">14 devices forecast</div></div>
+          <div class="kpi"><div class="kpi-label">Ahead-of-schedule wear</div><div class="kpi-value warn">5</div><div class="kpi-sub">Wearing 25%+ faster</div></div>
+        </section>
+        <div class="card"><div class="card-head"><h3 class="card-title">Device lifecycle predictions</h3><span class="card-sub">Per-device forecast based on usage, battery health, and manufacturer rating</span></div>
+          <table class="dt">
+            <thead><tr><th>Device</th><th>Model</th><th>Age</th><th class="num">Cycles</th><th>Predicted EOL</th><th>vs mfr rating</th><th>Recommended action</th></tr></thead>
+            <tbody>
+              <tr><td><strong>iPhone 16e #15</strong></td><td>iPhone 16e</td><td>14mo</td><td class="num">478 / 500</td><td>Aug 2026</td><td><span class="p-tag p-tag-danger">3mo early</span></td><td>Battery swap · $54</td></tr>
+              <tr><td><strong>iPhone 16e #22</strong></td><td>iPhone 16e</td><td>14mo</td><td class="num">472 / 500</td><td>Sep 2026</td><td><span class="p-tag p-tag-danger">2mo early</span></td><td>Battery swap · $54</td></tr>
+              <tr><td><strong>iPhone 16e #03</strong></td><td>iPhone 16e</td><td>13mo</td><td class="num">461 / 500</td><td>Oct 2026</td><td><span class="p-tag p-tag-warning">On track</span></td><td>Service Tue Jun 17</td></tr>
+              <tr><td><strong>iPhone 16e #11</strong></td><td>iPhone 16e</td><td>12mo</td><td class="num">451 / 500</td><td>Nov 2026</td><td><span class="p-tag p-tag-warning">On track</span></td><td>Service Tue Jun 17</td></tr>
+              <tr><td><strong>AiRista batch v1 (8)</strong></td><td>AiRista badge</td><td>22mo</td><td class="num mono">—</td><td>Dec 2026 EOL</td><td><span class="p-tag p-tag-danger">Mfr EOL</span></td><td>Migrate to v2</td></tr>
+              <tr><td><strong>Pixel 8 Pro #2</strong></td><td>Pixel 8 Pro</td><td>8mo</td><td class="num">312 / 800</td><td>Apr 2028</td><td><span class="p-tag p-tag-danger">30% faster wear</span></td><td>Flag for inspection</td></tr>
+              <tr><td><strong>iPhone 16e batch B (22)</strong></td><td>iPhone 16e</td><td>3mo</td><td class="num">~92 / 500</td><td>Apr 2027</td><td><span class="p-tag p-tag-success">On track</span></td><td>Plan refurb refresh</td></tr>
+              <tr><td><strong>ChromeBook X360 (2)</strong></td><td>ChromeBook</td><td>16mo</td><td class="num mono">—</td><td>Mar 2027</td><td><span class="p-tag p-tag-warning">Approaching EOL</span></td><td>Budget Q1 2027</td></tr>
+            </tbody>
+          </table>
+          <div class="card-foot"><span>8 devices flagged · 4 model lines</span><strong style="margin-left:auto;">Total $ at lifecycle risk: $5,728</strong></div>
+        </div>
+        <div class="card"><div class="card-head"><h3 class="card-title">Refresh calendar · next 18 months</h3><span class="card-sub">Smoothed replacement schedule to avoid budget spikes</span></div>
+          <table class="dt"><thead><tr><th>Window</th><th>Devices</th><th>Reason</th><th class="num">Refurb option</th><th class="num">New option</th><th>Recommendation</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Q3 2026 · Sep</strong></td><td>12 iPhone 16e (batch A)</td><td>EOL · 14-month cycle</td><td class="num" style="color:var(--c-success);">$4,572</td><td class="num">$7,188</td><td>Refurb</td></tr>
+              <tr><td><strong>Q4 2026 · Dec</strong></td><td>8 AiRista (v1)</td><td>Mfr EOL</td><td class="num mono">—</td><td class="num">$680</td><td>New (v2)</td></tr>
+              <tr><td><strong>Q1 2027 · Mar</strong></td><td>2 ChromeBook X360</td><td>EOL</td><td class="num" style="color:var(--c-success);">$760</td><td class="num">$1,198</td><td>Refurb</td></tr>
+              <tr><td><strong>Q2 2027 · Apr</strong></td><td>22 iPhone 16e (batch B)</td><td>14-month cycle</td><td class="num" style="color:var(--c-success);">$8,382</td><td class="num">$13,178</td><td>Refurb · save $4,796</td></tr>
+            </tbody>
+          </table>
+          <div class="card-foot"><strong style="margin-left:auto;">Recommended $14,394 · vs $22,244 all-new = $7,850 saved</strong></div>
+        </div>
+      </template>
+
+      <!-- Utilization patterns -->
+      <template v-if="subtab.insights === 'Utilization patterns'">
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label">Fleet utilization</div><div class="kpi-value">66%</div><div class="kpi-sub">Target band 60–85%</div></div>
+          <div class="kpi"><div class="kpi-label">Above band</div><div class="kpi-value danger">2 sites</div><div class="kpi-sub">Royal Oak Rad · Troy ER</div></div>
+          <div class="kpi"><div class="kpi-label">Below band</div><div class="kpi-value warn">1 site</div><div class="kpi-sub">HQ Lab · 18%</div></div>
+          <div class="kpi"><div class="kpi-label">Peak hour load</div><div class="kpi-value">94%</div><div class="kpi-sub">Mon 7–9am · Nursing shifts</div></div>
+        </section>
+        <div class="card"><div class="card-head"><h3 class="card-title">Location utilization · 12 weeks</h3></div>
+          <table class="dt"><thead><tr><th>Location</th><th class="num">Devices</th><th class="num">Avg util</th><th class="num">Peak util</th><th>Trend</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Royal Oak Radiology</strong></td><td class="num">32</td><td class="num" style="color:var(--c-danger);">94%</td><td class="num">102%</td><td><span class="p-tag p-tag-danger">▲ +7 pts</span></td><td><span class="p-tag p-tag-danger">Over capacity</span></td></tr>
+              <tr><td><strong>Troy ER</strong></td><td class="num">8</td><td class="num" style="color:var(--c-warning-text);">89%</td><td class="num">96%</td><td><span class="p-tag p-tag-warning">▲ +4 pts</span></td><td><span class="p-tag p-tag-warning">Near cap</span></td></tr>
+              <tr><td><strong>Beaumont Main</strong></td><td class="num">32</td><td class="num">71%</td><td class="num">84%</td><td><span class="p-tag p-tag-secondary">— flat</span></td><td><span class="p-tag p-tag-success">In band</span></td></tr>
+              <tr><td><strong>Troy ICU</strong></td><td class="num">8</td><td class="num">62%</td><td class="num">78%</td><td><span class="p-tag p-tag-secondary">— flat</span></td><td><span class="p-tag p-tag-success">In band</span></td></tr>
+              <tr><td><strong>HQ Lab</strong></td><td class="num">8</td><td class="num" style="color:var(--c-warning-text);">18%</td><td class="num">28%</td><td><span class="p-tag p-tag-success">▼ -3 pts</span></td><td><span class="p-tag p-tag-warning">Below band</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card"><div class="card-head"><h3 class="card-title">Per-bay heatmap · top 10 bays</h3></div>
+          <table class="dt"><thead><tr><th>Bay</th><th>Locker</th><th class="num">Checkouts/wk</th><th>vs peers</th><th class="num">Battery</th><th>Recommendation</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Bay 3</strong></td><td>Pink8</td><td class="num">38</td><td><span class="p-tag p-tag-danger">2.4× peer</span></td><td class="num" style="color:var(--c-warning-text);">68%</td><td>Service in 14d</td></tr>
+              <tr><td><strong>Bay 1</strong></td><td>Beaumont1</td><td class="num">31</td><td><span class="p-tag p-tag-warning">1.9× peer</span></td><td class="num">82%</td><td>On track</td></tr>
+              <tr><td><strong>Bay 12</strong></td><td>Blue3</td><td class="num">29</td><td><span class="p-tag p-tag-warning">1.8× peer</span></td><td class="num">88%</td><td>On track</td></tr>
+              <tr><td><strong>Bay 6</strong></td><td>Pink8</td><td class="num">26</td><td><span class="p-tag p-tag-warning">1.6× peer</span></td><td class="num" style="color:var(--c-warning-text);">62%</td><td>Rotate device</td></tr>
+              <tr><td><strong>Bay 7</strong></td><td>HQ Test</td><td class="num">2</td><td><span class="p-tag p-tag-warning">0.1× peer</span></td><td class="num">100%</td><td>Reallocate to Troy ER</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card"><div class="card-head"><h3 class="card-title">Department patterns</h3><span class="card-sub">When + how each dept checks out</span></div>
+          <table class="dt"><thead><tr><th>Department</th><th>Peak hour</th><th>Peak day</th><th class="num">Avg duration</th><th class="num">Headcount</th><th class="num">Allocated</th><th class="num">Recommended</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Emergency Medicine</strong></td><td>Mon 7–9am</td><td>Mon</td><td class="num">5.2h</td><td class="num">48</td><td class="num" style="color:var(--c-warning-text);">8</td><td class="num"><strong>14</strong></td></tr>
+              <tr><td><strong>Nursing</strong></td><td>Mon 7am</td><td>Mon</td><td class="num">7.8h</td><td class="num">96</td><td class="num">24</td><td class="num"><strong>22</strong></td></tr>
+              <tr><td><strong>Security / Facilities</strong></td><td>24×7</td><td>Tue/Fri</td><td class="num">11.4h</td><td class="num">22</td><td class="num">8</td><td class="num"><strong>8</strong></td></tr>
+              <tr><td><strong>Cardiology</strong></td><td>Tue 8am</td><td>Tue</td><td class="num">4.1h</td><td class="num">31</td><td class="num">10</td><td class="num"><strong>9</strong></td></tr>
+              <tr><td><strong>Admin / HR</strong></td><td>Wed 9am</td><td>Wed</td><td class="num">2.0h</td><td class="num">17</td><td class="num">3</td><td class="num"><strong>2</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+
+      <!-- Service calendar -->
+      <template v-if="subtab.insights === 'Service calendar'">
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label">This week</div><div class="kpi-value">3</div><div class="kpi-sub">Scheduled visits</div></div>
+          <div class="kpi"><div class="kpi-label">Next 30 days</div><div class="kpi-value">11</div><div class="kpi-sub">Devices + bays</div></div>
+          <div class="kpi"><div class="kpi-label">Overdue</div><div class="kpi-value danger">2</div><div class="kpi-sub">Past recommended date</div></div>
+          <div class="kpi"><div class="kpi-label">Cost-avoidance</div><div class="kpi-value success">$3,860</div><div class="kpi-sub">If all completed on time</div></div>
+        </section>
+        <div class="card"><div class="card-head"><h3 class="card-title">Upcoming · next 30 days</h3></div>
+          <table class="dt"><thead><tr><th>Date</th><th>Subject</th><th>Type</th><th>Reason</th><th>Vendor</th><th class="num">Est. cost</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><strong>Today · Jun 11</strong></td><td>AiRista badge #14</td><td><span class="p-tag p-tag-warning">QC</span></td><td>Battery test post-swap</td><td>AiRista Direct</td><td class="num">$0</td><td><button class="p-button p-button-xs" @click="showToast('info','Detail panel','Wire to GET /api/service-events/{id}')">View</button></td></tr>
+              <tr><td><strong>Jun 13</strong></td><td>iPhone 16e #03, #07</td><td><span class="p-tag p-tag-info">Battery</span></td><td>Approaching 90% cycles</td><td>TechFix Co.</td><td class="num">$108</td><td><button class="p-button p-button-xs">View</button></td></tr>
+              <tr><td><strong>Jun 17</strong></td><td>iPhone 16e #11, #15, #22</td><td><span class="p-tag p-tag-info">Battery</span></td><td>Batch with #03, #07</td><td>TechFix Co.</td><td class="num">$162</td><td><button class="p-button p-button-xs">View</button></td></tr>
+              <tr><td><strong>Jun 20</strong></td><td>Pink8 · Bay 7</td><td><span class="p-tag p-tag-info">Bay service</span></td><td>Lock mechanism wear</td><td>In-house IT</td><td class="num">$0</td><td><button class="p-button p-button-xs">View</button></td></tr>
+              <tr><td><strong>Jun 24</strong></td><td>Pink8 · Bay 3</td><td><span class="p-tag p-tag-info">Bay service</span></td><td>Preventive · 2.4× usage</td><td>In-house IT</td><td class="num">$0</td><td><button class="p-button p-button-xs">View</button></td></tr>
+              <tr><td><strong>Jun 28</strong></td><td>Pixel 8 Pro #2</td><td><span class="p-tag p-tag-warning">Inspection</span></td><td>30% faster wear · root cause TBD</td><td>TechFix Co.</td><td class="num">$95</td><td><button class="p-button p-button-xs">View</button></td></tr>
+              <tr><td><strong>Jul 5</strong></td><td>iPhone 16e batch A (12)</td><td><span class="p-tag p-tag-danger">OS update</span></td><td>iOS 18.6 security patch</td><td>In-house IT</td><td class="num">$0</td><td><button class="p-button p-button-xs">View</button></td></tr>
+              <tr><td><strong>Jul 9</strong></td><td>AiRista batch v1 (8)</td><td><span class="p-tag p-tag-warning">EOL prep</span></td><td>Migration to v2 starts Oct</td><td>AiRista Direct</td><td class="num">$0</td><td><button class="p-button p-button-xs">View</button></td></tr>
+            </tbody>
+          </table>
+          <div class="card-foot"><span>8 scheduled · 2 overdue · 1 today</span><strong style="margin-left:auto;">Est. spend $365 · cost-avoidance $3,860</strong></div>
+        </div>
+        <div class="card"><div class="card-head"><h3 class="card-title">Overdue · acting required</h3></div>
+          <table class="dt"><thead><tr><th>Subject</th><th>Recommended date</th><th class="num">Days overdue</th><th>Risk</th><th>Recommended action</th></tr></thead>
+            <tbody>
+              <tr><td><strong>iPhone 16e #08 · battery swap</strong></td><td class="mono">May 30</td><td class="num" style="color:var(--c-danger);">12d</td><td><span class="p-tag p-tag-danger">High</span></td><td>Service this week · $54</td></tr>
+              <tr><td><strong>Blue3 · Bay 18 · sensor calibration</strong></td><td class="mono">Jun 4</td><td class="num" style="color:var(--c-warning-text);">7d</td><td><span class="p-tag p-tag-warning">Med</span></td><td>In-house · 20 min visit</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+
+      <!-- What-if simulator -->
+      <template v-if="subtab.insights === 'What-if simulator'">
+        <div class="card"><div class="card-head"><h3 class="card-title">Scenario planner</h3><span class="card-sub" style="margin-left:auto;">Test a change before you commit</span></div>
+          <div style="padding:20px; display:grid; grid-template-columns:240px 1fr; gap:32px;">
+            <div>
+              <p style="font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--c-text-muted); margin:0 0 12px;">Pre-built scenarios</p>
+              <div style="display:flex; flex-direction:column; gap:6px;">
+                <button class="p-button" :class="state.scenarioApplied ? 'p-button-primary' : ''" style="width:100%; justify-content:flex-start;" @click="applyScenario">
+                  <i :class="'pi ' + (state.scenarioApplied ? 'pi-check' : 'pi-play')"></i>{{ state.scenarioApplied ? 'Scenario applied · click to revert' : 'Apply all recommendations' }}
+                </button>
+                <button class="p-button p-button-text" style="width:100%; justify-content:flex-start;" @click="showToast('info','Scenario','Reallocate idle → high-util · view projections')">Reallocate idle → high-util</button>
+                <button class="p-button p-button-text" style="width:100%; justify-content:flex-start;" @click="showToast('info','Scenario','Refurbish refresh path · view projections')">Refurbish refresh path</button>
+                <button class="p-button p-button-text" style="width:100%; justify-content:flex-start;" @click="showToast('info','Scenario','Headcount-driven sizing · view projections')">Headcount-driven sizing</button>
+                <button class="p-button p-button-text" style="width:100%; justify-content:flex-start;" @click="showToast('info','Custom scenario','Wire to /api/insights/simulator')">Custom scenario…</button>
+              </div>
+            </div>
+            <div>
+              <p style="font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--c-text-muted); margin:0 0 8px;">Active scenario · Apply all recommendations</p>
+              <div style="font-size:14px; color:var(--c-text); margin-bottom:16px;">Add 4 devices to Royal Oak Rad · Relocate 3 from HQ to Troy ER · Service 5 iPhone 16e batteries · Pink8 Bay 3 preventive · ER North +6 allocation · Lock in refurb refresh Q2 2027.</div>
+              <div class="scenario-grid" style="padding:0;">
+                <div class="scenario-stat"><div class="scenario-stat-label">Net Q-impact</div><div class="scenario-stat-value" :style="{ color: state.scenarioApplied ? 'var(--c-success)' : 'var(--c-text)' }">{{ state.scenarioApplied ? '+$5,210' : '—' }}</div><div class="scenario-stat-sub">After service spend $3,210</div></div>
+                <div class="scenario-stat"><div class="scenario-stat-label">Forecast util</div><div class="scenario-stat-value">{{ state.scenarioApplied ? '73%' : '66%' }}</div><div class="scenario-stat-sub">Target band 60–85%</div></div>
+                <div class="scenario-stat"><div class="scenario-stat-label">Devices added</div><div class="scenario-stat-value">{{ state.scenarioApplied ? '4' : '0' }}</div><div class="scenario-stat-sub">Royal Oak Rad</div></div>
+                <div class="scenario-stat"><div class="scenario-stat-label">Reallocated</div><div class="scenario-stat-value">{{ state.scenarioApplied ? '3' : '0' }}</div><div class="scenario-stat-sub">HQ → Troy ER</div></div>
+                <div class="scenario-stat"><div class="scenario-stat-label">Risk score change</div><div class="scenario-stat-value" :style="{ color: state.scenarioApplied ? 'var(--c-success)' : 'var(--c-text)' }">{{ state.scenarioApplied ? '-32%' : '—' }}</div><div class="scenario-stat-sub">Lifecycle + capacity</div></div>
+                <div class="scenario-stat"><div class="scenario-stat-label">Implementation</div><div class="scenario-stat-value">14 days</div><div class="scenario-stat-sub">PO + service + move</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card"><div class="card-head"><h3 class="card-title">Projected outcomes by location · 90d</h3></div>
+          <table class="dt"><thead><tr><th>Location</th><th class="num">Today · util</th><th class="num">Today · devices</th><th class="num">After · util</th><th class="num">After · devices</th><th>Status change</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Royal Oak Radiology</strong></td><td class="num" style="color:var(--c-danger);">94%</td><td class="num">32</td><td class="num" style="color:var(--c-success);">79%</td><td class="num">36</td><td><span class="p-tag p-tag-success">Over → In band</span></td></tr>
+              <tr><td><strong>Troy ER</strong></td><td class="num" style="color:var(--c-warning-text);">89%</td><td class="num">8</td><td class="num" style="color:var(--c-success);">76%</td><td class="num">11</td><td><span class="p-tag p-tag-success">Near → In band</span></td></tr>
+              <tr><td><strong>HQ Lab</strong></td><td class="num" style="color:var(--c-warning-text);">18%</td><td class="num">8</td><td class="num">42%</td><td class="num">5</td><td><span class="p-tag p-tag-warning">Below → Closer to band</span></td></tr>
+              <tr><td><strong>Beaumont Main</strong></td><td class="num">71%</td><td class="num">32</td><td class="num">71%</td><td class="num">32</td><td><span class="p-tag p-tag-secondary">No change</span></td></tr>
+              <tr><td><strong>Troy ICU</strong></td><td class="num">62%</td><td class="num">8</td><td class="num">62%</td><td class="num">8</td><td><span class="p-tag p-tag-secondary">No change</span></td></tr>
+            </tbody>
+          </table>
+          <div class="card-foot"><strong style="margin-left:auto;">Fleet util · 66% → 73%</strong></div>
+        </div>
+        <div class="card"><div class="card-head"><h3 class="card-title">Risk register · with vs without scenario</h3></div>
+          <table class="dt"><thead><tr><th>Risk</th><th>Today</th><th>After scenario</th><th class="num">Delta</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Capacity stockout · Royal Oak Rad</strong></td><td><span class="p-tag p-tag-danger">High</span></td><td><span class="p-tag p-tag-success">Low</span></td><td class="num" style="color:var(--c-success);">-42 pts</td></tr>
+              <tr><td><strong>Battery failure · iPhone 16e batch A</strong></td><td><span class="p-tag p-tag-warning">Med</span></td><td><span class="p-tag p-tag-success">Low</span></td><td class="num" style="color:var(--c-success);">-28 pts</td></tr>
+              <tr><td><strong>Idle capital · HQ Lab</strong></td><td><span class="p-tag p-tag-warning">Med</span></td><td><span class="p-tag p-tag-success">Low</span></td><td class="num" style="color:var(--c-success);">-22 pts</td></tr>
+              <tr><td><strong>Pink8 Bay 3 mechanism failure</strong></td><td><span class="p-tag p-tag-warning">Med</span></td><td><span class="p-tag p-tag-success">Low</span></td><td class="num" style="color:var(--c-success);">-18 pts</td></tr>
+            </tbody>
+          </table>
+          <div class="card-foot"><strong style="margin-left:auto; color:var(--c-success);">Overall risk score 68 → 36 (-32 pts · -47%)</strong></div>
+        </div>
+      </template>
+    </section>
+
+    <!-- =================== ACCOUNTING & ERP (6 sub-tabs) =================== -->
+    <section v-if="activePane === 'accounting'">
+      <header class="page-head">
+        <div style="flex:1;"><h1 class="page-title">Accounting &amp; ERP <span class="p-tag p-tag-violet" style="font-size:11px; margin-left:6px;">NEW</span></h1><p class="page-sub">Depreciation · GL · cost centers · {{ syncedJEs }} JEs synced · {{ pendingJEs }} pending review</p></div>
+        <button class="p-button p-button-text"><i class="pi pi-download"></i>Export GL</button>
+        <button class="p-button p-button-primary"><i class="pi pi-plus"></i>Manual JE</button>
+      </header>
+      <div class="pivot-bar"><button v-for="t in SUBTABS.accounting" :key="t" class="pivot-btn" :class="{active: subtab.accounting === t}" @click="subtab.accounting = t">{{ t }}</button></div>
+
+      <!-- Depreciation -->
+      <template v-if="subtab.accounting === 'Depreciation'">
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label">Capitalized</div><div class="kpi-value">$56,288</div><div class="kpi-sub">133 devices</div></div>
+          <div class="kpi"><div class="kpi-label">YTD depreciation</div><div class="kpi-value info">$18,762</div><div class="kpi-sub">SL · book</div></div>
+          <div class="kpi"><div class="kpi-label">Net book value</div><div class="kpi-value">$37,405</div><div class="kpi-sub">133 devices</div></div>
+          <div class="kpi"><div class="kpi-label">Deferred tax liability</div><div class="kpi-value warn">$2,074</div><div class="kpi-sub">Book vs MACRS delta</div></div>
+        </section>
+        <div class="card"><div class="card-head"><h3 class="card-title">Depreciation schedule · by asset class</h3><span class="card-sub">Straight-line for book · MACRS 5yr for tax</span></div>
+          <table class="dt"><thead><tr><th>Asset class</th><th class="num">Units</th><th class="num">Capitalized</th><th>Method</th><th>Life</th><th class="num">Annual (book)</th><th class="num">Accumulated</th><th class="num">NBV</th></tr></thead>
+            <tbody>
+              <tr><td><strong>iPhone 16e batch A</strong></td><td class="num">12</td><td class="num">$7,188</td><td>SL</td><td>2yr</td><td class="num">$3,594</td><td class="num">$4,193</td><td class="num"><strong>$2,995</strong></td></tr>
+              <tr><td><strong>iPhone 16e batch B</strong></td><td class="num">22</td><td class="num">$13,178</td><td>SL</td><td>2yr</td><td class="num">$6,589</td><td class="num">$1,647</td><td class="num"><strong>$11,531</strong></td></tr>
+              <tr><td><strong>iPhone 16e (deployed)</strong></td><td class="num">37</td><td class="num">$22,163</td><td>SL</td><td>2yr</td><td class="num">$11,081</td><td class="num">$6,463</td><td class="num"><strong>$15,700</strong></td></tr>
+              <tr><td><strong>AiRista badge (v1)</strong></td><td class="num">8</td><td class="num">$680</td><td>SL</td><td>3yr</td><td class="num">$227</td><td class="num">$416</td><td class="num"><strong>$264</strong></td></tr>
+              <tr><td><strong>AiRista badge (deployed)</strong></td><td class="num">42</td><td class="num">$3,570</td><td>SL</td><td>3yr</td><td class="num">$1,190</td><td class="num">$595</td><td class="num"><strong>$2,975</strong></td></tr>
+              <tr><td><strong>Pixel 8 Pro</strong></td><td class="num">4</td><td class="num">$3,996</td><td>SL</td><td>2yr</td><td class="num">$1,998</td><td class="num">$666</td><td class="num"><strong>$3,330</strong></td></tr>
+              <tr><td><strong>ChromeBook X360</strong></td><td class="num">2</td><td class="num">$1,098</td><td>SL</td><td>3yr</td><td class="num">$366</td><td class="num">$488</td><td class="num"><strong>$610</strong></td></tr>
+            </tbody>
+          </table>
+          <div class="card-foot"><span>127 capitalized devices · all over $500 threshold</span><strong style="margin-left:auto;">Net book value $37,405</strong></div>
+        </div>
+        <div class="card"><div class="card-head"><h3 class="card-title">Book vs tax depreciation · current year</h3></div>
+          <table class="dt"><thead><tr><th>Asset class</th><th class="num">Book (SL)</th><th class="num">Tax (MACRS)</th><th class="num">Delta</th><th class="num">Deferred tax (24%)</th></tr></thead>
+            <tbody>
+              <tr><td><strong>iPhone 16e (all)</strong></td><td class="num">$21,264</td><td class="num">$28,560</td><td class="num" style="color:var(--c-warning-text);">+$7,296</td><td class="num">$1,751</td></tr>
+              <tr><td><strong>AiRista badges</strong></td><td class="num">$1,417</td><td class="num">$2,128</td><td class="num" style="color:var(--c-warning-text);">+$711</td><td class="num">$171</td></tr>
+              <tr><td><strong>Pixel 8 Pro</strong></td><td class="num">$1,998</td><td class="num">$2,558</td><td class="num" style="color:var(--c-warning-text);">+$560</td><td class="num">$134</td></tr>
+              <tr><td><strong>ChromeBook X360</strong></td><td class="num">$366</td><td class="num">$439</td><td class="num" style="color:var(--c-warning-text);">+$73</td><td class="num">$18</td></tr>
+            </tbody>
+          </table>
+          <div class="card-foot"><strong style="margin-left:auto;">Deferred tax liability $2,074</strong></div>
+        </div>
+      </template>
+
+      <!-- GL & journal entries -->
+      <template v-if="subtab.accounting === 'GL & journal entries'">
+        <div class="card"><div class="card-head"><h3 class="card-title">Chart of accounts mapping</h3><span class="card-sub">Auto-applied to every transaction</span></div>
+          <table class="dt"><thead><tr><th>Asset class</th><th>Capital GL</th><th>Accum. depr. GL</th><th>Loss/damage GL</th><th>Repair OpEx GL</th></tr></thead>
+            <tbody>
+              <tr><td><strong>iPhone 16e</strong></td><td class="mono">1520 · IT Equipment</td><td class="mono">1521 · Accum. Depr.</td><td class="mono">5650 · Loss on Asset</td><td class="mono">5410 · Equipment Repair</td></tr>
+              <tr><td><strong>AiRista badge</strong></td><td class="mono">1525 · ID &amp; Badge</td><td class="mono">1526 · Accum. Depr.</td><td class="mono">5650 · Loss on Asset</td><td class="mono">5410 · Equipment Repair</td></tr>
+              <tr><td><strong>Pixel 8 Pro</strong></td><td class="mono">1520 · IT Equipment</td><td class="mono">1521 · Accum. Depr.</td><td class="mono">5650 · Loss on Asset</td><td class="mono">5410 · Equipment Repair</td></tr>
+              <tr><td><strong>ChromeBook X360</strong></td><td class="mono">1530 · Computers</td><td class="mono">1531 · Accum. Depr.</td><td class="mono">5650 · Loss on Asset</td><td class="mono">5410 · Equipment Repair</td></tr>
+              <tr><td><strong>Cables &amp; accessories</strong></td><td class="mono">5420 · OpEx Supplies</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card"><div class="card-head"><h3 class="card-title">Recent journal entries</h3><span class="card-sub" style="margin-left:auto;">Click pending JE to approve + sync</span></div>
+          <table class="dt"><thead><tr><th>JE</th><th>Date</th><th>Event</th><th>Debit</th><th>Credit</th><th class="num">Amount</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr v-for="je in state.journalEntries" :key="je.id" @click="reviewJE(je)" :style="{ cursor: je.status === 'Pending review' ? 'pointer' : 'default' }">
+                <td><strong>{{ je.id }}</strong></td><td>{{ je.date }}</td><td>{{ je.event }}</td>
+                <td class="mono">{{ je.debit }}</td><td class="mono">{{ je.credit }}</td>
+                <td class="num">{{ fmt.moneyDec(je.amount_cents) }}</td>
+                <td><span class="p-tag" :class="je.status === 'Synced QB' ? 'p-tag-success' : 'p-tag-warning'">{{ je.status }}</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="card-foot"><span>{{ syncedJEs }} synced · {{ pendingJEs }} pending review</span><strong style="margin-left:auto;">$ flowed: $42,890</strong></div>
+        </div>
+      </template>
+
+      <!-- Cost centers -->
+      <template v-if="subtab.accounting === 'Cost centers'">
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label">Active cost centers</div><div class="kpi-value">12</div><div class="kpi-sub">7 depts + 5 sub-locations</div></div>
+          <div class="kpi"><div class="kpi-label">Chargebacks this Q</div><div class="kpi-value">$8,540</div><div class="kpi-sub">Loss + damage allocations</div></div>
+          <div class="kpi"><div class="kpi-label">Pending approvals</div><div class="kpi-value warn">3</div><div class="kpi-sub">VP sign-off needed</div></div>
+          <div class="kpi"><div class="kpi-label">Disputes open</div><div class="kpi-value">1</div><div class="kpi-sub">ER North · $599</div></div>
+        </section>
+        <div class="card"><div class="card-head"><h3 class="card-title">Cost center allocation</h3></div>
+          <table class="dt"><thead><tr><th>Cost center</th><th>Department</th><th class="num">Devices</th><th class="num">$ allocated</th><th class="num">Loss YTD</th><th class="num">Chargeback YTD</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td><strong>CC-100 · ER North</strong></td><td>Emergency Medicine</td><td class="num">8</td><td class="num">$5,690</td><td class="num" style="color:var(--c-danger);">$4,375</td><td class="num">$4,375</td><td><span class="p-tag p-tag-warning">1 dispute</span></td></tr>
+              <tr><td><strong>CC-101 · ER South</strong></td><td>Emergency Medicine</td><td class="num">6</td><td class="num">$4,180</td><td class="num" style="color:var(--c-warning-text);">$1,840</td><td class="num">$1,840</td><td><span class="p-tag p-tag-success">Cleared</span></td></tr>
+              <tr><td><strong>CC-200 · ICU 5N</strong></td><td>Nursing</td><td class="num">8</td><td class="num">$3,764</td><td class="num" style="color:var(--c-warning-text);">$2,852</td><td class="num">$2,852</td><td><span class="p-tag p-tag-success">Cleared</span></td></tr>
+              <tr><td><strong>CC-300 · Radiology</strong></td><td>Radiology</td><td class="num">32</td><td class="num">$14,956</td><td class="num">$957</td><td class="num">$957</td><td><span class="p-tag p-tag-success">Cleared</span></td></tr>
+              <tr><td><strong>CC-400 · Security</strong></td><td>Security / Facilities</td><td class="num">8</td><td class="num">$3,714</td><td class="num">$438</td><td class="num">$438</td><td><span class="p-tag p-tag-success">Cleared</span></td></tr>
+              <tr><td><strong>CC-500 · Admin / HR</strong></td><td>Admin / HR</td><td class="num">3</td><td class="num">$1,797</td><td class="num">$170</td><td class="num">$170</td><td><span class="p-tag p-tag-success">Cleared</span></td></tr>
+              <tr><td><strong>CC-900 · HQ / Shared</strong></td><td>IT</td><td class="num">31</td><td class="num">$9,317</td><td class="num">$0</td><td class="num">$0</td><td><span class="p-tag p-tag-success">Cleared</span></td></tr>
+            </tbody>
+          </table>
+          <div class="card-foot"><span>7 of 12 cost centers · 96 devices · $43,418 allocated</span><strong style="margin-left:auto;">YTD chargebacks $10,632</strong></div>
+        </div>
+      </template>
+
+      <!-- Budget vs actual -->
+      <template v-if="subtab.accounting === 'Budget vs actual'">
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label">Annual budget</div><div class="kpi-value">$64,000</div><div class="kpi-sub">FY 2026 · approved Apr</div></div>
+          <div class="kpi"><div class="kpi-label">Spent YTD</div><div class="kpi-value">$28,142</div><div class="kpi-sub">44% · halfway through year</div></div>
+          <div class="kpi"><div class="kpi-label">Variance</div><div class="kpi-value success">+$3,858</div><div class="kpi-sub">Under budget</div></div>
+          <div class="kpi"><div class="kpi-label">Forecast year-end</div><div class="kpi-value">$58,420</div><div class="kpi-sub">$5,580 under</div></div>
+        </section>
+        <div class="card"><div class="card-head"><h3 class="card-title">Budget vs actual · by category</h3></div>
+          <table class="dt"><thead><tr><th>Category</th><th class="num">Annual budget</th><th class="num">YTD spent</th><th class="num">% of budget</th><th class="num">Variance</th><th class="num">Forecast YE</th></tr></thead>
+            <tbody>
+              <tr><td><strong>New device purchases</strong></td><td class="num">$32,000</td><td class="num">$15,420</td><td class="num">48%</td><td class="num" style="color:var(--c-success);">+$580</td><td class="num">$30,840</td></tr>
+              <tr><td><strong>Replacement (loss)</strong></td><td class="num">$10,000</td><td class="num" style="color:var(--c-warning-text);">$8,876</td><td class="num" style="color:var(--c-warning-text);">89%</td><td class="num" style="color:var(--c-danger);">-$3,876</td><td class="num" style="color:var(--c-warning-text);">$15,200</td></tr>
+              <tr><td><strong>Repair &amp; maintenance</strong></td><td class="num">$8,000</td><td class="num">$3,481</td><td class="num">44%</td><td class="num" style="color:var(--c-success);">+$519</td><td class="num">$6,800</td></tr>
+              <tr><td><strong>Accessories &amp; consumables</strong></td><td class="num">$3,000</td><td class="num">$1,640</td><td class="num">55%</td><td class="num" style="color:var(--c-success);">-$140</td><td class="num">$3,200</td></tr>
+              <tr><td><strong>Vendor contracts</strong></td><td class="num">$11,000</td><td class="num">$5,500</td><td class="num">50%</td><td class="num" style="color:var(--c-success);">$0</td><td class="num">$11,000</td></tr>
+            </tbody>
+          </table>
+          <div class="card-foot"><strong style="margin-left:auto;">Total forecast $67,040 vs $64,000 budget · over by $3,040 driven by loss</strong></div>
+        </div>
+        <div class="card"><div class="card-head"><h3 class="card-title">Capex vs OpEx split</h3><span class="card-sub">Auto-classified · &gt;$500 capitalized</span></div>
+          <table class="dt"><thead><tr><th>Classification</th><th class="num">YTD count</th><th class="num">YTD spend</th><th class="num">% of total</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Capex (capitalized)</strong></td><td class="num">38</td><td class="num">$22,860</td><td class="num">81%</td></tr>
+              <tr><td><strong>OpEx (expensed)</strong></td><td class="num">82</td><td class="num">$5,282</td><td class="num">19%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+
+      <!-- ERP integrations -->
+      <template v-if="subtab.accounting === 'ERP integrations'">
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label">Active connections</div><div class="kpi-value success">2</div><div class="kpi-sub">QuickBooks · Workday HRIS</div></div>
+          <div class="kpi"><div class="kpi-label">Records synced this Q</div><div class="kpi-value">2,184</div><div class="kpi-sub">JEs + assets + headcount</div></div>
+          <div class="kpi"><div class="kpi-label">Last full sync</div><div class="kpi-value">4 min</div><div class="kpi-sub">auto every 15 min</div></div>
+          <div class="kpi"><div class="kpi-label">Sync errors (24h)</div><div class="kpi-value">0</div><div class="kpi-sub">Last error 9 days ago</div></div>
+        </section>
+        <div class="card"><div class="card-head"><h3 class="card-title">Available integrations</h3><span class="card-sub">One-click OAuth · bi-directional sync · scoped permissions</span></div>
+          <table class="dt"><thead><tr><th>System</th><th>Category</th><th>Status</th><th>Last sync</th><th>Direction</th><th>What syncs</th></tr></thead>
+            <tbody>
+              <tr><td><strong>QuickBooks Online</strong></td><td>Accounting</td><td><span class="p-tag p-tag-success">Connected</span></td><td class="mono">4 min ago</td><td>Both ways</td><td>JEs, GL, AP, vendors</td></tr>
+              <tr><td><strong>Workday Financials</strong></td><td>ERP</td><td><span class="p-tag p-tag-secondary">Available</span></td><td class="mono">—</td><td>Both ways</td><td>JEs, GL, cost centers</td></tr>
+              <tr><td><strong>Workday HRIS</strong></td><td>HRIS</td><td><span class="p-tag p-tag-success">Connected</span></td><td class="mono">2h ago</td><td>Inbound</td><td>Headcount, depts, hires</td></tr>
+              <tr><td><strong>NetSuite</strong></td><td>ERP</td><td><span class="p-tag p-tag-secondary">Available</span></td><td class="mono">—</td><td>Both ways</td><td>Full GL + AP + AR</td></tr>
+              <tr><td><strong>SAP S/4HANA</strong></td><td>ERP</td><td><span class="p-tag p-tag-secondary">Available</span></td><td class="mono">—</td><td>Both ways</td><td>JEs, GL, cost centers, AP</td></tr>
+              <tr><td><strong>Oracle Fusion Cloud</strong></td><td>ERP</td><td><span class="p-tag p-tag-secondary">Available</span></td><td class="mono">—</td><td>Both ways</td><td>JEs, GL, AP</td></tr>
+              <tr><td><strong>Sage Intacct</strong></td><td>Accounting</td><td><span class="p-tag p-tag-secondary">Available</span></td><td class="mono">—</td><td>Both ways</td><td>JEs, GL, depreciation</td></tr>
+              <tr><td><strong>Microsoft Dynamics 365</strong></td><td>ERP</td><td><span class="p-tag p-tag-secondary">Available</span></td><td class="mono">—</td><td>Both ways</td><td>JEs, GL, AP, fixed assets</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card"><div class="card-head"><h3 class="card-title">QuickBooks Online · sync detail</h3><span class="card-sub">corewell-health@quickbooks · connected Apr 12, 2026</span></div>
+          <table class="dt"><thead><tr><th>Object</th><th class="num">Records this Q</th><th>Direction</th><th>Last record</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Journal entries</strong></td><td class="num">147</td><td>Push</td><td class="mono">4 min ago</td><td><span class="p-tag p-tag-success">Healthy</span></td></tr>
+              <tr><td><strong>Fixed assets</strong></td><td class="num">38</td><td>Push</td><td class="mono">6h ago</td><td><span class="p-tag p-tag-success">Healthy</span></td></tr>
+              <tr><td><strong>AP bills (repair)</strong></td><td class="num">29</td><td>Push</td><td class="mono">3d ago</td><td><span class="p-tag p-tag-success">Healthy</span></td></tr>
+              <tr><td><strong>Vendors</strong></td><td class="num">4</td><td>Both</td><td class="mono">2w ago</td><td><span class="p-tag p-tag-success">Healthy</span></td></tr>
+              <tr><td><strong>Chart of accounts</strong></td><td class="num">12 mapped</td><td>Pull</td><td class="mono">2w ago</td><td><span class="p-tag p-tag-success">Healthy</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+
+      <!-- Period close -->
+      <template v-if="subtab.accounting === 'Period close'">
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label">Days until close</div><div class="kpi-value warn">19</div><div class="kpi-sub">Jun 30 · target Jul 5</div></div>
+          <div class="kpi"><div class="kpi-label">JEs to review</div><div class="kpi-value">{{ pendingJEs }}</div><div class="kpi-sub">Click to approve in GL tab</div></div>
+          <div class="kpi"><div class="kpi-label">Reconciliations</div><div class="kpi-value warn">3</div><div class="kpi-sub">GL vs ledger pending</div></div>
+          <div class="kpi"><div class="kpi-label">Sign-offs</div><div class="kpi-value">2 of 4</div><div class="kpi-sub">Controller · CFO pending</div></div>
+        </section>
+        <div class="card"><div class="card-head"><h3 class="card-title">Period close workflow · Q2 2026</h3><span class="card-sub">Each step locks downstream actions when complete</span></div>
+          <table class="dt"><thead><tr><th>Step</th><th>Owner</th><th>Due</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td><strong>1 · Pre-close prep</strong></td><td>Admin Rowe</td><td>Jun 25</td><td><span class="p-tag p-tag-success">Complete</span></td></tr>
+              <tr><td><strong>2 · JE review</strong></td><td>Sarah Park</td><td>Jun 28</td><td><span class="p-tag p-tag-warning">{{ pendingJEs }} pending</span></td></tr>
+              <tr><td><strong>3 · Depreciation run</strong></td><td>System (auto)</td><td>Jun 29</td><td><span class="p-tag p-tag-secondary">Blocked</span></td></tr>
+              <tr><td><strong>4 · Reconciliation</strong></td><td>Accounting team</td><td>Jun 30</td><td><span class="p-tag p-tag-secondary">Blocked</span></td></tr>
+              <tr><td><strong>5 · Controller sign-off</strong></td><td>Controller</td><td>Jul 2</td><td><span class="p-tag p-tag-secondary">Blocked</span></td></tr>
+              <tr><td><strong>6 · CFO sign-off</strong></td><td>CFO</td><td>Jul 4</td><td><span class="p-tag p-tag-secondary">Blocked</span></td></tr>
+              <tr><td><strong>7 · Period locked</strong></td><td>System (auto)</td><td>Jul 5</td><td><span class="p-tag p-tag-secondary">Blocked</span></td></tr>
+            </tbody>
+          </table>
+          <div class="card-foot"><span>2 of 7 steps complete · on schedule</span><strong style="margin-left:auto;">Forecast close: Jul 5 (on target)</strong></div>
+        </div>
+        <div class="card"><div class="card-head"><h3 class="card-title">Reconciliation status</h3></div>
+          <table class="dt"><thead><tr><th>Account</th><th class="num">Ledger balance</th><th class="num">GL balance</th><th class="num">Variance</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td><strong>1520 · IT Equipment</strong></td><td class="num">$56,288</td><td class="num">$56,288</td><td class="num" style="color:var(--c-success);">$0</td><td><span class="p-tag p-tag-success">Reconciled</span></td></tr>
+              <tr><td><strong>1521 · Accum. Depr.</strong></td><td class="num">$18,762</td><td class="num">$18,762</td><td class="num" style="color:var(--c-success);">$0</td><td><span class="p-tag p-tag-success">Reconciled</span></td></tr>
+              <tr><td><strong>5410 · Equipment Repair</strong></td><td class="num">$3,481</td><td class="num">$3,565</td><td class="num" style="color:var(--c-warning-text);">-$84</td><td><span class="p-tag p-tag-warning">Investigating</span></td></tr>
+              <tr><td><strong>5650 · Loss on Asset</strong></td><td class="num">$8,876</td><td class="num">$8,876</td><td class="num" style="color:var(--c-success);">$0</td><td><span class="p-tag p-tag-success">Reconciled</span></td></tr>
+              <tr><td><strong>1380 · Internal Chargeback</strong></td><td class="num">$10,632</td><td class="num">$10,632</td><td class="num" style="color:var(--c-success);">$0</td><td><span class="p-tag p-tag-success">Reconciled</span></td></tr>
+            </tbody>
+          </table>
+          <div class="card-foot"><span>4 of 5 reconciled · 1 minor variance</span><strong style="margin-left:auto;">$ flow reconciled $98,039</strong></div>
+        </div>
+      </template>
+    </section>
+
+    <!-- =================== INVENTORY (7 sub-tabs) =================== -->
+    <section v-if="activePane === 'inventory'">
+      <header class="page-head">
+        <div style="flex:1;"><h1 class="page-title">Inventory</h1><p class="page-sub">Procurement · transfers · disposal · warranty · {{ openPOs }} open POs ({{ fmt.money(poCommitted) }})</p></div>
+        <button class="p-button" @click="openAddTransfer"><i class="pi pi-arrow-right-arrow-left"></i>New transfer</button>
+        <button class="p-button p-button-primary" @click="openAddPO"><i class="pi pi-plus"></i>New PO</button>
+      </header>
+      <div class="pivot-bar"><button v-for="t in SUBTABS.inventory" :key="t" class="pivot-btn" :class="{active: subtab.inventory === t}" @click="subtab.inventory = t">{{ t }}</button></div>
+
+      <template v-if="subtab.inventory === 'By locker'">
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label">Total in lockers</div><div class="kpi-value">$56,685</div><div class="kpi-sub">113 devices</div></div>
+          <div class="kpi"><div class="kpi-label">iPhone 16e</div><div class="kpi-value">$42,529</div><div class="kpi-sub">71 × $599</div></div>
+          <div class="kpi"><div class="kpi-label">AiRista badges</div><div class="kpi-value">$4,250</div><div class="kpi-sub">50 × $85</div></div>
+          <div class="kpi"><div class="kpi-label">Other models</div><div class="kpi-value">$9,906</div><div class="kpi-sub">12 devices · 3 models</div></div>
+        </section>
+        <div class="card"><div class="card-head"><h3 class="card-title">Value by locker</h3><span class="card-sub">Click locker for per-bay detail</span></div>
+          <table class="dt"><thead><tr><th>Locker</th><th>Location</th><th class="num">Bays</th><th class="num">iPhone</th><th class="num">AiRista</th><th class="num">Other</th><th class="num">Total</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Pink8</strong></td><td>Troy ER</td><td class="num">8</td><td class="num">5 ($2,995)</td><td class="num">2 ($170)</td><td class="num">1 ($549)</td><td class="num"><strong>$3,714</strong></td></tr>
+              <tr><td><strong>Green1</strong></td><td>Troy ICU</td><td class="num">8</td><td class="num">6 ($3,594)</td><td class="num">2 ($170)</td><td class="num">0</td><td class="num"><strong>$3,764</strong></td></tr>
+              <tr><td><strong>Blue3</strong></td><td>Royal Oak Radiology</td><td class="num">32</td><td class="num">22 ($13,178)</td><td class="num">8 ($680)</td><td class="num">2 ($1,098)</td><td class="num"><strong>$14,956</strong></td></tr>
+              <tr><td><strong>Beaumont1</strong></td><td>Beaumont Main</td><td class="num">32</td><td class="num">25 ($14,975)</td><td class="num">20 ($1,700)</td><td class="num">9 ($7,862)</td><td class="num"><strong>$24,537</strong></td></tr>
+              <tr><td><strong>HQ Test</strong></td><td>HQ Lab</td><td class="num">8</td><td class="num">13 ($7,787)</td><td class="num">18 ($1,530)</td><td class="num">0</td><td class="num"><strong>$9,317</strong></td></tr>
+            </tbody>
+          </table>
+          <div class="card-foot"><span>Fleet total · 88 bays · 113 devices</span><strong style="margin-left:auto;">$56,685</strong></div>
+        </div>
+      </template>
+
+      <template v-if="subtab.inventory === 'By location'">
+        <div class="card"><div class="card-head"><h3 class="card-title">Value by location</h3></div>
+          <table class="dt"><thead><tr><th>Location</th><th class="num">Lockers</th><th class="num">Bays</th><th class="num">Devices</th><th class="num">iPhone</th><th class="num">AiRista</th><th class="num">Other</th><th class="num">Total</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Beaumont Main</strong></td><td class="num">1</td><td class="num">32</td><td class="num">54</td><td class="num">$14,975</td><td class="num">$1,700</td><td class="num">$7,862</td><td class="num"><strong>$24,537</strong></td></tr>
+              <tr><td><strong>Royal Oak Radiology</strong></td><td class="num">1</td><td class="num">32</td><td class="num">32</td><td class="num">$13,178</td><td class="num">$680</td><td class="num">$1,098</td><td class="num"><strong>$14,956</strong></td></tr>
+              <tr><td><strong>HQ Lab</strong></td><td class="num">1</td><td class="num">8</td><td class="num">31</td><td class="num">$7,787</td><td class="num">$1,530</td><td class="num">$0</td><td class="num"><strong>$9,317</strong></td></tr>
+              <tr><td><strong>Troy ICU</strong></td><td class="num">1</td><td class="num">8</td><td class="num">8</td><td class="num">$3,594</td><td class="num">$170</td><td class="num">$0</td><td class="num"><strong>$3,764</strong></td></tr>
+              <tr><td><strong>Troy ER</strong></td><td class="num">1</td><td class="num">8</td><td class="num">8</td><td class="num">$2,995</td><td class="num">$170</td><td class="num">$549</td><td class="num"><strong>$3,714</strong></td></tr>
+            </tbody>
+          </table>
+          <div class="card-foot"><strong style="margin-left:auto;">$56,288 total</strong></div>
+        </div>
+      </template>
+
+      <template v-if="subtab.inventory === 'By model'">
+        <div class="card"><div class="card-head"><h3 class="card-title">Value by device model</h3></div>
+          <table class="dt"><thead><tr><th>Model</th><th class="num">In service</th><th class="num">In lockers</th><th class="num">In use</th><th class="num">In repair</th><th class="num">Replace cost</th><th class="num">Total value</th></tr></thead>
+            <tbody>
+              <tr><td><strong>iPhone 16e</strong></td><td class="num">71</td><td class="num">63</td><td class="num">6</td><td class="num">2</td><td class="num">$599</td><td class="num"><strong>$42,529</strong></td></tr>
+              <tr><td><strong>AiRista badge</strong></td><td class="num">50</td><td class="num">42</td><td class="num">7</td><td class="num">1</td><td class="num">$85</td><td class="num"><strong>$4,250</strong></td></tr>
+              <tr><td><strong>Pixel 8 Pro</strong></td><td class="num">4</td><td class="num">3</td><td class="num">1</td><td class="num">0</td><td class="num">$999</td><td class="num"><strong>$3,996</strong></td></tr>
+              <tr><td><strong>ChromeBook X360</strong></td><td class="num">2</td><td class="num">2</td><td class="num">0</td><td class="num">0</td><td class="num">$549</td><td class="num"><strong>$1,098</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+
+      <template v-if="subtab.inventory === 'Forecast & EOL'">
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label">Reaching EOL this year</div><div class="kpi-value">14</div><div class="kpi-sub">$8,386 to replace</div></div>
+          <div class="kpi"><div class="kpi-label">Forecast 12mo spend</div><div class="kpi-value">$12,940</div><div class="kpi-sub">Refresh + projected loss</div></div>
+          <div class="kpi"><div class="kpi-label">Avg device age</div><div class="kpi-value">17 mo</div><div class="kpi-sub">iPhone · 24mo target</div></div>
+          <div class="kpi"><div class="kpi-label">Refresh cycle</div><div class="kpi-value">36 mo</div><div class="kpi-sub">Next refresh Q1 2027</div></div>
+        </section>
+        <div class="card"><div class="card-head"><h3 class="card-title">EOL forecast</h3></div>
+          <table class="dt"><thead><tr><th>Model</th><th class="num">Units at EOL</th><th>EOL date</th><th>Replacement</th><th class="num">$ Total</th><th>Budget Q</th></tr></thead>
+            <tbody>
+              <tr><td><strong>iPhone 16e (batch A)</strong></td><td class="num">12</td><td>Sep 2026</td><td>iPhone 17e</td><td class="num">$7,188</td><td>Q3 2026</td></tr>
+              <tr><td><strong>AiRista badge (v1)</strong></td><td class="num">8</td><td>Dec 2026</td><td>AiRista v2</td><td class="num">$680</td><td>Q4 2026</td></tr>
+              <tr><td><strong>ChromeBook X360</strong></td><td class="num">2</td><td>Mar 2027</td><td>Chromebook X380</td><td class="num">$1,198</td><td>Q1 2027</td></tr>
+              <tr><td><strong>iPhone 16e (batch B)</strong></td><td class="num">22</td><td>Apr 2027</td><td>iPhone 17e</td><td class="num">$13,178</td><td>Q2 2027</td></tr>
+            </tbody>
+          </table>
+          <div class="card-foot"><strong style="margin-left:auto;">$22,244 replacement spend forecast</strong></div>
+        </div>
+      </template>
+
+      <template v-if="subtab.inventory === 'Procurement'">
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label">Open POs</div><div class="kpi-value">{{ openPOs }}</div><div class="kpi-sub">{{ fmt.money(poCommitted) }} committed</div></div>
+          <div class="kpi"><div class="kpi-label">Items on order</div><div class="kpi-value">{{ state.purchaseOrders.reduce((s,p) => s + p.qty, 0) }}</div><div class="kpi-sub">{{ new Set(state.purchaseOrders.map(p => p.vendor)).size }} vendors</div></div>
+          <div class="kpi"><div class="kpi-label">Avg lead time</div><div class="kpi-value">9d</div><div class="kpi-sub">Target 10d</div></div>
+          <div class="kpi"><div class="kpi-label">PO spend YTD</div><div class="kpi-value">$22,860</div><div class="kpi-sub">36% of annual budget</div></div>
+        </section>
+        <div class="card"><div class="card-head"><h3 class="card-title">Open purchase orders</h3><button class="p-button p-button-primary p-button-xs" style="margin-left:auto;" @click="openAddPO"><i class="pi pi-plus"></i>New PO</button></div>
+          <table class="dt"><thead><tr><th>PO #</th><th>Vendor</th><th>Item</th><th class="num">Qty</th><th class="num">Total</th><th>Status</th><th>Expected</th></tr></thead>
+            <tbody>
+              <tr v-for="po in state.purchaseOrders" :key="po.id">
+                <td><strong>{{ po.id }}</strong></td><td>{{ po.vendor }}</td><td>{{ po.item }}</td>
+                <td class="num">{{ po.qty }}</td><td class="num">{{ fmt.money(po.total_cents) }}</td>
+                <td><span class="p-tag" :class="po.status.includes('Shipped') ? 'p-tag-info' : po.status.includes('Approved') ? 'p-tag-warning' : po.status.includes('Draft') ? 'p-tag-secondary' : 'p-tag-warning'">{{ po.status }}</span></td>
+                <td>{{ po.expected }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+
+      <template v-if="subtab.inventory === 'Transfers & disposal'">
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label">Transfers this Q</div><div class="kpi-value">{{ state.transfers.length }}</div><div class="kpi-sub">All locations</div></div>
+          <div class="kpi"><div class="kpi-label">In transit now</div><div class="kpi-value">{{ transfersInTransit }}</div><div class="kpi-sub">Avg 2.1 days</div></div>
+          <div class="kpi"><div class="kpi-label">Decommissioned YTD</div><div class="kpi-value">11</div><div class="kpi-sub">$2,892 disposed</div></div>
+          <div class="kpi"><div class="kpi-label">E-waste pending</div><div class="kpi-value warn">4</div><div class="kpi-sub">Vendor pickup Fri</div></div>
+        </section>
+        <div class="card"><div class="card-head"><h3 class="card-title">Asset transfers · chain of custody</h3><button class="p-button p-button-primary p-button-xs" style="margin-left:auto;" @click="openAddTransfer"><i class="pi pi-plus"></i>New transfer</button></div>
+          <table class="dt"><thead><tr><th>Asset</th><th>From</th><th>To</th><th>Reason</th><th>Released by</th><th>Received by</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr v-for="t in state.transfers" :key="t.id">
+                <td><strong>{{ t.asset }}</strong></td><td>{{ t.from }}</td><td>{{ t.to }}</td><td>{{ t.reason }}</td>
+                <td>{{ t.released_by }}</td><td>{{ t.received_by || '—' }}</td>
+                <td><span class="p-tag" :class="t.status.includes('Delivered') ? 'p-tag-success' : 'p-tag-warning'">{{ t.status }}</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card"><div class="card-head"><h3 class="card-title">Disposal queue · secure wipe → e-waste</h3></div>
+          <table class="dt"><thead><tr><th>Asset</th><th>Reason</th><th>Wipe certified</th><th>Vendor</th><th>Pickup</th><th>Cert of destruction</th></tr></thead>
+            <tbody>
+              <tr><td><strong>iPhone 16e #11 (replaced)</strong></td><td>EOL · replaced</td><td><span class="p-tag p-tag-success">Yes · Apr 12</span></td><td>GreenTech eRecycle</td><td>Fri Jun 13</td><td><span class="p-tag p-tag-secondary">Pending</span></td></tr>
+              <tr><td><strong>iPhone 16e #04 (lost · written off)</strong></td><td>Lost &gt; 90d</td><td class="mono">N/A · physical loss</td><td class="mono">—</td><td class="mono">—</td><td><span class="p-tag p-tag-success">Auto-cleared</span></td></tr>
+              <tr><td><strong>AiRista #03 (damaged)</strong></td><td>Damage · BER</td><td><span class="p-tag p-tag-success">Yes · May 28</span></td><td>GreenTech eRecycle</td><td>Fri Jun 13</td><td><span class="p-tag p-tag-secondary">Pending</span></td></tr>
+              <tr><td><strong>ChromeBook X360 #1</strong></td><td>EOL pilot</td><td><span class="p-tag p-tag-warning">Scheduled Jun 12</span></td><td>GreenTech eRecycle</td><td>Fri Jun 13</td><td><span class="p-tag p-tag-secondary">Pending</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+
+      <template v-if="subtab.inventory === 'Warranty & audits'">
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label">Under warranty</div><div class="kpi-value">94</div><div class="kpi-sub">74% of fleet</div></div>
+          <div class="kpi"><div class="kpi-label">Expiring 90d</div><div class="kpi-value warn">12</div><div class="kpi-sub">Plan extension or replace</div></div>
+          <div class="kpi"><div class="kpi-label">Last physical audit</div><div class="kpi-value">Mar 2026</div><div class="kpi-sub">99.2% reconciled</div></div>
+          <div class="kpi"><div class="kpi-label">Audit gaps</div><div class="kpi-value">1</div><div class="kpi-sub">PHN-0017 · last seen 14d</div></div>
+        </section>
+        <div class="card"><div class="card-head"><h3 class="card-title">Warranty coverage by asset class</h3></div>
+          <table class="dt"><thead><tr><th>Asset class</th><th class="num">Units</th><th>Mfr warranty</th><th>Extended plan</th><th class="num">Expiring 90d</th><th class="num">Claims YTD</th></tr></thead>
+            <tbody>
+              <tr><td><strong>iPhone 16e</strong></td><td class="num">71</td><td>12mo · Apple</td><td>AppleCare+ on 38 · $199/dev</td><td class="num" style="color:var(--c-warning-text);">7</td><td class="num">3 ($1,047)</td></tr>
+              <tr><td><strong>AiRista badge</strong></td><td class="num">50</td><td>24mo · AiRista</td><td class="mono">—</td><td class="num">3</td><td class="num">2 ($170)</td></tr>
+              <tr><td><strong>Pixel 8 Pro</strong></td><td class="num">4</td><td>12mo · Google</td><td>Google Preferred Care · 4 of 4</td><td class="num">0</td><td class="num">0</td></tr>
+              <tr><td><strong>ChromeBook X360</strong></td><td class="num">2</td><td>12mo · HP</td><td>HP Care Pack · 0 of 2</td><td class="num">2</td><td class="num">0</td></tr>
+            </tbody>
+          </table>
+          <div class="card-foot"><strong style="margin-left:auto;">Warranty value $11,640 · claims paid $1,217</strong></div>
+        </div>
+        <div class="card"><div class="card-head"><h3 class="card-title">Physical audit history</h3></div>
+          <table class="dt"><thead><tr><th>Audit</th><th>Date</th><th>Scope</th><th class="num">Expected</th><th class="num">Found</th><th class="num">Reconciled</th><th>Gap</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Q2 2026 spot</strong></td><td>Mar 18, 2026</td><td>All locations</td><td class="num">128</td><td class="num">127</td><td class="num">99.2%</td><td>1 (PHN-0017)</td></tr>
+              <tr><td><strong>Annual 2025</strong></td><td>Dec 14, 2025</td><td>All locations</td><td class="num">124</td><td class="num">123</td><td class="num">99.2%</td><td>1 (later recovered)</td></tr>
+              <tr><td><strong>Q3 2025 spot</strong></td><td>Sep 22, 2025</td><td>Troy ER + ICU</td><td class="num">16</td><td class="num">16</td><td class="num">100%</td><td>0</td></tr>
+              <tr><td><strong>Q2 2025 spot</strong></td><td>Jun 5, 2025</td><td>Beaumont + Royal Oak</td><td class="num">64</td><td class="num">63</td><td class="num">98.4%</td><td>1 (resolved next day)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+    </section>
+
+    <!-- =================== LOSS & DAMAGE (4 sub-tabs) =================== -->
+    <section v-if="activePane === 'loss'">
+      <header class="page-head">
+        <div style="flex:1;"><h1 class="page-title">Loss &amp; damage</h1><p class="page-sub">Pivot, drill, and export · automatic chargebacks via cost-center mapping</p></div>
+        <button class="p-button p-button-text"><i class="pi pi-download"></i>Export</button>
+      </header>
+      <div class="pivot-bar"><button v-for="t in SUBTABS.loss" :key="t" class="pivot-btn" :class="{active: subtab.loss === t}" @click="subtab.loss = t">{{ t }}</button></div>
+
+      <template v-if="subtab.loss === 'By user'">
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label">Lost YTD</div><div class="kpi-value danger">11</div><div class="kpi-sub">$8,876 replacement</div></div>
+          <div class="kpi"><div class="kpi-label">Damaged YTD</div><div class="kpi-value warn">18</div><div class="kpi-sub">$2,108 cost</div></div>
+          <div class="kpi"><div class="kpi-label">Recovered</div><div class="kpi-value success">7</div><div class="kpi-sub">$3,210 captured</div></div>
+          <div class="kpi"><div class="kpi-label">Repeat offenders</div><div class="kpi-value">3</div><div class="kpi-sub">≥ 3 incidents · blocked</div></div>
+        </section>
+        <div class="card"><div class="card-head"><h3 class="card-title">High-risk users</h3></div>
+          <table class="dt"><thead><tr><th>User</th><th>Department</th><th class="num">Lost</th><th class="num">Damaged</th><th class="num">$ Lifetime</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><strong>Crosby Smith</strong></td><td>ER North</td><td class="num">2 ($1,198)</td><td class="num">1 ($89)</td><td class="num"><strong>$1,247</strong></td><td><span class="p-tag p-tag-danger">Blocked</span></td><td><button class="p-button p-button-xs" @click="showToast('success','Charged','Chargeback queued')">Charge dept</button></td></tr>
+              <tr><td><strong>Lauren Davis</strong></td><td>Nursing</td><td class="num">0</td><td class="num">4 ($782)</td><td class="num"><strong>$1,089</strong></td><td><span class="p-tag p-tag-warning">Approval req</span></td><td><button class="p-button p-button-xs" @click="showToast('success','Charged','Chargeback queued')">Charge dept</button></td></tr>
+              <tr><td><strong>Natashalee Vargas</strong></td><td>ER North</td><td class="num">1 ($599)</td><td class="num">0</td><td class="num"><strong>$599</strong></td><td><span class="p-tag p-tag-warning">Approval req</span></td><td><button class="p-button p-button-xs" @click="showToast('success','Charged','Chargeback queued')">Charge dept</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+
+      <template v-if="subtab.loss === 'By department'">
+        <div class="card"><div class="card-head"><h3 class="card-title">Loss & damage by department</h3></div>
+          <table class="dt"><thead><tr><th>Department</th><th class="num">Users</th><th class="num">Lost</th><th class="num">Damaged</th><th class="num">$ This Q</th><th class="num">$ Lifetime</th><th>Trend</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Emergency Medicine</strong></td><td class="num">48</td><td class="num">7 ($4,193)</td><td class="num">3 ($267)</td><td class="num" style="color:var(--c-danger);">$4,375</td><td class="num"><strong>$8,940</strong></td><td><span class="p-tag p-tag-warning">▲ +18%</span></td></tr>
+              <tr><td><strong>Nursing</strong></td><td class="num">96</td><td class="num">3 ($1,797)</td><td class="num">9 ($1,225)</td><td class="num" style="color:var(--c-warning-text);">$2,852</td><td class="num"><strong>$5,610</strong></td><td><span class="p-tag p-tag-secondary">— flat</span></td></tr>
+              <tr><td><strong>Security / Facilities</strong></td><td class="num">22</td><td class="num">4 ($425)</td><td class="num">3 ($98)</td><td class="num">$438</td><td class="num"><strong>$1,290</strong></td><td><span class="p-tag p-tag-success">▼ -6%</span></td></tr>
+              <tr><td><strong>Radiology</strong></td><td class="num">31</td><td class="num">1 ($599)</td><td class="num">2 ($358)</td><td class="num">$957</td><td class="num"><strong>$2,140</strong></td><td><span class="p-tag p-tag-secondary">— flat</span></td></tr>
+              <tr><td><strong>Admin / HR</strong></td><td class="num">17</td><td class="num">2 ($170)</td><td class="num">0</td><td class="num">$170</td><td class="num"><strong>$170</strong></td><td><span class="p-tag p-tag-success">▼ -50%</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+
+      <template v-if="subtab.loss === 'By location'">
+        <div class="card"><div class="card-head"><h3 class="card-title">Loss & damage by location</h3></div>
+          <table class="dt"><thead><tr><th>Location</th><th class="num">Lockers</th><th class="num">Users</th><th class="num">Lost</th><th class="num">Damaged</th><th class="num">$ This Q</th><th>Top model lost</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Troy ER</strong></td><td class="num">2</td><td class="num">68</td><td class="num">5 ($2,995)</td><td class="num">4 ($358)</td><td class="num" style="color:var(--c-danger);">$3,353</td><td>iPhone 16e (5)</td></tr>
+              <tr><td><strong>Troy ICU</strong></td><td class="num">1</td><td class="num">42</td><td class="num">3 ($1,797)</td><td class="num">3 ($267)</td><td class="num" style="color:var(--c-warning-text);">$2,064</td><td>iPhone 16e (3)</td></tr>
+              <tr><td><strong>Royal Oak Rad</strong></td><td class="num">1</td><td class="num">31</td><td class="num">2 ($1,198)</td><td class="num">3 ($268)</td><td class="num" style="color:var(--c-warning-text);">$1,466</td><td>iPhone 16e (2)</td></tr>
+              <tr><td><strong>Beaumont Main</strong></td><td class="num">3</td><td class="num">87</td><td class="num">7 ($1,210)</td><td class="num">5 ($425)</td><td class="num" style="color:var(--c-warning-text);">$1,635</td><td>AiRista (4)</td></tr>
+              <tr><td><strong>HQ Lab</strong></td><td class="num">1</td><td class="num">7</td><td class="num">0</td><td class="num">1 ($66)</td><td class="num">$66</td><td class="mono">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+
+      <template v-if="subtab.loss === 'By model'">
+        <div class="card"><div class="card-head"><h3 class="card-title">Loss & damage by device model</h3></div>
+          <table class="dt"><thead><tr><th>Model</th><th class="num">In service</th><th class="num">Lost</th><th class="num">Damaged</th><th class="num">Recovered</th><th class="num">$ This Q</th><th>Loss rate</th></tr></thead>
+            <tbody>
+              <tr><td><strong>iPhone 16e</strong></td><td class="num">71</td><td class="num">13 ($7,787)</td><td class="num">11 ($1,964)</td><td class="num">3 ($1,797)</td><td class="num" style="color:var(--c-danger);">$7,954</td><td><span class="p-tag p-tag-danger">18.3%</span></td></tr>
+              <tr><td><strong>AiRista badge</strong></td><td class="num">50</td><td class="num">4 ($340)</td><td class="num">7 ($595)</td><td class="num">1 ($85)</td><td class="num" style="color:var(--c-warning-text);">$850</td><td><span class="p-tag p-tag-warning">8.0%</span></td></tr>
+              <tr><td><strong>Pixel 8 Pro</strong></td><td class="num">4</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">$0</td><td><span class="p-tag p-tag-success">0%</span></td></tr>
+              <tr><td><strong>ChromeBook X360</strong></td><td class="num">2</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">$0</td><td><span class="p-tag p-tag-success">0%</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+    </section>
+
+    <!-- =================== REPAIR (5 sub-tabs) =================== -->
+    <section v-if="activePane === 'repair'">
+      <header class="page-head">
+        <div style="flex:1;"><h1 class="page-title">Repair tracker</h1><p class="page-sub">Queue · pipeline · vendors · cost analytics</p></div>
+        <button class="p-button p-button-primary" @click="showToast('info','Intake form','POST /api/devices/{id}/repairs')"><i class="pi pi-plus"></i>Intake device</button>
+      </header>
+      <div class="pivot-bar"><button v-for="t in SUBTABS.repair" :key="t" class="pivot-btn" :class="{active: subtab.repair === t}" @click="subtab.repair = t">{{ t }}</button></div>
+
+      <template v-if="subtab.repair === 'Queue'">
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label">In pipeline</div><div class="kpi-value">7</div><div class="kpi-sub">3 queued · 3 in repair · 1 ready</div></div>
+          <div class="kpi"><div class="kpi-label">Avg repair</div><div class="kpi-value">$142</div><div class="kpi-sub">vs $599 replace · 76% savings</div></div>
+          <div class="kpi"><div class="kpi-label">Repaired this Q</div><div class="kpi-value success">68%</div><div class="kpi-sub">vs 32% replaced</div></div>
+          <div class="kpi"><div class="kpi-label">Saved this Q</div><div class="kpi-value success">$22,654</div><div class="kpi-sub">vs replace-all</div></div>
+        </section>
+        <div class="card"><div class="card-head"><h3 class="card-title">Repair queue</h3></div>
+          <table class="dt"><thead><tr><th>Device</th><th>Components</th><th>Returned by</th><th class="num">Cost est.</th><th>Stage</th><th>Vendor</th></tr></thead>
+            <tbody>
+              <tr><td><strong>iPhone 16e #15</strong></td><td>Screen + port</td><td>Lauren Davis</td><td class="num">$268</td><td><span class="p-tag p-tag-secondary">Queued</span></td><td class="mono">—</td></tr>
+              <tr><td><strong>iPhone 16e #03</strong></td><td>Charging port</td><td>Crosby Smith</td><td class="num">$89</td><td><span class="p-tag p-tag-secondary">Queued</span></td><td class="mono">—</td></tr>
+              <tr><td><strong>iPhone 16e #11</strong></td><td>Port + battery</td><td>Lauren Davis</td><td class="num">$154</td><td><span class="p-tag p-tag-info">In repair</span></td><td>TechFix Co.</td></tr>
+              <tr><td><strong>iPhone 16e #07</strong></td><td>Screen</td><td>Crosby Smith</td><td class="num">$179</td><td><span class="p-tag p-tag-info">In repair</span></td><td>TechFix Co.</td></tr>
+              <tr><td><strong>iPhone 16e #22</strong></td><td>Screen</td><td>Casandra W.</td><td class="num">$179</td><td><span class="p-tag p-tag-success">Ready</span></td><td>TechFix Co.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+
+      <template v-if="subtab.repair === 'Pipeline'">
+        <section class="kpis kpis-5" style="grid-template-columns:repeat(5,1fr);">
+          <div class="kpi"><div class="kpi-label">Intake</div><div class="kpi-value">3</div><div class="kpi-sub">Awaiting triage</div></div>
+          <div class="kpi"><div class="kpi-label">In repair</div><div class="kpi-value">3</div><div class="kpi-sub">Avg 4.2d in stage</div></div>
+          <div class="kpi"><div class="kpi-label">QC</div><div class="kpi-value">1</div><div class="kpi-sub">Quality check</div></div>
+          <div class="kpi"><div class="kpi-label">Ready</div><div class="kpi-value success">1</div><div class="kpi-sub">Ready to redeploy</div></div>
+          <div class="kpi"><div class="kpi-label">Closed Q</div><div class="kpi-value">33</div><div class="kpi-sub">68% repaired</div></div>
+        </section>
+        <div class="card"><div class="card-head"><h3 class="card-title">In-pipeline detail</h3></div>
+          <table class="dt"><thead><tr><th>Device</th><th>Component</th><th>Stage</th><th class="num">Days in stage</th><th>Vendor</th><th>ETA</th></tr></thead>
+            <tbody>
+              <tr><td><strong>iPhone 16e #15</strong></td><td>Screen + port</td><td><span class="p-tag p-tag-secondary">Intake</span></td><td class="num">1d</td><td class="mono">—</td><td>Jun 14</td></tr>
+              <tr><td><strong>iPhone 16e #03</strong></td><td>Charging port</td><td><span class="p-tag p-tag-secondary">Intake</span></td><td class="num">2d</td><td class="mono">—</td><td>Jun 13</td></tr>
+              <tr><td><strong>AiRista badge #07</strong></td><td>Strap</td><td><span class="p-tag p-tag-secondary">Intake</span></td><td class="num">2d</td><td>In-house IT</td><td>Jun 11</td></tr>
+              <tr><td><strong>iPhone 16e #11</strong></td><td>Port + battery</td><td><span class="p-tag p-tag-info">In repair</span></td><td class="num">4d</td><td>TechFix Co.</td><td>Jun 12</td></tr>
+              <tr><td><strong>iPhone 16e #07</strong></td><td>Screen</td><td><span class="p-tag p-tag-info">In repair</span></td><td class="num">4d</td><td>TechFix Co.</td><td>Jun 12</td></tr>
+              <tr><td><strong>AiRista badge #14</strong></td><td>Battery</td><td><span class="p-tag p-tag-warning">QC</span></td><td class="num">1d</td><td>AiRista Direct</td><td>Jun 10</td></tr>
+              <tr><td><strong>iPhone 16e #22</strong></td><td>Screen</td><td><span class="p-tag p-tag-success">Ready</span></td><td class="num">2d</td><td>TechFix Co.</td><td>Today</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+
+      <template v-if="subtab.repair === 'Vendors'">
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label">Active vendors</div><div class="kpi-value">4</div><div class="kpi-sub">All under contract</div></div>
+          <div class="kpi"><div class="kpi-label">Avg turnaround</div><div class="kpi-value">5.4d</div><div class="kpi-sub">Target 7d</div></div>
+          <div class="kpi"><div class="kpi-label">Spend this Q</div><div class="kpi-value">$4,306</div><div class="kpi-sub">vs $30K replace</div></div>
+          <div class="kpi"><div class="kpi-label">Avg rating</div><div class="kpi-value success">4.5★</div><div class="kpi-sub">29 repairs this Q</div></div>
+        </section>
+        <div class="card"><div class="card-head"><h3 class="card-title">Repair vendors</h3></div>
+          <table class="dt"><thead><tr><th>Vendor</th><th>Models supported</th><th>Avg turnaround</th><th class="num">Repairs this Q</th><th class="num">Spend this Q</th><th>Rating</th><th>Contract ends</th></tr></thead>
+            <tbody>
+              <tr><td><strong>TechFix Co.</strong></td><td>iPhone 16e · Pixel 8 Pro</td><td>5–7 days</td><td class="num">18</td><td class="num">$3,481</td><td>★★★★ 4.2</td><td>Dec 2026</td></tr>
+              <tr><td><strong>AiRista Direct</strong></td><td>AiRista badges</td><td>3–5 days</td><td class="num">9</td><td class="num">$285</td><td>★★★★★ 4.8</td><td>Mar 2027</td></tr>
+              <tr><td><strong>Apple Authorized</strong></td><td>iPhone 16e</td><td>10–14 days</td><td class="num">2</td><td class="num">$540</td><td>★★★★★ 5.0</td><td>Open MSA</td></tr>
+              <tr><td><strong>In-house IT</strong></td><td>All models</td><td>1–2 days</td><td class="num">4</td><td class="num">$0</td><td class="mono">—</td><td class="mono">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+
+      <template v-if="subtab.repair === 'Cost analytics'">
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label">Saved this Q</div><div class="kpi-value success">$22,654</div><div class="kpi-sub">vs replace-all baseline</div></div>
+          <div class="kpi"><div class="kpi-label">Avg repair</div><div class="kpi-value">$142</div><div class="kpi-sub">vs $599 · 76% savings</div></div>
+          <div class="kpi"><div class="kpi-label">Repair rate</div><div class="kpi-value success">68%</div><div class="kpi-sub">vs 32% replaced</div></div>
+          <div class="kpi"><div class="kpi-label">Forecast next month</div><div class="kpi-value">$1,820</div><div class="kpi-sub">8-week trend</div></div>
+        </section>
+        <div class="card"><div class="card-head"><h3 class="card-title">Cost by component</h3></div>
+          <table class="dt"><thead><tr><th>Component</th><th class="num">Repairs this Q</th><th class="num">Avg cost</th><th class="num">Total spend</th><th class="num">Replace cost</th><th class="num">Saved</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Screen</strong></td><td class="num">14</td><td class="num">$179</td><td class="num">$2,506</td><td class="num">$8,386</td><td class="num" style="color:var(--c-success);"><strong>$5,880</strong></td></tr>
+              <tr><td><strong>Charging port</strong></td><td class="num">9</td><td class="num">$89</td><td class="num">$801</td><td class="num">$5,391</td><td class="num" style="color:var(--c-success);"><strong>$4,590</strong></td></tr>
+              <tr><td><strong>Battery</strong></td><td class="num">4</td><td class="num">$54</td><td class="num">$216</td><td class="num">$2,396</td><td class="num" style="color:var(--c-success);"><strong>$2,180</strong></td></tr>
+              <tr><td><strong>AiRista strap</strong></td><td class="num">6</td><td class="num">$12</td><td class="num">$72</td><td class="num">$510</td><td class="num" style="color:var(--c-success);"><strong>$438</strong></td></tr>
+            </tbody>
+          </table>
+          <div class="card-foot"><strong style="margin-left:auto;">$13,088 net savings</strong></div>
+        </div>
+      </template>
+
+      <template v-if="subtab.repair === 'Component catalog'">
+        <div class="card"><div class="card-head"><h3 class="card-title">Component catalog · pricing + lead times</h3></div>
+          <table class="dt"><thead><tr><th>Component</th><th>Compatible models</th><th>Vendor</th><th class="num">Unit cost</th><th>Lead time</th><th class="num">In stock</th><th class="num">Reorder pt</th></tr></thead>
+            <tbody>
+              <tr><td><strong>iPhone 16e screen</strong></td><td>iPhone 16e</td><td>TechFix Co.</td><td class="num">$179</td><td>3–5 days</td><td class="num">4</td><td class="num">3</td></tr>
+              <tr><td><strong>iPhone 16e charging port</strong></td><td>iPhone 16e</td><td>TechFix Co.</td><td class="num">$89</td><td>2–3 days</td><td class="num">6</td><td class="num">2</td></tr>
+              <tr><td><strong>iPhone 16e battery</strong></td><td>iPhone 16e</td><td>Apple Authorized</td><td class="num">$54</td><td>5–7 days</td><td class="num">2</td><td class="num">2</td></tr>
+              <tr><td><strong>AiRista strap</strong></td><td>AiRista badge</td><td>AiRista Direct</td><td class="num">$12</td><td>1–2 days</td><td class="num">28</td><td class="num">10</td></tr>
+              <tr><td><strong>AiRista battery</strong></td><td>AiRista badge</td><td>AiRista Direct</td><td class="num">$25</td><td>3 days</td><td class="num">9</td><td class="num">5</td></tr>
+              <tr><td><strong>Pixel 8 Pro screen</strong></td><td>Pixel 8 Pro</td><td>TechFix Co.</td><td class="num">$269</td><td>7–10 days</td><td class="num">0</td><td class="num">1</td></tr>
+              <tr><td><strong>Pixel 8 Pro battery</strong></td><td>Pixel 8 Pro</td><td>TechFix Co.</td><td class="num">$78</td><td>5 days</td><td class="num">1</td><td class="num">1</td></tr>
+              <tr><td><strong>ChromeBook screen</strong></td><td>ChromeBook X360</td><td>HP Direct</td><td class="num">$148</td><td>10–14 days</td><td class="num">0</td><td class="num">1</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+    </section>
+
+    <!-- =================== RULES (5 sub-tabs) =================== -->
+    <section v-if="activePane === 'rules'">
+      <header class="page-head">
+        <div style="flex:1;"><h1 class="page-title">Thresholds &amp; rules</h1><p class="page-sub">{{ activeRules }} active of {{ state.rules.length }} · toggle to pause/resume</p></div>
+        <button class="p-button p-button-primary" @click="showToast('info','New rule','POST /api/rules')"><i class="pi pi-plus"></i>New rule</button>
+      </header>
+      <div class="pivot-bar"><button v-for="t in SUBTABS.rules" :key="t" class="pivot-btn" :class="{active: subtab.rules === t}" @click="subtab.rules = t">{{ t }}</button></div>
+
+      <template v-if="['User-level','Department-level','Device-level'].includes(subtab.rules)">
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">{{ subtab.rules }} rules</h3><span class="card-sub">{{ state.rules.filter(r => r.level === subtab.rules.replace('-level','')).length }} configured · toggle any to pause/resume</span></div>
+          <div>
+            <div v-for="rule in state.rules.filter(r => r.level === subtab.rules.replace('-level',''))" :key="rule.id" class="rec-row">
+              <span class="rec-dot" :class="rule.active ? 'success' : 'warn'"></span>
+              <div style="flex:1;">
+                <div class="rec-title">{{ rule.title }}</div>
+                <div class="rec-sub">{{ rule.detail }}</div>
+                <div class="rec-meta">{{ rule.meta }}</div>
+              </div>
+              <div class="rec-actions">
+                <label class="toggle"><input type="checkbox" :checked="rule.active" @change="toggleRule(rule)"><span class="toggle-slider"></span></label>
+                <span class="p-tag" :class="rule.active ? 'p-tag-success' : 'p-tag-secondary'" style="margin-top:6px;">{{ rule.active ? 'Active' : 'Paused' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <template v-if="subtab.rules === 'Rule audit log'">
+        <div class="card"><div class="card-head"><h3 class="card-title">Rule changes · last 90 days</h3></div>
+          <div>
+            <div v-for="(a, i) in [
+              { tone:'info', title:'\"Block at 3 lost\" threshold changed', sub:'Admin Rowe · 4 → 3 · Window unchanged at 90 days', ts:'2d ago' },
+              { tone:'success', title:'\"Photo at return > $500\" enabled', sub:'Sarah Park · Activated for iPhone 16e, Pixel 8 Pro, ChromeBook', ts:'2w ago' },
+              { tone:'warn', title:'\"Force return at 14d\" paused', sub:'Admin Rowe · IT requested pause during firmware rollout', ts:'3w ago' },
+              { tone:'info', title:'\"Dept loss > $3K\" notification updated', sub:'Sarah Park · Added Crosby Smith as cc', ts:'5w ago' },
+              { tone:'info', title:'\"Email warning at 2 incidents\" created', sub:'Admin Rowe · New rule · 90-day window', ts:'8w ago' },
+              { tone:'danger', title:'\"Hard block at 5 lost\" deleted', sub:'Admin Rowe · Replaced by softer \"Block at 3 + override\"', ts:'9w ago' }
+            ]" :key="i" style="display:flex; align-items:flex-start; gap:12px; padding:12px 18px; border-bottom:1px solid var(--c-divider);">
+              <span class="rec-dot" :class="a.tone"></span>
+              <div style="flex:1;">
+                <div style="font-size:13px; font-weight:600;">{{ a.title }}</div>
+                <div style="font-size:12px; color:var(--c-text-2); margin-top:2px;">{{ a.sub }}</div>
+                <div style="font-size:11px; color:var(--c-text-muted); margin-top:2px;">{{ a.ts }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <template v-if="subtab.rules === 'Notification routing'">
+        <div class="card"><div class="card-head"><h3 class="card-title">Notification routing</h3><span class="card-sub">Who gets pinged for which rule fire</span></div>
+          <table class="dt"><thead><tr><th>Rule</th><th>Recipients</th><th>Channel</th><th>Cadence</th><th class="num">Last sent</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Block checkout at 3 lost</strong></td><td>Holder · supervisor · Admin Rowe</td><td>Email + SMS</td><td>Immediate</td><td class="num">2 min ago</td></tr>
+              <tr><td><strong>Dept loss &gt; $3K</strong></td><td>Dept lead · CFO (cc)</td><td>Email</td><td>Weekly digest</td><td class="num">Mon 8am</td></tr>
+              <tr><td><strong>Supervisor approval &gt; $500</strong></td><td>User's direct supervisor</td><td>In-app banner</td><td>Immediate</td><td class="num">3h ago</td></tr>
+              <tr><td><strong>Email warning at 2 incidents</strong></td><td>Holder only</td><td>Email</td><td>Immediate</td><td class="num">1d ago</td></tr>
+              <tr><td><strong>Auto-mark lost at 7d</strong></td><td>Holder · dept lead · Asset team</td><td>Email + In-app</td><td>Immediate</td><td class="num">52 min ago</td></tr>
+              <tr><td><strong>Battery alert &lt; 15%</strong></td><td>Holder</td><td>Push notification</td><td>Immediate</td><td class="num">15 min ago</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card"><div class="card-head"><h3 class="card-title">Escalation policy</h3><span class="card-sub">On-call rotation for critical asset alerts</span></div>
+          <table class="dt"><thead><tr><th>Tier</th><th>On-call</th><th>Backup</th><th>SLA</th></tr></thead>
+            <tbody>
+              <tr><td><strong>P1 · Asset blocking</strong></td><td>Admin Rowe</td><td>Sarah Park</td><td>15 min</td></tr>
+              <tr><td><strong>P2 · Dept threshold</strong></td><td>Sarah Park</td><td class="mono">—</td><td>4 hr</td></tr>
+              <tr><td><strong>P3 · Routine warning</strong></td><td>Asset team queue</td><td class="mono">—</td><td>1 business day</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+    </section>
+
+  </main>
+</div>
+
+<!-- =============== Dialogs =============== -->
+<div v-if="dialog.open" class="p-dialog-mask" @click.self="dialog.open = false">
+  <div class="p-dialog">
+    <header class="p-dialog-header">
+      <h3 class="p-dialog-title">{{ dialog.type === 'po' ? 'New purchase order' : 'New asset transfer' }}</h3>
+      <button class="p-button p-button-text p-button-sm" style="margin-left:auto;" @click="dialog.open = false"><i class="pi pi-times"></i></button>
+    </header>
+    <div class="p-dialog-content">
+      <template v-if="dialog.type === 'po'">
+        <div class="field-row">
+          <div class="field"><label>Vendor *</label><input class="p-inputtext" v-model="dialog.form.vendor" placeholder="Apple Authorized"></div>
+          <div class="field"><label>Expected delivery</label><input class="p-inputtext" v-model="dialog.form.expected" placeholder="Jun 20"></div>
+        </div>
+        <div class="field"><label>Item *</label><input class="p-inputtext" v-model="dialog.form.item" placeholder="iPhone 16e"></div>
+        <div class="field-row">
+          <div class="field"><label>Quantity *</label><input class="p-inputtext" type="number" v-model="dialog.form.qty" min="1"></div>
+          <div class="field"><label>Total ($)</label><input class="p-inputtext" type="number" v-model="dialog.form.total_cents" min="0" step="0.01"></div>
+        </div>
+        <div style="font-size:11px; color:var(--c-text-muted); margin-top:8px;">Maps to <code>POST /api/purchase-orders</code> · JE auto-generated on receipt.</div>
+      </template>
+      <template v-if="dialog.type === 'transfer'">
+        <div class="field"><label>Asset *</label><input class="p-inputtext" v-model="dialog.form.asset" placeholder="iPhone 16e #28"></div>
+        <div class="field-row">
+          <div class="field"><label>From *</label><input class="p-inputtext" v-model="dialog.form.from" placeholder="HQ Lab"></div>
+          <div class="field"><label>To *</label><input class="p-inputtext" v-model="dialog.form.to" placeholder="Troy ER"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Reason</label><select class="p-dropdown" v-model="dialog.form.reason"><option>Reallocation</option><option>Headcount shift</option><option>Pilot eval</option><option>Repair</option></select></div>
+          <div class="field"><label>Released by</label><input class="p-inputtext" v-model="dialog.form.released_by"></div>
+        </div>
+        <div style="font-size:11px; color:var(--c-text-muted); margin-top:8px;">Maps to <code>POST /api/asset-transfers</code> · chain-of-custody recorded.</div>
+      </template>
+    </div>
+    <div class="p-dialog-footer">
+      <button class="p-button p-button-text" @click="dialog.open = false">Cancel</button>
+      <button class="p-button p-button-primary" @click="dialog.type === 'po' ? savePO() : saveTransfer()"><i class="pi pi-check"></i>Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- =============== Toasts =============== -->
+<div class="p-toast">
+  <div v-for="t in toasts" :key="t.id" :class="'p-toast-message severity-' + t.severity">
+    <i :class="['pi', t.severity === 'success' ? 'pi-check-circle' : t.severity === 'error' ? 'pi-times-circle' : t.severity === 'warn' ? 'pi-exclamation-triangle' : 'pi-info-circle']"
+       :style="{ color: t.severity === 'success' ? 'var(--c-success)' : t.severity === 'error' ? 'var(--c-danger)' : t.severity === 'warn' ? 'var(--c-warning)' : 'var(--c-info)', fontSize:'16px', marginTop:'2px' }"></i>
+    <div style="flex:1;">
+      <strong>{{ t.summary }}</strong>
+      <div v-if="t.detail" style="font-size:11px; color:var(--c-text-2); margin-top:2px;">{{ t.detail }}</div>
+    </div>
+  </div>
+</div>
+  `
+};
+
+createApp(App).mount('#app');
+</script>
+
+</body>
+</html>
