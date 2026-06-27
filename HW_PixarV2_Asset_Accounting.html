@@ -291,6 +291,9 @@
           <div class="sub-nav-item-l3" onclick="event.stopPropagation();">By location<span class="l3-count">3</span></div>
           <div class="sub-nav-item-l3" onclick="event.stopPropagation();">By model<span class="l3-count">5</span></div>
           <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Forecast &amp; EOL</div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Procurement<span class="l3-count">7</span></div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Transfers &amp; disposal<span class="l3-count">4</span></div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Warranty &amp; audits</div>
         </div>
       </div>
 
@@ -306,6 +309,22 @@
           <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Vendors<span class="l3-count">4</span></div>
           <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Cost analytics</div>
           <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Component catalog</div>
+        </div>
+      </div>
+
+      <!-- Accounting & ERP — 6 pivots (NEW) -->
+      <div class="sub-nav-group">
+        <div class="sub-nav-item" data-pane="accounting">
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" onclick="event.stopPropagation();this.closest('.sub-nav-group').classList.toggle('expanded');"><polyline points="6 9 12 15 18 9"/></svg>
+          <svg class="sub-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="14" x2="9" y2="20"/></svg>Accounting &amp; ERP<span class="l3-count" style="margin-left:auto;background:var(--c-violet-soft);color:var(--c-violet);padding:1px 4px;border-radius:3px;font-size:9px;font-weight:700;">NEW</span>
+        </div>
+        <div class="sub-nav-l3">
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Depreciation<span class="l3-count">133</span></div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">GL &amp; journal entries</div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Cost centers<span class="l3-count">12</span></div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Budget vs actual</div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">ERP integrations<span class="l3-count">8</span></div>
+          <div class="sub-nav-item-l3" onclick="event.stopPropagation();">Period close</div>
         </div>
       </div>
 
@@ -677,6 +696,9 @@
           <button class="pivot-btn">By location</button>
           <button class="pivot-btn">By model</button>
           <button class="pivot-btn">Forecast &amp; EOL</button>
+          <button class="pivot-btn">Procurement</button>
+          <button class="pivot-btn">Transfers &amp; disposal</button>
+          <button class="pivot-btn">Warranty &amp; audits</button>
         </div>
 
         <div class="card">
@@ -762,6 +784,68 @@
               <tr><td><strong>In-house IT</strong></td><td>All</td><td>1–2 days</td><td class="num">4</td><td class="num">$0</td><td class="muted">—</td></tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- ========================== ACCOUNTING & ERP ========================== -->
+      <div id="pane-accounting" class="tab-pane">
+        <header class="page-head">
+          <div>
+            <h1 class="page-title">Accounting &amp; ERP <span class="pill" style="background:var(--c-violet-soft);color:var(--c-violet);font-size:11px;vertical-align:middle;margin-left:6px;"><span class="pill-dot" style="background:var(--c-violet);"></span>NEW</span></h1>
+            <p class="page-sub">Depreciation, GL coding, cost-center chargebacks, budget tracking, period close, and bi-directional sync with enterprise accounting systems</p>
+          </div>
+          <div class="page-actions">
+            <select class="filter-select"><option>This period</option><option>YTD</option><option>Full year</option></select>
+            <button class="btn ghost">Export GL</button>
+            <button class="btn">+ Manual JE</button>
+          </div>
+        </header>
+
+        <section class="kpis">
+          <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-brand);"></span>Capitalized assets</div><div class="kpi-value">$56,288</div><div class="kpi-sub">133 devices · book value</div></div>
+          <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-info);"></span>YTD depreciation</div><div class="kpi-value">$18,762</div><div class="kpi-sub">straight-line · book</div></div>
+          <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-success);"></span>JEs auto-pushed</div><div class="kpi-value success">147</div><div class="kpi-sub">98% straight-through this Q</div></div>
+          <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-warning);"></span>Pending review</div><div class="kpi-value warn">5</div><div class="kpi-sub">Need controller sign-off</div></div>
+        </section>
+
+        <div class="pivot-bar">
+          <button class="pivot-btn active">Depreciation</button>
+          <button class="pivot-btn">GL &amp; journal entries</button>
+          <button class="pivot-btn">Cost centers</button>
+          <button class="pivot-btn">Budget vs actual</button>
+          <button class="pivot-btn">ERP integrations</button>
+          <button class="pivot-btn">Period close</button>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Depreciation schedule · by asset class</h3><span class="card-sub">Straight-line for book · MACRS 5yr for tax</span></div>
+          <table>
+            <thead><tr><th>Asset class</th><th>Units</th><th>Capitalized cost</th><th>Method</th><th>Useful life</th><th>Annual depr. (book)</th><th>Accumulated</th><th>Net book value</th></tr></thead>
+            <tbody>
+              <tr><td><strong>iPhone 16e batch A</strong></td><td class="num">12</td><td class="num">$7,188</td><td>SL</td><td>2yr</td><td class="num">$3,594</td><td class="num">$4,193</td><td class="num"><strong>$2,995</strong></td></tr>
+              <tr><td><strong>iPhone 16e batch B</strong></td><td class="num">22</td><td class="num">$13,178</td><td>SL</td><td>2yr</td><td class="num">$6,589</td><td class="num">$1,647</td><td class="num"><strong>$11,531</strong></td></tr>
+              <tr><td><strong>iPhone 16e (deployed)</strong></td><td class="num">37</td><td class="num">$22,163</td><td>SL</td><td>2yr</td><td class="num">$11,081</td><td class="num">$6,463</td><td class="num"><strong>$15,700</strong></td></tr>
+              <tr><td><strong>AiRista badge (v1)</strong></td><td class="num">8</td><td class="num">$680</td><td>SL</td><td>3yr</td><td class="num">$227</td><td class="num">$416</td><td class="num"><strong>$264</strong></td></tr>
+              <tr><td><strong>AiRista badge (deployed)</strong></td><td class="num">42</td><td class="num">$3,570</td><td>SL</td><td>3yr</td><td class="num">$1,190</td><td class="num">$595</td><td class="num"><strong>$2,975</strong></td></tr>
+              <tr><td><strong>Pixel 8 Pro</strong></td><td class="num">4</td><td class="num">$3,996</td><td>SL</td><td>2yr</td><td class="num">$1,998</td><td class="num">$666</td><td class="num"><strong>$3,330</strong></td></tr>
+              <tr><td><strong>ChromeBook X360</strong></td><td class="num">2</td><td class="num">$1,098</td><td>SL</td><td>3yr</td><td class="num">$366</td><td class="num">$488</td><td class="num"><strong>$610</strong></td></tr>
+            </tbody>
+          </table>
+          <div class="card-foot"><span>127 capitalized devices · all over $500 threshold</span><strong>Net book value $37,405</strong></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Book vs tax depreciation · current year</h3><span class="card-sub">Acceleration delta drives deferred tax liability</span></div>
+          <table>
+            <thead><tr><th>Asset class</th><th>Book (SL)</th><th>Tax (MACRS 5)</th><th>Delta</th><th>Deferred tax (24%)</th></tr></thead>
+            <tbody>
+              <tr><td><strong>iPhone 16e (all batches)</strong></td><td class="num">$21,264</td><td class="num">$28,560</td><td class="num warn">+$7,296</td><td class="num">$1,751</td></tr>
+              <tr><td><strong>AiRista badges</strong></td><td class="num">$1,417</td><td class="num">$2,128</td><td class="num warn">+$711</td><td class="num">$171</td></tr>
+              <tr><td><strong>Pixel 8 Pro</strong></td><td class="num">$1,998</td><td class="num">$2,558</td><td class="num warn">+$560</td><td class="num">$134</td></tr>
+              <tr><td><strong>ChromeBook X360</strong></td><td class="num">$366</td><td class="num">$439</td><td class="num warn">+$73</td><td class="num">$18</td></tr>
+            </tbody>
+          </table>
+          <div class="card-foot"><span>Total book $25,045 · total tax $33,685</span><strong>Deferred tax liability $2,074</strong></div>
         </div>
       </div>
 
@@ -998,6 +1082,7 @@
     loss: document.getElementById('pane-loss'),
     inventory: document.getElementById('pane-inventory'),
     repair: document.getElementById('pane-repair'),
+    accounting: document.getElementById('pane-accounting'),
     insights: document.getElementById('pane-insights'),
     rules: document.getElementById('pane-rules')
   };
@@ -1123,6 +1208,106 @@
               </tbody>
             </table>
             <div class="card-foot"><span>44 units across 3 model lines</span><strong>$22,244 replacement spend forecast</strong></div>
+          </div>`,
+        'Procurement': `
+          <section class="kpis">
+            <div class="kpi"><div class="kpi-label">Open POs</div><div class="kpi-value">7</div><div class="kpi-sub">$12,420 committed</div></div>
+            <div class="kpi"><div class="kpi-label">Items on order</div><div class="kpi-value">38</div><div class="kpi-sub">Across 4 vendors</div></div>
+            <div class="kpi"><div class="kpi-label">Avg lead time</div><div class="kpi-value">9d</div><div class="kpi-sub">Target 10d</div></div>
+            <div class="kpi"><div class="kpi-label">PO spend YTD</div><div class="kpi-value">$22,860</div><div class="kpi-sub">36% of annual budget</div></div>
+          </section>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Open purchase orders</h3><button class="btn primary" style="font-size:11px;height:24px;padding:0 10px;">+ New PO</button></div>
+            <table>
+              <thead><tr><th>PO #</th><th>Vendor</th><th>Item</th><th>Qty</th><th>Total</th><th>Status</th><th>Expected</th></tr></thead>
+              <tbody>
+                <tr><td><strong>PO-4218</strong></td><td>Apple Authorized</td><td>iPhone 16e</td><td class="num">12</td><td class="num">$7,188</td><td><span class="pill info"><span class="pill-dot"></span>Shipped</span></td><td>Jun 14</td></tr>
+                <tr><td><strong>PO-4220</strong></td><td>AiRista Direct</td><td>AiRista badge v2</td><td class="num">8</td><td class="num">$760</td><td><span class="pill warning"><span class="pill-dot"></span>Approved · awaiting ship</span></td><td>Jun 18</td></tr>
+                <tr><td><strong>PO-4222</strong></td><td>TechFix Co.</td><td>Screen + battery kits</td><td class="num">10</td><td class="num">$2,160</td><td><span class="pill warning"><span class="pill-dot"></span>Vendor confirmed</span></td><td>Jun 17</td></tr>
+                <tr><td><strong>PO-4225</strong></td><td>HP Direct</td><td>ChromeBook X380</td><td class="num">2</td><td class="num">$1,198</td><td><span class="pill muted"><span class="pill-dot"></span>Pending VP approval</span></td><td>—</td></tr>
+                <tr><td><strong>PO-4226</strong></td><td>Apple Authorized</td><td>iPhone 16e refurb (test batch)</td><td class="num">4</td><td class="num">$1,524</td><td><span class="pill muted"><span class="pill-dot"></span>Draft</span></td><td>—</td></tr>
+                <tr><td><strong>PO-4227</strong></td><td>Cable.co</td><td>USB-C cables (50ct)</td><td class="num">2</td><td class="num">$240</td><td><span class="pill info"><span class="pill-dot"></span>Auto-reorder</span></td><td>Jun 13</td></tr>
+                <tr><td><strong>PO-4228</strong></td><td>Apple Authorized</td><td>AppleCare+ (12 devices)</td><td class="num">12</td><td class="num">$2,388</td><td><span class="pill warning"><span class="pill-dot"></span>Approved · awaiting invoice</span></td><td>Jun 20</td></tr>
+              </tbody>
+            </table>
+            <div class="card-foot"><span>7 open · 4 in progress · 2 pending approval</span><strong>$15,458 committed</strong></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Receiving queue</h3><span class="card-sub">Inbound shipments to tag, verify, and stage</span></div>
+            <table>
+              <thead><tr><th>PO</th><th>Vendor</th><th>Tracking</th><th>Arrived</th><th>Verified</th><th>Tagged</th><th>Staged to locker</th></tr></thead>
+              <tbody>
+                <tr><td>PO-4218</td><td>Apple Authorized</td><td class="muted">1Z8…4218</td><td><span class="pill success"><span class="pill-dot"></span>Yes</span></td><td><span class="pill success"><span class="pill-dot"></span>12 of 12</span></td><td><span class="pill warning"><span class="pill-dot"></span>6 of 12</span></td><td>Royal Oak Rad</td></tr>
+                <tr><td>PO-4222</td><td>TechFix Co.</td><td class="muted">FX…2229</td><td><span class="pill warning"><span class="pill-dot"></span>Partial</span></td><td><span class="pill muted"><span class="pill-dot"></span>Pending</span></td><td><span class="pill muted"><span class="pill-dot"></span>Pending</span></td><td>HQ Stage</td></tr>
+              </tbody>
+            </table>
+          </div>`,
+        'Transfers & disposal': `
+          <section class="kpis">
+            <div class="kpi"><div class="kpi-label">Transfers this Q</div><div class="kpi-value">14</div><div class="kpi-sub">All locations</div></div>
+            <div class="kpi"><div class="kpi-label">In transit now</div><div class="kpi-value">3</div><div class="kpi-sub">Avg 2.1 days</div></div>
+            <div class="kpi"><div class="kpi-label">Decommissioned YTD</div><div class="kpi-value">11</div><div class="kpi-sub">$2,892 disposed</div></div>
+            <div class="kpi"><div class="kpi-label">E-waste pending</div><div class="kpi-value warn">4</div><div class="kpi-sub">Vendor pickup Fri</div></div>
+          </section>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Asset transfers · with chain of custody</h3><button class="btn primary" style="font-size:11px;height:24px;padding:0 10px;">+ New transfer</button></div>
+            <table>
+              <thead><tr><th>Asset</th><th>From</th><th>To</th><th>Reason</th><th>Released by</th><th>Received by</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><strong>iPhone 16e #28</strong></td><td>HQ Lab</td><td>Troy ER</td><td>Reallocation</td><td>James Tan</td><td class="muted">In transit</td><td><span class="pill warning"><span class="pill-dot"></span>In transit</span></td></tr>
+                <tr><td><strong>iPhone 16e #29</strong></td><td>HQ Lab</td><td>Troy ER</td><td>Reallocation</td><td>James Tan</td><td class="muted">In transit</td><td><span class="pill warning"><span class="pill-dot"></span>In transit</span></td></tr>
+                <tr><td><strong>iPhone 16e #30</strong></td><td>HQ Lab</td><td>Troy ER</td><td>Reallocation</td><td>James Tan</td><td class="muted">In transit</td><td><span class="pill warning"><span class="pill-dot"></span>In transit</span></td></tr>
+                <tr><td><strong>AiRista #04, 06, 09</strong></td><td>ICU 5N</td><td>ER North</td><td>Headcount shift</td><td>Sarah Park</td><td>Crosby Smith</td><td><span class="pill success"><span class="pill-dot"></span>Delivered May 20</span></td></tr>
+                <tr><td><strong>iPhone 16e #18</strong></td><td>Troy ICU</td><td>ER North</td><td>Reallocation</td><td>Sarah Park</td><td>Crosby Smith</td><td><span class="pill success"><span class="pill-dot"></span>Delivered May 14</span></td></tr>
+                <tr><td><strong>Pixel 8 Pro #1</strong></td><td>HQ Lab</td><td>Radiology pilot</td><td>Pilot eval</td><td>Admin Rowe</td><td>Linda Park</td><td><span class="pill success"><span class="pill-dot"></span>Delivered Apr 28</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Disposal queue · secure data wipe → e-waste</h3><span class="card-sub">Required workflow: wipe certificate → vendor pickup → certificate of destruction</span></div>
+            <table>
+              <thead><tr><th>Asset</th><th>Reason</th><th>Wipe certified</th><th>Vendor</th><th>Pickup</th><th>Cert of destruction</th></tr></thead>
+              <tbody>
+                <tr><td><strong>iPhone 16e #11 (replaced)</strong></td><td>EOL · replaced</td><td><span class="pill success"><span class="pill-dot"></span>Yes · Apr 12</span></td><td>GreenTech eRecycle</td><td>Fri Jun 13</td><td><span class="pill muted"><span class="pill-dot"></span>Pending</span></td></tr>
+                <tr><td><strong>iPhone 16e #04 (lost · written off)</strong></td><td>Lost &gt; 90d</td><td class="muted">N/A · physical loss</td><td class="muted">—</td><td class="muted">—</td><td><span class="pill success"><span class="pill-dot"></span>Auto-cleared</span></td></tr>
+                <tr><td><strong>AiRista #03 (damaged)</strong></td><td>Damage · BER</td><td><span class="pill success"><span class="pill-dot"></span>Yes · May 28</span></td><td>GreenTech eRecycle</td><td>Fri Jun 13</td><td><span class="pill muted"><span class="pill-dot"></span>Pending</span></td></tr>
+                <tr><td><strong>ChromeBook X360 #1 (EOL pilot)</strong></td><td>EOL</td><td><span class="pill warning"><span class="pill-dot"></span>Scheduled Jun 12</span></td><td>GreenTech eRecycle</td><td>Fri Jun 13</td><td><span class="pill muted"><span class="pill-dot"></span>Pending</span></td></tr>
+              </tbody>
+            </table>
+            <div class="card-foot"><span>4 items pending pickup · vendor visit Fri Jun 13</span><strong>Disposal cost $0 · GreenTech contract</strong></div>
+          </div>`,
+        'Warranty & audits': `
+          <section class="kpis">
+            <div class="kpi"><div class="kpi-label">Under warranty</div><div class="kpi-value">94</div><div class="kpi-sub">74% of fleet</div></div>
+            <div class="kpi"><div class="kpi-label">Expiring 90d</div><div class="kpi-value warn">12</div><div class="kpi-sub">Plan extension or replace</div></div>
+            <div class="kpi"><div class="kpi-label">Last physical audit</div><div class="kpi-value">Mar 2026</div><div class="kpi-sub">99.2% reconciled</div></div>
+            <div class="kpi"><div class="kpi-label">Audit gaps</div><div class="kpi-value">1</div><div class="kpi-sub">PHN-0017 · last seen 14d</div></div>
+          </section>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Warranty coverage by asset class</h3><span class="card-sub">Manufacturer + extended plans · auto-claim integration</span></div>
+            <table>
+              <thead><tr><th>Asset class</th><th>Units</th><th>Mfr warranty</th><th>Extended plan</th><th>Expiring 90d</th><th>Claims YTD</th></tr></thead>
+              <tbody>
+                <tr><td><strong>iPhone 16e</strong></td><td class="num">71</td><td>12mo · Apple</td><td>AppleCare+ on 38 · $199/dev</td><td class="num warn">7</td><td class="num">3 ($1,047)</td></tr>
+                <tr><td><strong>AiRista badge</strong></td><td class="num">50</td><td>24mo · AiRista</td><td class="muted">—</td><td class="num">3</td><td class="num">2 ($170)</td></tr>
+                <tr><td><strong>Pixel 8 Pro</strong></td><td class="num">4</td><td>12mo · Google</td><td>Google Preferred Care · 4 of 4</td><td class="num">0</td><td class="num">0</td></tr>
+                <tr><td><strong>ChromeBook X360</strong></td><td class="num">2</td><td>12mo · HP</td><td>HP Care Pack · 0 of 2</td><td class="num">2</td><td class="num">0</td></tr>
+              </tbody>
+            </table>
+            <div class="card-foot"><span>94 of 127 devices under warranty · 33 out-of-warranty</span><strong>Warranty value $11,640 · claims paid $1,217</strong></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Physical audit history</h3><span class="card-sub">Annual count + quarterly spot-checks</span></div>
+            <table>
+              <thead><tr><th>Audit</th><th>Date</th><th>Scope</th><th>Devices expected</th><th>Found</th><th>Reconciled</th><th>Gap</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Q2 2026 spot</strong></td><td>Mar 18, 2026</td><td>All locations</td><td class="num">128</td><td class="num">127</td><td class="num">99.2%</td><td>1 (PHN-0017)</td></tr>
+                <tr><td><strong>Annual 2025</strong></td><td>Dec 14, 2025</td><td>All locations</td><td class="num">124</td><td class="num">123</td><td class="num">99.2%</td><td>1 (later recovered)</td></tr>
+                <tr><td><strong>Q3 2025 spot</strong></td><td>Sep 22, 2025</td><td>Troy ER + ICU</td><td class="num">16</td><td class="num">16</td><td class="num">100%</td><td>0</td></tr>
+                <tr><td><strong>Q2 2025 spot</strong></td><td>Jun 5, 2025</td><td>Beaumont + Royal Oak</td><td class="num">64</td><td class="num">63</td><td class="num">98.4%</td><td>1 (resolved next day)</td></tr>
+              </tbody>
+            </table>
+            <div class="card-foot"><span>4 audits in last 12 months · avg 99.2% accuracy</span><strong>Next audit Q3 2026 · Sep 15</strong></div>
           </div>`
       },
 
@@ -1223,6 +1408,192 @@
               </tbody>
             </table>
             <div class="card-foot"><span>8 components · 4 vendors · 50 units in stock</span><strong>$854 inventory value</strong></div>
+          </div>`
+      },
+
+      // ============== ACCOUNTING & ERP ==============
+      'pane-accounting': {
+        'GL & journal entries': `
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Chart of accounts mapping</h3><span class="card-sub">How asset classes map to GL accounts · auto-applied to every transaction</span></div>
+            <table>
+              <thead><tr><th>Asset class</th><th>Capital GL</th><th>Accum. depr. GL</th><th>Loss/damage GL</th><th>Repair OpEx GL</th></tr></thead>
+              <tbody>
+                <tr><td><strong>iPhone 16e</strong></td><td class="num">1520 · IT Equipment</td><td class="num">1521 · Accum. Depr.</td><td class="num">5650 · Loss on Asset</td><td class="num">5410 · Equipment Repair</td></tr>
+                <tr><td><strong>AiRista badge</strong></td><td class="num">1525 · ID &amp; Badge</td><td class="num">1526 · Accum. Depr.</td><td class="num">5650 · Loss on Asset</td><td class="num">5410 · Equipment Repair</td></tr>
+                <tr><td><strong>Pixel 8 Pro</strong></td><td class="num">1520 · IT Equipment</td><td class="num">1521 · Accum. Depr.</td><td class="num">5650 · Loss on Asset</td><td class="num">5410 · Equipment Repair</td></tr>
+                <tr><td><strong>ChromeBook X360</strong></td><td class="num">1530 · Computers</td><td class="num">1531 · Accum. Depr.</td><td class="num">5650 · Loss on Asset</td><td class="num">5410 · Equipment Repair</td></tr>
+                <tr><td><strong>Cables &amp; accessories</strong></td><td class="num">5420 · OpEx Supplies</td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td></tr>
+              </tbody>
+            </table>
+            <div class="card-foot"><span>5 asset classes mapped · 1 below capitalization threshold</span><a class="card-link">Edit mapping →</a></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Auto-generated journal entries · last 30 days</h3><span class="card-sub">Generated when a tracked event fires · pushed to ERP next sync</span></div>
+            <table>
+              <thead><tr><th>Date</th><th>Event</th><th>Debit</th><th>Credit</th><th>Amount</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Jun 11</strong></td><td>PHN-0017 marked lost</td><td>5650 Loss on Asset</td><td>1520 IT Equipment</td><td class="num">$599</td><td><span class="pill success"><span class="pill-dot"></span>Synced QB</span></td></tr>
+                <tr><td><strong>Jun 11</strong></td><td>Period depreciation</td><td>5510 Depreciation Exp</td><td>1521 Accum. Depr.</td><td class="num">$1,564</td><td><span class="pill success"><span class="pill-dot"></span>Synced QB</span></td></tr>
+                <tr><td><strong>Jun 6</strong></td><td>Repair invoice TechFix</td><td>5410 Equipment Repair</td><td>2110 AP TechFix Co.</td><td class="num">$268</td><td><span class="pill success"><span class="pill-dot"></span>Synced QB</span></td></tr>
+                <tr><td><strong>May 28</strong></td><td>Batch battery swap</td><td>5410 Equipment Repair</td><td>2110 AP TechFix Co.</td><td class="num">$216</td><td><span class="pill success"><span class="pill-dot"></span>Synced QB</span></td></tr>
+                <tr><td><strong>May 20</strong></td><td>Asset transfer ICU→ER</td><td>1520 IT Equipment (ER)</td><td>1520 IT Equipment (ICU)</td><td class="num">$398</td><td><span class="pill success"><span class="pill-dot"></span>Synced QB</span></td></tr>
+                <tr><td><strong>May 14</strong></td><td>Cost-center chargeback</td><td>1380 ER Dept Chargeback</td><td>5650 Loss on Asset</td><td class="num">$1,247</td><td><span class="pill warning"><span class="pill-dot"></span>Pending review</span></td></tr>
+              </tbody>
+            </table>
+            <div class="card-foot"><span>147 JEs auto-pushed this Q · 98% straight-through</span><strong>Total $ flowed: $42,890</strong></div>
+          </div>`,
+
+        'Cost centers': `
+          <section class="kpis">
+            <div class="kpi"><div class="kpi-label">Active cost centers</div><div class="kpi-value">12</div><div class="kpi-sub">7 depts + 5 sub-locations</div></div>
+            <div class="kpi"><div class="kpi-label">Chargebacks this Q</div><div class="kpi-value">$8,540</div><div class="kpi-sub">Loss + damage allocations</div></div>
+            <div class="kpi"><div class="kpi-label">Pending approvals</div><div class="kpi-value warn">3</div><div class="kpi-sub">VP sign-off needed</div></div>
+            <div class="kpi"><div class="kpi-label">Disputes open</div><div class="kpi-value">1</div><div class="kpi-sub">ER North · contesting $599</div></div>
+          </section>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Cost center allocation</h3><span class="card-sub">$ tied to each cost center · drives internal chargeback billing</span></div>
+            <table>
+              <thead><tr><th>Cost center</th><th>Department</th><th>Devices</th><th>$ allocated</th><th>Loss YTD</th><th>Chargeback YTD</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><strong>CC-100 · ER North</strong></td><td>Emergency Medicine</td><td class="num">8</td><td class="num">$5,690</td><td class="num danger">$4,375</td><td class="num">$4,375</td><td><span class="pill warning"><span class="pill-dot"></span>1 dispute</span></td></tr>
+                <tr><td><strong>CC-101 · ER South</strong></td><td>Emergency Medicine</td><td class="num">6</td><td class="num">$4,180</td><td class="num warn">$1,840</td><td class="num">$1,840</td><td><span class="pill success"><span class="pill-dot"></span>Cleared</span></td></tr>
+                <tr><td><strong>CC-200 · ICU 5N</strong></td><td>Nursing</td><td class="num">8</td><td class="num">$3,764</td><td class="num warn">$2,852</td><td class="num">$2,852</td><td><span class="pill success"><span class="pill-dot"></span>Cleared</span></td></tr>
+                <tr><td><strong>CC-300 · Radiology</strong></td><td>Radiology</td><td class="num">32</td><td class="num">$14,956</td><td class="num">$957</td><td class="num">$957</td><td><span class="pill success"><span class="pill-dot"></span>Cleared</span></td></tr>
+                <tr><td><strong>CC-400 · Security</strong></td><td>Security / Facilities</td><td class="num">8</td><td class="num">$3,714</td><td class="num">$438</td><td class="num">$438</td><td><span class="pill success"><span class="pill-dot"></span>Cleared</span></td></tr>
+                <tr><td><strong>CC-500 · Admin / HR</strong></td><td>Admin / HR</td><td class="num">3</td><td class="num">$1,797</td><td class="num">$170</td><td class="num">$170</td><td><span class="pill success"><span class="pill-dot"></span>Cleared</span></td></tr>
+                <tr><td><strong>CC-900 · HQ / Shared</strong></td><td>IT</td><td class="num">31</td><td class="num">$9,317</td><td class="num">$0</td><td class="num">$0</td><td><span class="pill success"><span class="pill-dot"></span>Cleared</span></td></tr>
+              </tbody>
+            </table>
+            <div class="card-foot"><span>7 of 12 cost centers shown · 96 devices · $43,418 allocated</span><strong>YTD chargebacks $10,632</strong></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Chargeback policy</h3></div>
+            <div style="padding:16px 20px;font-size:13px;color:var(--c-text-2);line-height:1.6;">
+              <p style="margin:0 0 8px;">Loss / damage incidents auto-charged to the holder's home cost center based on lifetime $ exposure. Threshold workflow:</p>
+              <ul style="margin:0 0 8px;padding-left:20px;">
+                <li><strong>&lt; $250 — Auto-bill.</strong> JE generated, dept notified.</li>
+                <li><strong>$250–$500 — Manager review.</strong> Approval required within 5 business days.</li>
+                <li><strong>&gt; $500 — VP sign-off.</strong> Plus optional dispute window (7d).</li>
+              </ul>
+              <p style="margin:8px 0 0;">Disputes routed to Asset Manager + Dept VP. Resolution timeline 14 days.</p>
+            </div>
+          </div>`,
+
+        'Budget vs actual': `
+          <section class="kpis">
+            <div class="kpi"><div class="kpi-label">Annual budget</div><div class="kpi-value">$64,000</div><div class="kpi-sub">FY 2026 · approved Apr</div></div>
+            <div class="kpi"><div class="kpi-label">Spent YTD</div><div class="kpi-value">$28,142</div><div class="kpi-sub">44% used · 50% through year</div></div>
+            <div class="kpi"><div class="kpi-label">Variance</div><div class="kpi-value success">+$3,858</div><div class="kpi-sub">Under budget</div></div>
+            <div class="kpi"><div class="kpi-label">Forecast year-end</div><div class="kpi-value">$58,420</div><div class="kpi-sub">$5,580 under</div></div>
+          </section>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Budget vs actual · by category</h3><span class="card-sub">FY 2026 · period to date</span></div>
+            <table>
+              <thead><tr><th>Category</th><th>Annual budget</th><th>YTD spent</th><th>% of budget</th><th>Variance</th><th>Forecast year-end</th></tr></thead>
+              <tbody>
+                <tr><td><strong>New device purchases</strong></td><td class="num">$32,000</td><td class="num">$15,420</td><td class="num">48%</td><td class="num success">+$580</td><td class="num">$30,840</td></tr>
+                <tr><td><strong>Replacement (loss)</strong></td><td class="num">$10,000</td><td class="num warn">$8,876</td><td class="num warn">89%</td><td class="num danger">-$3,876</td><td class="num warn">$15,200</td></tr>
+                <tr><td><strong>Repair &amp; maintenance</strong></td><td class="num">$8,000</td><td class="num">$3,481</td><td class="num">44%</td><td class="num success">+$519</td><td class="num">$6,800</td></tr>
+                <tr><td><strong>Accessories &amp; consumables</strong></td><td class="num">$3,000</td><td class="num">$1,640</td><td class="num">55%</td><td class="num success">-$140</td><td class="num">$3,200</td></tr>
+                <tr><td><strong>Vendor contracts</strong></td><td class="num">$11,000</td><td class="num">$5,500</td><td class="num">50%</td><td class="num success">$0</td><td class="num">$11,000</td></tr>
+              </tbody>
+            </table>
+            <div class="card-foot"><span>5 categories · forecast based on 8-week trend</span><strong>Total forecast $67,040 vs $64,000 budget · over by $3,040 driven by loss</strong></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Capex vs OpEx split</h3><span class="card-sub">Auto-classified at intake · &gt;$500 capitalized</span></div>
+            <table>
+              <thead><tr><th>Classification</th><th>YTD count</th><th>YTD spend</th><th>% of total</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Capex (capitalized)</strong></td><td class="num">38</td><td class="num">$22,860</td><td class="num">81%</td></tr>
+                <tr><td><strong>OpEx (expensed)</strong></td><td class="num">82</td><td class="num">$5,282</td><td class="num">19%</td></tr>
+              </tbody>
+            </table>
+          </div>`,
+
+        'ERP integrations': `
+          <section class="kpis">
+            <div class="kpi"><div class="kpi-label">Active connections</div><div class="kpi-value success">2</div><div class="kpi-sub">QuickBooks Online · Workday HRIS</div></div>
+            <div class="kpi"><div class="kpi-label">Records synced this Q</div><div class="kpi-value">2,184</div><div class="kpi-sub">JEs + assets + headcount</div></div>
+            <div class="kpi"><div class="kpi-label">Last full sync</div><div class="kpi-value">4 min</div><div class="kpi-sub">ago · auto every 15 min</div></div>
+            <div class="kpi"><div class="kpi-label">Sync errors (24h)</div><div class="kpi-value">0</div><div class="kpi-sub">Last error 9 days ago</div></div>
+          </section>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Available integrations</h3><span class="card-sub">One-click OAuth · bi-directional sync · scoped permissions</span></div>
+            <table>
+              <thead><tr><th>System</th><th>Category</th><th>Status</th><th>Last sync</th><th>Sync direction</th><th>What syncs</th></tr></thead>
+              <tbody>
+                <tr><td><strong>QuickBooks Online</strong></td><td>Accounting</td><td><span class="pill success"><span class="pill-dot"></span>Connected</span></td><td class="muted">4 min ago</td><td>Both ways</td><td>JEs, GL, AP, vendors</td></tr>
+                <tr><td><strong>Workday Financials</strong></td><td>ERP</td><td><span class="pill muted"><span class="pill-dot"></span>Available</span></td><td class="muted">—</td><td>Both ways</td><td>JEs, GL, cost centers</td></tr>
+                <tr><td><strong>Workday HRIS</strong></td><td>HRIS</td><td><span class="pill success"><span class="pill-dot"></span>Connected</span></td><td class="muted">2h ago</td><td>Inbound</td><td>Headcount, depts, hires</td></tr>
+                <tr><td><strong>NetSuite</strong></td><td>ERP</td><td><span class="pill muted"><span class="pill-dot"></span>Available</span></td><td class="muted">—</td><td>Both ways</td><td>Full GL + AP + AR</td></tr>
+                <tr><td><strong>SAP S/4HANA</strong></td><td>ERP</td><td><span class="pill muted"><span class="pill-dot"></span>Available</span></td><td class="muted">—</td><td>Both ways</td><td>JEs, GL, cost centers, AP</td></tr>
+                <tr><td><strong>Oracle Fusion Cloud</strong></td><td>ERP</td><td><span class="pill muted"><span class="pill-dot"></span>Available</span></td><td class="muted">—</td><td>Both ways</td><td>JEs, GL, AP</td></tr>
+                <tr><td><strong>Sage Intacct</strong></td><td>Accounting</td><td><span class="pill muted"><span class="pill-dot"></span>Available</span></td><td class="muted">—</td><td>Both ways</td><td>JEs, GL, depreciation</td></tr>
+                <tr><td><strong>Microsoft Dynamics 365</strong></td><td>ERP</td><td><span class="pill muted"><span class="pill-dot"></span>Available</span></td><td class="muted">—</td><td>Both ways</td><td>JEs, GL, AP, fixed assets</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">QuickBooks Online · sync detail</h3><span class="card-sub">corewell-health@quickbooks · connected Apr 12, 2026</span></div>
+            <table>
+              <thead><tr><th>Object</th><th>Records this Q</th><th>Direction</th><th>Last record</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Journal entries</strong></td><td class="num">147</td><td>Push</td><td class="muted">4 min ago</td><td><span class="pill success"><span class="pill-dot"></span>Healthy</span></td></tr>
+                <tr><td><strong>Fixed assets</strong></td><td class="num">38</td><td>Push</td><td class="muted">6h ago</td><td><span class="pill success"><span class="pill-dot"></span>Healthy</span></td></tr>
+                <tr><td><strong>AP bills (repair)</strong></td><td class="num">29</td><td>Push</td><td class="muted">3d ago</td><td><span class="pill success"><span class="pill-dot"></span>Healthy</span></td></tr>
+                <tr><td><strong>Vendors</strong></td><td class="num">4</td><td>Both</td><td class="muted">2w ago</td><td><span class="pill success"><span class="pill-dot"></span>Healthy</span></td></tr>
+                <tr><td><strong>Chart of accounts</strong></td><td class="num">12 mapped</td><td>Pull</td><td class="muted">2w ago</td><td><span class="pill success"><span class="pill-dot"></span>Healthy</span></td></tr>
+              </tbody>
+            </table>
+          </div>`,
+
+        'Period close': `
+          <section class="kpis">
+            <div class="kpi"><div class="kpi-label">Days until close</div><div class="kpi-value warn">19</div><div class="kpi-sub">Jun 30 · target Jul 5</div></div>
+            <div class="kpi"><div class="kpi-label">JEs to review</div><div class="kpi-value">5</div><div class="kpi-sub">All over $500 threshold</div></div>
+            <div class="kpi"><div class="kpi-label">Reconciliations</div><div class="kpi-value warn">3</div><div class="kpi-sub">GL vs ledger pending</div></div>
+            <div class="kpi"><div class="kpi-label">Sign-offs</div><div class="kpi-value">2 of 4</div><div class="kpi-sub">Controller · CFO pending</div></div>
+          </section>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Period close workflow · Q2 2026</h3><span class="card-sub">Each step locks downstream actions when complete</span></div>
+            <table>
+              <thead><tr><th>Step</th><th>Owner</th><th>Due</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td><strong>1 · Pre-close prep</strong></td><td>Admin Rowe</td><td>Jun 25</td><td><span class="pill success"><span class="pill-dot"></span>Complete</span></td><td>—</td></tr>
+                <tr><td><strong>2 · JE review</strong></td><td>Sarah Park</td><td>Jun 28</td><td><span class="pill warning"><span class="pill-dot"></span>5 pending</span></td><td><button class="btn ghost" style="font-size:11px;height:24px;padding:0 8px;">Review</button></td></tr>
+                <tr><td><strong>3 · Depreciation run</strong></td><td>System (auto)</td><td>Jun 29</td><td><span class="pill muted"><span class="pill-dot"></span>Blocked</span></td><td class="muted">After JE</td></tr>
+                <tr><td><strong>4 · Reconciliation</strong></td><td>Accounting team</td><td>Jun 30</td><td><span class="pill muted"><span class="pill-dot"></span>Blocked</span></td><td class="muted">After depr.</td></tr>
+                <tr><td><strong>5 · Controller sign-off</strong></td><td>Controller</td><td>Jul 2</td><td><span class="pill muted"><span class="pill-dot"></span>Blocked</span></td><td class="muted">After recon</td></tr>
+                <tr><td><strong>6 · CFO sign-off</strong></td><td>CFO</td><td>Jul 4</td><td><span class="pill muted"><span class="pill-dot"></span>Blocked</span></td><td class="muted">After controller</td></tr>
+                <tr><td><strong>7 · Period locked</strong></td><td>System (auto)</td><td>Jul 5</td><td><span class="pill muted"><span class="pill-dot"></span>Blocked</span></td><td class="muted">After sign-offs</td></tr>
+              </tbody>
+            </table>
+            <div class="card-foot"><span>2 of 7 steps complete · on schedule</span><strong>Forecast close: Jul 5 (on target)</strong></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Reconciliation status</h3></div>
+            <table>
+              <thead><tr><th>Account</th><th>Ledger balance</th><th>GL balance</th><th>Variance</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><strong>1520 · IT Equipment</strong></td><td class="num">$56,288</td><td class="num">$56,288</td><td class="num success">$0</td><td><span class="pill success"><span class="pill-dot"></span>Reconciled</span></td></tr>
+                <tr><td><strong>1521 · Accum. Depr.</strong></td><td class="num">$18,762</td><td class="num">$18,762</td><td class="num success">$0</td><td><span class="pill success"><span class="pill-dot"></span>Reconciled</span></td></tr>
+                <tr><td><strong>5410 · Equipment Repair</strong></td><td class="num">$3,481</td><td class="num">$3,565</td><td class="num warn">-$84</td><td><span class="pill warning"><span class="pill-dot"></span>Investigating</span></td></tr>
+                <tr><td><strong>5650 · Loss on Asset</strong></td><td class="num">$8,876</td><td class="num">$8,876</td><td class="num success">$0</td><td><span class="pill success"><span class="pill-dot"></span>Reconciled</span></td></tr>
+                <tr><td><strong>1380 · Internal Chargeback</strong></td><td class="num">$10,632</td><td class="num">$10,632</td><td class="num success">$0</td><td><span class="pill success"><span class="pill-dot"></span>Reconciled</span></td></tr>
+              </tbody>
+            </table>
+            <div class="card-foot"><span>4 of 5 reconciled · 1 minor variance investigating</span><strong>Total reconciled $$ flow $98,039</strong></div>
           </div>`
       },
 
