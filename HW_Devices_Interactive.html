@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Devices · HonestWaves · Interactive demo</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/aura-light-blue/theme.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/primevue.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="hw-theme.css">
+
+  <style>
+    :root {
+      --c-surface:#FFFFFF; --c-surface-2:#FAFAFB; --c-surface-3:#F4F5F7;
+      --c-border:#E5E7EB; --c-border-strong:#D1D5DB; --c-divider:#EDF0F4;
+      --c-text:#0F172A; --c-text-2:#475569; --c-text-muted:#94A3B8;
+      --c-brand:#2563EB; --c-brand-soft:#EFF6FF; --c-brand-deep:#1E40AF;
+      --c-success:#10B981; --c-success-soft:#ECFDF5;
+      --c-warning:#F59E0B; --c-warning-soft:#FFFBEB; --c-warning-text:#B45309;
+      --c-danger:#EF4444; --c-danger-soft:#FEF2F2;
+      --c-info:#6366F1; --c-info-soft:#EEF2FF;
+      --c-violet:#7C3AED; --c-violet-soft:#F5F3FF;
+      --r-md:6px; --r-pill:999px;
+    }
+    body { font-family: 'Inter', system-ui, sans-serif; font-size: 13px; color: var(--c-text); background: var(--c-surface-2); margin: 0; }
+
+    /* Shell */
+    .shell { display: grid; grid-template-columns: 240px 1fr; grid-template-rows: 52px 1fr; grid-template-areas: 'logo top' 'side main'; height: 100vh; }
+    .area-logo { grid-area: logo; background: var(--c-surface); border-right: 1px solid var(--c-border); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 16px; gap: 10px; font-weight: 600; }
+    .area-logo .mark { width: 28px; height: 28px; border-radius: 6px; background: linear-gradient(135deg, var(--c-brand), var(--c-brand-deep)); display: grid; place-items: center; color: white; font-weight: 700; font-size: 13px; }
+    .area-top { grid-area: top; background: var(--c-surface); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; padding: 0 20px; gap: 12px; }
+    .area-side { grid-area: side; background: var(--c-surface); border-right: 1px solid var(--c-border); padding: 12px 8px; overflow-y: auto; }
+    .area-main { grid-area: main; overflow-y: auto; background: var(--c-surface-2); padding: 24px; }
+
+    .nav-group { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--c-text-muted); padding: 12px 12px 4px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 7px 12px; border-radius: var(--r-md); font-size: 13px; color: var(--c-text-2); cursor: pointer; }
+    .nav-item:hover { background: var(--c-surface-3); color: var(--c-text); }
+    .nav-item.active { background: var(--c-brand-soft); color: var(--c-brand-deep); font-weight: 600; position: relative; }
+    .nav-item.active::before { content: ''; position: absolute; left: -2px; top: 8px; bottom: 8px; width: 2px; background: var(--c-brand); border-radius: 2px; }
+
+    .page-head { display:flex; align-items:flex-end; gap:16px; margin-bottom: 20px; }
+    .page-title { font-size: 24px; font-weight: 600; letter-spacing: -.02em; line-height: 1.1; margin: 0; }
+    .page-sub { font-size: 13px; color: var(--c-text-2); margin-top: 4px; }
+
+    /* KPI strip */
+    .kpis { display:grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+    .kpi { background: var(--c-surface); border:1px solid var(--c-border); border-radius: var(--r-md); padding: 14px 16px; box-shadow: 0 1px 2px rgba(15,23,42,.04); }
+    .kpi-label { font-size:10px; text-transform:uppercase; letter-spacing:.06em; color: var(--c-text-muted); font-weight:600; }
+    .kpi-value { font-size:24px; font-weight:700; color: var(--c-text); line-height:1.1; margin-top: 4px; }
+    .kpi-sub { font-size:11px; color: var(--c-text-2); margin-top: 4px; }
+
+    .toolbar { background: var(--c-surface); border:1px solid var(--c-border); border-radius: var(--r-md); padding: 12px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom: 12px; }
+
+    /* PrimeVue overrides for v.1 look (same recipe as Dashboard pilot) */
+    .p-button { display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 12px; font-size:12px; font-weight:500; color: var(--c-text); background: var(--c-surface); border:1px solid var(--c-border); border-radius: var(--r-md); box-shadow: 0 1px 2px rgba(15,23,42,.04); cursor: pointer; transition: background .12s, border-color .12s; font-family: inherit; }
+    .p-button:hover { background: var(--c-surface-3); border-color: var(--c-border-strong); }
+    .p-button.p-button-primary, .p-button:not(.p-button-outlined):not(.p-button-text):not(.p-button-secondary):not(.p-button-rounded) { background: var(--c-brand); color:white; border-color: var(--c-brand); }
+    .p-button.p-button-primary:hover, .p-button:not(.p-button-outlined):not(.p-button-text):not(.p-button-secondary):not(.p-button-rounded):hover { background: var(--c-brand-deep); border-color: var(--c-brand-deep); }
+    .p-button.p-button-text { background: transparent; color: var(--c-text-2); border-color: transparent; box-shadow:none; }
+    .p-button.p-button-text:hover { background: var(--c-surface-3); color: var(--c-text); }
+    .p-button.p-button-danger { background: var(--c-danger); color:white; border-color: var(--c-danger); }
+    .p-button.p-button-sm { height:26px; padding:0 8px; font-size:11px; }
+
+    .p-tag { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; padding: 2px 8px; border-radius: var(--r-pill); letter-spacing:.02em; }
+    .p-tag.p-tag-success { background: var(--c-success-soft); color: var(--c-success); }
+    .p-tag.p-tag-warning { background: var(--c-warning-soft); color: var(--c-warning-text); }
+    .p-tag.p-tag-danger { background: var(--c-danger-soft); color: var(--c-danger); }
+    .p-tag.p-tag-info { background: var(--c-info-soft); color: var(--c-info); }
+    .p-tag.p-tag-secondary { background: var(--c-surface-3); color: var(--c-text-2); }
+
+    .p-inputtext { height: 30px; padding: 0 10px; font-size: 13px; border: 1px solid var(--c-border); border-radius: var(--r-md); background: var(--c-surface); color: var(--c-text); outline: none; font-family: inherit; }
+    .p-inputtext:focus { border-color: var(--c-brand); box-shadow: 0 0 0 3px var(--c-brand-soft); }
+
+    select.p-dropdown { appearance: none; -webkit-appearance: none; background-color: var(--c-surface); background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748B%22%20stroke-width%3D%222%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; height: 30px; padding: 0 28px 0 10px; font-size: 12px; border: 1px solid var(--c-border); border-radius: var(--r-md); color: var(--c-text); cursor: pointer; font-family: inherit; }
+
+    table.p-datatable-table { width:100%; border-collapse: collapse; background: var(--c-surface); border:1px solid var(--c-border); border-radius: var(--r-md); overflow: hidden; }
+    table.p-datatable-table thead th { background: var(--c-surface-3); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color: var(--c-text-2); padding: 10px 14px; text-align:left; border-bottom: 1px solid var(--c-border); }
+    table.p-datatable-table tbody td { padding: 12px 14px; font-size: 13px; border-bottom: 1px solid var(--c-divider); }
+    table.p-datatable-table tbody tr { cursor:pointer; transition: background .12s; }
+    table.p-datatable-table tbody tr:hover { background: var(--c-surface-2); }
+    table.p-datatable-table tbody tr.is-selected { background: var(--c-brand-soft); }
+
+    /* Dialog */
+    .p-dialog-mask { position: fixed; inset: 0; background: rgba(15,23,42,.45); display: grid; place-items: center; z-index: 9000; backdrop-filter: blur(4px); }
+    .p-dialog { background: var(--c-surface); border-radius: 8px; box-shadow: 0 12px 28px rgba(15,23,42,.18); width: 520px; max-width: 92vw; max-height: 90vh; overflow:auto; }
+    .p-dialog-header { padding: 16px 20px; border-bottom: 1px solid var(--c-border); display:flex; align-items:center; }
+    .p-dialog-title { font-size:15px; font-weight:600; margin:0; }
+    .p-dialog-content { padding: 20px; }
+    .p-dialog-footer { padding: 12px 20px; border-top:1px solid var(--c-border); display:flex; justify-content:flex-end; gap:8px; }
+
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--c-text-2); margin-bottom: 4px; }
+    .field input.p-inputtext, .field select.p-dropdown { width: 100%; box-sizing: border-box; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .field-error { color: var(--c-danger); font-size: 11px; margin-top: 4px; }
+
+    .p-toast { position: fixed; top: 70px; right: 24px; z-index: 9100; display:flex; flex-direction:column; gap:8px; }
+    .p-toast-message { background: var(--c-surface); border:1px solid var(--c-border); border-left-width: 4px; border-radius: 6px; padding: 12px 16px; box-shadow: 0 8px 24px rgba(15,23,42,.12); min-width: 280px; max-width: 380px; display:flex; align-items:flex-start; gap:10px; animation: toastIn .15s ease-out; }
+    .p-toast-message.severity-success { border-left-color: var(--c-success); }
+    .p-toast-message.severity-warn { border-left-color: var(--c-warning); }
+    .p-toast-message.severity-error { border-left-color: var(--c-danger); }
+    .p-toast-message.severity-info { border-left-color: var(--c-info); }
+    .p-toast-message strong { font-size: 13px; }
+    .p-toast-message .toast-detail { font-size: 11px; color: var(--c-text-2); margin-top: 2px; }
+    @keyframes toastIn { from { transform: translateY(-8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    .annotation { background: linear-gradient(90deg, #1E40AF, #7C3AED); color:#fff; padding:8px 24px; font-size: 12px; display:flex; align-items:center; gap: 12px; }
+    .annotation .chip { background: rgba(255,255,255,.18); font-weight:600; padding:2px 8px; border-radius: var(--r-pill); font-size:10px; text-transform:uppercase; letter-spacing:.04em; }
+    .annotation a { color:#fff; text-decoration: underline; }
+
+    .v-mono { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--c-text-muted); }
+    .badge-state { padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body>
+
+<div class="annotation">
+  <span class="chip">Live demo</span>
+  <strong>Devices · interactive prototype.</strong>
+  <span>Real Vue 3 reactivity · PrimeVue components · localStorage CRUD · Partner API envelope shape · plug-and-play for dev.</span>
+  <span style="margin-left:auto;">
+    <button id="reset-data" style="background:rgba(255,255,255,.18); color:white; border:0; padding:4px 10px; border-radius:999px; font-size:11px; font-weight:600; cursor:pointer;">⟲ Reset to seed data</button>
+  </span>
+</div>
+
+<div id="app"></div>
+
+<script type="module">
+  import { createApp, ref, computed, watch, onMounted, reactive } from 'https://unpkg.com/vue@3.5.13/dist/vue.esm-browser.js';
+
+  // ========================================================================
+  // MOCK API SERVICE — matches HonestWaves Partner API Reference exactly.
+  // Returns envelope: { data, meta, links, responseCode, message }
+  // Persists to localStorage. Dev swaps these methods for real fetch() calls.
+  // ========================================================================
+  const STORE_KEY = 'hw.devices.v1';
+  const NOW = () => new Date().toISOString();
+
+  const MODELS = [
+    { id: 1, model: 'iPhone 16e',        vendor: 'Apple',   chargable: true,  unit_cost: 59900 },
+    { id: 2, model: 'iPad 10th Gen',     vendor: 'Apple',   chargable: true,  unit_cost: 44900 },
+    { id: 3, model: 'AiRista badge',     vendor: 'AiRista', chargable: false, unit_cost:  8500 },
+    { id: 4, model: 'Pixel 8 Pro',       vendor: 'Google',  chargable: true,  unit_cost: 99900 },
+    { id: 5, model: 'ChromeBook X360',   vendor: 'HP',      chargable: true,  unit_cost: 54900 },
+    { id: 6, model: 'Zebra TC52',        vendor: 'Zebra',   chargable: true,  unit_cost: 189500 },
+  ];
+
+  const LOCATIONS = [
+    { id: 1, name: 'Troy ER',              city: 'Troy',         state: 'MI' },
+    { id: 2, name: 'Troy ICU',             city: 'Troy',         state: 'MI' },
+    { id: 3, name: 'Royal Oak Radiology',  city: 'Royal Oak',    state: 'MI' },
+    { id: 4, name: 'Beaumont Main',        city: 'Royal Oak',    state: 'MI' },
+    { id: 5, name: 'HQ Lab',               city: 'Detroit',      state: 'MI' },
+  ];
+
+  const LOCKERS = [
+    { id: 1, serial_number: 'HW-PINK8',     name: 'Pink8',            location_id: 1 },
+    { id: 2, serial_number: 'HW-BLUE34',    name: 'Blue34',           location_id: 4 },
+    { id: 3, serial_number: 'HW-GREEN8',    name: 'Green8',           location_id: 1 },
+    { id: 4, serial_number: 'HW-BMT1',      name: 'Beaumont1',        location_id: 4 },
+    { id: 5, serial_number: 'HW-HQTEST',    name: 'HQ Test',          location_id: 5 },
+    { id: 6, serial_number: 'HW-BLUE3',    name: 'Blue3',            location_id: 3 },
+    { id: 7, serial_number: 'HW-GREEN1',    name: 'Green1',           location_id: 2 },
+  ];
+
+  const HOLDERS = [
+    { id: 12, person_id: 'EMP-0029', employee_id: 'C-0029', first_name: 'Crosby', last_name: 'Smith', email: 'crosby.smith@corewell.test' },
+    { id: 18, person_id: 'EMP-0117', employee_id: 'C-0117', first_name: 'Maria',  last_name: 'Reyes', email: 'maria.reyes@corewell.test' },
+    { id: 21, person_id: 'EMP-0088', employee_id: 'C-0088', first_name: 'James',  last_name: 'Tan',   email: 'james.tan@corewell.test' },
+    { id: 34, person_id: 'EMP-0204', employee_id: 'C-0204', first_name: 'Diane',  last_name: 'Wu',    email: 'diane.wu@corewell.test' },
+  ];
+
+  function seedDevices() {
+    const states = ['ACTIVE','ACTIVE','ACTIVE','ACTIVE','ACTIVE','LOST','DAMAGED_GROUP','RETIRED'];
+    const seed = [];
+    for (let i = 1; i <= 28; i++) {
+      const model = MODELS[(i - 1) % MODELS.length];
+      const locker = LOCKERS[(i - 1) % LOCKERS.length];
+      const location = LOCATIONS.find(l => l.id === locker.location_id);
+      const state = states[(i * 3) % states.length];
+      const heldByIdx = (i % 7 === 0) ? Math.floor(i / 7) % HOLDERS.length : -1;
+      const holder = heldByIdx >= 0 ? HOLDERS[heldByIdx] : null;
+      seed.push({
+        id: 100 + i,
+        name: `${model.vendor === 'Apple' ? 'PHN' : model.vendor === 'AiRista' ? 'BDG' : model.vendor === 'Google' ? 'PXL' : model.vendor === 'HP' ? 'CHB' : 'SCN'}-${String(i).padStart(4, '0')}`,
+        state,
+        model: { ...model },
+        identifiers: [
+          { value: `SN-${model.vendor.slice(0,2).toUpperCase()}-${String(20000 + i * 137).slice(-5)}`, kind: 'SN' },
+          ...(i % 3 === 0 ? [{ value: `04:A1:F2:${String(0x1000 + i).toString(16).padStart(4,'0').toUpperCase()}`, kind: 'NFC' }] : []),
+        ],
+        locker: state === 'ACTIVE' && !holder ? { id: locker.id, serial_number: locker.serial_number, name: locker.name } : null,
+        location: location ? { id: location.id, name: location.name, city: location.city, state: location.state } : null,
+        holder: holder ? { id: holder.id, first_name: holder.first_name, last_name: holder.last_name, email: holder.email } : null,
+        held_since: holder ? new Date(Date.now() - (i * 3600 * 1000)).toISOString() : null,
+        created_at: new Date(Date.now() - (i * 86400 * 1000)).toISOString(),
+        updated_at: NOW(),
+      });
+    }
+    return seed;
+  }
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) {}
+    const fresh = seedDevices();
+    save(fresh);
+    return fresh;
+  }
+  function save(devices) {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(devices)); } catch (e) {}
+  }
+
+  // Mock API service — methods match Partner API Reference paths
+  const mockApi = {
+    // GET /api/devices (paginated, filterable)
+    async getDevices({ page = 1, per_page = 15, search = '', filters = {}, sort_by = 'id', sort_dir = 'desc' } = {}) {
+      let devices = load();
+      // Filters
+      if (filters.state)            devices = devices.filter(d => d.state === filters.state);
+      if (filters.device_model_id)  devices = devices.filter(d => d.model.id === Number(filters.device_model_id));
+      if (filters.location_id)      devices = devices.filter(d => d.location?.id === Number(filters.location_id));
+      if (filters.kiosk_id)         devices = devices.filter(d => d.locker?.id === Number(filters.kiosk_id));
+      // Search
+      if (search) {
+        const q = search.toLowerCase();
+        devices = devices.filter(d =>
+          (d.name || '').toLowerCase().includes(q) ||
+          d.identifiers.some(id => id.value.toLowerCase().includes(q)) ||
+          (d.model.model || '').toLowerCase().includes(q) ||
+          (d.holder ? `${d.holder.first_name} ${d.holder.last_name}` : '').toLowerCase().includes(q)
+        );
+      }
+      // Sort
+      devices = [...devices].sort((a, b) => {
+        const av = sort_by === 'name' ? (a.name || '') : sort_by === 'model' ? a.model.model : a[sort_by];
+        const bv = sort_by === 'name' ? (b.name || '') : sort_by === 'model' ? b.model.model : b[sort_by];
+        if (av < bv) return sort_dir === 'asc' ? -1 : 1;
+        if (av > bv) return sort_dir === 'asc' ? 1 : -1;
+        return 0;
+      });
+      const total = devices.length;
+      const last_page = Math.max(1, Math.ceil(total / per_page));
+      const start = (page - 1) * per_page;
+      const data = devices.slice(start, start + per_page);
+      return {
+        data,
+        meta: { total, per_page, current_page: page, last_page },
+        links: { first: '/api/devices?page=1', last: `/api/devices?page=${last_page}`,
+                 prev: page > 1 ? `/api/devices?page=${page - 1}` : null,
+                 next: page < last_page ? `/api/devices?page=${page + 1}` : null },
+        responseCode: 200, message: 'ok'
+      };
+    },
+
+    // GET /api/devices/stats
+    async getStats() {
+      const devices = load();
+      const by_state = devices.reduce((acc, d) => { acc[d.state] = (acc[d.state] || 0) + 1; return acc; }, {});
+      const in_use = devices.filter(d => d.holder).length;
+      const overdue = devices.filter(d => d.holder && d.held_since && (Date.now() - new Date(d.held_since).getTime()) > 14 * 86400 * 1000).length;
+      return { data: { total: devices.length, active: by_state.ACTIVE || 0, in_use, overdue, by_state }, responseCode: 200, message: 'ok' };
+    },
+
+    // POST /api/devices — body validated, id assigned
+    async createDevice(body) {
+      const devices = load();
+      // Validation
+      const errors = {};
+      if (!body.device_model_id) errors.device_model_id = ['device_model_id is required'];
+      if (!body.identifiers || !body.identifiers.length) errors.identifiers = ['At least one identifier required'];
+      const allIds = devices.flatMap(d => d.identifiers.map(x => x.value));
+      (body.identifiers || []).forEach((id, i) => {
+        if (!id.value) errors[`identifiers.${i}.value`] = ['value required'];
+        if (allIds.includes(id.value)) errors[`identifiers.${i}.value`] = [`identifier "${id.value}" already exists`];
+      });
+      if (Object.keys(errors).length) return { responseCode: 422, message: 'The given data was invalid.', errors };
+
+      const model = MODELS.find(m => m.id === Number(body.device_model_id));
+      const newDevice = {
+        id: Math.max(0, ...devices.map(d => d.id)) + 1,
+        name: body.name || null,
+        state: body.state || 'ACTIVE',
+        model: model ? { ...model } : null,
+        identifiers: body.identifiers,
+        locker: null, location: null, holder: null, held_since: null,
+        created_at: NOW(), updated_at: NOW()
+      };
+      devices.push(newDevice);
+      save(devices);
+      return { data: newDevice, responseCode: 201, message: 'Created' };
+    },
+
+    // PATCH /api/devices/{id}
+    async updateDevice(id, body) {
+      const devices = load();
+      const idx = devices.findIndex(d => d.id === id);
+      if (idx === -1) return { responseCode: 404, message: 'Not found' };
+      const target = devices[idx];
+      if (body.name !== undefined) target.name = body.name;
+      if (body.state !== undefined) target.state = body.state;
+      if (body.identifiers !== undefined) target.identifiers = body.identifiers;
+      target.updated_at = NOW();
+      devices[idx] = target;
+      save(devices);
+      return { data: target, responseCode: 200, message: 'Updated' };
+    },
+
+    // DELETE /api/devices/{id}
+    async deleteDevice(id) {
+      const devices = load();
+      const idx = devices.findIndex(d => d.id === id);
+      if (idx === -1) return { responseCode: 404, message: 'Not found' };
+      if (devices[idx].holder) return { responseCode: 403, message: 'Rejected while in an open order' };
+      devices.splice(idx, 1);
+      save(devices);
+      return { responseCode: 204, message: 'Deleted' };
+    },
+
+    // POST /api/devices/bulk-delete
+    async bulkDelete(ids, reason) {
+      const devices = load();
+      const succeeded = [], failed = [];
+      for (const id of ids) {
+        const idx = devices.findIndex(d => d.id === id);
+        if (idx === -1) { failed.push({ id, message: 'Not found' }); continue; }
+        if (devices[idx].holder) { failed.push({ id, message: 'Open order' }); continue; }
+        devices.splice(idx, 1);
+        succeeded.push({ id });
+      }
+      save(devices);
+      return { data: { succeeded, failed, deleted: succeeded }, responseCode: 200, message: 'ok' };
+    },
+
+    getModels: () => MODELS,
+    getLocations: () => LOCATIONS,
+    getLockers: () => LOCKERS,
+  };
+
+  // Reset to seed
+  document.getElementById('reset-data').addEventListener('click', () => {
+    if (confirm('Reset to original seed data? Any added/edited devices will be lost.')) {
+      localStorage.removeItem(STORE_KEY);
+      window.location.reload();
+    }
+  });
+
+  // ========================================================================
+  // VUE APP
+  // ========================================================================
+  const App = {
+    setup() {
+      const devices = ref([]);
+      const stats = ref({ total: 0, active: 0, in_use: 0, overdue: 0 });
+      const search = ref('');
+      const filters = reactive({ state: '', device_model_id: '', location_id: '', kiosk_id: '' });
+      const page = ref(1);
+      const per_page = ref(15);
+      const meta = ref({ total: 0, per_page: 15, current_page: 1, last_page: 1 });
+      const sort_by = ref('id');
+      const sort_dir = ref('desc');
+
+      const selected = ref(new Set());
+      const toasts = ref([]);
+      const dialog = reactive({ open: false, mode: 'create', record: null, errors: {} });
+      const confirmDialog = reactive({ open: false, title: '', message: '', onConfirm: null });
+
+      const models = mockApi.getModels();
+      const locations = mockApi.getLocations();
+      const lockers = mockApi.getLockers();
+
+      const fetchDevices = async () => {
+        const res = await mockApi.getDevices({
+          page: page.value, per_page: per_page.value,
+          search: search.value, filters: { ...filters },
+          sort_by: sort_by.value, sort_dir: sort_dir.value,
+        });
+        devices.value = res.data;
+        meta.value = res.meta;
+      };
+      const fetchStats = async () => {
+        const res = await mockApi.getStats();
+        stats.value = res.data;
+      };
+
+      // Toast helpers
+      const showToast = (severity, summary, detail) => {
+        const id = Date.now() + Math.random();
+        toasts.value.push({ id, severity, summary, detail });
+        setTimeout(() => { toasts.value = toasts.value.filter(t => t.id !== id); }, 3800);
+      };
+
+      // Dialog form
+      const newRecord = () => ({ id: null, name: '', state: 'ACTIVE', device_model_id: '', identifiers: [{ value: '', kind: 'SN' }] });
+      const form = reactive(newRecord());
+
+      const openCreate = () => {
+        Object.assign(form, newRecord());
+        dialog.mode = 'create'; dialog.record = null; dialog.errors = {}; dialog.open = true;
+      };
+      const openEdit = (record) => {
+        form.id = record.id;
+        form.name = record.name || '';
+        form.state = record.state;
+        form.device_model_id = record.model?.id || '';
+        form.identifiers = JSON.parse(JSON.stringify(record.identifiers));
+        dialog.mode = 'edit'; dialog.record = record; dialog.errors = {}; dialog.open = true;
+      };
+      const closeDialog = () => { dialog.open = false; dialog.errors = {}; };
+
+      const addIdentifier = () => form.identifiers.push({ value: '', kind: 'SN' });
+      const removeIdentifier = (i) => { if (form.identifiers.length > 1) form.identifiers.splice(i, 1); };
+
+      const saveDevice = async () => {
+        dialog.errors = {};
+        const body = {
+          name: form.name || null,
+          state: form.state,
+          device_model_id: form.device_model_id,
+          identifiers: form.identifiers.filter(i => i.value.trim()).map(i => ({ value: i.value.trim(), kind: i.kind })),
+        };
+        const res = dialog.mode === 'create'
+          ? await mockApi.createDevice(body)
+          : await mockApi.updateDevice(dialog.record.id, body);
+        if (res.responseCode >= 400) {
+          dialog.errors = res.errors || {};
+          showToast('error', `${res.responseCode} ${res.message}`, Object.keys(res.errors || {}).join(' · '));
+          return;
+        }
+        await fetchDevices();
+        await fetchStats();
+        showToast('success', `${dialog.mode === 'create' ? 'Created' : 'Updated'} ${res.data.name || res.data.id}`, `${res.data.identifiers.length} identifier(s) · ${res.data.state}`);
+        closeDialog();
+      };
+
+      const confirmDelete = (device) => {
+        Object.assign(confirmDialog, {
+          open: true,
+          title: 'Delete device?',
+          message: `Permanently remove ${device.name || `Device #${device.id}`}? This cannot be undone.`,
+          onConfirm: async () => {
+            const res = await mockApi.deleteDevice(device.id);
+            if (res.responseCode === 204) {
+              await fetchDevices(); await fetchStats();
+              showToast('success', 'Deleted', `${device.name || `Device #${device.id}`} removed`);
+            } else {
+              showToast('error', `${res.responseCode} ${res.message}`, '');
+            }
+            confirmDialog.open = false;
+          }
+        });
+      };
+
+      const confirmBulkDelete = () => {
+        const ids = Array.from(selected.value);
+        Object.assign(confirmDialog, {
+          open: true,
+          title: `Delete ${ids.length} devices?`,
+          message: `Permanently remove ${ids.length} selected device(s). Devices with open orders will be skipped.`,
+          onConfirm: async () => {
+            const res = await mockApi.bulkDelete(ids, 'bulk delete from UI');
+            await fetchDevices(); await fetchStats();
+            selected.value = new Set();
+            const okCount = res.data.succeeded.length, failCount = res.data.failed.length;
+            showToast(failCount > 0 ? 'warn' : 'success', `${okCount} deleted${failCount > 0 ? `, ${failCount} failed` : ''}`, '');
+            confirmDialog.open = false;
+          }
+        });
+      };
+
+      // Selection
+      const toggleSelect = (id) => {
+        const s = new Set(selected.value);
+        if (s.has(id)) s.delete(id); else s.add(id);
+        selected.value = s;
+      };
+      const selectAll = (checked) => {
+        if (checked) selected.value = new Set(devices.value.map(d => d.id));
+        else selected.value = new Set();
+      };
+      const isAllSelected = computed(() => devices.value.length > 0 && devices.value.every(d => selected.value.has(d.id)));
+
+      const clearFilters = () => {
+        filters.state = ''; filters.device_model_id = ''; filters.location_id = ''; filters.kiosk_id = '';
+        search.value = ''; page.value = 1;
+      };
+
+      const sortBy = (field) => {
+        if (sort_by.value === field) sort_dir.value = sort_dir.value === 'asc' ? 'desc' : 'asc';
+        else { sort_by.value = field; sort_dir.value = 'asc'; }
+      };
+
+      const stateLabel = (state) => ({ 'ACTIVE': 'Active', 'LOST': 'Lost', 'DAMAGED_GROUP': 'Damaged', 'RETIRED': 'Retired' }[state] || state);
+      const stateClass = (state) => ({ 'ACTIVE': 'p-tag-success', 'LOST': 'p-tag-danger', 'DAMAGED_GROUP': 'p-tag-warning', 'RETIRED': 'p-tag-secondary' }[state] || 'p-tag-secondary');
+      const formatCost = (cents) => '$' + (cents / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const formatDuration = (iso) => {
+        if (!iso) return '';
+        const ms = Date.now() - new Date(iso).getTime();
+        const h = Math.floor(ms / 3600 / 1000);
+        if (h < 24) return `${h}h`;
+        return `${Math.floor(h / 24)}d`;
+      };
+
+      // Watchers
+      watch([search, () => ({ ...filters }), page, per_page, sort_by, sort_dir], () => {
+        // Reset to page 1 when filters/search change
+      }, { deep: true });
+      watch(search, () => { page.value = 1; fetchDevices(); });
+      watch(() => ({ ...filters }), () => { page.value = 1; fetchDevices(); }, { deep: true });
+      watch([page, per_page, sort_by, sort_dir], () => { fetchDevices(); });
+
+      onMounted(async () => {
+        await fetchDevices();
+        await fetchStats();
+      });
+
+      return {
+        devices, stats, search, filters, page, per_page, meta, sort_by, sort_dir,
+        selected, toasts, dialog, confirmDialog, form,
+        models, locations, lockers,
+        fetchDevices, fetchStats, openCreate, openEdit, closeDialog,
+        addIdentifier, removeIdentifier, saveDevice, confirmDelete, confirmBulkDelete,
+        toggleSelect, selectAll, isAllSelected, clearFilters, sortBy,
+        stateLabel, stateClass, formatCost, formatDuration,
+      };
+    },
+    template: `
+<div class="shell">
+
+  <div class="area-logo">
+    <div class="mark">H</div>
+    <div>
+      <div style="font-weight:600;font-size:14px;line-height:1.1;">HonestWaves</div>
+      <div style="font-size:11px;color:var(--c-text-muted);line-height:1.1;">Live demo</div>
+    </div>
+  </div>
+
+  <div class="area-top">
+    <div style="flex:1;"></div>
+    <span style="font-size:11px; font-family:'JetBrains Mono', monospace; color: var(--c-text-muted);">v.2 · interactive prototype · Partner API mock</span>
+  </div>
+
+  <aside class="area-side">
+    <div class="nav-group">Monitor</div>
+    <a class="nav-item"><i class="pi pi-th-large"></i>Dashboard</a>
+    <a class="nav-item"><i class="pi pi-eye"></i>Mission Control</a>
+    <div class="nav-group">Manage</div>
+    <a class="nav-item"><i class="pi pi-server"></i>Lockers</a>
+    <a class="nav-item active"><i class="pi pi-mobile"></i>Devices</a>
+    <a class="nav-item"><i class="pi pi-users"></i>Users</a>
+    <a class="nav-item"><i class="pi pi-key"></i>Access matrix</a>
+    <div class="nav-group">Investigate</div>
+    <a class="nav-item"><i class="pi pi-bell"></i>Notifications</a>
+    <a class="nav-item"><i class="pi pi-chart-line"></i>Reports</a>
+  </aside>
+
+  <main class="area-main">
+
+    <header class="page-head">
+      <div style="flex:1;">
+        <h1 class="page-title">Devices</h1>
+        <p class="page-sub">Inventory of physical units · {{ stats.total }} total · {{ stats.active }} active · {{ stats.in_use }} in use · {{ stats.overdue }} overdue</p>
+      </div>
+      <button class="p-button p-button-text"><i class="pi pi-upload"></i>Import .xlsx</button>
+      <button class="p-button p-button-text"><i class="pi pi-download"></i>Export</button>
+      <button class="p-button" @click="openCreate"><i class="pi pi-plus"></i>Add device</button>
+    </header>
+
+    <section class="kpis">
+      <div class="kpi">
+        <div class="kpi-label">Total</div>
+        <div class="kpi-value">{{ stats.total }}</div>
+        <div class="kpi-sub">All states</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">In use</div>
+        <div class="kpi-value" style="color:var(--c-info);">{{ stats.in_use }}</div>
+        <div class="kpi-sub">Currently checked out</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Lost</div>
+        <div class="kpi-value" style="color:var(--c-danger);">{{ stats.by_state?.LOST || 0 }}</div>
+        <div class="kpi-sub">Marked lost</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Overdue</div>
+        <div class="kpi-value" style="color:var(--c-warning-text);">{{ stats.overdue }}</div>
+        <div class="kpi-sub">&gt; 14d held</div>
+      </div>
+    </section>
+
+    <div class="toolbar">
+      <input type="text" class="p-inputtext" v-model="search" placeholder="Search name, serial, NFC, RFID, holder…" style="width: 320px;">
+      <select class="p-dropdown" v-model="filters.state">
+        <option value="">All states</option>
+        <option value="ACTIVE">Active</option>
+        <option value="LOST">Lost</option>
+        <option value="DAMAGED_GROUP">Damaged</option>
+        <option value="RETIRED">Retired</option>
+      </select>
+      <select class="p-dropdown" v-model="filters.device_model_id">
+        <option value="">All models</option>
+        <option v-for="m in models" :key="m.id" :value="m.id">{{ m.model }}</option>
+      </select>
+      <select class="p-dropdown" v-model="filters.location_id">
+        <option value="">All locations</option>
+        <option v-for="l in locations" :key="l.id" :value="l.id">{{ l.name }}</option>
+      </select>
+      <select class="p-dropdown" v-model="filters.kiosk_id">
+        <option value="">All lockers</option>
+        <option v-for="k in lockers" :key="k.id" :value="k.id">{{ k.name }}</option>
+      </select>
+      <button class="p-button p-button-text" @click="clearFilters" v-if="search || filters.state || filters.device_model_id || filters.location_id || filters.kiosk_id">
+        <i class="pi pi-filter-slash"></i>Clear
+      </button>
+      <span style="flex:1;"></span>
+      <span style="font-size:11px;color:var(--c-text-muted);" v-if="selected.size">
+        {{ selected.size }} selected
+      </span>
+      <button class="p-button p-button-danger p-button-sm" v-if="selected.size" @click="confirmBulkDelete">
+        <i class="pi pi-trash"></i>Delete {{ selected.size }}
+      </button>
+    </div>
+
+    <table class="p-datatable-table">
+      <thead>
+        <tr>
+          <th style="width:36px;"><input type="checkbox" :checked="isAllSelected" @change="e => selectAll(e.target.checked)"></th>
+          <th style="cursor:pointer;" @click="sortBy('name')">Device <i v-if="sort_by==='name'" :class="['pi', sort_dir==='asc' ? 'pi-arrow-up' : 'pi-arrow-down']" style="font-size:9px;"></i></th>
+          <th>Model</th>
+          <th>Identifier (SN)</th>
+          <th>Location · Locker</th>
+          <th>Holder</th>
+          <th>State</th>
+          <th style="width:80px;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-if="devices.length === 0">
+          <td colspan="8" style="text-align:center; padding: 40px; color: var(--c-text-muted);">
+            <i class="pi pi-search" style="font-size:24px; display:block; margin-bottom: 8px;"></i>
+            No devices match your filters
+          </td>
+        </tr>
+        <tr v-for="d in devices" :key="d.id" :class="{ 'is-selected': selected.has(d.id) }" @click="openEdit(d)">
+          <td @click.stop><input type="checkbox" :checked="selected.has(d.id)" @change="toggleSelect(d.id)"></td>
+          <td>
+            <strong>{{ d.name || '—' }}</strong>
+            <div class="v-mono">#{{ d.id }}</div>
+          </td>
+          <td>
+            <div>{{ d.model.model }}</div>
+            <div class="v-mono">{{ d.model.vendor }} · {{ formatCost(d.model.unit_cost) }}</div>
+          </td>
+          <td class="v-mono">{{ d.identifiers.find(i => i.kind === 'SN')?.value || '—' }}</td>
+          <td>
+            <template v-if="d.location">
+              <div>{{ d.location.name }}</div>
+              <div class="v-mono">{{ d.locker?.name || '—' }}</div>
+            </template>
+            <span v-else style="color: var(--c-text-muted);">—</span>
+          </td>
+          <td>
+            <template v-if="d.holder">
+              <div>{{ d.holder.first_name }} {{ d.holder.last_name }}</div>
+              <div class="v-mono">held {{ formatDuration(d.held_since) }}</div>
+            </template>
+            <span v-else style="color: var(--c-text-muted);">—</span>
+          </td>
+          <td><span :class="['p-tag', stateClass(d.state)]">{{ stateLabel(d.state) }}</span></td>
+          <td @click.stop>
+            <button class="p-button p-button-text p-button-sm" @click="openEdit(d)" title="Edit"><i class="pi pi-pencil"></i></button>
+            <button class="p-button p-button-text p-button-sm" @click="confirmDelete(d)" title="Delete"><i class="pi pi-trash" style="color: var(--c-danger);"></i></button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="display:flex; align-items:center; padding: 12px 0; gap: 12px; font-size: 12px; color: var(--c-text-2);">
+      <span>Showing {{ ((meta.current_page - 1) * meta.per_page) + 1 }}–{{ Math.min(meta.current_page * meta.per_page, meta.total) }} of {{ meta.total }} devices</span>
+      <span style="flex:1;"></span>
+      <select class="p-dropdown" v-model="per_page" style="width: auto;">
+        <option :value="10">10 per page</option>
+        <option :value="15">15 per page</option>
+        <option :value="25">25 per page</option>
+        <option :value="50">50 per page</option>
+      </select>
+      <button class="p-button p-button-text p-button-sm" @click="page = Math.max(1, page - 1)" :disabled="meta.current_page <= 1">
+        <i class="pi pi-angle-left"></i>Prev
+      </button>
+      <span>Page {{ meta.current_page }} of {{ meta.last_page }}</span>
+      <button class="p-button p-button-text p-button-sm" @click="page = Math.min(meta.last_page, page + 1)" :disabled="meta.current_page >= meta.last_page">
+        Next<i class="pi pi-angle-right"></i>
+      </button>
+    </div>
+
+    <!-- API map note for dev -->
+    <details style="margin-top: 16px; background: var(--c-info-soft); border: 1px solid var(--c-border); border-radius: 6px; padding: 12px 16px;">
+      <summary style="font-size: 12px; font-weight: 600; color: var(--c-info); cursor: pointer;">
+        <i class="pi pi-code"></i> API mapping for dev team (click to expand)
+      </summary>
+      <div style="font-size: 12px; line-height: 1.7; margin-top: 12px; color: var(--c-text);">
+        <div><strong>Search + filters + pagination:</strong> <code>GET /api/devices?page=N&per_page=15&search=...&filter[state]=ACTIVE&filter[device_model_id]=1&sort_by=name&sort_dir=asc</code></div>
+        <div><strong>Stats KPI strip:</strong> <code>GET /api/devices/stats</code> → <code>{ total, active, in_use, overdue, by_state }</code></div>
+        <div><strong>Add device button:</strong> <code>POST /api/devices</code> with <code>{ device_model_id, name?, state?, identifiers: [{value, kind}] }</code></div>
+        <div><strong>Row click → edit dialog:</strong> <code>GET /api/devices/{id}</code> then <code>PATCH /api/devices/{id}</code></div>
+        <div><strong>Delete:</strong> <code>DELETE /api/devices/{id}</code> · returns 403 if device has an open order</div>
+        <div><strong>Bulk delete:</strong> <code>POST /api/devices/bulk-delete</code> with <code>{ ids: [..], reason: string }</code></div>
+        <div><strong>Models dropdown:</strong> <code>GET /api/device-models</code></div>
+        <div><strong>Locations dropdown:</strong> <code>GET /api/locations</code></div>
+        <div><strong>Lockers dropdown:</strong> <code>GET /api/kiosks</code></div>
+        <div style="margin-top: 8px; color: var(--c-text-2);">Mock service in this file (<code>mockApi</code>) returns the exact envelope shape: <code>{ data, meta, links, responseCode, message }</code>. Swap each method for a real <code>fetch()</code> call when wiring to your backend.</div>
+      </div>
+    </details>
+
+  </main>
+</div>
+
+<!-- ========================== DIALOG: Create / Edit ========================== -->
+<div v-if="dialog.open" class="p-dialog-mask" @click.self="closeDialog">
+  <div class="p-dialog">
+    <header class="p-dialog-header">
+      <h3 class="p-dialog-title">{{ dialog.mode === 'create' ? 'Add device' : 'Edit device · #' + dialog.record?.id }}</h3>
+      <button class="p-button p-button-text p-button-sm" style="margin-left:auto;" @click="closeDialog"><i class="pi pi-times"></i></button>
+    </header>
+    <div class="p-dialog-content">
+      <div class="field-row">
+        <div class="field">
+          <label>Device model <span style="color:var(--c-danger);">*</span></label>
+          <select class="p-dropdown" v-model="form.device_model_id" :disabled="dialog.mode === 'edit'">
+            <option value="" disabled>Choose model…</option>
+            <option v-for="m in models" :key="m.id" :value="m.id">{{ m.model }} · {{ m.vendor }}</option>
+          </select>
+          <div class="field-error" v-if="dialog.errors.device_model_id">{{ dialog.errors.device_model_id[0] }}</div>
+          <div style="font-size: 10px; color: var(--c-text-muted); margin-top: 4px;" v-if="dialog.mode === 'edit'">Model is immutable after create</div>
+        </div>
+        <div class="field">
+          <label>State</label>
+          <select class="p-dropdown" v-model="form.state">
+            <option value="ACTIVE">Active</option>
+            <option value="LOST">Lost</option>
+            <option value="DAMAGED_GROUP">Damaged</option>
+            <option value="RETIRED">Retired</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Label (optional)</label>
+        <input type="text" class="p-inputtext" v-model="form.name" placeholder="e.g. PHN-0029">
+      </div>
+      <div class="field">
+        <label>Identifiers <span style="color:var(--c-danger);">*</span></label>
+        <div v-for="(id, i) in form.identifiers" :key="i" style="display:flex; gap:8px; margin-bottom: 8px;">
+          <select class="p-dropdown" v-model="id.kind" style="width: 90px;">
+            <option value="SN">SN</option>
+            <option value="NFC">NFC</option>
+            <option value="RFID">RFID</option>
+          </select>
+          <input type="text" class="p-inputtext" v-model="id.value" placeholder="Identifier value" style="flex:1;">
+          <button class="p-button p-button-text p-button-sm" @click="removeIdentifier(i)" :disabled="form.identifiers.length === 1" title="Remove">
+            <i class="pi pi-times"></i>
+          </button>
+        </div>
+        <button class="p-button p-button-text p-button-sm" @click="addIdentifier">
+          <i class="pi pi-plus"></i>Add identifier
+        </button>
+        <div class="field-error" v-if="dialog.errors.identifiers">{{ dialog.errors.identifiers[0] }}</div>
+        <div v-for="i in 3" :key="'err'+i" class="field-error" v-show="dialog.errors[`identifiers.${i-1}.value`]">
+          Identifier {{ i }}: {{ dialog.errors[`identifiers.${i-1}.value`]?.[0] }}
+        </div>
+      </div>
+    </div>
+    <div class="p-dialog-footer">
+      <button class="p-button p-button-text" @click="closeDialog">Cancel</button>
+      <button class="p-button" @click="saveDevice">
+        <i :class="dialog.mode === 'create' ? 'pi pi-plus' : 'pi pi-check'"></i>
+        {{ dialog.mode === 'create' ? 'Create device' : 'Save changes' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ========================== DIALOG: Confirm ========================== -->
+<div v-if="confirmDialog.open" class="p-dialog-mask" @click.self="confirmDialog.open = false">
+  <div class="p-dialog" style="width: 420px;">
+    <header class="p-dialog-header">
+      <i class="pi pi-exclamation-triangle" style="color: var(--c-danger); font-size: 18px; margin-right: 10px;"></i>
+      <h3 class="p-dialog-title">{{ confirmDialog.title }}</h3>
+    </header>
+    <div class="p-dialog-content">
+      <p style="margin: 0; color: var(--c-text-2);">{{ confirmDialog.message }}</p>
+    </div>
+    <div class="p-dialog-footer">
+      <button class="p-button p-button-text" @click="confirmDialog.open = false">Cancel</button>
+      <button class="p-button p-button-danger" @click="confirmDialog.onConfirm()">
+        <i class="pi pi-trash"></i>Delete
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ========================== TOAST ========================== -->
+<div class="p-toast">
+  <div v-for="t in toasts" :key="t.id" :class="['p-toast-message', 'severity-' + t.severity]">
+    <i :class="['pi', t.severity === 'success' ? 'pi-check-circle' : t.severity === 'error' ? 'pi-times-circle' : t.severity === 'warn' ? 'pi-exclamation-triangle' : 'pi-info-circle']"
+       :style="{ color: t.severity === 'success' ? 'var(--c-success)' : t.severity === 'error' ? 'var(--c-danger)' : t.severity === 'warn' ? 'var(--c-warning)' : 'var(--c-info)', fontSize: '16px', marginTop: '2px' }"></i>
+    <div style="flex:1;">
+      <strong>{{ t.summary }}</strong>
+      <div class="toast-detail" v-if="t.detail">{{ t.detail }}</div>
+    </div>
+  </div>
+</div>
+    `
+  };
+
+  createApp(App).mount('#app');
+</script>
+
+</body>
+</html>
