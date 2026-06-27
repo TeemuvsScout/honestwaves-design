@@ -773,8 +773,8 @@
           <i class="pi pi-plus"></i>Add identifier
         </button>
         <div class="field-error" v-if="dialog.errors.identifiers">{{ dialog.errors.identifiers[0] }}</div>
-        <div v-for="i in 3" :key="'err'+i" class="field-error" v-show="dialog.errors[`identifiers.${i-1}.value`]">
-          Identifier {{ i }}: {{ dialog.errors[`identifiers.${i-1}.value`]?.[0] }}
+        <div v-for="i in 3" :key="'err'+i" class="field-error" v-show="dialog.errors['identifiers.'+(i-1)+'.value']">
+          Identifier {{ i }}: {{ dialog.errors['identifiers.'+(i-1)+'.value']?.[0] }}
         </div>
       </div>
     </div>
