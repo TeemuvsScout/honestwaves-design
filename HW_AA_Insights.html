@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Insights · Asset Accounting · HonestWaves</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/aura-light-blue/theme.css">
+<style>
+:root {
+  --c-surface:#FFFFFF; --c-surface-2:#FAFAFB; --c-surface-3:#F4F5F7;
+  --c-border:#E5E7EB; --c-border-strong:#D1D5DB; --c-divider:#EDF0F4;
+  --c-text:#0F172A; --c-text-2:#475569; --c-text-muted:#94A3B8;
+  --c-brand:#2563EB; --c-brand-soft:#EFF6FF; --c-brand-deep:#1E40AF;
+  --c-success:#10B981; --c-success-soft:#ECFDF5;
+  --c-warning:#F59E0B; --c-warning-soft:#FFFBEB; --c-warning-text:#B45309;
+  --c-danger:#EF4444; --c-danger-soft:#FEF2F2;
+  --c-info:#6366F1; --c-info-soft:#EEF2FF;
+  --c-violet:#7C3AED; --c-violet-soft:#F5F3FF;
+  --r-md:6px; --r-pill:999px;
+}
+* { box-sizing: border-box; }
+body { font-family:'Inter',system-ui,sans-serif; font-size:13px; color:var(--c-text); background:var(--c-surface-2); margin:0; padding:24px; }
+.page-head { display:flex; align-items:flex-end; gap:16px; margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--c-border); }
+.page-title { font-size:22px; font-weight:600; letter-spacing:-.015em; line-height:1.1; margin:0; }
+.page-sub { font-size:13px; color:var(--c-text-2); margin-top:4px; }
+.kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+.kpi { background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); padding:14px 16px; box-shadow:0 1px 2px rgba(15,23,42,.04); }
+.kpi-label { font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--c-text-muted); font-weight:600; display:flex; align-items:center; gap:6px; }
+.kpi-label-dot { width:6px; height:6px; border-radius:999px; }
+.kpi-value { font-size:24px; font-weight:700; color:var(--c-text); line-height:1.1; margin-top:4px; }
+.kpi-value.success { color:var(--c-success); } .kpi-value.danger { color:var(--c-danger); } .kpi-value.warn { color:var(--c-warning-text); } .kpi-value.info { color:var(--c-info); }
+.kpi-sub { font-size:11px; color:var(--c-text-2); margin-top:4px; }
+.card { background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); box-shadow:0 1px 2px rgba(15,23,42,.04); margin-bottom:16px; }
+.card-head { padding:14px 18px; border-bottom:1px solid var(--c-border); display:flex; align-items:center; gap:10px; }
+.card-title { font-size:14px; font-weight:600; margin:0; }
+.card-sub { font-size:12px; color:var(--c-text-muted); }
+.card-foot { padding:10px 18px; border-top:1px solid var(--c-border); display:flex; align-items:center; gap:10px; font-size:12px; color:var(--c-text-2); background:var(--c-surface-2); border-radius:0 0 var(--r-md) var(--r-md); }
+.pivot-bar { display:flex; flex-wrap:wrap; gap:2px; padding:4px; background:var(--c-surface-3); border-radius:var(--r-md); margin-bottom:14px; width:fit-content; }
+.pivot-btn { padding:6px 12px; font-size:12px; font-weight:500; color:var(--c-text-2); cursor:pointer; border-radius:4px; border:0; background:transparent; font-family:inherit; }
+.pivot-btn.active { background:var(--c-surface); color:var(--c-text); box-shadow:0 1px 2px rgba(15,23,42,.05); font-weight:600; }
+.p-button { display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 12px; font-size:12px; font-weight:500; color:var(--c-text); background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); box-shadow:0 1px 2px rgba(15,23,42,.04); cursor:pointer; font-family:inherit; }
+.p-button:hover { background:var(--c-surface-3); border-color:var(--c-border-strong); }
+.p-button-primary { background:var(--c-brand); color:white; border-color:var(--c-brand); }
+.p-button-primary:hover { background:var(--c-brand-deep); border-color:var(--c-brand-deep); }
+.p-button-text { background:transparent; border-color:transparent; box-shadow:none; color:var(--c-text-2); }
+.p-button-text:hover { background:var(--c-surface-3); color:var(--c-text); }
+.p-button-xs { height:22px; padding:0 7px; font-size:10px; gap:4px; }
+.p-tag { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; padding:2px 8px; border-radius:var(--r-pill); letter-spacing:.02em; }
+.p-tag-success { background:var(--c-success-soft); color:var(--c-success); }
+.p-tag-warning { background:var(--c-warning-soft); color:var(--c-warning-text); }
+.p-tag-danger { background:var(--c-danger-soft); color:var(--c-danger); }
+.p-tag-info { background:var(--c-info-soft); color:var(--c-info); }
+.p-tag-violet { background:var(--c-violet-soft); color:var(--c-violet); }
+.p-tag-secondary { background:var(--c-surface-3); color:var(--c-text-2); }
+table.dt { width:100%; border-collapse:collapse; }
+table.dt thead th { background:var(--c-surface-3); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--c-text-2); padding:10px 16px; text-align:left; border-bottom:1px solid var(--c-border); }
+table.dt tbody td { padding:11px 16px; font-size:13px; border-bottom:1px solid var(--c-divider); }
+table.dt tbody tr:hover { background:var(--c-surface-2); }
+table.dt .num { text-align:right; font-variant-numeric:tabular-nums; }
+table.dt .mono { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--c-text-muted); }
+.rec-row { display:flex; align-items:flex-start; gap:14px; padding:14px 18px; border-bottom:1px solid var(--c-divider); }
+.rec-row:last-child { border-bottom:0; }
+.rec-dot { width:8px; height:8px; border-radius:999px; flex-shrink:0; margin-top:6px; }
+.rec-dot.danger { background:var(--c-danger); }
+.rec-dot.warn { background:var(--c-warning); }
+.rec-dot.info { background:var(--c-info); }
+.rec-dot.success { background:var(--c-success); }
+.rec-title { font-size:13px; font-weight:600; line-height:1.4; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.rec-sub { font-size:12px; color:var(--c-text-2); margin-top:3px; line-height:1.5; }
+.rec-meta { font-size:11px; color:var(--c-text-muted); margin-top:2px; font-family:'JetBrains Mono',monospace; }
+.rec-actions { display:flex; flex-direction:column; gap:4px; margin-left:auto; align-items:flex-end; flex-shrink:0; }
+.scenario-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.scenario-stat { background:var(--c-surface-2); border:1px solid var(--c-border); border-radius:6px; padding:12px; }
+.scenario-stat-label { font-size:10px; text-transform:uppercase; letter-spacing:.04em; color:var(--c-text-muted); font-weight:600; }
+.scenario-stat-value { font-size:18px; font-weight:700; margin-top:4px; }
+.scenario-stat-sub { font-size:10px; color:var(--c-text-muted); margin-top:2px; }
+.p-toast { position:fixed; top:20px; right:24px; z-index:9100; display:flex; flex-direction:column; gap:8px; }
+.p-toast-message { background:var(--c-surface); border:1px solid var(--c-border); border-left-width:4px; border-radius:6px; padding:12px 16px; box-shadow:0 8px 24px rgba(15,23,42,.12); min-width:280px; max-width:380px; display:flex; align-items:flex-start; gap:10px; }
+.p-toast-message.severity-success { border-left-color:var(--c-success); }
+.p-toast-message.severity-warn { border-left-color:var(--c-warning); }
+.p-toast-message.severity-info { border-left-color:var(--c-info); }
+.reset-btn { background:rgba(124,58,237,0.18); color:var(--c-violet); border:0; padding:4px 10px; border-radius:999px; font-size:11px; font-weight:600; cursor:pointer; }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script type="module">
+import { createApp, ref, computed, reactive, watch } from 'https://unpkg.com/vue@3.5.13/dist/vue.esm-browser.js';
+
+const STATE_KEY = 'hw.aa.insights.v1';
+
+function seed() {
+  return {
+    recommendations: [
+      { id:1, scope:'Location', impact:'High', tone:'danger', title:'Add 4 devices to Royal Oak Radiology', sub:'Utilization trending 89 to 102 percent over 6 weeks. 8 morning checkouts queued in last 14 days. Prevents emergency procurement.', meta:'Confidence 92% · $1,840 saved vs rush', action:'Create PO', status:'open' },
+      { id:2, scope:'Location', impact:'Med', tone:'warn', title:'Relocate 3 devices from HQ Lab to Troy ER', sub:'HQ Lab at 18 percent utilization. Troy ER at 94 percent. Reallocation balances both above target band.', meta:'Confidence 88% · $1,797 capital freed', action:'Schedule move', status:'open' },
+      { id:3, scope:'Device', impact:'Med', tone:'warn', title:'Service 5 devices at 90 percent battery cycle threshold', sub:'iPhone 16e units 03, 07, 11, 15, 22. Battery swap $54 each vs replace $599.', meta:'Confidence 95% · $2,725 saved', action:'Batch service', status:'open' },
+      { id:4, scope:'Bay', impact:'Low', tone:'info', title:'Pink8 Bay 3 needs preventive service in 14 days', sub:'2.4x usage of peer bays. 38 checkouts per week vs 16 average. Lock mechanism wear trending.', meta:'Confidence 81% · Last serviced 11mo ago', action:'Add to calendar', status:'open' },
+      { id:5, scope:'Department', impact:'Low', tone:'info', title:'Increase ER North allocation by 6 devices', sub:'Headcount up 8 last quarter from HRIS sync. Current 8 devices. Recommended 14 per-head usage.', meta:'Confidence 76% · Workday cross-check', action:'Request budget', status:'open' },
+      { id:6, scope:'Device', impact:'Forecast', tone:'success', title:'Refurbished iPhone 16e for batch B refresh saves $4,800', sub:'Q2 2027 refresh of 22 devices. Refurb $381 vs new $599. 4-month life delta acceptable.', meta:'Confidence 84% · 18-month TCO model', action:'Lock in plan', status:'open' },
+    ],
+    scenarioApplied: false,
+  };
+}
+
+function load() {
+  try { const r = localStorage.getItem(STATE_KEY); if (r) return JSON.parse(r); } catch(e){}
+  const s = seed(); localStorage.setItem(STATE_KEY, JSON.stringify(s)); return s;
+}
+function save(s) { try { localStorage.setItem(STATE_KEY, JSON.stringify(s)); } catch(e){} }
+
+const App = {
+  setup() {
+    const state = reactive(load());
+    const subtab = ref('Recommendations');
+    const toasts = ref([]);
+    watch(state, () => save(state), { deep:true });
+
+    const openRecs = computed(() => state.recommendations.filter(r => r.status === 'open'));
+    const highImpactRecs = computed(() => openRecs.value.filter(r => r.impact === 'High').length);
+    const actedRecs = computed(() => state.recommendations.filter(r => r.status === 'acted').length);
+
+    const showToast = (severity, summary, detail) => {
+      const id = Date.now() + Math.random();
+      toasts.value.push({ id, severity, summary, detail });
+      setTimeout(() => { toasts.value = toasts.value.filter(t => t.id !== id); }, 3500);
+    };
+
+    const dismissRec = (rec) => {
+      rec.status = 'dismissed';
+      showToast('info', 'Dismissed', rec.title.slice(0, 50));
+    };
+    const actOnRec = (rec) => {
+      rec.status = 'acted';
+      showToast('success', rec.action + ' triggered', rec.title.slice(0, 50));
+    };
+    const applyScenario = () => {
+      state.scenarioApplied = !state.scenarioApplied;
+      showToast(state.scenarioApplied ? 'success' : 'info',
+                state.scenarioApplied ? 'Scenario applied' : 'Scenario reverted',
+                'Reallocate, service, refresh · risk -32 pts');
+    };
+    const resetAll = () => {
+      if (confirm('Reset Insights state to seed data?')) {
+        localStorage.removeItem(STATE_KEY);
+        location.reload();
+      }
+    };
+
+    const recScopeClass = (tone) => {
+      if (tone === 'danger') return 'p-tag-danger';
+      if (tone === 'warn') return 'p-tag-warning';
+      if (tone === 'success') return 'p-tag-success';
+      return 'p-tag-info';
+    };
+    const impactClass = (impact) => {
+      if (impact === 'High') return 'p-tag-danger';
+      if (impact === 'Med') return 'p-tag-warning';
+      return 'p-tag-secondary';
+    };
+
+    return {
+      state, subtab, toasts,
+      openRecs, highImpactRecs, actedRecs,
+      dismissRec, actOnRec, applyScenario, resetAll,
+      recScopeClass, impactClass,
+    };
+  },
+  template: `
+<div>
+  <header class="page-head">
+    <div style="flex:1;">
+      <h1 class="page-title">Insights <span class="p-tag p-tag-violet" style="vertical-align:middle; margin-left:6px;">Predictor</span></h1>
+      <p class="page-sub">Predictive intelligence over bay, location, department, device usage. Lifecycle predictions. Service reminders.</p>
+    </div>
+    <button class="p-button p-button-text" @click="resetAll"><i class="pi pi-refresh"></i>Reset state</button>
+    <button class="p-button p-button-text"><i class="pi pi-download"></i>Export digest</button>
+    <button class="p-button p-button-primary"><i class="pi pi-bell"></i>Subscribe weekly</button>
+  </header>
+
+  <div class="pivot-bar">
+    <button v-for="t in ['Recommendations','Lifecycle & EOL','Utilization patterns','Service calendar','What-if simulator']" :key="t" class="pivot-btn" :class="{active: subtab === t}" @click="subtab = t">{{ t }}</button>
+  </div>
+
+  <!-- ============== RECOMMENDATIONS ============== -->
+  <div v-if="subtab === 'Recommendations'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-violet);"></span>Open recommendations</div><div class="kpi-value">{{ openRecs.length }}</div><div class="kpi-sub">{{ highImpactRecs }} high-impact</div></div>
+      <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-success);"></span>$ opportunity</div><div class="kpi-value success">$8,420</div><div class="kpi-sub">If all acted on this Q</div></div>
+      <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-warning);"></span>Lifecycle risk</div><div class="kpi-value warn">11</div><div class="kpi-sub">Devices at cycle threshold</div></div>
+      <div class="kpi"><div class="kpi-label"><span class="kpi-label-dot" style="background:var(--c-info);"></span>Acted this session</div><div class="kpi-value info">{{ actedRecs }}</div><div class="kpi-sub">Captured value</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">All recommendations</h3><span class="card-sub" style="margin-left:auto;">Click an action to apply. Click dismiss to remove.</span></div>
+      <div>
+        <div v-for="r in openRecs" :key="r.id" class="rec-row">
+          <span class="rec-dot" :class="r.tone"></span>
+          <div style="flex:1;">
+            <div class="rec-title">
+              {{ r.title }}
+              <span class="p-tag" :class="recScopeClass(r.tone)">{{ r.scope }}</span>
+              <span class="p-tag" :class="impactClass(r.impact)">{{ r.impact }} impact</span>
+            </div>
+            <div class="rec-sub">{{ r.sub }}</div>
+            <div class="rec-meta">{{ r.meta }}</div>
+          </div>
+          <div class="rec-actions">
+            <button class="p-button p-button-primary p-button-xs" @click="actOnRec(r)">{{ r.action }}</button>
+            <button class="p-button p-button-text p-button-xs" @click="dismissRec(r)">Dismiss</button>
+          </div>
+        </div>
+        <div v-if="openRecs.length === 0" style="text-align:center; padding:40px; color:var(--c-text-muted);">
+          <i class="pi pi-check-circle" style="font-size:32px; display:block; margin-bottom:8px; color:var(--c-success);"></i>
+          All clear. No open recommendations.
+        </div>
+      </div>
+    </div>
+
+    <div v-if="actedRecs > 0" class="card">
+      <div class="card-head"><h3 class="card-title">Recently acted on</h3></div>
+      <table class="dt">
+        <thead><tr><th>Recommendation</th><th>Scope</th><th>Action</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr v-for="r in state.recommendations.filter(x => x.status === 'acted')" :key="r.id">
+            <td><strong>{{ r.title.slice(0, 60) }}{{ r.title.length > 60 ? '...' : '' }}</strong></td>
+            <td><span class="p-tag p-tag-info">{{ r.scope }}</span></td>
+            <td>{{ r.action }}</td>
+            <td><span class="p-tag p-tag-success">Acted</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============== LIFECYCLE & EOL ============== -->
+  <div v-if="subtab === 'Lifecycle & EOL'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">At EOL within 90d</div><div class="kpi-value danger">8</div><div class="kpi-sub">$2,892 replacement spend</div></div>
+      <div class="kpi"><div class="kpi-label">Battery cycles consumed</div><div class="kpi-value">63%</div><div class="kpi-sub">Fleet avg. Target less than 80.</div></div>
+      <div class="kpi"><div class="kpi-label">Predicted replacements next Q</div><div class="kpi-value">$6,420</div><div class="kpi-sub">14 devices forecast</div></div>
+      <div class="kpi"><div class="kpi-label">Ahead-of-schedule wear</div><div class="kpi-value warn">5</div><div class="kpi-sub">Wearing 25+ percent faster</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Device lifecycle predictions</h3><span class="card-sub" style="margin-left:auto;">Per-device forecast from usage, battery health, manufacturer rating</span></div>
+      <table class="dt">
+        <thead><tr><th>Device</th><th>Model</th><th>Age</th><th class="num">Cycles</th><th>Predicted EOL</th><th>vs manufacturer</th><th>Recommended action</th></tr></thead>
+        <tbody>
+          <tr><td><strong>iPhone 16e 15</strong></td><td>iPhone 16e</td><td>14mo</td><td class="num">478 / 500</td><td>Aug 2026</td><td><span class="p-tag p-tag-danger">3mo early</span></td><td>Battery swap $54</td></tr>
+          <tr><td><strong>iPhone 16e 22</strong></td><td>iPhone 16e</td><td>14mo</td><td class="num">472 / 500</td><td>Sep 2026</td><td><span class="p-tag p-tag-danger">2mo early</span></td><td>Battery swap $54</td></tr>
+          <tr><td><strong>iPhone 16e 03</strong></td><td>iPhone 16e</td><td>13mo</td><td class="num">461 / 500</td><td>Oct 2026</td><td><span class="p-tag p-tag-warning">On track</span></td><td>Service Tue Jun 17</td></tr>
+          <tr><td><strong>iPhone 16e 11</strong></td><td>iPhone 16e</td><td>12mo</td><td class="num">451 / 500</td><td>Nov 2026</td><td><span class="p-tag p-tag-warning">On track</span></td><td>Service Tue Jun 17</td></tr>
+          <tr><td><strong>AiRista batch v1 (8)</strong></td><td>AiRista badge</td><td>22mo</td><td class="num mono">N/A</td><td>Dec 2026 EOL</td><td><span class="p-tag p-tag-danger">Manufacturer EOL</span></td><td>Migrate to v2</td></tr>
+          <tr><td><strong>Pixel 8 Pro 2</strong></td><td>Pixel 8 Pro</td><td>8mo</td><td class="num">312 / 800</td><td>Apr 2028</td><td><span class="p-tag p-tag-danger">30 percent faster wear</span></td><td>Flag for inspection</td></tr>
+          <tr><td><strong>iPhone 16e batch B (22)</strong></td><td>iPhone 16e</td><td>3mo</td><td class="num">~92 / 500</td><td>Apr 2027</td><td><span class="p-tag p-tag-success">On track</span></td><td>Plan refurb refresh</td></tr>
+          <tr><td><strong>ChromeBook X360 (2)</strong></td><td>ChromeBook</td><td>16mo</td><td class="num mono">N/A</td><td>Mar 2027</td><td><span class="p-tag p-tag-warning">Approaching EOL</span></td><td>Budget Q1 2027</td></tr>
+        </tbody>
+      </table>
+      <div class="card-foot"><span>8 devices flagged. 4 model lines.</span><strong style="margin-left:auto;">Total $ at lifecycle risk: $5,728</strong></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Refresh calendar next 18 months</h3><span class="card-sub" style="margin-left:auto;">Smoothed replacement schedule to avoid budget spikes</span></div>
+      <table class="dt">
+        <thead><tr><th>Window</th><th>Devices</th><th>Reason</th><th class="num">Refurb option</th><th class="num">New option</th><th>Recommendation</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Q3 2026 Sep</strong></td><td>12 iPhone 16e (batch A)</td><td>EOL, 14-month cycle</td><td class="num" style="color:var(--c-success);">$4,572</td><td class="num">$7,188</td><td>Refurb</td></tr>
+          <tr><td><strong>Q4 2026 Dec</strong></td><td>8 AiRista (v1)</td><td>Manufacturer EOL</td><td class="num mono">N/A</td><td class="num">$680</td><td>New (v2)</td></tr>
+          <tr><td><strong>Q1 2027 Mar</strong></td><td>2 ChromeBook X360</td><td>EOL</td><td class="num" style="color:var(--c-success);">$760</td><td class="num">$1,198</td><td>Refurb</td></tr>
+          <tr><td><strong>Q2 2027 Apr</strong></td><td>22 iPhone 16e (batch B)</td><td>14-month cycle</td><td class="num" style="color:var(--c-success);">$8,382</td><td class="num">$13,178</td><td>Refurb. Save $4,796.</td></tr>
+        </tbody>
+      </table>
+      <div class="card-foot"><strong style="margin-left:auto;">Recommended $14,394 vs $22,244 all-new. Saves $7,850.</strong></div>
+    </div>
+  </div>
+
+  <!-- ============== UTILIZATION PATTERNS ============== -->
+  <div v-if="subtab === 'Utilization patterns'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Fleet utilization</div><div class="kpi-value">66%</div><div class="kpi-sub">Target band 60-85 percent</div></div>
+      <div class="kpi"><div class="kpi-label">Above band</div><div class="kpi-value danger">2 sites</div><div class="kpi-sub">Royal Oak Rad, Troy ER</div></div>
+      <div class="kpi"><div class="kpi-label">Below band</div><div class="kpi-value warn">1 site</div><div class="kpi-sub">HQ Lab at 18 percent</div></div>
+      <div class="kpi"><div class="kpi-label">Peak hour load</div><div class="kpi-value">94%</div><div class="kpi-sub">Mon 7-9am Nursing shifts</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Location utilization 12 weeks</h3></div>
+      <table class="dt">
+        <thead><tr><th>Location</th><th class="num">Devices</th><th class="num">Avg util</th><th class="num">Peak util</th><th>Trend</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Royal Oak Radiology</strong></td><td class="num">32</td><td class="num" style="color:var(--c-danger);">94%</td><td class="num">102%</td><td><span class="p-tag p-tag-danger">Up 7 pts</span></td><td><span class="p-tag p-tag-danger">Over capacity</span></td></tr>
+          <tr><td><strong>Troy ER</strong></td><td class="num">8</td><td class="num" style="color:var(--c-warning-text);">89%</td><td class="num">96%</td><td><span class="p-tag p-tag-warning">Up 4 pts</span></td><td><span class="p-tag p-tag-warning">Near cap</span></td></tr>
+          <tr><td><strong>Beaumont Main</strong></td><td class="num">32</td><td class="num">71%</td><td class="num">84%</td><td><span class="p-tag p-tag-secondary">Flat</span></td><td><span class="p-tag p-tag-success">In band</span></td></tr>
+          <tr><td><strong>Troy ICU</strong></td><td class="num">8</td><td class="num">62%</td><td class="num">78%</td><td><span class="p-tag p-tag-secondary">Flat</span></td><td><span class="p-tag p-tag-success">In band</span></td></tr>
+          <tr><td><strong>HQ Lab</strong></td><td class="num">8</td><td class="num" style="color:var(--c-warning-text);">18%</td><td class="num">28%</td><td><span class="p-tag p-tag-success">Down 3 pts</span></td><td><span class="p-tag p-tag-warning">Below band</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Per-bay heatmap top 10 bays</h3></div>
+      <table class="dt">
+        <thead><tr><th>Bay</th><th>Locker</th><th class="num">Checkouts per week</th><th>vs peers</th><th class="num">Battery</th><th>Recommendation</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Bay 3</strong></td><td>Pink8</td><td class="num">38</td><td><span class="p-tag p-tag-danger">2.4x peer</span></td><td class="num" style="color:var(--c-warning-text);">68%</td><td>Service in 14d</td></tr>
+          <tr><td><strong>Bay 1</strong></td><td>Beaumont1</td><td class="num">31</td><td><span class="p-tag p-tag-warning">1.9x peer</span></td><td class="num">82%</td><td>On track</td></tr>
+          <tr><td><strong>Bay 12</strong></td><td>Blue3</td><td class="num">29</td><td><span class="p-tag p-tag-warning">1.8x peer</span></td><td class="num">88%</td><td>On track</td></tr>
+          <tr><td><strong>Bay 6</strong></td><td>Pink8</td><td class="num">26</td><td><span class="p-tag p-tag-warning">1.6x peer</span></td><td class="num" style="color:var(--c-warning-text);">62%</td><td>Rotate device</td></tr>
+          <tr><td><strong>Bay 7</strong></td><td>HQ Test</td><td class="num">2</td><td><span class="p-tag p-tag-warning">0.1x peer</span></td><td class="num">100%</td><td>Reallocate to Troy ER</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Department patterns</h3><span class="card-sub" style="margin-left:auto;">When and how each dept checks out</span></div>
+      <table class="dt">
+        <thead><tr><th>Department</th><th>Peak hour</th><th>Peak day</th><th class="num">Avg duration</th><th class="num">Headcount</th><th class="num">Allocated</th><th class="num">Recommended</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Emergency Medicine</strong></td><td>Mon 7-9am</td><td>Mon</td><td class="num">5.2h</td><td class="num">48</td><td class="num" style="color:var(--c-warning-text);">8</td><td class="num"><strong>14</strong></td></tr>
+          <tr><td><strong>Nursing</strong></td><td>Mon 7am</td><td>Mon</td><td class="num">7.8h</td><td class="num">96</td><td class="num">24</td><td class="num"><strong>22</strong></td></tr>
+          <tr><td><strong>Security and Facilities</strong></td><td>24x7</td><td>Tue, Fri</td><td class="num">11.4h</td><td class="num">22</td><td class="num">8</td><td class="num"><strong>8</strong></td></tr>
+          <tr><td><strong>Cardiology</strong></td><td>Tue 8am</td><td>Tue</td><td class="num">4.1h</td><td class="num">31</td><td class="num">10</td><td class="num"><strong>9</strong></td></tr>
+          <tr><td><strong>Admin and HR</strong></td><td>Wed 9am</td><td>Wed</td><td class="num">2.0h</td><td class="num">17</td><td class="num">3</td><td class="num"><strong>2</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============== SERVICE CALENDAR ============== -->
+  <div v-if="subtab === 'Service calendar'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">This week</div><div class="kpi-value">3</div><div class="kpi-sub">Scheduled visits</div></div>
+      <div class="kpi"><div class="kpi-label">Next 30 days</div><div class="kpi-value">11</div><div class="kpi-sub">Devices and bays</div></div>
+      <div class="kpi"><div class="kpi-label">Overdue</div><div class="kpi-value danger">2</div><div class="kpi-sub">Past recommended date</div></div>
+      <div class="kpi"><div class="kpi-label">Cost-avoidance</div><div class="kpi-value success">$3,860</div><div class="kpi-sub">If all completed on time</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Upcoming next 30 days</h3></div>
+      <table class="dt">
+        <thead><tr><th>Date</th><th>Subject</th><th>Type</th><th>Reason</th><th>Vendor</th><th class="num">Est. cost</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Today Jun 11</strong></td><td>AiRista badge 14</td><td><span class="p-tag p-tag-warning">QC</span></td><td>Battery test post-swap</td><td>AiRista Direct</td><td class="num">$0</td></tr>
+          <tr><td><strong>Jun 13</strong></td><td>iPhone 16e 03, 07</td><td><span class="p-tag p-tag-info">Battery</span></td><td>Approaching 90 percent cycles</td><td>TechFix Co.</td><td class="num">$108</td></tr>
+          <tr><td><strong>Jun 17</strong></td><td>iPhone 16e 11, 15, 22</td><td><span class="p-tag p-tag-info">Battery</span></td><td>Batch with 03 and 07</td><td>TechFix Co.</td><td class="num">$162</td></tr>
+          <tr><td><strong>Jun 20</strong></td><td>Pink8 Bay 7</td><td><span class="p-tag p-tag-info">Bay service</span></td><td>Lock mechanism wear</td><td>In-house IT</td><td class="num">$0</td></tr>
+          <tr><td><strong>Jun 24</strong></td><td>Pink8 Bay 3</td><td><span class="p-tag p-tag-info">Bay service</span></td><td>Preventive 2.4x usage</td><td>In-house IT</td><td class="num">$0</td></tr>
+          <tr><td><strong>Jun 28</strong></td><td>Pixel 8 Pro 2</td><td><span class="p-tag p-tag-warning">Inspection</span></td><td>30 percent faster wear, root cause TBD</td><td>TechFix Co.</td><td class="num">$95</td></tr>
+          <tr><td><strong>Jul 5</strong></td><td>iPhone 16e batch A (12)</td><td><span class="p-tag p-tag-danger">OS update</span></td><td>iOS 18.6 security patch</td><td>In-house IT</td><td class="num">$0</td></tr>
+          <tr><td><strong>Jul 9</strong></td><td>AiRista batch v1 (8)</td><td><span class="p-tag p-tag-warning">EOL prep</span></td><td>Migration to v2 starts Oct</td><td>AiRista Direct</td><td class="num">$0</td></tr>
+        </tbody>
+      </table>
+      <div class="card-foot"><span>8 scheduled. 2 overdue. 1 today.</span><strong style="margin-left:auto;">Est. spend $365. Cost-avoidance $3,860.</strong></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Overdue, acting required</h3></div>
+      <table class="dt">
+        <thead><tr><th>Subject</th><th>Recommended date</th><th class="num">Days overdue</th><th>Risk</th><th>Recommended action</th></tr></thead>
+        <tbody>
+          <tr><td><strong>iPhone 16e 08 battery swap</strong></td><td class="mono">May 30</td><td class="num" style="color:var(--c-danger);">12d</td><td><span class="p-tag p-tag-danger">High</span></td><td>Service this week, $54</td></tr>
+          <tr><td><strong>Blue3 Bay 18 sensor calibration</strong></td><td class="mono">Jun 4</td><td class="num" style="color:var(--c-warning-text);">7d</td><td><span class="p-tag p-tag-warning">Med</span></td><td>In-house, 20 min visit</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============== WHAT-IF SIMULATOR ============== -->
+  <div v-if="subtab === 'What-if simulator'">
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Scenario planner</h3><span class="card-sub" style="margin-left:auto;">Test a change before you commit</span></div>
+      <div style="padding:20px;">
+        <div style="display:grid; grid-template-columns:240px 1fr; gap:32px;">
+          <div>
+            <p style="font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--c-text-muted); margin:0 0 12px;">Pre-built scenarios</p>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <button class="p-button" :class="state.scenarioApplied ? 'p-button-primary' : ''" style="width:100%; justify-content:flex-start;" @click="applyScenario">
+                <i :class="'pi ' + (state.scenarioApplied ? 'pi-check' : 'pi-play')"></i>
+                {{ state.scenarioApplied ? 'Scenario applied. Click to revert.' : 'Apply all recommendations' }}
+              </button>
+              <button class="p-button p-button-text" style="width:100%; justify-content:flex-start;">Reallocate idle to high-util</button>
+              <button class="p-button p-button-text" style="width:100%; justify-content:flex-start;">Refurbish refresh path</button>
+              <button class="p-button p-button-text" style="width:100%; justify-content:flex-start;">Headcount-driven sizing</button>
+              <button class="p-button p-button-text" style="width:100%; justify-content:flex-start;">Custom scenario</button>
+            </div>
+          </div>
+          <div>
+            <p style="font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--c-text-muted); margin:0 0 8px;">Active scenario: Apply all recommendations</p>
+            <div style="font-size:14px; color:var(--c-text); margin-bottom:16px;">Add 4 devices to Royal Oak Rad. Relocate 3 from HQ to Troy ER. Service 5 iPhone 16e batteries. Pink8 Bay 3 preventive. ER North +6 allocation. Lock in refurb refresh Q2 2027.</div>
+            <div class="scenario-grid">
+              <div class="scenario-stat"><div class="scenario-stat-label">Net Q-impact</div><div class="scenario-stat-value" :style="{ color: state.scenarioApplied ? 'var(--c-success)' : 'var(--c-text)' }">{{ state.scenarioApplied ? '+$5,210' : 'N/A' }}</div><div class="scenario-stat-sub">After service spend $3,210</div></div>
+              <div class="scenario-stat"><div class="scenario-stat-label">Forecast util</div><div class="scenario-stat-value">{{ state.scenarioApplied ? '73%' : '66%' }}</div><div class="scenario-stat-sub">Target band 60-85</div></div>
+              <div class="scenario-stat"><div class="scenario-stat-label">Devices added</div><div class="scenario-stat-value">{{ state.scenarioApplied ? '4' : '0' }}</div><div class="scenario-stat-sub">Royal Oak Rad</div></div>
+              <div class="scenario-stat"><div class="scenario-stat-label">Reallocated</div><div class="scenario-stat-value">{{ state.scenarioApplied ? '3' : '0' }}</div><div class="scenario-stat-sub">HQ to Troy ER</div></div>
+              <div class="scenario-stat"><div class="scenario-stat-label">Risk score change</div><div class="scenario-stat-value" :style="{ color: state.scenarioApplied ? 'var(--c-success)' : 'var(--c-text)' }">{{ state.scenarioApplied ? '-32%' : 'N/A' }}</div><div class="scenario-stat-sub">Lifecycle plus capacity</div></div>
+              <div class="scenario-stat"><div class="scenario-stat-label">Implementation</div><div class="scenario-stat-value">14 days</div><div class="scenario-stat-sub">PO plus service plus move</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Projected outcomes by location, 90d</h3></div>
+      <table class="dt">
+        <thead><tr><th>Location</th><th class="num">Today util</th><th class="num">Today devices</th><th class="num">After util</th><th class="num">After devices</th><th>Status change</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Royal Oak Radiology</strong></td><td class="num" style="color:var(--c-danger);">94%</td><td class="num">32</td><td class="num" style="color:var(--c-success);">79%</td><td class="num">36</td><td><span class="p-tag p-tag-success">Over to In band</span></td></tr>
+          <tr><td><strong>Troy ER</strong></td><td class="num" style="color:var(--c-warning-text);">89%</td><td class="num">8</td><td class="num" style="color:var(--c-success);">76%</td><td class="num">11</td><td><span class="p-tag p-tag-success">Near to In band</span></td></tr>
+          <tr><td><strong>HQ Lab</strong></td><td class="num" style="color:var(--c-warning-text);">18%</td><td class="num">8</td><td class="num">42%</td><td class="num">5</td><td><span class="p-tag p-tag-warning">Below, closer to band</span></td></tr>
+          <tr><td><strong>Beaumont Main</strong></td><td class="num">71%</td><td class="num">32</td><td class="num">71%</td><td class="num">32</td><td><span class="p-tag p-tag-secondary">No change</span></td></tr>
+          <tr><td><strong>Troy ICU</strong></td><td class="num">62%</td><td class="num">8</td><td class="num">62%</td><td class="num">8</td><td><span class="p-tag p-tag-secondary">No change</span></td></tr>
+        </tbody>
+      </table>
+      <div class="card-foot"><strong style="margin-left:auto;">Fleet util 66 to 73 percent</strong></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Risk register with vs without scenario</h3></div>
+      <table class="dt">
+        <thead><tr><th>Risk</th><th>Today</th><th>After scenario</th><th class="num">Delta</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Capacity stockout Royal Oak Rad</strong></td><td><span class="p-tag p-tag-danger">High</span></td><td><span class="p-tag p-tag-success">Low</span></td><td class="num" style="color:var(--c-success);">-42 pts</td></tr>
+          <tr><td><strong>Battery failure iPhone 16e batch A</strong></td><td><span class="p-tag p-tag-warning">Med</span></td><td><span class="p-tag p-tag-success">Low</span></td><td class="num" style="color:var(--c-success);">-28 pts</td></tr>
+          <tr><td><strong>Idle capital HQ Lab</strong></td><td><span class="p-tag p-tag-warning">Med</span></td><td><span class="p-tag p-tag-success">Low</span></td><td class="num" style="color:var(--c-success);">-22 pts</td></tr>
+          <tr><td><strong>Pink8 Bay 3 mechanism failure</strong></td><td><span class="p-tag p-tag-warning">Med</span></td><td><span class="p-tag p-tag-success">Low</span></td><td class="num" style="color:var(--c-success);">-18 pts</td></tr>
+        </tbody>
+      </table>
+      <div class="card-foot"><strong style="margin-left:auto; color:var(--c-success);">Overall risk score 68 to 36, -32 pts, -47 percent</strong></div>
+    </div>
+  </div>
+
+  <!-- =============== TOASTS =============== -->
+  <div class="p-toast">
+    <div v-for="t in toasts" :key="t.id" :class="'p-toast-message severity-' + t.severity">
+      <i :class="'pi ' + (t.severity === 'success' ? 'pi-check-circle' : t.severity === 'warn' ? 'pi-exclamation-triangle' : 'pi-info-circle')"
+         :style="{ color: t.severity === 'success' ? 'var(--c-success)' : t.severity === 'warn' ? 'var(--c-warning)' : 'var(--c-info)', fontSize:'16px', marginTop:'2px' }"></i>
+      <div style="flex:1;">
+        <strong>{{ t.summary }}</strong>
+        <div v-if="t.detail" style="font-size:11px; color:var(--c-text-2); margin-top:2px;">{{ t.detail }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+  `
+};
+
+createApp(App).mount('#app');
+</script>
+
+</body>
+</html>
