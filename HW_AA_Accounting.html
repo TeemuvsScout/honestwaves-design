@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accounting and ERP - Asset Accounting - HonestWaves</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/aura-light-blue/theme.css">
+<style>
+:root { --c-surface:#FFFFFF; --c-surface-2:#FAFAFB; --c-surface-3:#F4F5F7; --c-border:#E5E7EB; --c-border-strong:#D1D5DB; --c-divider:#EDF0F4; --c-text:#0F172A; --c-text-2:#475569; --c-text-muted:#94A3B8; --c-brand:#2563EB; --c-brand-soft:#EFF6FF; --c-brand-deep:#1E40AF; --c-success:#10B981; --c-success-soft:#ECFDF5; --c-warning:#F59E0B; --c-warning-soft:#FFFBEB; --c-warning-text:#B45309; --c-danger:#EF4444; --c-danger-soft:#FEF2F2; --c-info:#6366F1; --c-info-soft:#EEF2FF; --c-violet:#7C3AED; --c-violet-soft:#F5F3FF; --r-md:6px; --r-pill:999px; }
+* { box-sizing: border-box; }
+body { font-family:'Inter',system-ui,sans-serif; font-size:13px; color:var(--c-text); background:var(--c-surface-2); margin:0; padding:24px; }
+.page-head { display:flex; align-items:flex-end; gap:16px; margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--c-border); }
+.page-title { font-size:22px; font-weight:600; letter-spacing:-.015em; line-height:1.1; margin:0; }
+.page-sub { font-size:13px; color:var(--c-text-2); margin-top:4px; }
+.kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+.kpi { background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); padding:14px 16px; box-shadow:0 1px 2px rgba(15,23,42,.04); }
+.kpi-label { font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--c-text-muted); font-weight:600; }
+.kpi-value { font-size:24px; font-weight:700; color:var(--c-text); line-height:1.1; margin-top:4px; }
+.kpi-value.success { color:var(--c-success); } .kpi-value.danger { color:var(--c-danger); } .kpi-value.warn { color:var(--c-warning-text); } .kpi-value.info { color:var(--c-info); }
+.kpi-sub { font-size:11px; color:var(--c-text-2); margin-top:4px; }
+.card { background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); box-shadow:0 1px 2px rgba(15,23,42,.04); margin-bottom:16px; }
+.card-head { padding:14px 18px; border-bottom:1px solid var(--c-border); display:flex; align-items:center; gap:10px; }
+.card-title { font-size:14px; font-weight:600; margin:0; }
+.card-sub { font-size:12px; color:var(--c-text-muted); }
+.card-foot { padding:10px 18px; border-top:1px solid var(--c-border); display:flex; align-items:center; gap:10px; font-size:12px; color:var(--c-text-2); background:var(--c-surface-2); }
+.pivot-bar { display:flex; flex-wrap:wrap; gap:2px; padding:4px; background:var(--c-surface-3); border-radius:var(--r-md); margin-bottom:14px; width:fit-content; }
+.pivot-btn { padding:6px 12px; font-size:12px; font-weight:500; color:var(--c-text-2); cursor:pointer; border-radius:4px; border:0; background:transparent; font-family:inherit; }
+.pivot-btn.active { background:var(--c-surface); color:var(--c-text); box-shadow:0 1px 2px rgba(15,23,42,.05); font-weight:600; }
+.p-button { display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 12px; font-size:12px; font-weight:500; color:var(--c-text); background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); box-shadow:0 1px 2px rgba(15,23,42,.04); cursor:pointer; font-family:inherit; }
+.p-button:hover { background:var(--c-surface-3); border-color:var(--c-border-strong); }
+.p-button-primary { background:var(--c-brand); color:white; border-color:var(--c-brand); }
+.p-button-text { background:transparent; border-color:transparent; box-shadow:none; color:var(--c-text-2); }
+.p-button-text:hover { background:var(--c-surface-3); color:var(--c-text); }
+.p-button-xs { height:22px; padding:0 7px; font-size:10px; gap:4px; }
+.p-tag { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; padding:2px 8px; border-radius:var(--r-pill); letter-spacing:.02em; }
+.p-tag-success { background:var(--c-success-soft); color:var(--c-success); }
+.p-tag-warning { background:var(--c-warning-soft); color:var(--c-warning-text); }
+.p-tag-danger { background:var(--c-danger-soft); color:var(--c-danger); }
+.p-tag-info { background:var(--c-info-soft); color:var(--c-info); }
+.p-tag-violet { background:var(--c-violet-soft); color:var(--c-violet); }
+.p-tag-secondary { background:var(--c-surface-3); color:var(--c-text-2); }
+table.dt { width:100%; border-collapse:collapse; }
+table.dt thead th { background:var(--c-surface-3); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--c-text-2); padding:10px 16px; text-align:left; border-bottom:1px solid var(--c-border); }
+table.dt tbody td { padding:11px 16px; font-size:13px; border-bottom:1px solid var(--c-divider); }
+table.dt tbody tr:hover { background:var(--c-surface-2); }
+table.dt tbody tr.clickable { cursor:pointer; }
+table.dt .num { text-align:right; font-variant-numeric:tabular-nums; }
+table.dt .mono { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--c-text-muted); }
+.p-toast { position:fixed; top:20px; right:24px; z-index:9100; display:flex; flex-direction:column; gap:8px; }
+.p-toast-message { background:var(--c-surface); border:1px solid var(--c-border); border-left-width:4px; border-radius:6px; padding:12px 16px; box-shadow:0 8px 24px rgba(15,23,42,.12); min-width:280px; max-width:380px; display:flex; align-items:flex-start; gap:10px; }
+.p-toast-message.severity-success { border-left-color:var(--c-success); }
+.p-toast-message.severity-info { border-left-color:var(--c-info); }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script type="module">
+import { createApp, ref, computed, reactive, watch } from 'https://unpkg.com/vue@3.5.13/dist/vue.esm-browser.js';
+
+const STATE_KEY = 'hw.aa.accounting.v1';
+
+function seed() {
+  return {
+    journalEntries: [
+      { id:'JE-1011', date:'Jun 11', event:'PHN-0017 marked lost',       debit:'5650 Loss on Asset',  credit:'1520 IT Equipment',  amount_cents:59900,  status:'Synced QB' },
+      { id:'JE-1012', date:'Jun 11', event:'Period depreciation',         debit:'5510 Depreciation',   credit:'1521 Accum. Depr.',  amount_cents:156400, status:'Synced QB' },
+      { id:'JE-1013', date:'Jun 6',  event:'Repair invoice TechFix',     debit:'5410 Equipment Repair',credit:'2110 AP TechFix',   amount_cents:26800,  status:'Synced QB' },
+      { id:'JE-1014', date:'May 28', event:'Batch battery swap',         debit:'5410 Equipment Repair',credit:'2110 AP TechFix',   amount_cents:21600,  status:'Synced QB' },
+      { id:'JE-1015', date:'May 14', event:'Cost-center chargeback',     debit:'1380 ER Dept CB',     credit:'5650 Loss on Asset', amount_cents:124700, status:'Pending review' },
+    ],
+  };
+}
+
+function load() {
+  try { const r = localStorage.getItem(STATE_KEY); if (r) return JSON.parse(r); } catch(e){}
+  const s = seed(); localStorage.setItem(STATE_KEY, JSON.stringify(s)); return s;
+}
+function save(s) { try { localStorage.setItem(STATE_KEY, JSON.stringify(s)); } catch(e){} }
+
+const fmt = {
+  money: (cents) => '$' + Math.round(cents/100).toLocaleString('en-US'),
+  moneyDec: (cents) => '$' + (cents/100).toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }),
+};
+
+const App = {
+  setup() {
+    const state = reactive(load());
+    const subtab = ref('Depreciation');
+    const toasts = ref([]);
+    watch(state, () => save(state), { deep:true });
+
+    const syncedJEs = computed(() => state.journalEntries.filter(j => j.status === 'Synced QB').length);
+    const pendingJEs = computed(() => state.journalEntries.filter(j => j.status === 'Pending review').length);
+
+    const showToast = (severity, summary, detail) => {
+      const id = Date.now() + Math.random();
+      toasts.value.push({ id, severity, summary, detail });
+      setTimeout(() => { toasts.value = toasts.value.filter(t => t.id !== id); }, 3500);
+    };
+
+    const reviewJE = (je) => {
+      if (je.status === 'Pending review') {
+        je.status = 'Synced QB';
+        showToast('success', 'JE approved', je.id + ' synced to QuickBooks');
+      }
+    };
+
+    const resetAll = () => {
+      if (confirm('Reset Accounting state to seed data?')) {
+        localStorage.removeItem(STATE_KEY);
+        location.reload();
+      }
+    };
+
+    return { state, subtab, toasts, syncedJEs, pendingJEs, reviewJE, resetAll, fmt };
+  },
+  template: `
+<div>
+  <header class="page-head">
+    <div style="flex:1;">
+      <h1 class="page-title">Accounting and ERP <span class="p-tag p-tag-violet" style="vertical-align:middle; margin-left:6px;">NEW</span></h1>
+      <p class="page-sub">Depreciation, GL, cost centers. {{ syncedJEs }} JEs synced, {{ pendingJEs }} pending review.</p>
+    </div>
+    <button class="p-button p-button-text" @click="resetAll"><i class="pi pi-refresh"></i>Reset state</button>
+    <button class="p-button p-button-text"><i class="pi pi-download"></i>Export GL</button>
+    <button class="p-button p-button-primary"><i class="pi pi-plus"></i>Manual JE</button>
+  </header>
+
+  <div class="pivot-bar">
+    <button v-for="t in ['Depreciation','GL and journal entries','Cost centers','Budget vs actual','ERP integrations','Period close']" :key="t" class="pivot-btn" :class="{active: subtab === t}" @click="subtab = t">{{ t }}</button>
+  </div>
+
+  <!-- DEPRECIATION -->
+  <div v-if="subtab === 'Depreciation'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Capitalized</div><div class="kpi-value">$56,288</div><div class="kpi-sub">133 devices</div></div>
+      <div class="kpi"><div class="kpi-label">YTD depreciation</div><div class="kpi-value info">$18,762</div><div class="kpi-sub">SL, book</div></div>
+      <div class="kpi"><div class="kpi-label">Net book value</div><div class="kpi-value">$37,405</div><div class="kpi-sub">133 devices</div></div>
+      <div class="kpi"><div class="kpi-label">Deferred tax liability</div><div class="kpi-value warn">$2,074</div><div class="kpi-sub">Book vs MACRS delta</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Depreciation schedule by asset class</h3><span class="card-sub" style="margin-left:auto;">Straight-line for book, MACRS 5yr for tax</span></div>
+      <table class="dt">
+        <thead><tr><th>Asset class</th><th class="num">Units</th><th class="num">Capitalized</th><th>Method</th><th>Life</th><th class="num">Annual (book)</th><th class="num">Accumulated</th><th class="num">NBV</th></tr></thead>
+        <tbody>
+          <tr><td><strong>iPhone 16e batch A</strong></td><td class="num">12</td><td class="num">$7,188</td><td>SL</td><td>2yr</td><td class="num">$3,594</td><td class="num">$4,193</td><td class="num"><strong>$2,995</strong></td></tr>
+          <tr><td><strong>iPhone 16e batch B</strong></td><td class="num">22</td><td class="num">$13,178</td><td>SL</td><td>2yr</td><td class="num">$6,589</td><td class="num">$1,647</td><td class="num"><strong>$11,531</strong></td></tr>
+          <tr><td><strong>iPhone 16e (deployed)</strong></td><td class="num">37</td><td class="num">$22,163</td><td>SL</td><td>2yr</td><td class="num">$11,081</td><td class="num">$6,463</td><td class="num"><strong>$15,700</strong></td></tr>
+          <tr><td><strong>AiRista badge (v1)</strong></td><td class="num">8</td><td class="num">$680</td><td>SL</td><td>3yr</td><td class="num">$227</td><td class="num">$416</td><td class="num"><strong>$264</strong></td></tr>
+          <tr><td><strong>AiRista badge (deployed)</strong></td><td class="num">42</td><td class="num">$3,570</td><td>SL</td><td>3yr</td><td class="num">$1,190</td><td class="num">$595</td><td class="num"><strong>$2,975</strong></td></tr>
+          <tr><td><strong>Pixel 8 Pro</strong></td><td class="num">4</td><td class="num">$3,996</td><td>SL</td><td>2yr</td><td class="num">$1,998</td><td class="num">$666</td><td class="num"><strong>$3,330</strong></td></tr>
+          <tr><td><strong>ChromeBook X360</strong></td><td class="num">2</td><td class="num">$1,098</td><td>SL</td><td>3yr</td><td class="num">$366</td><td class="num">$488</td><td class="num"><strong>$610</strong></td></tr>
+        </tbody>
+      </table>
+      <div class="card-foot"><span>127 capitalized devices, all over $500 threshold</span><strong style="margin-left:auto;">Net book value $37,405</strong></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Book vs tax depreciation, current year</h3></div>
+      <table class="dt">
+        <thead><tr><th>Asset class</th><th class="num">Book (SL)</th><th class="num">Tax (MACRS)</th><th class="num">Delta</th><th class="num">Deferred tax (24 percent)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>iPhone 16e (all)</strong></td><td class="num">$21,264</td><td class="num">$28,560</td><td class="num" style="color:var(--c-warning-text);">+$7,296</td><td class="num">$1,751</td></tr>
+          <tr><td><strong>AiRista badges</strong></td><td class="num">$1,417</td><td class="num">$2,128</td><td class="num" style="color:var(--c-warning-text);">+$711</td><td class="num">$171</td></tr>
+          <tr><td><strong>Pixel 8 Pro</strong></td><td class="num">$1,998</td><td class="num">$2,558</td><td class="num" style="color:var(--c-warning-text);">+$560</td><td class="num">$134</td></tr>
+          <tr><td><strong>ChromeBook X360</strong></td><td class="num">$366</td><td class="num">$439</td><td class="num" style="color:var(--c-warning-text);">+$73</td><td class="num">$18</td></tr>
+        </tbody>
+      </table>
+      <div class="card-foot"><strong style="margin-left:auto;">Deferred tax liability $2,074</strong></div>
+    </div>
+  </div>
+
+  <!-- GL AND JOURNAL ENTRIES -->
+  <div v-if="subtab === 'GL and journal entries'">
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Chart of accounts mapping</h3><span class="card-sub" style="margin-left:auto;">Auto-applied to every transaction</span></div>
+      <table class="dt">
+        <thead><tr><th>Asset class</th><th>Capital GL</th><th>Accum. depr. GL</th><th>Loss / damage GL</th><th>Repair OpEx GL</th></tr></thead>
+        <tbody>
+          <tr><td><strong>iPhone 16e</strong></td><td class="mono">1520, IT Equipment</td><td class="mono">1521, Accum. Depr.</td><td class="mono">5650, Loss on Asset</td><td class="mono">5410, Equipment Repair</td></tr>
+          <tr><td><strong>AiRista badge</strong></td><td class="mono">1525, ID and Badge</td><td class="mono">1526, Accum. Depr.</td><td class="mono">5650, Loss on Asset</td><td class="mono">5410, Equipment Repair</td></tr>
+          <tr><td><strong>Pixel 8 Pro</strong></td><td class="mono">1520, IT Equipment</td><td class="mono">1521, Accum. Depr.</td><td class="mono">5650, Loss on Asset</td><td class="mono">5410, Equipment Repair</td></tr>
+          <tr><td><strong>ChromeBook X360</strong></td><td class="mono">1530, Computers</td><td class="mono">1531, Accum. Depr.</td><td class="mono">5650, Loss on Asset</td><td class="mono">5410, Equipment Repair</td></tr>
+          <tr><td><strong>Cables and accessories</strong></td><td class="mono">5420, OpEx Supplies</td><td class="mono">N/A</td><td class="mono">N/A</td><td class="mono">N/A</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Recent journal entries</h3><span class="card-sub" style="margin-left:auto;">Click any pending JE to approve and sync</span></div>
+      <table class="dt">
+        <thead><tr><th>JE</th><th>Date</th><th>Event</th><th>Debit</th><th>Credit</th><th class="num">Amount</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr v-for="je in state.journalEntries" :key="je.id" :class="{ clickable: je.status === 'Pending review' }" @click="reviewJE(je)">
+            <td><strong>{{ je.id }}</strong></td><td>{{ je.date }}</td><td>{{ je.event }}</td>
+            <td class="mono">{{ je.debit }}</td><td class="mono">{{ je.credit }}</td>
+            <td class="num">{{ fmt.moneyDec(je.amount_cents) }}</td>
+            <td><span class="p-tag" :class="je.status === 'Synced QB' ? 'p-tag-success' : 'p-tag-warning'">{{ je.status }}</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="card-foot"><span>{{ syncedJEs }} synced, {{ pendingJEs }} pending review</span><strong style="margin-left:auto;">$ flowed: $42,890</strong></div>
+    </div>
+  </div>
+
+  <!-- COST CENTERS -->
+  <div v-if="subtab === 'Cost centers'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Active cost centers</div><div class="kpi-value">12</div><div class="kpi-sub">7 depts plus 5 sub-locations</div></div>
+      <div class="kpi"><div class="kpi-label">Chargebacks this Q</div><div class="kpi-value">$8,540</div><div class="kpi-sub">Loss and damage allocations</div></div>
+      <div class="kpi"><div class="kpi-label">Pending approvals</div><div class="kpi-value warn">3</div><div class="kpi-sub">VP sign-off needed</div></div>
+      <div class="kpi"><div class="kpi-label">Disputes open</div><div class="kpi-value">1</div><div class="kpi-sub">ER North, $599</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Cost center allocation</h3></div>
+      <table class="dt">
+        <thead><tr><th>Cost center</th><th>Department</th><th class="num">Devices</th><th class="num">$ allocated</th><th class="num">Loss YTD</th><th class="num">Chargeback YTD</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>CC-100, ER North</strong></td><td>Emergency Medicine</td><td class="num">8</td><td class="num">$5,690</td><td class="num" style="color:var(--c-danger);">$4,375</td><td class="num">$4,375</td><td><span class="p-tag p-tag-warning">1 dispute</span></td></tr>
+          <tr><td><strong>CC-101, ER South</strong></td><td>Emergency Medicine</td><td class="num">6</td><td class="num">$4,180</td><td class="num" style="color:var(--c-warning-text);">$1,840</td><td class="num">$1,840</td><td><span class="p-tag p-tag-success">Cleared</span></td></tr>
+          <tr><td><strong>CC-200, ICU 5N</strong></td><td>Nursing</td><td class="num">8</td><td class="num">$3,764</td><td class="num" style="color:var(--c-warning-text);">$2,852</td><td class="num">$2,852</td><td><span class="p-tag p-tag-success">Cleared</span></td></tr>
+          <tr><td><strong>CC-300, Radiology</strong></td><td>Radiology</td><td class="num">32</td><td class="num">$14,956</td><td class="num">$957</td><td class="num">$957</td><td><span class="p-tag p-tag-success">Cleared</span></td></tr>
+          <tr><td><strong>CC-400, Security</strong></td><td>Security and Facilities</td><td class="num">8</td><td class="num">$3,714</td><td class="num">$438</td><td class="num">$438</td><td><span class="p-tag p-tag-success">Cleared</span></td></tr>
+          <tr><td><strong>CC-500, Admin and HR</strong></td><td>Admin and HR</td><td class="num">3</td><td class="num">$1,797</td><td class="num">$170</td><td class="num">$170</td><td><span class="p-tag p-tag-success">Cleared</span></td></tr>
+          <tr><td><strong>CC-900, HQ and Shared</strong></td><td>IT</td><td class="num">31</td><td class="num">$9,317</td><td class="num">$0</td><td class="num">$0</td><td><span class="p-tag p-tag-success">Cleared</span></td></tr>
+        </tbody>
+      </table>
+      <div class="card-foot"><span>7 of 12 cost centers, 96 devices, $43,418 allocated</span><strong style="margin-left:auto;">YTD chargebacks $10,632</strong></div>
+    </div>
+  </div>
+
+  <!-- BUDGET VS ACTUAL -->
+  <div v-if="subtab === 'Budget vs actual'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Annual budget</div><div class="kpi-value">$64,000</div><div class="kpi-sub">FY 2026, approved Apr</div></div>
+      <div class="kpi"><div class="kpi-label">Spent YTD</div><div class="kpi-value">$28,142</div><div class="kpi-sub">44 percent, halfway through year</div></div>
+      <div class="kpi"><div class="kpi-label">Variance</div><div class="kpi-value success">+$3,858</div><div class="kpi-sub">Under budget</div></div>
+      <div class="kpi"><div class="kpi-label">Forecast year-end</div><div class="kpi-value">$58,420</div><div class="kpi-sub">$5,580 under</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Budget vs actual by category</h3></div>
+      <table class="dt">
+        <thead><tr><th>Category</th><th class="num">Annual budget</th><th class="num">YTD spent</th><th class="num">Percent</th><th class="num">Variance</th><th class="num">Forecast YE</th></tr></thead>
+        <tbody>
+          <tr><td><strong>New device purchases</strong></td><td class="num">$32,000</td><td class="num">$15,420</td><td class="num">48 percent</td><td class="num" style="color:var(--c-success);">+$580</td><td class="num">$30,840</td></tr>
+          <tr><td><strong>Replacement (loss)</strong></td><td class="num">$10,000</td><td class="num" style="color:var(--c-warning-text);">$8,876</td><td class="num" style="color:var(--c-warning-text);">89 percent</td><td class="num" style="color:var(--c-danger);">-$3,876</td><td class="num" style="color:var(--c-warning-text);">$15,200</td></tr>
+          <tr><td><strong>Repair and maintenance</strong></td><td class="num">$8,000</td><td class="num">$3,481</td><td class="num">44 percent</td><td class="num" style="color:var(--c-success);">+$519</td><td class="num">$6,800</td></tr>
+          <tr><td><strong>Accessories and consumables</strong></td><td class="num">$3,000</td><td class="num">$1,640</td><td class="num">55 percent</td><td class="num" style="color:var(--c-success);">-$140</td><td class="num">$3,200</td></tr>
+          <tr><td><strong>Vendor contracts</strong></td><td class="num">$11,000</td><td class="num">$5,500</td><td class="num">50 percent</td><td class="num" style="color:var(--c-success);">$0</td><td class="num">$11,000</td></tr>
+        </tbody>
+      </table>
+      <div class="card-foot"><strong style="margin-left:auto;">Total forecast $67,040 vs $64,000 budget, over by $3,040 driven by loss</strong></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Capex vs OpEx split</h3><span class="card-sub" style="margin-left:auto;">Auto-classified, over $500 capitalized</span></div>
+      <table class="dt">
+        <thead><tr><th>Classification</th><th class="num">YTD count</th><th class="num">YTD spend</th><th class="num">Percent of total</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Capex (capitalized)</strong></td><td class="num">38</td><td class="num">$22,860</td><td class="num">81 percent</td></tr>
+          <tr><td><strong>OpEx (expensed)</strong></td><td class="num">82</td><td class="num">$5,282</td><td class="num">19 percent</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ERP INTEGRATIONS -->
+  <div v-if="subtab === 'ERP integrations'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Active connections</div><div class="kpi-value success">2</div><div class="kpi-sub">QuickBooks, Workday HRIS</div></div>
+      <div class="kpi"><div class="kpi-label">Records synced this Q</div><div class="kpi-value">2,184</div><div class="kpi-sub">JEs plus assets plus headcount</div></div>
+      <div class="kpi"><div class="kpi-label">Last full sync</div><div class="kpi-value">4 min</div><div class="kpi-sub">auto every 15 min</div></div>
+      <div class="kpi"><div class="kpi-label">Sync errors (24h)</div><div class="kpi-value">0</div><div class="kpi-sub">Last error 9 days ago</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Available integrations</h3><span class="card-sub" style="margin-left:auto;">One-click OAuth, bi-directional sync, scoped permissions</span></div>
+      <table class="dt">
+        <thead><tr><th>System</th><th>Category</th><th>Status</th><th>Last sync</th><th>Direction</th><th>What syncs</th></tr></thead>
+        <tbody>
+          <tr><td><strong>QuickBooks Online</strong></td><td>Accounting</td><td><span class="p-tag p-tag-success">Connected</span></td><td class="mono">4 min ago</td><td>Both ways</td><td>JEs, GL, AP, vendors</td></tr>
+          <tr><td><strong>Workday Financials</strong></td><td>ERP</td><td><span class="p-tag p-tag-secondary">Available</span></td><td class="mono">N/A</td><td>Both ways</td><td>JEs, GL, cost centers</td></tr>
+          <tr><td><strong>Workday HRIS</strong></td><td>HRIS</td><td><span class="p-tag p-tag-success">Connected</span></td><td class="mono">2h ago</td><td>Inbound</td><td>Headcount, depts, hires</td></tr>
+          <tr><td><strong>NetSuite</strong></td><td>ERP</td><td><span class="p-tag p-tag-secondary">Available</span></td><td class="mono">N/A</td><td>Both ways</td><td>Full GL plus AP plus AR</td></tr>
+          <tr><td><strong>SAP S/4HANA</strong></td><td>ERP</td><td><span class="p-tag p-tag-secondary">Available</span></td><td class="mono">N/A</td><td>Both ways</td><td>JEs, GL, cost centers, AP</td></tr>
+          <tr><td><strong>Oracle Fusion Cloud</strong></td><td>ERP</td><td><span class="p-tag p-tag-secondary">Available</span></td><td class="mono">N/A</td><td>Both ways</td><td>JEs, GL, AP</td></tr>
+          <tr><td><strong>Sage Intacct</strong></td><td>Accounting</td><td><span class="p-tag p-tag-secondary">Available</span></td><td class="mono">N/A</td><td>Both ways</td><td>JEs, GL, depreciation</td></tr>
+          <tr><td><strong>Microsoft Dynamics 365</strong></td><td>ERP</td><td><span class="p-tag p-tag-secondary">Available</span></td><td class="mono">N/A</td><td>Both ways</td><td>JEs, GL, AP, fixed assets</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">QuickBooks Online sync detail</h3><span class="card-sub" style="margin-left:auto;">corewell-health at quickbooks, connected Apr 12, 2026</span></div>
+      <table class="dt">
+        <thead><tr><th>Object</th><th class="num">Records this Q</th><th>Direction</th><th>Last record</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Journal entries</strong></td><td class="num">147</td><td>Push</td><td class="mono">4 min ago</td><td><span class="p-tag p-tag-success">Healthy</span></td></tr>
+          <tr><td><strong>Fixed assets</strong></td><td class="num">38</td><td>Push</td><td class="mono">6h ago</td><td><span class="p-tag p-tag-success">Healthy</span></td></tr>
+          <tr><td><strong>AP bills (repair)</strong></td><td class="num">29</td><td>Push</td><td class="mono">3d ago</td><td><span class="p-tag p-tag-success">Healthy</span></td></tr>
+          <tr><td><strong>Vendors</strong></td><td class="num">4</td><td>Both</td><td class="mono">2w ago</td><td><span class="p-tag p-tag-success">Healthy</span></td></tr>
+          <tr><td><strong>Chart of accounts</strong></td><td class="num">12 mapped</td><td>Pull</td><td class="mono">2w ago</td><td><span class="p-tag p-tag-success">Healthy</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PERIOD CLOSE -->
+  <div v-if="subtab === 'Period close'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Days until close</div><div class="kpi-value warn">19</div><div class="kpi-sub">Jun 30, target Jul 5</div></div>
+      <div class="kpi"><div class="kpi-label">JEs to review</div><div class="kpi-value">{{ pendingJEs }}</div><div class="kpi-sub">Click to approve in GL tab</div></div>
+      <div class="kpi"><div class="kpi-label">Reconciliations</div><div class="kpi-value warn">3</div><div class="kpi-sub">GL vs ledger pending</div></div>
+      <div class="kpi"><div class="kpi-label">Sign-offs</div><div class="kpi-value">2 of 4</div><div class="kpi-sub">Controller, CFO pending</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Period close workflow, Q2 2026</h3><span class="card-sub" style="margin-left:auto;">Each step locks downstream actions when complete</span></div>
+      <table class="dt">
+        <thead><tr><th>Step</th><th>Owner</th><th>Due</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1, Pre-close prep</strong></td><td>Admin Rowe</td><td>Jun 25</td><td><span class="p-tag p-tag-success">Complete</span></td></tr>
+          <tr><td><strong>2, JE review</strong></td><td>Sarah Park</td><td>Jun 28</td><td><span class="p-tag p-tag-warning">{{ pendingJEs }} pending</span></td></tr>
+          <tr><td><strong>3, Depreciation run</strong></td><td>System (auto)</td><td>Jun 29</td><td><span class="p-tag p-tag-secondary">Blocked</span></td></tr>
+          <tr><td><strong>4, Reconciliation</strong></td><td>Accounting team</td><td>Jun 30</td><td><span class="p-tag p-tag-secondary">Blocked</span></td></tr>
+          <tr><td><strong>5, Controller sign-off</strong></td><td>Controller</td><td>Jul 2</td><td><span class="p-tag p-tag-secondary">Blocked</span></td></tr>
+          <tr><td><strong>6, CFO sign-off</strong></td><td>CFO</td><td>Jul 4</td><td><span class="p-tag p-tag-secondary">Blocked</span></td></tr>
+          <tr><td><strong>7, Period locked</strong></td><td>System (auto)</td><td>Jul 5</td><td><span class="p-tag p-tag-secondary">Blocked</span></td></tr>
+        </tbody>
+      </table>
+      <div class="card-foot"><span>2 of 7 steps complete, on schedule</span><strong style="margin-left:auto;">Forecast close: Jul 5 (on target)</strong></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Reconciliation status</h3></div>
+      <table class="dt">
+        <thead><tr><th>Account</th><th class="num">Ledger balance</th><th class="num">GL balance</th><th class="num">Variance</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1520, IT Equipment</strong></td><td class="num">$56,288</td><td class="num">$56,288</td><td class="num" style="color:var(--c-success);">$0</td><td><span class="p-tag p-tag-success">Reconciled</span></td></tr>
+          <tr><td><strong>1521, Accum. Depr.</strong></td><td class="num">$18,762</td><td class="num">$18,762</td><td class="num" style="color:var(--c-success);">$0</td><td><span class="p-tag p-tag-success">Reconciled</span></td></tr>
+          <tr><td><strong>5410, Equipment Repair</strong></td><td class="num">$3,481</td><td class="num">$3,565</td><td class="num" style="color:var(--c-warning-text);">-$84</td><td><span class="p-tag p-tag-warning">Investigating</span></td></tr>
+          <tr><td><strong>5650, Loss on Asset</strong></td><td class="num">$8,876</td><td class="num">$8,876</td><td class="num" style="color:var(--c-success);">$0</td><td><span class="p-tag p-tag-success">Reconciled</span></td></tr>
+          <tr><td><strong>1380, Internal Chargeback</strong></td><td class="num">$10,632</td><td class="num">$10,632</td><td class="num" style="color:var(--c-success);">$0</td><td><span class="p-tag p-tag-success">Reconciled</span></td></tr>
+        </tbody>
+      </table>
+      <div class="card-foot"><span>4 of 5 reconciled, 1 minor variance</span><strong style="margin-left:auto;">$ flow reconciled $98,039</strong></div>
+    </div>
+  </div>
+
+  <!-- TOASTS -->
+  <div class="p-toast">
+    <div v-for="t in toasts" :key="t.id" :class="'p-toast-message severity-' + t.severity">
+      <i :class="'pi ' + (t.severity === 'success' ? 'pi-check-circle' : 'pi-info-circle')"
+         :style="{ color: t.severity === 'success' ? 'var(--c-success)' : 'var(--c-info)', fontSize:'16px', marginTop:'2px' }"></i>
+      <div style="flex:1;">
+        <strong>{{ t.summary }}</strong>
+        <div v-if="t.detail" style="font-size:11px; color:var(--c-text-2); margin-top:2px;">{{ t.detail }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+  `
+};
+
+createApp(App).mount('#app');
+</script>
+
+</body>
+</html>

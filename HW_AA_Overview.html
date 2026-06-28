@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overview - Asset Accounting - HonestWaves</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/aura-light-blue/theme.css">
+<style>
+:root { --c-surface:#FFFFFF; --c-surface-2:#FAFAFB; --c-surface-3:#F4F5F7; --c-border:#E5E7EB; --c-divider:#EDF0F4; --c-text:#0F172A; --c-text-2:#475569; --c-text-muted:#94A3B8; --c-brand:#2563EB; --c-brand-soft:#EFF6FF; --c-success:#10B981; --c-success-soft:#ECFDF5; --c-warning:#F59E0B; --c-warning-soft:#FFFBEB; --c-warning-text:#B45309; --c-danger:#EF4444; --c-danger-soft:#FEF2F2; --c-info:#6366F1; --c-info-soft:#EEF2FF; --c-violet:#7C3AED; --c-violet-soft:#F5F3FF; --r-md:6px; --r-pill:999px; }
+* { box-sizing: border-box; }
+body { font-family:'Inter',system-ui,sans-serif; font-size:13px; color:var(--c-text); background:var(--c-surface-2); margin:0; padding:24px; }
+.page-head { display:flex; align-items:flex-end; gap:16px; margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--c-border); }
+.page-title { font-size:22px; font-weight:600; letter-spacing:-.015em; line-height:1.1; margin:0; }
+.page-sub { font-size:13px; color:var(--c-text-2); margin-top:4px; }
+.kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+.kpi { background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); padding:14px 16px; box-shadow:0 1px 2px rgba(15,23,42,.04); }
+.kpi-label { font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--c-text-muted); font-weight:600; }
+.kpi-value { font-size:24px; font-weight:700; color:var(--c-text); line-height:1.1; margin-top:4px; }
+.kpi-value.success { color:var(--c-success); } .kpi-value.danger { color:var(--c-danger); } .kpi-value.warn { color:var(--c-warning-text); } .kpi-value.info { color:var(--c-info); }
+.kpi-sub { font-size:11px; color:var(--c-text-2); margin-top:4px; }
+.card { background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); box-shadow:0 1px 2px rgba(15,23,42,.04); margin-bottom:16px; }
+.card-head { padding:14px 18px; border-bottom:1px solid var(--c-border); display:flex; align-items:center; gap:10px; }
+.card-title { font-size:14px; font-weight:600; margin:0; }
+.card-sub { font-size:12px; color:var(--c-text-muted); }
+table.dt { width:100%; border-collapse:collapse; }
+table.dt thead th { background:var(--c-surface-3); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--c-text-2); padding:10px 16px; text-align:left; border-bottom:1px solid var(--c-border); }
+table.dt tbody td { padding:11px 16px; font-size:13px; border-bottom:1px solid var(--c-divider); }
+table.dt tbody tr:hover { background:var(--c-surface-2); }
+table.dt .num { text-align:right; font-variant-numeric:tabular-nums; }
+.p-button { display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 12px; font-size:12px; font-weight:500; color:var(--c-text); background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); box-shadow:0 1px 2px rgba(15,23,42,.04); cursor:pointer; font-family:inherit; }
+.p-button-text { background:transparent; border-color:transparent; box-shadow:none; color:var(--c-text-2); }
+.p-button-primary { background:var(--c-brand); color:white; border-color:var(--c-brand); }
+.p-tag { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; padding:2px 8px; border-radius:var(--r-pill); }
+.p-tag-success { background:var(--c-success-soft); color:var(--c-success); }
+.p-tag-warning { background:var(--c-warning-soft); color:var(--c-warning-text); }
+.p-tag-info { background:var(--c-info-soft); color:var(--c-info); }
+.p-tag-violet { background:var(--c-violet-soft); color:var(--c-violet); }
+.health-grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+.health-tile { background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); padding:14px 16px; }
+.health-tile-head { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.health-dot { width:8px; height:8px; border-radius:50%; }
+.dot-green { background:var(--c-success); } .dot-amber { background:var(--c-warning); } .dot-red { background:var(--c-danger); }
+.health-tile-title { font-size:13px; font-weight:600; margin:0; }
+.health-tile-body { font-size:12px; color:var(--c-text-2); }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script type="module">
+import { createApp, ref, reactive, watch } from 'https://unpkg.com/vue@3.5.13/dist/vue.esm-browser.js';
+
+const STATE_KEY = 'hw.aa.overview.v1';
+function load() { try { const r = localStorage.getItem(STATE_KEY); if (r) return JSON.parse(r); } catch(e){} const s = { lastViewed: new Date().toISOString() }; localStorage.setItem(STATE_KEY, JSON.stringify(s)); return s; }
+function save(s) { try { localStorage.setItem(STATE_KEY, JSON.stringify(s)); } catch(e){} }
+
+const App = {
+  setup() {
+    const state = reactive(load());
+    watch(state, () => save(state), { deep:true });
+    return { state };
+  },
+  template: `
+<div>
+  <header class="page-head">
+    <div style="flex:1;">
+      <h1 class="page-title">Overview</h1>
+      <p class="page-sub">All seven panes at a glance. Click a tile or open a pane from the sidebar for detail.</p>
+    </div>
+    <button class="p-button p-button-text"><i class="pi pi-download"></i>Board pack</button>
+    <button class="p-button p-button-primary"><i class="pi pi-share-alt"></i>Share snapshot</button>
+  </header>
+
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-label">Net book value</div><div class="kpi-value">$37,405</div><div class="kpi-sub">133 capitalized devices</div></div>
+    <div class="kpi"><div class="kpi-label">YTD spend</div><div class="kpi-value info">$28,142</div><div class="kpi-sub">44 percent of $64K budget</div></div>
+    <div class="kpi"><div class="kpi-label">Loss YTD</div><div class="kpi-value warn">$8,876</div><div class="kpi-sub">14 incidents, 89 percent chargeback</div></div>
+    <div class="kpi"><div class="kpi-label">Open insights</div><div class="kpi-value">6</div><div class="kpi-sub">recommendations awaiting action</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3 class="card-title">Pane health</h3><span class="card-sub" style="margin-left:auto;">Updated 4 min ago</span></div>
+    <div style="padding:14px 18px;">
+      <div class="health-grid">
+        <div class="health-tile"><div class="health-tile-head"><span class="health-dot dot-green"></span><h4 class="health-tile-title">Insights <span class="p-tag p-tag-violet" style="margin-left:4px;">NEW</span></h4></div><div class="health-tile-body">6 open recommendations. 2 service alerts due this week.</div></div>
+        <div class="health-tile"><div class="health-tile-head"><span class="health-dot dot-amber"></span><h4 class="health-tile-title">Inventory</h4></div><div class="health-tile-body">2 SKUs below par (iPhone 16e, AiRista B7). 4 POs open.</div></div>
+        <div class="health-tile"><div class="health-tile-head"><span class="health-dot dot-amber"></span><h4 class="health-tile-title">Loss and damage</h4></div><div class="health-tile-body">ER North trending 11.9 percent loss rate vs 3 percent firm-wide.</div></div>
+        <div class="health-tile"><div class="health-tile-head"><span class="health-dot dot-green"></span><h4 class="health-tile-title">Repair</h4></div><div class="health-tile-body">3 open tickets, avg cycle 5.2 days, under 7-day SLA.</div></div>
+        <div class="health-tile"><div class="health-tile-head"><span class="health-dot dot-amber"></span><h4 class="health-tile-title">Accounting and ERP <span class="p-tag p-tag-violet" style="margin-left:4px;">NEW</span></h4></div><div class="health-tile-body">1 JE pending review. Period close on schedule for Jul 5.</div></div>
+        <div class="health-tile"><div class="health-tile-head"><span class="health-dot dot-green"></span><h4 class="health-tile-title">Rules</h4></div><div class="health-tile-body">14 of 16 rules enabled. 87 fires in last 30 days, 2 false positives.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3 class="card-title">Recent activity, last 7 days</h3></div>
+    <table class="dt">
+      <thead><tr><th>When</th><th>Pane</th><th>Event</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Jun 27, 09:14</td><td>Accounting</td><td>JE-1015 cost-center chargeback flagged for review</td><td><span class="p-tag p-tag-warning">Pending</span></td></tr>
+        <tr><td>Jun 26, 22:08</td><td>Repair</td><td>Battery health alert auto-opened RQ-2041</td><td><span class="p-tag p-tag-info">In progress</span></td></tr>
+        <tr><td>Jun 25, 16:40</td><td>Rules</td><td>UR-2 fired on new hire J. Wang, VP approval pending</td><td><span class="p-tag p-tag-warning">Pending</span></td></tr>
+        <tr><td>Jun 24, 11:55</td><td>Inventory</td><td>3 iPhone 13 devices auto-tagged EOL</td><td><span class="p-tag p-tag-success">Done</span></td></tr>
+        <tr><td>Jun 23, 08:31</td><td>Loss and damage</td><td>Olivia Park hit 3rd loss, PIN auto-suspended</td><td><span class="p-tag p-tag-success">Restored</span></td></tr>
+        <tr><td>Jun 22, 15:02</td><td>Insights</td><td>Recommendation: add locker to Hospital West Radiology</td><td><span class="p-tag p-tag-info">Open</span></td></tr>
+        <tr><td>Jun 21, 14:18</td><td>Accounting</td><td>QuickBooks sync, 12 JEs posted</td><td><span class="p-tag p-tag-success">Synced</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+  `
+};
+createApp(App).mount('#app');
+</script>
+</body>
+</html>

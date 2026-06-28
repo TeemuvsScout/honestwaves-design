@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inventory - Asset Accounting - HonestWaves</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/aura-light-blue/theme.css">
+<style>
+:root { --c-surface:#FFFFFF; --c-surface-2:#FAFAFB; --c-surface-3:#F4F5F7; --c-border:#E5E7EB; --c-border-strong:#D1D5DB; --c-divider:#EDF0F4; --c-text:#0F172A; --c-text-2:#475569; --c-text-muted:#94A3B8; --c-brand:#2563EB; --c-brand-soft:#EFF6FF; --c-success:#10B981; --c-success-soft:#ECFDF5; --c-warning:#F59E0B; --c-warning-soft:#FFFBEB; --c-warning-text:#B45309; --c-danger:#EF4444; --c-danger-soft:#FEF2F2; --c-info:#6366F1; --c-info-soft:#EEF2FF; --c-violet:#7C3AED; --c-violet-soft:#F5F3FF; --r-md:6px; --r-pill:999px; }
+* { box-sizing: border-box; }
+body { font-family:'Inter',system-ui,sans-serif; font-size:13px; color:var(--c-text); background:var(--c-surface-2); margin:0; padding:24px; }
+.page-head { display:flex; align-items:flex-end; gap:16px; margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--c-border); }
+.page-title { font-size:22px; font-weight:600; letter-spacing:-.015em; line-height:1.1; margin:0; }
+.page-sub { font-size:13px; color:var(--c-text-2); margin-top:4px; }
+.kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+.kpi { background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); padding:14px 16px; box-shadow:0 1px 2px rgba(15,23,42,.04); }
+.kpi-label { font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--c-text-muted); font-weight:600; }
+.kpi-value { font-size:24px; font-weight:700; color:var(--c-text); line-height:1.1; margin-top:4px; }
+.kpi-value.success { color:var(--c-success); } .kpi-value.danger { color:var(--c-danger); } .kpi-value.warn { color:var(--c-warning-text); } .kpi-value.info { color:var(--c-info); }
+.kpi-sub { font-size:11px; color:var(--c-text-2); margin-top:4px; }
+.card { background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); box-shadow:0 1px 2px rgba(15,23,42,.04); margin-bottom:16px; }
+.card-head { padding:14px 18px; border-bottom:1px solid var(--c-border); display:flex; align-items:center; gap:10px; }
+.card-title { font-size:14px; font-weight:600; margin:0; }
+.card-sub { font-size:12px; color:var(--c-text-muted); }
+.card-foot { padding:10px 18px; border-top:1px solid var(--c-border); display:flex; align-items:center; gap:10px; font-size:12px; color:var(--c-text-2); background:var(--c-surface-2); }
+.pivot-bar { display:flex; flex-wrap:wrap; gap:2px; padding:4px; background:var(--c-surface-3); border-radius:var(--r-md); margin-bottom:14px; width:fit-content; }
+.pivot-btn { padding:6px 12px; font-size:12px; font-weight:500; color:var(--c-text-2); cursor:pointer; border-radius:4px; border:0; background:transparent; font-family:inherit; }
+.pivot-btn.active { background:var(--c-surface); color:var(--c-text); box-shadow:0 1px 2px rgba(15,23,42,.05); font-weight:600; }
+.p-button { display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 12px; font-size:12px; font-weight:500; color:var(--c-text); background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); box-shadow:0 1px 2px rgba(15,23,42,.04); cursor:pointer; font-family:inherit; }
+.p-button:hover { background:var(--c-surface-3); border-color:var(--c-border-strong); }
+.p-button-primary { background:var(--c-brand); color:white; border-color:var(--c-brand); }
+.p-button-text { background:transparent; border-color:transparent; box-shadow:none; color:var(--c-text-2); }
+.p-button-text:hover { background:var(--c-surface-3); color:var(--c-text); }
+.p-button-xs { height:22px; padding:0 7px; font-size:10px; gap:4px; }
+.p-tag { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; padding:2px 8px; border-radius:var(--r-pill); letter-spacing:.02em; }
+.p-tag-success { background:var(--c-success-soft); color:var(--c-success); }
+.p-tag-warning { background:var(--c-warning-soft); color:var(--c-warning-text); }
+.p-tag-danger { background:var(--c-danger-soft); color:var(--c-danger); }
+.p-tag-info { background:var(--c-info-soft); color:var(--c-info); }
+.p-tag-violet { background:var(--c-violet-soft); color:var(--c-violet); }
+.p-tag-secondary { background:var(--c-surface-3); color:var(--c-text-2); }
+table.dt { width:100%; border-collapse:collapse; }
+table.dt thead th { background:var(--c-surface-3); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--c-text-2); padding:10px 16px; text-align:left; border-bottom:1px solid var(--c-border); }
+table.dt tbody td { padding:11px 16px; font-size:13px; border-bottom:1px solid var(--c-divider); }
+table.dt tbody tr:hover { background:var(--c-surface-2); }
+table.dt .num { text-align:right; font-variant-numeric:tabular-nums; }
+table.dt .mono { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--c-text-muted); }
+.p-toast { position:fixed; top:20px; right:24px; z-index:9100; display:flex; flex-direction:column; gap:8px; }
+.p-toast-message { background:var(--c-surface); border:1px solid var(--c-border); border-left-width:4px; border-radius:6px; padding:12px 16px; box-shadow:0 8px 24px rgba(15,23,42,.12); min-width:280px; max-width:380px; display:flex; align-items:flex-start; gap:10px; }
+.p-toast-message.severity-success { border-left-color:var(--c-success); }
+.p-toast-message.severity-info { border-left-color:var(--c-info); }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script type="module">
+import { createApp, ref, computed, reactive, watch } from 'https://unpkg.com/vue@3.5.13/dist/vue.esm-browser.js';
+
+const STATE_KEY = 'hw.aa.inventory.v1';
+
+function seed() {
+  return {
+    pos: [
+      { id:'PO-2026-114', vendor:'Apple Business',   item:'iPhone 16e (10 pack)',     qty:10, eta:'Jun 18', status:'Submitted' },
+      { id:'PO-2026-113', vendor:'AiRista',           item:'Badge B7 (25 pack)',       qty:25, eta:'Jun 26', status:'Submitted' },
+      { id:'PO-2026-112', vendor:'TechFix Pro',       item:'Battery swap kits (50)',   qty:50, eta:'Jul 03', status:'Quote requested' },
+      { id:'PO-2026-111', vendor:'CDW Healthcare',    item:'Pixel 8 Pro (5 pack)',     qty:5,  eta:'Jul 10', status:'Approval pending' },
+    ],
+    transfers: [
+      { id:'TR-541', from:'Locker N-3', to:'Locker S-1', model:'iPhone 16e', qty:2, status:'Pending pickup' },
+      { id:'TR-540', from:'IT cage',    to:'Locker R-2', model:'AiRista',    qty:5, status:'Approved' },
+      { id:'TR-539', from:'Locker S-2', to:'Repair queue', model:'Pixel 8',  qty:1, status:'In transit' },
+    ],
+  };
+}
+
+function load() { try { const r = localStorage.getItem(STATE_KEY); if (r) return JSON.parse(r); } catch(e){} const s=seed(); localStorage.setItem(STATE_KEY, JSON.stringify(s)); return s; }
+function save(s) { try { localStorage.setItem(STATE_KEY, JSON.stringify(s)); } catch(e){} }
+
+const App = {
+  setup() {
+    const state = reactive(load());
+    const subtab = ref('By locker');
+    const toasts = ref([]);
+    watch(state, () => save(state), { deep:true });
+
+    const showToast = (severity, summary, detail) => {
+      const id = Date.now() + Math.random();
+      toasts.value.push({ id, severity, summary, detail });
+      setTimeout(() => { toasts.value = toasts.value.filter(t => t.id !== id); }, 3500);
+    };
+
+    const approvePO = (po) => {
+      if (po.status === 'Approval pending' || po.status === 'Quote requested' || po.status === 'Submitted') {
+        po.status = 'Approved';
+        showToast('success', 'PO approved', po.id + ' moved to Approved');
+      }
+    };
+    const approveTransfer = (tr) => {
+      if (tr.status === 'Pending pickup') {
+        tr.status = 'Approved';
+        showToast('success', 'Transfer approved', tr.id + ' ready for pickup');
+      }
+    };
+    const resetAll = () => { if (confirm('Reset Inventory state?')) { localStorage.removeItem(STATE_KEY); location.reload(); } };
+
+    return { state, subtab, toasts, approvePO, approveTransfer, resetAll };
+  },
+  template: `
+<div>
+  <header class="page-head">
+    <div style="flex:1;">
+      <h1 class="page-title">Inventory</h1>
+      <p class="page-sub">Stock by locker, location and model. Forecasts, procurement, transfers and warranty.</p>
+    </div>
+    <button class="p-button p-button-text" @click="resetAll"><i class="pi pi-refresh"></i>Reset state</button>
+    <button class="p-button p-button-text"><i class="pi pi-download"></i>Export CSV</button>
+    <button class="p-button p-button-primary"><i class="pi pi-plus"></i>New PO</button>
+  </header>
+
+  <div class="pivot-bar">
+    <button v-for="t in ['By locker','By location','By model','Forecast and EOL','Procurement','Transfers and disposal','Warranty and audits']" :key="t" class="pivot-btn" :class="{active: subtab === t}" @click="subtab = t">{{ t }}</button>
+  </div>
+
+  <!-- BY LOCKER -->
+  <div v-if="subtab === 'By locker'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Active lockers</div><div class="kpi-value">12</div><div class="kpi-sub">Across 5 locations</div></div>
+      <div class="kpi"><div class="kpi-label">Total bays</div><div class="kpi-value">186</div><div class="kpi-sub">144 occupied, 42 empty</div></div>
+      <div class="kpi"><div class="kpi-label">Utilization</div><div class="kpi-value">77 percent</div><div class="kpi-sub">target 75 to 85</div></div>
+      <div class="kpi"><div class="kpi-label">Restock alerts</div><div class="kpi-value warn">3</div><div class="kpi-sub">below par level</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Locker fill</h3><span class="card-sub" style="margin-left:auto;">All 12 lockers</span></div>
+      <table class="dt">
+        <thead><tr><th>Locker</th><th>Location</th><th class="num">Bays</th><th class="num">Occupied</th><th class="num">Empty</th><th class="num">Util</th><th>Health</th></tr></thead>
+        <tbody>
+          <tr><td><strong>HW-001</strong></td><td>HQ Lobby</td><td class="num">12</td><td class="num">10</td><td class="num">2</td><td class="num">83 percent</td><td><span class="p-tag p-tag-success">Healthy</span></td></tr>
+          <tr><td><strong>HW-002</strong></td><td>HQ Lobby</td><td class="num">24</td><td class="num">22</td><td class="num">2</td><td class="num">92 percent</td><td><span class="p-tag p-tag-warning">High util</span></td></tr>
+          <tr><td><strong>HW-003</strong></td><td>HQ Cafeteria</td><td class="num">12</td><td class="num">5</td><td class="num">7</td><td class="num">42 percent</td><td><span class="p-tag p-tag-info">Low util</span></td></tr>
+          <tr><td><strong>HW-004</strong></td><td>HQ Cafeteria</td><td class="num">24</td><td class="num">19</td><td class="num">5</td><td class="num">79 percent</td><td><span class="p-tag p-tag-success">Healthy</span></td></tr>
+          <tr><td><strong>HW-005</strong></td><td>HQ Floor 5</td><td class="num">16</td><td class="num">14</td><td class="num">2</td><td class="num">88 percent</td><td><span class="p-tag p-tag-success">Healthy</span></td></tr>
+          <tr><td><strong>HW-006</strong></td><td>HQ Floor 7</td><td class="num">16</td><td class="num">9</td><td class="num">7</td><td class="num">56 percent</td><td><span class="p-tag p-tag-warning">Restock</span></td></tr>
+          <tr><td><strong>HW-007</strong></td><td>Hospital East ER</td><td class="num">12</td><td class="num">11</td><td class="num">1</td><td class="num">92 percent</td><td><span class="p-tag p-tag-warning">High util</span></td></tr>
+          <tr><td><strong>HW-008</strong></td><td>Hospital East ICU</td><td class="num">12</td><td class="num">10</td><td class="num">2</td><td class="num">83 percent</td><td><span class="p-tag p-tag-success">Healthy</span></td></tr>
+          <tr><td><strong>HW-009</strong></td><td>Hospital West ER</td><td class="num">12</td><td class="num">11</td><td class="num">1</td><td class="num">92 percent</td><td><span class="p-tag p-tag-warning">High util</span></td></tr>
+          <tr><td><strong>HW-010</strong></td><td>Hospital West Radiology</td><td class="num">24</td><td class="num">14</td><td class="num">10</td><td class="num">58 percent</td><td><span class="p-tag p-tag-info">Low util</span></td></tr>
+          <tr><td><strong>HW-011</strong></td><td>Annex Floor 2</td><td class="num">12</td><td class="num">10</td><td class="num">2</td><td class="num">83 percent</td><td><span class="p-tag p-tag-success">Healthy</span></td></tr>
+          <tr><td><strong>HW-012</strong></td><td>Annex Floor 3</td><td class="num">10</td><td class="num">9</td><td class="num">1</td><td class="num">90 percent</td><td><span class="p-tag p-tag-warning">High util</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- BY LOCATION -->
+  <div v-if="subtab === 'By location'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Locations</div><div class="kpi-value">5</div><div class="kpi-sub">HQ, Hospital E, W, Annex, Off-site</div></div>
+      <div class="kpi"><div class="kpi-label">Locker density</div><div class="kpi-value">2.4</div><div class="kpi-sub">avg lockers per location</div></div>
+      <div class="kpi"><div class="kpi-label">Underserved</div><div class="kpi-value warn">1</div><div class="kpi-sub">Hospital West Radiology</div></div>
+      <div class="kpi"><div class="kpi-label">Suggested adds</div><div class="kpi-value info">2</div><div class="kpi-sub">approve in Insights tab</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Location coverage</h3></div>
+      <table class="dt">
+        <thead><tr><th>Location</th><th class="num">Lockers</th><th class="num">Bays</th><th class="num">Occupied</th><th class="num">Util</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>HQ Building 1</strong></td><td class="num">6</td><td class="num">104</td><td class="num">79</td><td class="num">76 percent</td><td><span class="p-tag p-tag-success">Healthy</span></td></tr>
+          <tr><td><strong>Hospital East</strong></td><td class="num">2</td><td class="num">24</td><td class="num">21</td><td class="num">88 percent</td><td><span class="p-tag p-tag-warning">Consider adding</span></td></tr>
+          <tr><td><strong>Hospital West</strong></td><td class="num">2</td><td class="num">36</td><td class="num">25</td><td class="num">69 percent</td><td><span class="p-tag p-tag-success">Healthy</span></td></tr>
+          <tr><td><strong>Annex</strong></td><td class="num">2</td><td class="num">22</td><td class="num">19</td><td class="num">86 percent</td><td><span class="p-tag p-tag-warning">High util</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- BY MODEL -->
+  <div v-if="subtab === 'By model'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">SKUs in service</div><div class="kpi-value">7</div><div class="kpi-sub">3 phones, 1 badge, 1 tablet, 1 cable, 1 charger</div></div>
+      <div class="kpi"><div class="kpi-label">Units in service</div><div class="kpi-value">133</div><div class="kpi-sub">across all locations</div></div>
+      <div class="kpi"><div class="kpi-label">Below par</div><div class="kpi-value warn">2</div><div class="kpi-sub">iPhone 16e, AiRista B7</div></div>
+      <div class="kpi"><div class="kpi-label">On order</div><div class="kpi-value">35</div><div class="kpi-sub">2 active POs</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Stock by model</h3></div>
+      <table class="dt">
+        <thead><tr><th>Model</th><th>Type</th><th class="num">In service</th><th class="num">In stock</th><th class="num">Par level</th><th class="num">On order</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>iPhone 16e</strong></td><td>Smartphone</td><td class="num">71</td><td class="num">4</td><td class="num">8</td><td class="num">10</td><td><span class="p-tag p-tag-warning">Below par</span></td></tr>
+          <tr><td><strong>Pixel 8 Pro</strong></td><td>Smartphone</td><td class="num">4</td><td class="num">2</td><td class="num">2</td><td class="num">5</td><td><span class="p-tag p-tag-success">OK</span></td></tr>
+          <tr><td><strong>iPhone 13 (legacy)</strong></td><td>Smartphone</td><td class="num">3</td><td class="num">1</td><td class="num">2</td><td class="num">0</td><td><span class="p-tag p-tag-secondary">EOL</span></td></tr>
+          <tr><td><strong>AiRista Badge B7</strong></td><td>RTLS Badge</td><td class="num">50</td><td class="num">3</td><td class="num">8</td><td class="num">25</td><td><span class="p-tag p-tag-warning">Below par</span></td></tr>
+          <tr><td><strong>ChromeBook X360</strong></td><td>Tablet</td><td class="num">2</td><td class="num">1</td><td class="num">1</td><td class="num">0</td><td><span class="p-tag p-tag-success">OK</span></td></tr>
+          <tr><td><strong>USB-C cables</strong></td><td>Accessory</td><td class="num">N/A</td><td class="num">37</td><td class="num">20</td><td class="num">0</td><td><span class="p-tag p-tag-success">OK</span></td></tr>
+          <tr><td><strong>MagSafe pucks</strong></td><td>Charger</td><td class="num">N/A</td><td class="num">12</td><td class="num">15</td><td class="num">0</td><td><span class="p-tag p-tag-warning">Below par</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FORECAST AND EOL -->
+  <div v-if="subtab === 'Forecast and EOL'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">EOL within 12mo</div><div class="kpi-value warn">15</div><div class="kpi-sub">devices to refresh</div></div>
+      <div class="kpi"><div class="kpi-label">Replacement cost</div><div class="kpi-value">$7,485</div><div class="kpi-sub">at current vendor pricing</div></div>
+      <div class="kpi"><div class="kpi-label">Forecast accuracy</div><div class="kpi-value success">94 percent</div><div class="kpi-sub">trailing 90 days</div></div>
+      <div class="kpi"><div class="kpi-label">Recommended buys</div><div class="kpi-value info">3</div><div class="kpi-sub">from Insights tab</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">12 month replacement forecast</h3></div>
+      <table class="dt">
+        <thead><tr><th>Model</th><th class="num">Expected EOL</th><th class="num">Already at risk</th><th class="num">Estimated cost</th><th>Refresh window</th></tr></thead>
+        <tbody>
+          <tr><td><strong>iPhone 16e</strong></td><td class="num">7</td><td class="num">3</td><td class="num">$4,193</td><td>Q3 to Q4 2026</td></tr>
+          <tr><td><strong>AiRista Badge B7</strong></td><td class="num">5</td><td class="num">2</td><td class="num">$425</td><td>Q4 2026</td></tr>
+          <tr><td><strong>iPhone 13 (legacy)</strong></td><td class="num">3</td><td class="num">3</td><td class="num">$1,797</td><td>Now (already EOL)</td></tr>
+          <tr><td><strong>Pixel 8 Pro</strong></td><td class="num">0</td><td class="num">0</td><td class="num">$0</td><td>Stable</td></tr>
+          <tr><td><strong>ChromeBook X360</strong></td><td class="num">0</td><td class="num">0</td><td class="num">$0</td><td>Stable</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PROCUREMENT -->
+  <div v-if="subtab === 'Procurement'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Open POs</div><div class="kpi-value">{{ state.pos.filter(p=>p.status !== 'Approved').length }}</div><div class="kpi-sub">click to approve</div></div>
+      <div class="kpi"><div class="kpi-label">Committed spend</div><div class="kpi-value">$18,240</div><div class="kpi-sub">across 4 active POs</div></div>
+      <div class="kpi"><div class="kpi-label">Vendors</div><div class="kpi-value">4</div><div class="kpi-sub">Apple, AiRista, TechFix, CDW</div></div>
+      <div class="kpi"><div class="kpi-label">Avg lead time</div><div class="kpi-value">8 days</div><div class="kpi-sub">7 to 14 day range</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Open purchase orders</h3><span class="card-sub" style="margin-left:auto;">Click row to approve</span></div>
+      <table class="dt">
+        <thead><tr><th>PO</th><th>Vendor</th><th>Item</th><th class="num">Qty</th><th>ETA</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          <tr v-for="po in state.pos" :key="po.id">
+            <td><strong>{{ po.id }}</strong></td><td>{{ po.vendor }}</td><td>{{ po.item }}</td>
+            <td class="num">{{ po.qty }}</td><td>{{ po.eta }}</td>
+            <td><span class="p-tag" :class="po.status === 'Approved' ? 'p-tag-success' : (po.status === 'Submitted' ? 'p-tag-info' : 'p-tag-warning')">{{ po.status }}</span></td>
+            <td><button v-if="po.status !== 'Approved'" class="p-button p-button-xs" @click="approvePO(po)">Approve</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TRANSFERS AND DISPOSAL -->
+  <div v-if="subtab === 'Transfers and disposal'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Open transfers</div><div class="kpi-value">{{ state.transfers.filter(t=>t.status !== 'Approved').length }}</div><div class="kpi-sub">click to approve</div></div>
+      <div class="kpi"><div class="kpi-label">Disposed YTD</div><div class="kpi-value">14</div><div class="kpi-sub">8 EOL, 6 unrecoverable</div></div>
+      <div class="kpi"><div class="kpi-label">Salvage value</div><div class="kpi-value success">$610</div><div class="kpi-sub">trade-in recovery</div></div>
+      <div class="kpi"><div class="kpi-label">e-waste batch</div><div class="kpi-value">Jul 12</div><div class="kpi-sub">next pickup</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Pending transfers</h3><span class="card-sub" style="margin-left:auto;">Click row to approve</span></div>
+      <table class="dt">
+        <thead><tr><th>Transfer</th><th>From</th><th>To</th><th>Model</th><th class="num">Qty</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          <tr v-for="tr in state.transfers" :key="tr.id">
+            <td><strong>{{ tr.id }}</strong></td><td>{{ tr.from }}</td><td>{{ tr.to }}</td><td>{{ tr.model }}</td>
+            <td class="num">{{ tr.qty }}</td>
+            <td><span class="p-tag" :class="tr.status === 'Approved' ? 'p-tag-success' : (tr.status === 'In transit' ? 'p-tag-info' : 'p-tag-warning')">{{ tr.status }}</span></td>
+            <td><button v-if="tr.status === 'Pending pickup'" class="p-button p-button-xs" @click="approveTransfer(tr)">Approve</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Disposal log</h3></div>
+      <table class="dt">
+        <thead><tr><th>Date</th><th>Device</th><th>Reason</th><th>Method</th><th class="num">Salvage</th></tr></thead>
+        <tbody>
+          <tr><td>Jun 11</td><td>PHN-0017 iPhone 16e</td><td>Lost</td><td>Write-off</td><td class="num">$0</td></tr>
+          <tr><td>May 28</td><td>PHN-0032 iPhone 13</td><td>EOL</td><td>Trade-in (Apple)</td><td class="num">$285</td></tr>
+          <tr><td>May 14</td><td>BDG-0114 AiRista</td><td>Battery failure</td><td>e-waste recycle</td><td class="num">$0</td></tr>
+          <tr><td>Apr 22</td><td>PHN-0048 Pixel 8</td><td>Damage</td><td>Trade-in (Google)</td><td class="num">$165</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- WARRANTY AND AUDITS -->
+  <div v-if="subtab === 'Warranty and audits'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">In warranty</div><div class="kpi-value">98</div><div class="kpi-sub">of 133 devices</div></div>
+      <div class="kpi"><div class="kpi-label">Expiring 90 days</div><div class="kpi-value warn">22</div><div class="kpi-sub">renew or replace</div></div>
+      <div class="kpi"><div class="kpi-label">Last audit</div><div class="kpi-value">Jun 12</div><div class="kpi-sub">99 percent reconciled</div></div>
+      <div class="kpi"><div class="kpi-label">Next audit</div><div class="kpi-value">Jul 15</div><div class="kpi-sub">Q3 cycle</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Warranty coverage</h3></div>
+      <table class="dt">
+        <thead><tr><th>Model</th><th>Vendor</th><th class="num">Devices</th><th class="num">Active</th><th class="num">Expiring 90d</th><th>End date</th></tr></thead>
+        <tbody>
+          <tr><td><strong>iPhone 16e</strong></td><td>AppleCare Plus</td><td class="num">71</td><td class="num">71</td><td class="num">0</td><td>Mar 2028</td></tr>
+          <tr><td><strong>iPhone 13 (legacy)</strong></td><td>AppleCare Plus</td><td class="num">3</td><td class="num">0</td><td class="num">0</td><td>Expired Mar 2025</td></tr>
+          <tr><td><strong>Pixel 8 Pro</strong></td><td>Google Preferred Care</td><td class="num">4</td><td class="num">4</td><td class="num">2</td><td>Sep 2026</td></tr>
+          <tr><td><strong>AiRista Badge B7</strong></td><td>AiRista 3yr standard</td><td class="num">50</td><td class="num">18</td><td class="num">20</td><td>Aug 2026 to Aug 2028</td></tr>
+          <tr><td><strong>ChromeBook X360</strong></td><td>HP Care Pack</td><td class="num">2</td><td class="num">2</td><td class="num">0</td><td>Feb 2028</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Audit history</h3></div>
+      <table class="dt">
+        <thead><tr><th>Date</th><th>Auditor</th><th>Scope</th><th class="num">Devices</th><th class="num">Reconciled</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td>Jun 12, 2026</td><td>Sarah Park</td><td>Full inventory</td><td class="num">133</td><td class="num">132</td><td><span class="p-tag p-tag-success">99 percent</span></td></tr>
+          <tr><td>Mar 14, 2026</td><td>Sarah Park</td><td>Full inventory</td><td class="num">128</td><td class="num">125</td><td><span class="p-tag p-tag-success">98 percent</span></td></tr>
+          <tr><td>Dec 18, 2025</td><td>External (KPMG)</td><td>SOX cycle</td><td class="num">115</td><td class="num">113</td><td><span class="p-tag p-tag-success">98 percent</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="p-toast">
+    <div v-for="t in toasts" :key="t.id" :class="'p-toast-message severity-' + t.severity">
+      <i :class="'pi ' + (t.severity === 'success' ? 'pi-check-circle' : 'pi-info-circle')"
+         :style="{ color: t.severity === 'success' ? 'var(--c-success)' : 'var(--c-info)', fontSize:'16px', marginTop:'2px' }"></i>
+      <div style="flex:1;"><strong>{{ t.summary }}</strong><div v-if="t.detail" style="font-size:11px; color:var(--c-text-2); margin-top:2px;">{{ t.detail }}</div></div>
+    </div>
+  </div>
+</div>
+  `
+};
+
+createApp(App).mount('#app');
+</script>
+</body>
+</html>

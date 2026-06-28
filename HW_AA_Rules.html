@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rules - Asset Accounting - HonestWaves</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/aura-light-blue/theme.css">
+<style>
+:root { --c-surface:#FFFFFF; --c-surface-2:#FAFAFB; --c-surface-3:#F4F5F7; --c-border:#E5E7EB; --c-border-strong:#D1D5DB; --c-divider:#EDF0F4; --c-text:#0F172A; --c-text-2:#475569; --c-text-muted:#94A3B8; --c-brand:#2563EB; --c-success:#10B981; --c-success-soft:#ECFDF5; --c-warning:#F59E0B; --c-warning-soft:#FFFBEB; --c-warning-text:#B45309; --c-danger:#EF4444; --c-danger-soft:#FEF2F2; --c-info:#6366F1; --c-info-soft:#EEF2FF; --r-md:6px; --r-pill:999px; }
+* { box-sizing: border-box; }
+body { font-family:'Inter',system-ui,sans-serif; font-size:13px; color:var(--c-text); background:var(--c-surface-2); margin:0; padding:24px; }
+.page-head { display:flex; align-items:flex-end; gap:16px; margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--c-border); }
+.page-title { font-size:22px; font-weight:600; letter-spacing:-.015em; line-height:1.1; margin:0; }
+.page-sub { font-size:13px; color:var(--c-text-2); margin-top:4px; }
+.kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+.kpi { background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); padding:14px 16px; box-shadow:0 1px 2px rgba(15,23,42,.04); }
+.kpi-label { font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--c-text-muted); font-weight:600; }
+.kpi-value { font-size:24px; font-weight:700; color:var(--c-text); line-height:1.1; margin-top:4px; }
+.kpi-value.success { color:var(--c-success); } .kpi-value.warn { color:var(--c-warning-text); } .kpi-value.info { color:var(--c-info); }
+.kpi-sub { font-size:11px; color:var(--c-text-2); margin-top:4px; }
+.card { background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); box-shadow:0 1px 2px rgba(15,23,42,.04); margin-bottom:16px; }
+.card-head { padding:14px 18px; border-bottom:1px solid var(--c-border); display:flex; align-items:center; gap:10px; }
+.card-title { font-size:14px; font-weight:600; margin:0; }
+.card-sub { font-size:12px; color:var(--c-text-muted); }
+.pivot-bar { display:flex; flex-wrap:wrap; gap:2px; padding:4px; background:var(--c-surface-3); border-radius:var(--r-md); margin-bottom:14px; width:fit-content; }
+.pivot-btn { padding:6px 12px; font-size:12px; font-weight:500; color:var(--c-text-2); cursor:pointer; border-radius:4px; border:0; background:transparent; font-family:inherit; }
+.pivot-btn.active { background:var(--c-surface); color:var(--c-text); box-shadow:0 1px 2px rgba(15,23,42,.05); font-weight:600; }
+.p-button { display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 12px; font-size:12px; font-weight:500; color:var(--c-text); background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); box-shadow:0 1px 2px rgba(15,23,42,.04); cursor:pointer; font-family:inherit; }
+.p-button-text { background:transparent; border-color:transparent; box-shadow:none; color:var(--c-text-2); }
+.p-button-primary { background:var(--c-brand); color:white; border-color:var(--c-brand); }
+.p-button-xs { height:22px; padding:0 7px; font-size:10px; gap:4px; }
+.p-tag { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; padding:2px 8px; border-radius:var(--r-pill); letter-spacing:.02em; }
+.p-tag-success { background:var(--c-success-soft); color:var(--c-success); }
+.p-tag-warning { background:var(--c-warning-soft); color:var(--c-warning-text); }
+.p-tag-danger { background:var(--c-danger-soft); color:var(--c-danger); }
+.p-tag-info { background:var(--c-info-soft); color:var(--c-info); }
+.p-tag-secondary { background:var(--c-surface-3); color:var(--c-text-2); }
+table.dt { width:100%; border-collapse:collapse; }
+table.dt thead th { background:var(--c-surface-3); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--c-text-2); padding:10px 16px; text-align:left; border-bottom:1px solid var(--c-border); }
+table.dt tbody td { padding:11px 16px; font-size:13px; border-bottom:1px solid var(--c-divider); }
+table.dt tbody tr:hover { background:var(--c-surface-2); }
+table.dt .num { text-align:right; font-variant-numeric:tabular-nums; }
+table.dt .mono { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--c-text-muted); }
+.switch { width:32px; height:18px; border-radius:18px; background:var(--c-surface-3); border:1px solid var(--c-border); position:relative; cursor:pointer; display:inline-block; vertical-align:middle; transition:background 120ms; }
+.switch::after { content:''; position:absolute; top:2px; left:2px; width:12px; height:12px; background:var(--c-text-muted); border-radius:50%; transition:left 120ms, background 120ms; }
+.switch.on { background:var(--c-brand); border-color:var(--c-brand); }
+.switch.on::after { left:16px; background:white; }
+.p-toast { position:fixed; top:20px; right:24px; z-index:9100; display:flex; flex-direction:column; gap:8px; }
+.p-toast-message { background:var(--c-surface); border:1px solid var(--c-border); border-left:4px solid var(--c-info); border-radius:6px; padding:12px 16px; box-shadow:0 8px 24px rgba(15,23,42,.12); min-width:280px; max-width:380px; display:flex; align-items:flex-start; gap:10px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script type="module">
+import { createApp, ref, computed, reactive, watch } from 'https://unpkg.com/vue@3.5.13/dist/vue.esm-browser.js';
+
+const STATE_KEY = 'hw.aa.rules.v1';
+
+function seed() {
+  return {
+    userRules: [
+      { id:'UR-1', name:'Auto-suspend on 3rd loss',         scope:'All users',        trigger:'3 lost devices in 90 days', action:'Suspend kiosk PIN, notify mgr', enabled:true },
+      { id:'UR-2', name:'Replacement cap by tenure',        scope:'New hires (under 90d)', trigger:'Request 2+ devices', action:'Require VP approval', enabled:true },
+      { id:'UR-3', name:'Damage chargeback',                 scope:'All users',        trigger:'Damage report filed',       action:'Auto-charge cost center', enabled:true },
+      { id:'UR-4', name:'After-hours device check',          scope:'Off-shift users',  trigger:'22:00 to 06:00 checkout',    action:'Email weekly summary',     enabled:false },
+    ],
+    deptRules: [
+      { id:'DR-1', name:'ER device cap',                     scope:'Emergency Medicine', trigger:'Headcount * 0.6', action:'Cap simultaneous checkouts', enabled:true },
+      { id:'DR-2', name:'ICU after-hours auto-checkin',      scope:'ICU 5N, 4S',         trigger:'No swipe in 12h',  action:'Auto-checkin, notify charge nurse', enabled:true },
+      { id:'DR-3', name:'Radiology shared pool',             scope:'Radiology',          trigger:'Checkout request',  action:'Round-robin assignment',    enabled:true },
+      { id:'DR-4', name:'Pharmacy controlled access',        scope:'Pharmacy',           trigger:'Any checkout',      action:'Require dual approval',     enabled:true },
+    ],
+    deviceRules: [
+      { id:'XR-1', name:'EOL auto-tagging',                  scope:'All devices',     trigger:'24 months in service', action:'Add EOL tag, surface in Inventory', enabled:true },
+      { id:'XR-2', name:'Battery health alert',              scope:'iPhone, Pixel',   trigger:'SoH under 65 percent', action:'Open repair ticket auto',    enabled:true },
+      { id:'XR-3', name:'Locker rebalance',                  scope:'All lockers',     trigger:'Util over 90 percent for 7d', action:'Suggest transfer in Insights', enabled:true },
+      { id:'XR-4', name:'Lost device GPS ping',              scope:'AirTag-enabled',  trigger:'Missing 24h',          action:'Surface last GPS, page security', enabled:false },
+    ],
+    notifications: [
+      { event:'Loss reported',           channel:'Slack', target:'#asset-mgmt',  delay:'Immediate' },
+      { event:'Repair ticket opened',    channel:'Email', target:'IT helpdesk',  delay:'Immediate' },
+      { event:'PO needs approval',       channel:'Slack', target:'@finance-mgr', delay:'Immediate' },
+      { event:'EOL device tagged',       channel:'Email', target:'Inventory mgr', delay:'Daily digest' },
+      { event:'Period close milestone',  channel:'Email', target:'Controller',    delay:'Immediate' },
+    ],
+  };
+}
+function load() { try { const r = localStorage.getItem(STATE_KEY); if (r) return JSON.parse(r); } catch(e){} const s=seed(); localStorage.setItem(STATE_KEY, JSON.stringify(s)); return s; }
+function save(s) { try { localStorage.setItem(STATE_KEY, JSON.stringify(s)); } catch(e){} }
+
+const App = {
+  setup() {
+    const state = reactive(load());
+    const subtab = ref('User-level');
+    const toasts = ref([]);
+    watch(state, () => save(state), { deep:true });
+
+    const totalEnabled = computed(() =>
+      state.userRules.filter(r=>r.enabled).length +
+      state.deptRules.filter(r=>r.enabled).length +
+      state.deviceRules.filter(r=>r.enabled).length
+    );
+    const totalRules = computed(() => state.userRules.length + state.deptRules.length + state.deviceRules.length);
+
+    const showToast = (summary, detail) => {
+      const id = Date.now() + Math.random();
+      toasts.value.push({ id, summary, detail });
+      setTimeout(() => { toasts.value = toasts.value.filter(t => t.id !== id); }, 2500);
+    };
+    const toggle = (rule) => {
+      rule.enabled = !rule.enabled;
+      showToast(rule.name + ' ' + (rule.enabled ? 'enabled' : 'disabled'), 'Saved automatically');
+    };
+    const resetAll = () => { if (confirm('Reset Rules state?')) { localStorage.removeItem(STATE_KEY); location.reload(); } };
+
+    return { state, subtab, toasts, totalEnabled, totalRules, toggle, resetAll };
+  },
+  template: `
+<div>
+  <header class="page-head">
+    <div style="flex:1;">
+      <h1 class="page-title">Rules</h1>
+      <p class="page-sub">{{ totalEnabled }} of {{ totalRules }} rules enabled. Toggle any switch to enable or disable.</p>
+    </div>
+    <button class="p-button p-button-text" @click="resetAll"><i class="pi pi-refresh"></i>Reset</button>
+    <button class="p-button p-button-primary"><i class="pi pi-plus"></i>New rule</button>
+  </header>
+
+  <div class="pivot-bar">
+    <button v-for="t in ['User-level','Department-level','Device-level','Rule audit log','Notification routing']" :key="t" class="pivot-btn" :class="{active: subtab === t}" @click="subtab = t">{{ t }}</button>
+  </div>
+
+  <!-- USER-LEVEL -->
+  <div v-if="subtab === 'User-level'">
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">User-level rules</h3><span class="card-sub" style="margin-left:auto;">Apply to individual users and roles</span></div>
+      <table class="dt">
+        <thead><tr><th>Rule</th><th>Scope</th><th>Trigger</th><th>Action</th><th>Enabled</th></tr></thead>
+        <tbody>
+          <tr v-for="r in state.userRules" :key="r.id">
+            <td><strong>{{ r.name }}</strong> <span class="mono">{{ r.id }}</span></td><td>{{ r.scope }}</td><td>{{ r.trigger }}</td><td>{{ r.action }}</td>
+            <td><span class="switch" :class="{on:r.enabled}" @click="toggle(r)"></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- DEPARTMENT-LEVEL -->
+  <div v-if="subtab === 'Department-level'">
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Department-level rules</h3><span class="card-sub" style="margin-left:auto;">Apply across whole departments</span></div>
+      <table class="dt">
+        <thead><tr><th>Rule</th><th>Scope</th><th>Trigger</th><th>Action</th><th>Enabled</th></tr></thead>
+        <tbody>
+          <tr v-for="r in state.deptRules" :key="r.id">
+            <td><strong>{{ r.name }}</strong> <span class="mono">{{ r.id }}</span></td><td>{{ r.scope }}</td><td>{{ r.trigger }}</td><td>{{ r.action }}</td>
+            <td><span class="switch" :class="{on:r.enabled}" @click="toggle(r)"></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- DEVICE-LEVEL -->
+  <div v-if="subtab === 'Device-level'">
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Device-level rules</h3><span class="card-sub" style="margin-left:auto;">Apply to device classes and individual assets</span></div>
+      <table class="dt">
+        <thead><tr><th>Rule</th><th>Scope</th><th>Trigger</th><th>Action</th><th>Enabled</th></tr></thead>
+        <tbody>
+          <tr v-for="r in state.deviceRules" :key="r.id">
+            <td><strong>{{ r.name }}</strong> <span class="mono">{{ r.id }}</span></td><td>{{ r.scope }}</td><td>{{ r.trigger }}</td><td>{{ r.action }}</td>
+            <td><span class="switch" :class="{on:r.enabled}" @click="toggle(r)"></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RULE AUDIT LOG -->
+  <div v-if="subtab === 'Rule audit log'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Rule fires (30d)</div><div class="kpi-value">87</div><div class="kpi-sub">across 9 rules</div></div>
+      <div class="kpi"><div class="kpi-label">Manual overrides</div><div class="kpi-value warn">4</div><div class="kpi-sub">admin acked</div></div>
+      <div class="kpi"><div class="kpi-label">False positives</div><div class="kpi-value">2</div><div class="kpi-sub">rule tuned</div></div>
+      <div class="kpi"><div class="kpi-label">Top rule</div><div class="kpi-value">DR-1</div><div class="kpi-sub">ER device cap, 24 fires</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Recent rule activity</h3></div>
+      <table class="dt">
+        <thead><tr><th>When</th><th>Rule</th><th>Fired against</th><th>Action taken</th><th>Override?</th></tr></thead>
+        <tbody>
+          <tr><td>Jun 26, 14:22</td><td><strong>DR-1</strong> ER device cap</td><td>ER North, 14 active checkouts</td><td>Blocked 15th request</td><td><span class="p-tag p-tag-secondary">No</span></td></tr>
+          <tr><td>Jun 26, 09:14</td><td><strong>UR-3</strong> Damage chargeback</td><td>Marcus Lee, $599</td><td>Charged CC-200</td><td><span class="p-tag p-tag-secondary">No</span></td></tr>
+          <tr><td>Jun 25, 22:08</td><td><strong>XR-2</strong> Battery health alert</td><td>PHN-0023</td><td>Ticket RQ-2041 opened</td><td><span class="p-tag p-tag-secondary">No</span></td></tr>
+          <tr><td>Jun 25, 16:40</td><td><strong>UR-2</strong> Replacement cap</td><td>New hire J. Wang</td><td>Pending VP approval</td><td><span class="p-tag p-tag-warning">Override</span></td></tr>
+          <tr><td>Jun 24, 11:55</td><td><strong>XR-1</strong> EOL auto-tagging</td><td>3 iPhone 13 devices</td><td>Tagged EOL</td><td><span class="p-tag p-tag-secondary">No</span></td></tr>
+          <tr><td>Jun 23, 08:31</td><td><strong>UR-1</strong> Auto-suspend</td><td>Olivia Park</td><td>PIN suspended, mgr notified</td><td><span class="p-tag p-tag-warning">Restored</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- NOTIFICATION ROUTING -->
+  <div v-if="subtab === 'Notification routing'">
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Notification routing</h3><span class="card-sub" style="margin-left:auto;">Who gets pinged for what</span></div>
+      <table class="dt">
+        <thead><tr><th>Event</th><th>Channel</th><th>Target</th><th>Delay</th></tr></thead>
+        <tbody>
+          <tr v-for="n in state.notifications" :key="n.event">
+            <td><strong>{{ n.event }}</strong></td>
+            <td><span class="p-tag" :class="n.channel === 'Slack' ? 'p-tag-info' : 'p-tag-secondary'">{{ n.channel }}</span></td>
+            <td class="mono">{{ n.target }}</td>
+            <td>{{ n.delay }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="p-toast">
+    <div v-for="t in toasts" :key="t.id" class="p-toast-message">
+      <i class="pi pi-info-circle" style="color:var(--c-info); font-size:16px; margin-top:2px;"></i>
+      <div style="flex:1;"><strong>{{ t.summary }}</strong><div v-if="t.detail" style="font-size:11px; color:var(--c-text-2); margin-top:2px;">{{ t.detail }}</div></div>
+    </div>
+  </div>
+</div>
+  `
+};
+createApp(App).mount('#app');
+</script>
+</body>
+</html>

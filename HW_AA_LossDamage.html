@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loss and damage - Asset Accounting - HonestWaves</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/aura-light-blue/theme.css">
+<style>
+:root { --c-surface:#FFFFFF; --c-surface-2:#FAFAFB; --c-surface-3:#F4F5F7; --c-border:#E5E7EB; --c-border-strong:#D1D5DB; --c-divider:#EDF0F4; --c-text:#0F172A; --c-text-2:#475569; --c-text-muted:#94A3B8; --c-brand:#2563EB; --c-brand-soft:#EFF6FF; --c-success:#10B981; --c-success-soft:#ECFDF5; --c-warning:#F59E0B; --c-warning-soft:#FFFBEB; --c-warning-text:#B45309; --c-danger:#EF4444; --c-danger-soft:#FEF2F2; --c-info:#6366F1; --c-info-soft:#EEF2FF; --c-violet:#7C3AED; --c-violet-soft:#F5F3FF; --r-md:6px; --r-pill:999px; }
+* { box-sizing: border-box; }
+body { font-family:'Inter',system-ui,sans-serif; font-size:13px; color:var(--c-text); background:var(--c-surface-2); margin:0; padding:24px; }
+.page-head { display:flex; align-items:flex-end; gap:16px; margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--c-border); }
+.page-title { font-size:22px; font-weight:600; letter-spacing:-.015em; line-height:1.1; margin:0; }
+.page-sub { font-size:13px; color:var(--c-text-2); margin-top:4px; }
+.kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+.kpi { background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); padding:14px 16px; box-shadow:0 1px 2px rgba(15,23,42,.04); }
+.kpi-label { font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--c-text-muted); font-weight:600; }
+.kpi-value { font-size:24px; font-weight:700; color:var(--c-text); line-height:1.1; margin-top:4px; }
+.kpi-value.success { color:var(--c-success); } .kpi-value.danger { color:var(--c-danger); } .kpi-value.warn { color:var(--c-warning-text); } .kpi-value.info { color:var(--c-info); }
+.kpi-sub { font-size:11px; color:var(--c-text-2); margin-top:4px; }
+.card { background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); box-shadow:0 1px 2px rgba(15,23,42,.04); margin-bottom:16px; }
+.card-head { padding:14px 18px; border-bottom:1px solid var(--c-border); display:flex; align-items:center; gap:10px; }
+.card-title { font-size:14px; font-weight:600; margin:0; }
+.card-sub { font-size:12px; color:var(--c-text-muted); }
+.card-foot { padding:10px 18px; border-top:1px solid var(--c-border); display:flex; align-items:center; gap:10px; font-size:12px; color:var(--c-text-2); background:var(--c-surface-2); }
+.pivot-bar { display:flex; flex-wrap:wrap; gap:2px; padding:4px; background:var(--c-surface-3); border-radius:var(--r-md); margin-bottom:14px; width:fit-content; }
+.pivot-btn { padding:6px 12px; font-size:12px; font-weight:500; color:var(--c-text-2); cursor:pointer; border-radius:4px; border:0; background:transparent; font-family:inherit; }
+.pivot-btn.active { background:var(--c-surface); color:var(--c-text); box-shadow:0 1px 2px rgba(15,23,42,.05); font-weight:600; }
+.p-button { display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 12px; font-size:12px; font-weight:500; color:var(--c-text); background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); box-shadow:0 1px 2px rgba(15,23,42,.04); cursor:pointer; font-family:inherit; }
+.p-button-text { background:transparent; border-color:transparent; box-shadow:none; color:var(--c-text-2); }
+.p-button-primary { background:var(--c-brand); color:white; border-color:var(--c-brand); }
+.p-tag { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; padding:2px 8px; border-radius:var(--r-pill); letter-spacing:.02em; }
+.p-tag-success { background:var(--c-success-soft); color:var(--c-success); }
+.p-tag-warning { background:var(--c-warning-soft); color:var(--c-warning-text); }
+.p-tag-danger { background:var(--c-danger-soft); color:var(--c-danger); }
+.p-tag-info { background:var(--c-info-soft); color:var(--c-info); }
+.p-tag-secondary { background:var(--c-surface-3); color:var(--c-text-2); }
+table.dt { width:100%; border-collapse:collapse; }
+table.dt thead th { background:var(--c-surface-3); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--c-text-2); padding:10px 16px; text-align:left; border-bottom:1px solid var(--c-border); }
+table.dt tbody td { padding:11px 16px; font-size:13px; border-bottom:1px solid var(--c-divider); }
+table.dt tbody tr:hover { background:var(--c-surface-2); }
+table.dt .num { text-align:right; font-variant-numeric:tabular-nums; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script type="module">
+import { createApp, ref, reactive, watch } from 'https://unpkg.com/vue@3.5.13/dist/vue.esm-browser.js';
+
+const STATE_KEY = 'hw.aa.lossdamage.v1';
+function seed() { return { subtab: 'By user' }; }
+function load() { try { const r = localStorage.getItem(STATE_KEY); if (r) return JSON.parse(r); } catch(e){} const s=seed(); localStorage.setItem(STATE_KEY, JSON.stringify(s)); return s; }
+function save(s) { try { localStorage.setItem(STATE_KEY, JSON.stringify(s)); } catch(e){} }
+
+const App = {
+  setup() {
+    const state = reactive(load());
+    const subtab = ref('By user');
+    watch(state, () => save(state), { deep:true });
+    const resetAll = () => { if (confirm('Reset Loss and damage state?')) { localStorage.removeItem(STATE_KEY); location.reload(); } };
+    return { state, subtab, resetAll };
+  },
+  template: `
+<div>
+  <header class="page-head">
+    <div style="flex:1;">
+      <h1 class="page-title">Loss and damage</h1>
+      <p class="page-sub">Where loss happens, who it falls on, and how it gets charged back.</p>
+    </div>
+    <button class="p-button p-button-text" @click="resetAll"><i class="pi pi-refresh"></i>Reset state</button>
+    <button class="p-button p-button-text"><i class="pi pi-download"></i>Export CSV</button>
+    <button class="p-button p-button-primary"><i class="pi pi-plus"></i>Log incident</button>
+  </header>
+
+  <div class="pivot-bar">
+    <button v-for="t in ['By user','By department','By location','By model']" :key="t" class="pivot-btn" :class="{active: subtab === t}" @click="subtab = t">{{ t }}</button>
+  </div>
+
+  <!-- BY USER -->
+  <div v-if="subtab === 'By user'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Incidents YTD</div><div class="kpi-value">14</div><div class="kpi-sub">$8,876 total</div></div>
+      <div class="kpi"><div class="kpi-label">Repeat offenders</div><div class="kpi-value warn">3</div><div class="kpi-sub">2 or more incidents</div></div>
+      <div class="kpi"><div class="kpi-label">Avg per incident</div><div class="kpi-value">$634</div><div class="kpi-sub">trending flat</div></div>
+      <div class="kpi"><div class="kpi-label">Chargeback rate</div><div class="kpi-value success">89 percent</div><div class="kpi-sub">$7,895 recovered</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Top users by loss value</h3></div>
+      <table class="dt">
+        <thead><tr><th>User</th><th>Department</th><th class="num">Incidents</th><th class="num">Loss YTD</th><th class="num">Chargeback</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Olivia Park</strong></td><td>ER North</td><td class="num">3</td><td class="num">$1,797</td><td class="num">$1,797</td><td><span class="p-tag p-tag-warning">Repeat (3)</span></td></tr>
+          <tr><td><strong>Marcus Lee</strong></td><td>ICU 5N</td><td class="num">2</td><td class="num">$1,198</td><td class="num">$1,198</td><td><span class="p-tag p-tag-warning">Repeat (2)</span></td></tr>
+          <tr><td><strong>Dana Choi</strong></td><td>ER South</td><td class="num">2</td><td class="num">$1,198</td><td class="num">$599</td><td><span class="p-tag p-tag-info">1 dispute</span></td></tr>
+          <tr><td><strong>Adam Kim</strong></td><td>Radiology</td><td class="num">1</td><td class="num">$599</td><td class="num">$599</td><td><span class="p-tag p-tag-success">Cleared</span></td></tr>
+          <tr><td><strong>Priya Shah</strong></td><td>ER North</td><td class="num">1</td><td class="num">$599</td><td class="num">$599</td><td><span class="p-tag p-tag-success">Cleared</span></td></tr>
+          <tr><td><strong>James Wu</strong></td><td>ICU 5N</td><td class="num">1</td><td class="num">$489</td><td class="num">$489</td><td><span class="p-tag p-tag-success">Cleared</span></td></tr>
+          <tr><td><strong>Other (8 users)</strong></td><td>Various</td><td class="num">4</td><td class="num">$2,996</td><td class="num">$2,613</td><td><span class="p-tag p-tag-success">Various</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- BY DEPARTMENT -->
+  <div v-if="subtab === 'By department'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Highest loss dept</div><div class="kpi-value danger">ER North</div><div class="kpi-sub">$4,375 YTD</div></div>
+      <div class="kpi"><div class="kpi-label">Active departments</div><div class="kpi-value">7</div><div class="kpi-sub">6 have incidents</div></div>
+      <div class="kpi"><div class="kpi-label">Top quartile</div><div class="kpi-value">ER, ICU</div><div class="kpi-sub">82 percent of all loss</div></div>
+      <div class="kpi"><div class="kpi-label">Loss rate</div><div class="kpi-value warn">10.5 percent</div><div class="kpi-sub">ER North, vs 3 percent firm-wide</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Loss by department</h3></div>
+      <table class="dt">
+        <thead><tr><th>Department</th><th class="num">Headcount</th><th class="num">Incidents</th><th class="num">Loss YTD</th><th class="num">Loss rate</th><th class="num">Chargeback</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Emergency Medicine</strong></td><td class="num">42</td><td class="num">5</td><td class="num" style="color:var(--c-danger);">$4,375</td><td class="num">11.9 percent</td><td class="num">$4,375</td></tr>
+          <tr><td><strong>Nursing</strong></td><td class="num">68</td><td class="num">3</td><td class="num" style="color:var(--c-warning-text);">$2,852</td><td class="num">4.4 percent</td><td class="num">$2,852</td></tr>
+          <tr><td><strong>Radiology</strong></td><td class="num">28</td><td class="num">2</td><td class="num">$957</td><td class="num">7.1 percent</td><td class="num">$957</td></tr>
+          <tr><td><strong>Security and Facilities</strong></td><td class="num">14</td><td class="num">2</td><td class="num">$438</td><td class="num">14.3 percent</td><td class="num">$438</td></tr>
+          <tr><td><strong>Admin and HR</strong></td><td class="num">22</td><td class="num">1</td><td class="num">$170</td><td class="num">4.5 percent</td><td class="num">$170</td></tr>
+          <tr><td><strong>Pharmacy</strong></td><td class="num">8</td><td class="num">1</td><td class="num">$84</td><td class="num">12.5 percent</td><td class="num">$84</td></tr>
+          <tr><td><strong>IT</strong></td><td class="num">11</td><td class="num">0</td><td class="num">$0</td><td class="num">0 percent</td><td class="num">$0</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- BY LOCATION -->
+  <div v-if="subtab === 'By location'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Highest loss location</div><div class="kpi-value danger">Hospital East ER</div><div class="kpi-sub">$5,030 YTD</div></div>
+      <div class="kpi"><div class="kpi-label">Lockers with loss</div><div class="kpi-value">5 of 12</div><div class="kpi-sub">42 percent locker hit rate</div></div>
+      <div class="kpi"><div class="kpi-label">After-hours loss</div><div class="kpi-value warn">68 percent</div><div class="kpi-sub">22:00 to 06:00 window</div></div>
+      <div class="kpi"><div class="kpi-label">Camera coverage</div><div class="kpi-value">100 percent</div><div class="kpi-sub">all lockers</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Loss by location</h3></div>
+      <table class="dt">
+        <thead><tr><th>Location</th><th class="num">Devices</th><th class="num">Incidents</th><th class="num">Loss YTD</th><th class="num">Loss per device</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Hospital East ER</strong></td><td class="num">8</td><td class="num">5</td><td class="num" style="color:var(--c-danger);">$5,030</td><td class="num">$629</td></tr>
+          <tr><td><strong>Hospital West ER</strong></td><td class="num">8</td><td class="num">3</td><td class="num" style="color:var(--c-warning-text);">$1,797</td><td class="num">$225</td></tr>
+          <tr><td><strong>Hospital East ICU</strong></td><td class="num">8</td><td class="num">2</td><td class="num">$1,198</td><td class="num">$150</td></tr>
+          <tr><td><strong>Hospital West Radiology</strong></td><td class="num">14</td><td class="num">2</td><td class="num">$489</td><td class="num">$35</td></tr>
+          <tr><td><strong>Annex Floor 2</strong></td><td class="num">10</td><td class="num">2</td><td class="num">$362</td><td class="num">$36</td></tr>
+          <tr><td><strong>HQ Building 1</strong></td><td class="num">79</td><td class="num">0</td><td class="num">$0</td><td class="num">$0</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- BY MODEL -->
+  <div v-if="subtab === 'By model'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Highest loss model</div><div class="kpi-value danger">iPhone 16e</div><div class="kpi-sub">$7,188 YTD, 12 units</div></div>
+      <div class="kpi"><div class="kpi-label">Loss rate (worst)</div><div class="kpi-value warn">22 percent</div><div class="kpi-sub">iPhone 13 legacy</div></div>
+      <div class="kpi"><div class="kpi-label">Lowest loss</div><div class="kpi-value success">AiRista B7</div><div class="kpi-sub">4 percent rate</div></div>
+      <div class="kpi"><div class="kpi-label">Insured loss</div><div class="kpi-value">$2,994</div><div class="kpi-sub">5 devices, AppleCare</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Loss by model</h3></div>
+      <table class="dt">
+        <thead><tr><th>Model</th><th class="num">In service</th><th class="num">Lost</th><th class="num">Damaged</th><th class="num">Total loss</th><th class="num">Loss rate</th><th class="num">Avg cost</th></tr></thead>
+        <tbody>
+          <tr><td><strong>iPhone 16e</strong></td><td class="num">71</td><td class="num">9</td><td class="num">3</td><td class="num" style="color:var(--c-danger);">$7,188</td><td class="num">17 percent</td><td class="num">$599</td></tr>
+          <tr><td><strong>iPhone 13 (legacy)</strong></td><td class="num">3</td><td class="num">1</td><td class="num">0</td><td class="num">$489</td><td class="num">22 percent</td><td class="num">$489</td></tr>
+          <tr><td><strong>Pixel 8 Pro</strong></td><td class="num">4</td><td class="num">0</td><td class="num">1</td><td class="num">$165</td><td class="num">25 percent</td><td class="num">$165</td></tr>
+          <tr><td><strong>AiRista Badge B7</strong></td><td class="num">50</td><td class="num">2</td><td class="num">0</td><td class="num">$170</td><td class="num">4 percent</td><td class="num">$85</td></tr>
+          <tr><td><strong>ChromeBook X360</strong></td><td class="num">2</td><td class="num">0</td><td class="num">0</td><td class="num">$0</td><td class="num">0 percent</td><td class="num">N/A</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+  `
+};
+createApp(App).mount('#app');
+</script>
+</body>
+</html>

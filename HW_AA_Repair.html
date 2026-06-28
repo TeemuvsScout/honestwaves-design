@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Repair - Asset Accounting - HonestWaves</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primevue@3.53.1/resources/themes/aura-light-blue/theme.css">
+<style>
+:root { --c-surface:#FFFFFF; --c-surface-2:#FAFAFB; --c-surface-3:#F4F5F7; --c-border:#E5E7EB; --c-border-strong:#D1D5DB; --c-divider:#EDF0F4; --c-text:#0F172A; --c-text-2:#475569; --c-text-muted:#94A3B8; --c-brand:#2563EB; --c-success:#10B981; --c-success-soft:#ECFDF5; --c-warning:#F59E0B; --c-warning-soft:#FFFBEB; --c-warning-text:#B45309; --c-danger:#EF4444; --c-danger-soft:#FEF2F2; --c-info:#6366F1; --c-info-soft:#EEF2FF; --r-md:6px; --r-pill:999px; }
+* { box-sizing: border-box; }
+body { font-family:'Inter',system-ui,sans-serif; font-size:13px; color:var(--c-text); background:var(--c-surface-2); margin:0; padding:24px; }
+.page-head { display:flex; align-items:flex-end; gap:16px; margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--c-border); }
+.page-title { font-size:22px; font-weight:600; letter-spacing:-.015em; line-height:1.1; margin:0; }
+.page-sub { font-size:13px; color:var(--c-text-2); margin-top:4px; }
+.kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+.kpi { background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); padding:14px 16px; box-shadow:0 1px 2px rgba(15,23,42,.04); }
+.kpi-label { font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--c-text-muted); font-weight:600; }
+.kpi-value { font-size:24px; font-weight:700; color:var(--c-text); line-height:1.1; margin-top:4px; }
+.kpi-value.success { color:var(--c-success); } .kpi-value.danger { color:var(--c-danger); } .kpi-value.warn { color:var(--c-warning-text); } .kpi-value.info { color:var(--c-info); }
+.kpi-sub { font-size:11px; color:var(--c-text-2); margin-top:4px; }
+.card { background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); box-shadow:0 1px 2px rgba(15,23,42,.04); margin-bottom:16px; }
+.card-head { padding:14px 18px; border-bottom:1px solid var(--c-border); display:flex; align-items:center; gap:10px; }
+.card-title { font-size:14px; font-weight:600; margin:0; }
+.card-sub { font-size:12px; color:var(--c-text-muted); }
+.pivot-bar { display:flex; flex-wrap:wrap; gap:2px; padding:4px; background:var(--c-surface-3); border-radius:var(--r-md); margin-bottom:14px; width:fit-content; }
+.pivot-btn { padding:6px 12px; font-size:12px; font-weight:500; color:var(--c-text-2); cursor:pointer; border-radius:4px; border:0; background:transparent; font-family:inherit; }
+.pivot-btn.active { background:var(--c-surface); color:var(--c-text); box-shadow:0 1px 2px rgba(15,23,42,.05); font-weight:600; }
+.p-button { display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 12px; font-size:12px; font-weight:500; color:var(--c-text); background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-md); box-shadow:0 1px 2px rgba(15,23,42,.04); cursor:pointer; font-family:inherit; }
+.p-button-text { background:transparent; border-color:transparent; box-shadow:none; color:var(--c-text-2); }
+.p-button-primary { background:var(--c-brand); color:white; border-color:var(--c-brand); }
+.p-button-xs { height:22px; padding:0 7px; font-size:10px; gap:4px; }
+.p-tag { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; padding:2px 8px; border-radius:var(--r-pill); letter-spacing:.02em; }
+.p-tag-success { background:var(--c-success-soft); color:var(--c-success); }
+.p-tag-warning { background:var(--c-warning-soft); color:var(--c-warning-text); }
+.p-tag-danger { background:var(--c-danger-soft); color:var(--c-danger); }
+.p-tag-info { background:var(--c-info-soft); color:var(--c-info); }
+.p-tag-secondary { background:var(--c-surface-3); color:var(--c-text-2); }
+table.dt { width:100%; border-collapse:collapse; }
+table.dt thead th { background:var(--c-surface-3); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--c-text-2); padding:10px 16px; text-align:left; border-bottom:1px solid var(--c-border); }
+table.dt tbody td { padding:11px 16px; font-size:13px; border-bottom:1px solid var(--c-divider); }
+table.dt tbody tr:hover { background:var(--c-surface-2); }
+table.dt .num { text-align:right; font-variant-numeric:tabular-nums; }
+.p-toast { position:fixed; top:20px; right:24px; z-index:9100; display:flex; flex-direction:column; gap:8px; }
+.p-toast-message { background:var(--c-surface); border:1px solid var(--c-border); border-left-width:4px; border-radius:6px; padding:12px 16px; box-shadow:0 8px 24px rgba(15,23,42,.12); min-width:280px; max-width:380px; display:flex; align-items:flex-start; gap:10px; border-left-color:var(--c-success); }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script type="module">
+import { createApp, ref, computed, reactive, watch } from 'https://unpkg.com/vue@3.5.13/dist/vue.esm-browser.js';
+
+const STATE_KEY = 'hw.aa.repair.v1';
+
+function seed() {
+  return {
+    queue: [
+      { id:'RQ-2041', device:'PHN-0023 iPhone 16e', issue:'Cracked screen',         priority:'High',   age:'2d', status:'Open' },
+      { id:'RQ-2040', device:'PHN-0018 iPhone 16e', issue:'Battery swell',          priority:'High',   age:'3d', status:'Open' },
+      { id:'RQ-2039', device:'BDG-0127 AiRista B7', issue:'Strap broken',           priority:'Low',    age:'5d', status:'Open' },
+      { id:'RQ-2038', device:'PHN-0011 Pixel 8',    issue:'Charging port loose',    priority:'Medium', age:'6d', status:'In progress' },
+      { id:'RQ-2037', device:'PHN-0034 iPhone 16e', issue:'Speaker grille debris',  priority:'Low',    age:'7d', status:'In progress' },
+      { id:'RQ-2036', device:'BDG-0098 AiRista B7', issue:'Battery 38 percent SoH', priority:'Medium', age:'8d', status:'Sent to vendor' },
+    ],
+  };
+}
+function load() { try { const r = localStorage.getItem(STATE_KEY); if (r) return JSON.parse(r); } catch(e){} const s=seed(); localStorage.setItem(STATE_KEY, JSON.stringify(s)); return s; }
+function save(s) { try { localStorage.setItem(STATE_KEY, JSON.stringify(s)); } catch(e){} }
+
+const App = {
+  setup() {
+    const state = reactive(load());
+    const subtab = ref('Queue');
+    const toasts = ref([]);
+    watch(state, () => save(state), { deep:true });
+
+    const openCount = computed(() => state.queue.filter(q => q.status === 'Open').length);
+    const wipCount = computed(() => state.queue.filter(q => q.status === 'In progress').length);
+    const vendorCount = computed(() => state.queue.filter(q => q.status === 'Sent to vendor').length);
+
+    const showToast = (summary, detail) => {
+      const id = Date.now() + Math.random();
+      toasts.value.push({ id, summary, detail });
+      setTimeout(() => { toasts.value = toasts.value.filter(t => t.id !== id); }, 3500);
+    };
+
+    const advance = (item) => {
+      const next = { 'Open':'In progress', 'In progress':'Sent to vendor', 'Sent to vendor':'Closed' }[item.status];
+      if (next) { item.status = next; showToast(item.id + ' advanced', 'Status: ' + next); }
+    };
+    const resetAll = () => { if (confirm('Reset Repair state?')) { localStorage.removeItem(STATE_KEY); location.reload(); } };
+
+    return { state, subtab, toasts, openCount, wipCount, vendorCount, advance, resetAll };
+  },
+  template: `
+<div>
+  <header class="page-head">
+    <div style="flex:1;">
+      <h1 class="page-title">Repair</h1>
+      <p class="page-sub">{{ openCount }} open, {{ wipCount }} in progress, {{ vendorCount }} at vendor. Avg resolution 6.4 days.</p>
+    </div>
+    <button class="p-button p-button-text" @click="resetAll"><i class="pi pi-refresh"></i>Reset</button>
+    <button class="p-button p-button-text"><i class="pi pi-download"></i>Export</button>
+    <button class="p-button p-button-primary"><i class="pi pi-plus"></i>Log ticket</button>
+  </header>
+
+  <div class="pivot-bar">
+    <button v-for="t in ['Queue','Pipeline','Vendors','Cost analytics','Component catalog']" :key="t" class="pivot-btn" :class="{active: subtab === t}" @click="subtab = t">{{ t }}</button>
+  </div>
+
+  <!-- QUEUE -->
+  <div v-if="subtab === 'Queue'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Open tickets</div><div class="kpi-value">{{ openCount }}</div><div class="kpi-sub">click row to advance</div></div>
+      <div class="kpi"><div class="kpi-label">In progress</div><div class="kpi-value info">{{ wipCount }}</div><div class="kpi-sub">on bench</div></div>
+      <div class="kpi"><div class="kpi-label">At vendor</div><div class="kpi-value">{{ vendorCount }}</div><div class="kpi-sub">awaiting return</div></div>
+      <div class="kpi"><div class="kpi-label">Avg age</div><div class="kpi-value">5.2d</div><div class="kpi-sub">target under 7</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Active repair queue</h3><span class="card-sub" style="margin-left:auto;">Click Advance to move status forward</span></div>
+      <table class="dt">
+        <thead><tr><th>Ticket</th><th>Device</th><th>Issue</th><th>Priority</th><th>Age</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          <tr v-for="q in state.queue" :key="q.id">
+            <td><strong>{{ q.id }}</strong></td><td>{{ q.device }}</td><td>{{ q.issue }}</td>
+            <td><span class="p-tag" :class="q.priority === 'High' ? 'p-tag-danger' : (q.priority === 'Medium' ? 'p-tag-warning' : 'p-tag-secondary')">{{ q.priority }}</span></td>
+            <td>{{ q.age }}</td>
+            <td><span class="p-tag" :class="q.status === 'Open' ? 'p-tag-warning' : (q.status === 'In progress' ? 'p-tag-info' : (q.status === 'Closed' ? 'p-tag-success' : 'p-tag-secondary'))">{{ q.status }}</span></td>
+            <td><button v-if="q.status !== 'Closed'" class="p-button p-button-xs" @click="advance(q)">Advance</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PIPELINE -->
+  <div v-if="subtab === 'Pipeline'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Throughput (30d)</div><div class="kpi-value">24</div><div class="kpi-sub">tickets resolved</div></div>
+      <div class="kpi"><div class="kpi-label">First-time fix</div><div class="kpi-value success">87 percent</div><div class="kpi-sub">on-bench resolution</div></div>
+      <div class="kpi"><div class="kpi-label">Vendor return time</div><div class="kpi-value">8.4d</div><div class="kpi-sub">avg AppleCare</div></div>
+      <div class="kpi"><div class="kpi-label">SLA breach</div><div class="kpi-value warn">2</div><div class="kpi-sub">over 14 days</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Pipeline stages, last 30 days</h3></div>
+      <table class="dt">
+        <thead><tr><th>Stage</th><th class="num">Tickets in</th><th class="num">Tickets out</th><th class="num">Avg time</th><th class="num">Drop-off</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Triage</strong></td><td class="num">29</td><td class="num">29</td><td class="num">0.5d</td><td class="num">0 percent</td></tr>
+          <tr><td><strong>On-bench repair</strong></td><td class="num">22</td><td class="num">19</td><td class="num">2.8d</td><td class="num">14 percent</td></tr>
+          <tr><td><strong>Vendor RMA</strong></td><td class="num">7</td><td class="num">5</td><td class="num">8.4d</td><td class="num">29 percent</td></tr>
+          <tr><td><strong>QA and reinventory</strong></td><td class="num">24</td><td class="num">24</td><td class="num">0.8d</td><td class="num">0 percent</td></tr>
+          <tr><td><strong>Closed (returned to fleet)</strong></td><td class="num">24</td><td class="num">24</td><td class="num">N/A</td><td class="num">0 percent</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- VENDORS -->
+  <div v-if="subtab === 'Vendors'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Active vendors</div><div class="kpi-value">4</div><div class="kpi-sub">2 OEM, 2 third-party</div></div>
+      <div class="kpi"><div class="kpi-label">Spend YTD</div><div class="kpi-value">$3,481</div><div class="kpi-sub">repair OpEx</div></div>
+      <div class="kpi"><div class="kpi-label">Avg cycle time</div><div class="kpi-value">7.8d</div><div class="kpi-sub">across all vendors</div></div>
+      <div class="kpi"><div class="kpi-label">Top vendor</div><div class="kpi-value">TechFix</div><div class="kpi-sub">11 tickets YTD</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Vendor performance</h3></div>
+      <table class="dt">
+        <thead><tr><th>Vendor</th><th>Type</th><th class="num">Tickets YTD</th><th class="num">Avg cycle</th><th class="num">Pass rate</th><th class="num">Cost YTD</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>TechFix Pro</strong></td><td>Third-party</td><td class="num">11</td><td class="num">5.2d</td><td class="num">94 percent</td><td class="num">$1,840</td><td><span class="p-tag p-tag-success">Preferred</span></td></tr>
+          <tr><td><strong>AppleCare</strong></td><td>OEM</td><td class="num">7</td><td class="num">8.4d</td><td class="num">100 percent</td><td class="num">$0 (warranty)</td><td><span class="p-tag p-tag-success">Healthy</span></td></tr>
+          <tr><td><strong>Google Preferred Care</strong></td><td>OEM</td><td class="num">2</td><td class="num">6.5d</td><td class="num">100 percent</td><td class="num">$0 (warranty)</td><td><span class="p-tag p-tag-success">Healthy</span></td></tr>
+          <tr><td><strong>AiRista Service</strong></td><td>OEM</td><td class="num">5</td><td class="num">12.1d</td><td class="num">80 percent</td><td class="num">$1,641</td><td><span class="p-tag p-tag-warning">SLA risk</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- COST ANALYTICS -->
+  <div v-if="subtab === 'Cost analytics'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Spend YTD</div><div class="kpi-value">$3,481</div><div class="kpi-sub">repair OpEx</div></div>
+      <div class="kpi"><div class="kpi-label">Vs. replace</div><div class="kpi-value success">$12,140 saved</div><div class="kpi-sub">if all repaired</div></div>
+      <div class="kpi"><div class="kpi-label">Avg cost / ticket</div><div class="kpi-value">$145</div><div class="kpi-sub">trending down</div></div>
+      <div class="kpi"><div class="kpi-label">Warranty coverage</div><div class="kpi-value info">62 percent</div><div class="kpi-sub">at $0 cost</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Cost by issue category</h3></div>
+      <table class="dt">
+        <thead><tr><th>Issue</th><th class="num">Tickets</th><th class="num">Avg cost</th><th class="num">Total YTD</th><th class="num">Replace value</th><th class="num">Saved</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Cracked screen</strong></td><td class="num">9</td><td class="num">$118</td><td class="num">$1,062</td><td class="num">$5,391</td><td class="num" style="color:var(--c-success);">+$4,329</td></tr>
+          <tr><td><strong>Battery swap</strong></td><td class="num">6</td><td class="num">$72</td><td class="num">$432</td><td class="num">$3,594</td><td class="num" style="color:var(--c-success);">+$3,162</td></tr>
+          <tr><td><strong>Charging port</strong></td><td class="num">4</td><td class="num">$95</td><td class="num">$380</td><td class="num">$2,396</td><td class="num" style="color:var(--c-success);">+$2,016</td></tr>
+          <tr><td><strong>Strap and case</strong></td><td class="num">7</td><td class="num">$22</td><td class="num">$154</td><td class="num">$595</td><td class="num" style="color:var(--c-success);">+$441</td></tr>
+          <tr><td><strong>Other</strong></td><td class="num">7</td><td class="num">$208</td><td class="num">$1,453</td><td class="num">$3,654</td><td class="num" style="color:var(--c-success);">+$2,201</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- COMPONENT CATALOG -->
+  <div v-if="subtab === 'Component catalog'">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">SKUs stocked</div><div class="kpi-value">18</div><div class="kpi-sub">repair parts</div></div>
+      <div class="kpi"><div class="kpi-label">Low stock</div><div class="kpi-value warn">3</div><div class="kpi-sub">below par level</div></div>
+      <div class="kpi"><div class="kpi-label">Stock value</div><div class="kpi-value">$2,142</div><div class="kpi-sub">at cost</div></div>
+      <div class="kpi"><div class="kpi-label">Turnover</div><div class="kpi-value">4.2x</div><div class="kpi-sub">annualized</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3 class="card-title">Component inventory</h3></div>
+      <table class="dt">
+        <thead><tr><th>Component</th><th>For</th><th class="num">On hand</th><th class="num">Par level</th><th class="num">Used (30d)</th><th class="num">Unit cost</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>iPhone 16e screen</strong></td><td>iPhone 16e</td><td class="num">3</td><td class="num">5</td><td class="num">4</td><td class="num">$98</td><td><span class="p-tag p-tag-warning">Low</span></td></tr>
+          <tr><td><strong>iPhone 16e battery</strong></td><td>iPhone 16e</td><td class="num">8</td><td class="num">6</td><td class="num">3</td><td class="num">$42</td><td><span class="p-tag p-tag-success">OK</span></td></tr>
+          <tr><td><strong>iPhone 16e charging port</strong></td><td>iPhone 16e</td><td class="num">2</td><td class="num">3</td><td class="num">2</td><td class="num">$36</td><td><span class="p-tag p-tag-warning">Low</span></td></tr>
+          <tr><td><strong>Pixel 8 screen</strong></td><td>Pixel 8 Pro</td><td class="num">2</td><td class="num">2</td><td class="num">0</td><td class="num">$165</td><td><span class="p-tag p-tag-success">OK</span></td></tr>
+          <tr><td><strong>AiRista B7 strap</strong></td><td>AiRista Badge B7</td><td class="num">12</td><td class="num">10</td><td class="num">5</td><td class="num">$8</td><td><span class="p-tag p-tag-success">OK</span></td></tr>
+          <tr><td><strong>AiRista B7 battery</strong></td><td>AiRista Badge B7</td><td class="num">1</td><td class="num">4</td><td class="num">3</td><td class="num">$18</td><td><span class="p-tag p-tag-warning">Low</span></td></tr>
+          <tr><td><strong>USB-C tips</strong></td><td>All cables</td><td class="num">28</td><td class="num">20</td><td class="num">8</td><td class="num">$2</td><td><span class="p-tag p-tag-success">OK</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="p-toast">
+    <div v-for="t in toasts" :key="t.id" class="p-toast-message">
+      <i class="pi pi-check-circle" style="color:var(--c-success); font-size:16px; margin-top:2px;"></i>
+      <div style="flex:1;"><strong>{{ t.summary }}</strong><div v-if="t.detail" style="font-size:11px; color:var(--c-text-2); margin-top:2px;">{{ t.detail }}</div></div>
+    </div>
+  </div>
+</div>
+  `
+};
+createApp(App).mount('#app');
+</script>
+</body>
+</html>
